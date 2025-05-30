@@ -426,7 +426,7 @@
         }
 
 
-        #difficultySelector, #worldsSelector, #audioToggleSelector, #skinSelector, #gameModeSelector { 
+        #difficultySelector, #worldsSelector, #audioToggleSelector, #skinSelector, #foodSelector, #gameModeSelector {
             padding: 4px 6px; 
             font-size: 0.8em; 
             border: none; 
@@ -444,14 +444,14 @@
             margin-top: 4px; 
         }
         
-        #difficultySelector option, #worldsSelector option, #audioToggleSelector option, #skinSelector option, #gameModeSelector option { 
+        #difficultySelector option, #worldsSelector option, #audioToggleSelector option, #skinSelector option, #foodSelector option, #gameModeSelector option {
             background-color: #374151;
             color: #f5f5f5;
             font-family: 'Press Start 2P', sans-serif;
             text-align: left; 
         }
         
-        #difficultySelector, #worldsSelector, #audioToggleSelector, #skinSelector, #gameModeSelector {
+        #difficultySelector, #worldsSelector, #audioToggleSelector, #skinSelector, #foodSelector, #gameModeSelector {
             text-align-last: left;
         }
         select option {
@@ -459,11 +459,11 @@
         }
 
 
-        #difficultySelector:focus, #worldsSelector:focus, #audioToggleSelector:focus, #skinSelector:focus, #gameModeSelector:focus { 
+        #difficultySelector:focus, #worldsSelector:focus, #audioToggleSelector:focus, #skinSelector:focus, #foodSelector:focus, #gameModeSelector:focus {
             outline: 1px solid #6ee7b7; 
             box-shadow: none; 
         }
-        #difficultySelector:disabled, #worldsSelector:disabled, #audioToggleSelector:disabled, #skinSelector:disabled, #gameModeSelector:disabled, #musicVolumeSlider:disabled { 
+        #difficultySelector:disabled, #worldsSelector:disabled, #audioToggleSelector:disabled, #skinSelector:disabled, #foodSelector:disabled, #gameModeSelector:disabled, #musicVolumeSlider:disabled {
             opacity: 0.7;
             cursor: not-allowed;
         }
@@ -479,8 +479,9 @@
         .control-group.interactive-mode:hover #worldsSelector,
         .control-group.interactive-mode:hover #audioToggleSelector,
         .control-group.interactive-mode:hover #skinSelector,
+        .control-group.interactive-mode:hover #foodSelector,
         .control-group.interactive-mode:hover #gameModeSelector,
-        .control-group.interactive-mode:hover #musicVolumeSlider { 
+        .control-group.interactive-mode:hover #musicVolumeSlider {
             cursor: pointer;
         }
         
@@ -734,9 +735,10 @@
                 min-height: 50px;
             }
              #settings-panel #difficultySelector, 
-             #settings-panel #worldsSelector, 
+             #settings-panel #worldsSelector,
              #settings-panel #audioToggleSelector,
              #settings-panel #skinSelector,
+             #settings-panel #foodSelector,
              #settings-panel #gameModeSelector,
              #settings-panel #musicVolumeSlider { font-size: 0.7em; }
 
@@ -880,7 +882,7 @@
                     <select id="worldsSelector" class="hidden">
                     </select>
                 </div>
-                 <div class="control-group" id="skin-control-group">
+                <div class="control-group" id="skin-control-group">
                     <div class="control-label-icon-row">
                         <label class="control-label" for="skinSelector">Jugador:</label>
                         <button class="setting-info-button" data-setting="skin" aria-label="Información sobre jugadores">
@@ -888,16 +890,33 @@
                         </button>
                     </div>
                     <select id="skinSelector">
-                        <option value="snake" selected>Snake</option> 
-                        <option value="rubiSnake">RubiSnake</option> 
+                        <option value="snake" selected>Snake</option>
+                        <option value="rubiSnake">RubiSnake</option>
                         <option value="aitorSnake">AitorSnake</option>
                         <option value="noemiSnake">NoemiSnake</option>
                         <option value="raquelSnake">RaquelSnake</option>
-                        <option value="almuSnake">AlmuSnake</option> 
+                        <option value="almuSnake">AlmuSnake</option>
                         <option value="mimiSnake">MimiSnake</option>
                     </select>
                 </div>
-                <div class="control-group" id="audio-control-group"> 
+                <div class="control-group" id="food-control-group">
+                    <div class="control-label-icon-row">
+                        <label class="control-label" for="foodSelector">Comestible:</label>
+                        <button class="setting-info-button" data-setting="food" aria-label="Información sobre comestibles">
+                            <svg class="setting-info-icon" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" /></svg>
+                        </button>
+                    </div>
+                    <select id="foodSelector">
+                        <option value="apple" selected>Manzana</option>
+                        <option value="croqueta">Croqueta</option>
+                        <option value="aguacate">Aguacate</option>
+                        <option value="sushi">Sushi</option>
+                        <option value="lotus">Lotus</option>
+                        <option value="cerveza">Cerveza</option>
+                        <option value="pan">Pan</option>
+                    </select>
+                </div>
+                <div class="control-group" id="audio-control-group">
                     <div class="control-label-icon-row">
                         <label class="control-label" for="audioToggleSelector">Audio General:</label>
                         <button class="setting-info-button" data-setting="audioGeneral" aria-label="Información sobre audio general">
@@ -1032,12 +1051,14 @@
         const difficultySelector = document.getElementById("difficultySelector");
         const worldsSelector = document.getElementById("worldsSelector"); 
         const difficultyLabel = document.getElementById("difficulty-label"); 
-        const audioToggleSelector = document.getElementById("audioToggleSelector"); 
-        const skinSelector = document.getElementById("skinSelector"); 
+        const audioToggleSelector = document.getElementById("audioToggleSelector");
+        const skinSelector = document.getElementById("skinSelector");
+        const foodSelector = document.getElementById("foodSelector");
         const gameModeSelector = document.getElementById("gameModeSelector");
-        const difficultyControlGroup = document.getElementById("difficulty-control-group"); 
-        const audioControlGroup = document.getElementById("audio-control-group"); 
-        const skinControlGroup = document.getElementById("skin-control-group"); 
+        const difficultyControlGroup = document.getElementById("difficulty-control-group");
+        const audioControlGroup = document.getElementById("audio-control-group");
+        const skinControlGroup = document.getElementById("skin-control-group");
+        const foodControlGroup = document.getElementById("food-control-group");
         const gameModeControlGroup = document.getElementById("game-mode-control-group");
         const musicVolumeSlider = document.getElementById("musicVolumeSlider");
         const musicVolumeValue = document.getElementById("musicVolumeValue");
@@ -1274,8 +1295,21 @@
                 bodyStrokeColor: adjustColor('#FFFFFF', 0.30),
             }
         };
-        let currentSkin = 'snake'; 
+        let currentSkin = 'snake';
         // --- Fin Configuración de Jugadores ---
+
+        // --- Configuración de Comestibles ---
+        const FOODS = {
+            apple: { asset: classicFoodImg, scale: 1.5 },
+            cerveza: { asset: rubiSnakeFoodImg, scale: 1.5 },
+            croqueta: { asset: aitorSnakeFoodImg, scale: 1.5 },
+            aguacate: { asset: noemiSnakeFoodImg, scale: 1.5 },
+            sushi: { asset: raquelSnakeFoodImg, scale: 1.5 },
+            lotus: { asset: almuSnakeFoodImg, scale: 1.5 },
+            pan: { asset: mimiSnakeFoodImg, scale: 1.5 }
+        };
+        let currentFood = 'apple';
+        // --- Fin Configuración de Comestibles ---
 
 
         // Estado del juego
@@ -1459,7 +1493,7 @@
 
         function applySkin(skinName) {
             currentSkin = skinName;
-            console.log(`Jugador aplicado: ${currentSkin}`); 
+            console.log(`Jugador aplicado: ${currentSkin}`);
 
             if (gameOver) {
                 if (ctx && canvasEl) {
@@ -1469,6 +1503,21 @@
             } else { 
                 if (!gameIntervalId && ctx) { 
                     draw(); 
+                }
+            }
+        }
+
+        function applyFood(foodName) {
+            currentFood = foodName;
+            console.log(`Comestible aplicado: ${currentFood}`);
+            if (gameOver) {
+                if (ctx && canvasEl) {
+                    ctx.fillStyle = "#374151";
+                    ctx.fillRect(0, 0, canvasEl.width, canvasEl.height);
+                }
+            } else {
+                if (!gameIntervalId && ctx) {
+                    draw();
                 }
             }
         }
@@ -1666,8 +1715,10 @@
                 if (panelElement === settingsPanel && !gameIntervalId) {
                     gameModeSelector.disabled = false;
                     skinSelector.disabled = false;
+                    foodSelector.disabled = false;
                     gameModeControlGroup.classList.add("interactive-mode");
                     skinControlGroup.classList.add("interactive-mode");
+                    foodControlGroup.classList.add("interactive-mode");
                     if (gameMode === 'levels') worldsSelector.disabled = false; else difficultySelector.disabled = false;
                     difficultyControlGroup.classList.add("interactive-mode");
                     if (typeof Tone !== 'undefined') {
@@ -1864,6 +1915,10 @@
                 title: "Jugador",
                 text: "<p>Personaliza tu serpiente, juega con el look que más te guste y convierte tu experiencia en algo único y divertido</p><h4>Selección de Jugador</h4><p>Elige entre una variedad de estilos visuales disponibles en el selector. Cada jugador ofrece una estética diferente para tu reptil protagonista, desde aspectos clásicos hasta diseños más originales y temáticos.</p><p>Algunos jugadores pueden estar disponibles desde el inicio, mientras que otros podrían requerir ser desbloqueados mediante logros en el juego o estar disponibles en futuras actualizaciones.</p><p>Es importante destacar que la elección del jugador es <strong>puramente estética</strong>. Cambiar la apariencia de tu serpiente no afecta de ninguna manera su velocidad, longitud, la forma en que come, ni las puntuaciones que obtienes.</p><p>¡Así que siéntete libre de experimentar y elegir el que más te guste sin preocuparte por ventajas o desventajas en el juego!</p>"
             },
+            food: {
+                title: "Comestible",
+                text: "<p>Selecciona el alimento que quieres que aparezca en el escenario. Esta elección solo afecta al aspecto visual y no modifica la jugabilidad.</p>"
+            },
             audioGeneral: {
                 title: "Audio General",
                 text: "<p>Controla los elementos sonoros del juego para crear la atmósfera perfecta para ti.</p><h4>Activado (Música y FX)</h4><p>Selecciona esta opción para disfrutar de la experiencia sonora completa. Esto incluye:</p><ul><li><strong>Música de fondo:</strong> Utilizada para ambientar, tanto el juego en general, como tus partidas.</li><li><strong>Efectos de sonido (SFX):</strong> Indicaciones auditivas para acciones cruciales como comenzar una partida, comer, superar un nivel, perder, conseguir un récord...</li></ul><h4>Sólo SFX</h4><p>Si la música de fondo te resulta distractora pero aun así deseas la retroalimentación auditiva de tus acciones en el juego, esta es tu opción.</p><h4>Desactivado</h4><p>Elige esta opción para silenciar completamente el juego. Es ideal si prefieres jugar mientras escuchas tu propia música o podcast mientras juegas.</p>"
@@ -1911,8 +1966,10 @@
             if (!settingsPanel.classList.contains("settings-panel-hidden") && !gameIntervalId) {
                 gameModeSelector.disabled = false;
                 skinSelector.disabled = false;
+                foodSelector.disabled = false;
                 gameModeControlGroup.classList.add("interactive-mode");
                 skinControlGroup.classList.add("interactive-mode");
+                foodControlGroup.classList.add("interactive-mode");
 
                 if (gameMode === 'levels') {
                     worldsSelector.disabled = false;
@@ -1954,15 +2011,15 @@
 
 
         function drawFoodItem(x, y) {
-            if (!ctx) return; 
-            const skinData = SKINS[currentSkin];
-            const foodImg = skinData.foodAsset;
+            if (!ctx) return;
+            const foodData = FOODS[currentFood] || FOODS['apple'];
+            const foodImg = foodData.asset;
             
             let foodVisualTopY;
             let foodVisualHeight;
 
             if (foodImg && foodImg.complete && foodImg.naturalHeight !== 0) {
-                const drawSize = GRID_SIZE * skinData.foodScale; 
+                const drawSize = GRID_SIZE * foodData.scale;
                 const offset = (drawSize - GRID_SIZE) / 2;
                 foodVisualTopY = y * GRID_SIZE - offset;
                 foodVisualHeight = drawSize;
@@ -1980,7 +2037,7 @@
 
             if (foodIsVisible && foodTimeRemaining > 0) {
                 if (foodImg && foodImg.complete && foodImg.naturalHeight !== 0) {
-                    const drawSize = GRID_SIZE * skinData.foodScale;
+                    const drawSize = GRID_SIZE * foodData.scale;
                     const offset = (drawSize - GRID_SIZE) / 2;
                     ctx.drawImage(foodImg, x * GRID_SIZE - offset, y * GRID_SIZE - offset, drawSize, drawSize);
                 } else {
@@ -2282,12 +2339,14 @@
         }
 
         function updateUIOnGameOver() {
-            updateMainButtonStates(); 
-            
+            updateMainButtonStates();
+
             gameModeSelector.disabled = false;
             skinSelector.disabled = false;
+            foodSelector.disabled = false;
             gameModeControlGroup.classList.add("interactive-mode");
             skinControlGroup.classList.add("interactive-mode");
+            foodControlGroup.classList.add("interactive-mode");
 
             if (gameMode === 'levels') {
                 worldsSelector.disabled = false; 
@@ -3252,12 +3311,14 @@
             difficultySelector.disabled = true;
             worldsSelector.disabled = true;
             audioToggleSelector.disabled = true;
-            skinSelector.disabled = true; 
+            skinSelector.disabled = true;
+            foodSelector.disabled = true;
             musicVolumeSlider.disabled = true;
             gameModeControlGroup.classList.remove("interactive-mode");
-            difficultyControlGroup.classList.remove("interactive-mode"); 
+            difficultyControlGroup.classList.remove("interactive-mode");
             audioControlGroup.classList.remove("interactive-mode");
             skinControlGroup.classList.remove("interactive-mode");
+            foodControlGroup.classList.remove("interactive-mode");
             musicVolumeControlGroup.classList.remove("interactive-mode");
             draw(); 
         }
@@ -3369,8 +3430,13 @@
         });
 
 
-        skinSelector.addEventListener('change', function() { 
+        skinSelector.addEventListener('change', function() {
             applySkin(this.value);
+            saveGameSettings();
+        });
+
+        foodSelector.addEventListener('change', function() {
+            applyFood(this.value);
             saveGameSettings();
         });
 
@@ -3532,6 +3598,7 @@
         function saveGameSettings() {
             localStorage.setItem('snakeGameDifficulty', difficultySelector.value);
             localStorage.setItem('snakeGameSkin', skinSelector.value);
+            localStorage.setItem('snakeGameFood', foodSelector.value);
             localStorage.setItem('snakeGameAudioGeneral', audioToggleSelector.value);
             localStorage.setItem('snakeGameMusicVolume', musicVolumeSlider.value);
             localStorage.setItem('snakeGameMode', gameModeSelector.value);
@@ -3549,6 +3616,9 @@
 
             const savedSkin = localStorage.getItem('snakeGameSkin');
             if (savedSkin) skinSelector.value = savedSkin;
+
+            const savedFood = localStorage.getItem('snakeGameFood');
+            if (savedFood) foodSelector.value = savedFood;
             
             const savedAudioGeneral = localStorage.getItem('snakeGameAudioGeneral');
             if (savedAudioGeneral) audioToggleSelector.value = savedAudioGeneral;
@@ -3613,7 +3683,8 @@
 
             difficulty = difficultySelector.value;
             snakeSpeed = DIFFICULTY_SETTINGS[difficulty].speed;
-            currentSkin = skinSelector.value; 
+            currentSkin = skinSelector.value;
+            currentFood = foodSelector.value;
             
             isMusicEnabled = (audioToggleSelector.value === 'all');
             areSfxEnabled = (audioToggleSelector.value === 'all' || audioToggleSelector.value === 'sfx_only');
@@ -3667,6 +3738,7 @@
             });
 
             applySkin(currentSkin); // Apply skin based on loaded settings
+            applyFood(currentFood);
 
             // Reset screen states for a fresh start after splash
             screenState.gameActuallyStarted = false; 
