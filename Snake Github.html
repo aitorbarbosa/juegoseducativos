@@ -53,6 +53,14 @@
             background-color: #02010a;
             z-index: 2000;
             display: flex;
+        #splash-content {
+            width: 100%;
+            max-width: 520px;
+            max-height: 100vh;
+            overflow-y: auto;
+            display: flex;
+            background-color: #02010a;
+            z-index: 2000;
             flex-direction: column;
             justify-content: space-between;
             align-items: center;
@@ -80,6 +88,28 @@
             transition: transform 0.05s ease-out, filter 0.05s ease-out;
         }
 
+        #splash-top-image {
+            width: 90%;
+            max-width: 520px; /* Límite para PC, un poco más grande que el juego */
+            height: auto;
+            flex-shrink: 1;
+            max-height: 35vh;
+            object-fit: contain;
+            box-sizing: border-box;
+        }
+
+        #splash-start-button {
+            cursor: pointer;
+            width: auto;
+            height: auto;
+            flex-shrink: 1;
+            max-height: 15vh;
+            max-width: min(60vw, 150px); /* Responsivo pero con límite en PC */
+            object-fit: contain;
+            z-index: 2001;
+            transition: transform 0.05s ease-out, filter 0.05s ease-out;
+        }
+
         #splash-start-button.splash-button-pressed {
             transform: scale(0.90) translateY(2px);
             filter: brightness(0.7);
@@ -90,6 +120,18 @@
             max-width: 520px; /* Límite para PC, un poco más grande que el juego */
             height: auto;
             max-height: calc(25vh + 60px);
+            object-fit: contain;
+            box-sizing: border-box;
+            padding-top: 20px;
+            padding-bottom: 20px;
+        }
+
+        #splash-bottom-image {
+            width: 100%;
+            max-width: 520px; /* Límite para PC, un poco más grande que el juego */
+            height: auto;
+            flex-shrink: 1;
+            max-height: 25vh;
             object-fit: contain;
             box-sizing: border-box;
             padding-top: 20px;
