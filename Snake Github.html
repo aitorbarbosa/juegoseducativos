@@ -48,6 +48,14 @@
         #splash-content {
             width: 100%;
             max-width: 520px;
+            height: 100%;
+            display: flex;
+            background-color: #02010a;
+            z-index: 2000;
+            display: flex;
+        #splash-content {
+            width: 100%;
+            max-width: 520px;
             max-height: 100vh;
             overflow-y: auto;
             display: flex;
@@ -60,6 +68,24 @@
             gap: 20px;
            border-radius: 12px;
            box-sizing: border-box;
+        }
+
+        #splash-top-image {
+            width: 90%;
+            max-width: 520px; /* Límite para PC, un poco más grande que el juego */
+            height: auto;
+            object-fit: contain;
+            box-sizing: border-box;
+        }
+
+        #splash-start-button {
+            cursor: pointer;
+            width: auto;
+            height: auto;
+            max-width: min(60vw, 150px); /* Responsivo pero con límite en PC */
+            object-fit: contain;
+            z-index: 2001;
+            transition: transform 0.05s ease-out, filter 0.05s ease-out;
         }
 
         #splash-top-image {
@@ -93,6 +119,17 @@
             width: 100%;
             max-width: 520px; /* Límite para PC, un poco más grande que el juego */
             height: auto;
+            max-height: calc(25vh + 60px);
+            object-fit: contain;
+            box-sizing: border-box;
+            padding-top: 20px;
+            padding-bottom: 20px;
+        }
+
+        #splash-bottom-image {
+            width: 100%;
+            max-width: 520px; /* Límite para PC, un poco más grande que el juego */
+            height: auto;
             flex-shrink: 1;
             max-height: 25vh;
             object-fit: contain;
@@ -100,7 +137,6 @@
             padding-top: 20px;
             padding-bottom: 20px;
         }
-
 
         .game-container {
             text-align: center;
