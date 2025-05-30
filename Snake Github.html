@@ -1,9 +1,9 @@
-<!DOCTYPE html>
+​<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0, minimum-scale=1.0, viewport-fit=cover">
-    <title>Snake Barbosas (Responsive)</title>
+    <title>Snake Mobile</title>
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
@@ -38,7 +38,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: #02030D;
+            background-color: #111827;
             z-index: 2000;
             display: flex;
             justify-content: center;
@@ -50,7 +50,7 @@
             max-width: 520px;
             height: 100%;
             display: flex;
-            background-color: #02030D; /* Color de fondo solicitado */
+            background-color: #02010a;
             z-index: 2000;
             display: flex;
             flex-direction: column;
@@ -58,22 +58,23 @@
             align-items: center;
             padding: 20px 0;
             gap: 20px;
+           border-radius: 12px;
+           box-sizing: border-box;
         }
 
         #splash-top-image {
-            width: 100%;
-            max-width: 600px; /* Límite para PC, un poco más grande que el juego */
+            width: 90%;
+            max-width: 520px; /* Límite para PC, un poco más grande que el juego */
             height: auto;
             object-fit: contain;
             box-sizing: border-box;
-            padding-bottom: 20px;
         }
 
         #splash-start-button {
             cursor: pointer;
             width: auto;
             height: auto;
-            max-width: min(60vw, 400px); /* Responsivo pero con límite en PC */
+            max-width: min(60vw, 150px); /* Responsivo pero con límite en PC */
             object-fit: contain;
             z-index: 2001;
             transition: transform 0.05s ease-out, filter 0.05s ease-out;
@@ -86,13 +87,13 @@
 
         #splash-bottom-image {
             width: 100%;
-            max-width: 600px; /* Límite para PC, un poco más grande que el juego */
+            max-width: 520px; /* Límite para PC, un poco más grande que el juego */
             height: auto;
             max-height: calc(25vh + 60px);
             object-fit: contain;
             box-sizing: border-box;
             padding-top: 20px;
-            padding-bottom: calc(20px + env(safe-area-inset-bottom));
+            padding-bottom: 20px;
         }
 
 
@@ -216,20 +217,21 @@
             height: 38px; 
         }
 
+        /* --- INICIO DE CSS CORREGIDO PARA #high-score-display --- */
         #high-score-display {
             display: flex;
             flex-direction: column; 
             align-items: center; 
             justify-content: center;
-            gap: 2px; /* Reducido espacio entre label y valores */
+            gap: 2px;
             width: 100%;
-            font-size: 0.85em; 
-            line-height: 1.2; /* Ajustado */
+            line-height: 1.2;
+            /* font-size: 0.85em; <- Eliminado para usar rem en hijos */
         }
         #high-score-display #hs-main-label { 
-            font-size: 0.65em; 
+            font-size: 0.75rem;  /* Cambiado a rem */
             color: #a0aec0; 
-            margin-bottom: 3px; /* Espacio debajo del label principal */
+            margin-bottom: 5px;
             display: block; 
             line-height: 1.1;
             text-align: center;
@@ -239,32 +241,31 @@
             flex-direction: row;
             align-items: baseline;
             justify-content: center;
-            gap: 3px; /* Reducido espacio entre valores */
+            gap: 2px;
             white-space: nowrap;
         }
         #high-score-display .hs-value { 
             color: #f5f5f5; 
             font-family: 'Press Start 2P', sans-serif;
-            font-size: 0.9em; /* Ligeramente más pequeño para que quepa mejor */
+            font-size: 0.65rem; /* Cambiado a rem */
         }
         #high-score-display .hs-label-unit { 
             color: #a0aec0; 
-            font-size: 0.65em; /* Igual que el label principal */
-            margin-left: 1px; 
-            margin-right: 3px; /* Espacio antes del separador */
+            font-size: 0.5rem; /* Cambiado a rem */
+            margin-left: 2px; 
+            margin-right: 4px;
         }
-         #high-score-display .hs-separator {
-            margin-left: 3px; /* Reducido */
-            margin-right: 3px; /* Reducido */
-            color: #a0aec0; /* Color más suave para el separador */
-            font-size: 0.8em;
+        #high-score-display .hs-separator {
+            margin-right: 3px;
+            color: #a0aec0;
+            font-size: 0.6rem; /* Cambiado a rem */
         }
-        #high-score-display #hs-skin-value.hs-value { /* Estilo específico para el valor del disfraz */
-            max-width: 75px; /* Limitar ancho para nombres largos */
+        #high-score-display #hs-skin-value.hs-value {
+            max-width: 120px;
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
-            display: inline-block; /* Necesario para text-overflow */
+            display: inline-block;
             vertical-align: baseline;
         }
 
@@ -684,13 +685,16 @@
 
 
         @media screen and (max-width: 600px) {
-            #high-score-display { font-size: 0.8em; gap: 2px; } /* Ajustado gap */
-            #high-score-display #hs-main-label { font-size: 0.6em; margin-bottom: 2px;}
-            #hs-values-container { gap: 3px; } /* Ajustado gap */
-            #high-score-display .hs-value { font-size: 0.85em; } /* Ajustado tamaño de valores */
-            #high-score-display .hs-label-unit { font-size: 0.6em; margin-left:1px; margin-right: 2px;}
-            #high-score-display .hs-separator { margin-left: 2px; margin-right: 2px; font-size: 0.75em;}
-            #high-score-display #hs-skin-value.hs-value { max-width: 65px; }
+            /* --- INICIO DE MEDIA QUERY CORREGIDA PARA #high-score-display --- */
+            /* Ya no necesitamos reducir el font-size base del contenedor #high-score-display */
+            
+            #high-score-display #hs-main-label { font-size: 0.7rem; }
+            #hs-values-container { gap: 3px; } 
+            #high-score-display .hs-value { font-size: 0.7rem; }
+            #high-score-display .hs-label-unit { font-size: 0.45rem; }
+            #high-score-display .hs-separator { font-size: 0.55rem; }
+            #high-score-display #hs-skin-value.hs-value { max-width: 85px; }
+            /* --- FIN DE MEDIA QUERY CORREGIDA PARA #high-score-display --- */
 
 
             #top-info-bar .info-group { min-height: 50px; padding: 6px; min-width: 70px;} 
@@ -742,13 +746,16 @@
              #info-panel-content p, #info-panel-content ul, #specific-info-content p, #specific-info-content ul { font-size: 0.8em; } 
         }
          @media screen and (max-width: 400px) { 
-            #high-score-display { font-size: 0.7em; gap: 1px; }
-            #high-score-display #hs-main-label { font-size: 0.55em; margin-bottom: 1px;}
+            /* --- INICIO DE MEDIA QUERY CORREGIDA PARA #high-score-display --- */
+            /* Tampoco necesitamos tocar el font-size del contenedor */
+
+            #high-score-display #hs-main-label { font-size: 0.6rem; margin-bottom: 2px;}
             #hs-values-container { gap: 2px; }
-            #high-score-display .hs-value { font-size: 0.75em; }
-            #high-score-display .hs-label-unit { font-size: 0.55em; margin-left:1px; margin-right: 1px;}
-            #high-score-display .hs-separator { margin-left: 1px; margin-right: 1px; font-size: 0.7em;}
-            #high-score-display #hs-skin-value.hs-value { max-width: 55px; }
+            #high-score-display .hs-value { font-size: 0.6rem; }
+            #high-score-display .hs-label-unit { font-size: 0.4rem; }
+            #high-score-display .hs-separator { font-size: 0.45rem; }
+            #high-score-display #hs-skin-value.hs-value { max-width: 70px; }
+            /* --- FIN DE MEDIA QUERY CORREGIDA PARA #high-score-display --- */
 
 
              #top-info-bar .info-label { font-size: 0.55em; }
@@ -1581,7 +1588,7 @@
                 
                 startButton.disabled = false; 
                 configButton.disabled = false; 
-                infoButton.disabled = false;    
+                infoButton.disabled = false;   
 
                 if (isLevelCompleteScreen) {
                     // Text is set by handleLevelsModeEnd
@@ -2638,7 +2645,7 @@
                         const tableBorderColor = "#4B5563";
                         const internalLineWidth = tableBorderWidth; 
 
-                        const classificationTitleText = `Clasificación (${DIFFICULTY_DISPLAY_NAMES[difficulty] || difficulty})`;
+                        const classificationTitleText = `Clasificación`;
                         let classificationTitleY = currentY; 
                         
                         const titleRowBgColor = "#1F2937"; 
@@ -2694,10 +2701,10 @@
 
                         const headerTextY = headerRowActualY + headerRowHeight / 2;
                         // AJUSTE DE POSICIONES X PARA LA TABLA DE PUNTUACIONES
-                        const rankX = tableRectX + tableRectWidth * 0.10;    // Para "Nº"
-                        const scoreX = tableRectX + tableRectWidth * 0.35;   // Para "PUNTOS"
-                        const lengthX = tableRectX + tableRectWidth * 0.60;  // Para "LONG." (ajustado)
-                        const skinX = tableRectX + tableRectWidth * 0.85;   // Para "DISFRAZ" (más espacio)
+                        const rankX = tableRectX + tableRectWidth * 0.08;    // Para "Nº"
+                        const scoreX = tableRectX + tableRectWidth * 0.27;   // Para "PUNTOS"
+                        const lengthX = tableRectX + tableRectWidth * 0.50;  // Para "LONG." (ajustado)
+                        const skinX = tableRectX + tableRectWidth * 0.79;   // Para "DISFRAZ" (más espacio)
 
                         const headerFont = `${tableHeaderFontSize}px 'Press Start 2P'`;
                         const headerColor = "#F5F5F5";
