@@ -3541,8 +3541,13 @@
             const savedAudioGeneral = localStorage.getItem('snakeGameAudioGeneral');
             if (savedAudioGeneral) audioToggleSelector.value = savedAudioGeneral;
 
-            const savedMusicVolume = localStorage.getItem('snakeGameMusicVolume');
-            if (savedMusicVolume) musicVolumeSlider.value = savedMusicVolume;
+            const savedMusicVolume = parseInt(localStorage.getItem('snakeGameMusicVolume'), 10);
+            if (Number.isFinite(savedMusicVolume) && savedMusicVolume >= 0 && savedMusicVolume <= 100) {
+                musicVolumeSlider.value = savedMusicVolume;
+            } else {
+                musicVolumeSlider.value = 50;
+            }
+            if (musicVolumeValue) musicVolumeValue.textContent = musicVolumeSlider.value;
             
             const savedGameMode = localStorage.getItem('snakeGameMode');
             if (savedGameMode && (savedGameMode === 'levels' || savedGameMode === 'freeMode')) { // Ensure only valid modes are loaded
@@ -3552,14 +3557,14 @@
             }
             
             // Levels mode specific
-            const savedCurrentWorld = localStorage.getItem('snakeCurrentWorld');
-            if (savedCurrentWorld) currentWorld = parseInt(savedCurrentWorld); else currentWorld = 1;
+            const savedCurrentWorld = parseInt(localStorage.getItem('snakeCurrentWorld'), 10);
+            currentWorld = Number.isFinite(savedCurrentWorld) && savedCurrentWorld >= 1 ? savedCurrentWorld : 1;
 
-            const savedCurrentLevelInWorld = localStorage.getItem('snakeCurrentLevelInWorld');
-            if (savedCurrentLevelInWorld) currentLevelInWorld = parseInt(savedCurrentLevelInWorld); else currentLevelInWorld = 1;
-            
-            const savedMaxUnlockedWorld = localStorage.getItem('snakeMaxUnlockedWorld');
-            if (savedMaxUnlockedWorld) maxUnlockedWorld = parseInt(savedMaxUnlockedWorld); else maxUnlockedWorld = 1;
+            const savedCurrentLevelInWorld = parseInt(localStorage.getItem('snakeCurrentLevelInWorld'), 10);
+            currentLevelInWorld = Number.isFinite(savedCurrentLevelInWorld) && savedCurrentLevelInWorld >= 1 ? savedCurrentLevelInWorld : 1;
+
+            const savedMaxUnlockedWorld = parseInt(localStorage.getItem('snakeMaxUnlockedWorld'), 10);
+            maxUnlockedWorld = Number.isFinite(savedMaxUnlockedWorld) && savedMaxUnlockedWorld >= 1 ? savedMaxUnlockedWorld : 1;
 
             const savedLevelsProgress = localStorage.getItem('snakeLevelsProgress');
             if (savedLevelsProgress) {
