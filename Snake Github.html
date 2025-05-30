@@ -1,9 +1,9 @@
-<!DOCTYPE html>
+​<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0, minimum-scale=1.0, viewport-fit=cover">
-    <title>Snake Barbosas (Responsive)</title>
+    <title>Snake Mobile</title>
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
@@ -38,60 +38,62 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: #02030D; /* Color de fondo solicitado */
-            z-index: 2000; 
-            display: flex; 
-            flex-direction: column;
-            justify-content: space-between; 
+            background-color: #111827;
+            z-index: 2000;
+            display: flex;
+            justify-content: center;
             align-items: center;
         }
 
+        #splash-content {
+            width: 100%;
+            max-width: 520px;
+            height: 100%;
+            display: flex;
+            background-color: #02010a;
+            z-index: 2000;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 0;
+            gap: 20px;
+           border-radius: 12px;
+           box-sizing: border-box;
+        }
+
         #splash-top-image {
-            position: absolute; 
-            top: 0; 
-            left: 50%; 
-            transform: translateX(-50%); 
-            width: 100%; 
-            max-width: 600px; /* Límite para PC, un poco más grande que el juego */
-            height: auto; 
-            object-fit: contain; 
-            padding-top: 20px; 
-            padding-bottom: 20px; 
-            box-sizing: border-box; 
+            width: 90%;
+            max-width: 520px; /* Límite para PC, un poco más grande que el juego */
+            height: auto;
+            object-fit: contain;
+            box-sizing: border-box;
         }
 
         #splash-start-button {
-            position: absolute; 
-            left: 50%;
-            transform: translateX(-50%); 
             cursor: pointer;
-            width: auto; 
-            height: auto; 
-            max-width: min(60vw, 400px); /* Responsivo pero con límite en PC */
-            object-fit: contain; 
-            z-index: 2001; 
-            visibility: hidden; 
-            transition: transform 0.05s ease-out, filter 0.05s ease-out; 
+            width: auto;
+            height: auto;
+            max-width: min(60vw, 150px); /* Responsivo pero con límite en PC */
+            object-fit: contain;
+            z-index: 2001;
+            transition: transform 0.05s ease-out, filter 0.05s ease-out;
         }
 
-        #splash-start-button.splash-button-pressed { 
-            transform: translateX(-50%) scale(0.90) translateY(2px);
+        #splash-start-button.splash-button-pressed {
+            transform: scale(0.90) translateY(2px);
             filter: brightness(0.7);
         }
 
         #splash-bottom-image {
-            position: absolute; 
-            bottom: 0; 
-            left: 50%; 
-            transform: translateX(-50%);
             width: 100%;
-            max-width: 600px; /* Límite para PC, un poco más grande que el juego */
-            height: auto; 
-            max-height: calc(25vh + 60px); 
-            object-fit: contain; 
-            padding-top: 30px; 
-            padding-bottom: 30px; 
-            box-sizing: border-box; 
+            max-width: 520px; /* Límite para PC, un poco más grande que el juego */
+            height: auto;
+            max-height: calc(25vh + 60px);
+            object-fit: contain;
+            box-sizing: border-box;
+            padding-top: 20px;
+            padding-bottom: 20px;
         }
 
 
@@ -215,20 +217,21 @@
             height: 38px; 
         }
 
+        /* --- INICIO DE CSS CORREGIDO PARA #high-score-display --- */
         #high-score-display {
             display: flex;
             flex-direction: column; 
             align-items: center; 
             justify-content: center;
-            gap: 2px; /* Reducido espacio entre label y valores */
+            gap: 2px;
             width: 100%;
-            font-size: 0.85em; 
-            line-height: 1.2; /* Ajustado */
+            line-height: 1.2;
+            /* font-size: 0.85em; <- Eliminado para usar rem en hijos */
         }
         #high-score-display #hs-main-label { 
-            font-size: 0.65em; 
+            font-size: 0.75rem;  /* Cambiado a rem */
             color: #a0aec0; 
-            margin-bottom: 3px; /* Espacio debajo del label principal */
+            margin-bottom: 5px;
             display: block; 
             line-height: 1.1;
             text-align: center;
@@ -238,32 +241,31 @@
             flex-direction: row;
             align-items: baseline;
             justify-content: center;
-            gap: 3px; /* Reducido espacio entre valores */
+            gap: 2px;
             white-space: nowrap;
         }
         #high-score-display .hs-value { 
             color: #f5f5f5; 
             font-family: 'Press Start 2P', sans-serif;
-            font-size: 0.9em; /* Ligeramente más pequeño para que quepa mejor */
+            font-size: 0.65rem; /* Cambiado a rem */
         }
         #high-score-display .hs-label-unit { 
             color: #a0aec0; 
-            font-size: 0.65em; /* Igual que el label principal */
-            margin-left: 1px; 
-            margin-right: 3px; /* Espacio antes del separador */
+            font-size: 0.5rem; /* Cambiado a rem */
+            margin-left: 2px; 
+            margin-right: 4px;
         }
-         #high-score-display .hs-separator {
-            margin-left: 3px; /* Reducido */
-            margin-right: 3px; /* Reducido */
-            color: #a0aec0; /* Color más suave para el separador */
-            font-size: 0.8em;
+        #high-score-display .hs-separator {
+            margin-right: 3px;
+            color: #a0aec0;
+            font-size: 0.6rem; /* Cambiado a rem */
         }
-        #high-score-display #hs-skin-value.hs-value { /* Estilo específico para el valor del disfraz */
-            max-width: 75px; /* Limitar ancho para nombres largos */
+        #high-score-display #hs-skin-value.hs-value {
+            max-width: 120px;
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
-            display: inline-block; /* Necesario para text-overflow */
+            display: inline-block;
             vertical-align: baseline;
         }
 
@@ -683,13 +685,16 @@
 
 
         @media screen and (max-width: 600px) {
-            #high-score-display { font-size: 0.8em; gap: 2px; } /* Ajustado gap */
-            #high-score-display #hs-main-label { font-size: 0.6em; margin-bottom: 2px;}
-            #hs-values-container { gap: 3px; } /* Ajustado gap */
-            #high-score-display .hs-value { font-size: 0.85em; } /* Ajustado tamaño de valores */
-            #high-score-display .hs-label-unit { font-size: 0.6em; margin-left:1px; margin-right: 2px;}
-            #high-score-display .hs-separator { margin-left: 2px; margin-right: 2px; font-size: 0.75em;}
-            #high-score-display #hs-skin-value.hs-value { max-width: 65px; }
+            /* --- INICIO DE MEDIA QUERY CORREGIDA PARA #high-score-display --- */
+            /* Ya no necesitamos reducir el font-size base del contenedor #high-score-display */
+            
+            #high-score-display #hs-main-label { font-size: 0.7rem; }
+            #hs-values-container { gap: 3px; } 
+            #high-score-display .hs-value { font-size: 0.7rem; }
+            #high-score-display .hs-label-unit { font-size: 0.45rem; }
+            #high-score-display .hs-separator { font-size: 0.55rem; }
+            #high-score-display #hs-skin-value.hs-value { max-width: 85px; }
+            /* --- FIN DE MEDIA QUERY CORREGIDA PARA #high-score-display --- */
 
 
             #top-info-bar .info-group { min-height: 50px; padding: 6px; min-width: 70px;} 
@@ -741,13 +746,16 @@
              #info-panel-content p, #info-panel-content ul, #specific-info-content p, #specific-info-content ul { font-size: 0.8em; } 
         }
          @media screen and (max-width: 400px) { 
-            #high-score-display { font-size: 0.7em; gap: 1px; }
-            #high-score-display #hs-main-label { font-size: 0.55em; margin-bottom: 1px;}
+            /* --- INICIO DE MEDIA QUERY CORREGIDA PARA #high-score-display --- */
+            /* Tampoco necesitamos tocar el font-size del contenedor */
+
+            #high-score-display #hs-main-label { font-size: 0.6rem; margin-bottom: 2px;}
             #hs-values-container { gap: 2px; }
-            #high-score-display .hs-value { font-size: 0.75em; }
-            #high-score-display .hs-label-unit { font-size: 0.55em; margin-left:1px; margin-right: 1px;}
-            #high-score-display .hs-separator { margin-left: 1px; margin-right: 1px; font-size: 0.7em;}
-            #high-score-display #hs-skin-value.hs-value { max-width: 55px; }
+            #high-score-display .hs-value { font-size: 0.6rem; }
+            #high-score-display .hs-label-unit { font-size: 0.4rem; }
+            #high-score-display .hs-separator { font-size: 0.45rem; }
+            #high-score-display #hs-skin-value.hs-value { max-width: 70px; }
+            /* --- FIN DE MEDIA QUERY CORREGIDA PARA #high-score-display --- */
 
 
              #top-info-bar .info-label { font-size: 0.55em; }
@@ -789,9 +797,11 @@
 </head>
 <body>
     <div id="splash-screen">
-        <img id="splash-top-image" src="https://i.imgur.com/tWVwXbv.png" alt="Logotipo superior del splash" onerror="this.src='https://placehold.co/600x200/02030D/FFFFFF?text=Splash+Top+Error'; console.error('Error loading splash-top-image');">
-        <img id="splash-start-button" src="https://i.imgur.com/HqNpn3w.png" alt="Botón de iniciar juego" onerror="this.src='https://placehold.co/300x100/02030D/FFFFFF?text=Start+Error'; console.error('Error loading splash-start-button');">
-        <img id="splash-bottom-image" src="https://i.imgur.com/YJ1xHZO.png" alt="Imagen inferior del splash" onerror="this.src='https://placehold.co/600x150/02030D/FFFFFF?text=Splash+Bottom+Error'; console.error('Error loading splash-bottom-image');">
+        <div id="splash-content">
+            <img id="splash-top-image" src="https://i.imgur.com/tWVwXbv.png" alt="Logotipo superior del splash" onerror="this.src='https://placehold.co/600x200/02030D/FFFFFF?text=Splash+Top+Error'; console.error('Error loading splash-top-image');">
+            <img id="splash-start-button" src="https://i.imgur.com/HqNpn3w.png" alt="Botón de iniciar juego" onerror="this.src='https://placehold.co/300x100/02030D/FFFFFF?text=Start+Error'; console.error('Error loading splash-start-button');">
+            <img id="splash-bottom-image" src="https://i.imgur.com/YJ1xHZO.png" alt="Imagen inferior del splash" onerror="this.src='https://placehold.co/600x150/02030D/FFFFFF?text=Splash+Bottom+Error'; console.error('Error loading splash-bottom-image');">
+        </div>
     </div>
 
     <div class="game-container hidden">
@@ -1578,7 +1588,7 @@
                 
                 startButton.disabled = false; 
                 configButton.disabled = false; 
-                infoButton.disabled = false;    
+                infoButton.disabled = false;   
 
                 if (isLevelCompleteScreen) {
                     // Text is set by handleLevelsModeEnd
@@ -2635,7 +2645,7 @@
                         const tableBorderColor = "#4B5563";
                         const internalLineWidth = tableBorderWidth; 
 
-                        const classificationTitleText = `Clasificación (${DIFFICULTY_DISPLAY_NAMES[difficulty] || difficulty})`;
+                        const classificationTitleText = `Clasificación`;
                         let classificationTitleY = currentY; 
                         
                         const titleRowBgColor = "#1F2937"; 
@@ -2691,10 +2701,10 @@
 
                         const headerTextY = headerRowActualY + headerRowHeight / 2;
                         // AJUSTE DE POSICIONES X PARA LA TABLA DE PUNTUACIONES
-                        const rankX = tableRectX + tableRectWidth * 0.10;    // Para "Nº"
-                        const scoreX = tableRectX + tableRectWidth * 0.35;   // Para "PUNTOS"
-                        const lengthX = tableRectX + tableRectWidth * 0.60;  // Para "LONG." (ajustado)
-                        const skinX = tableRectX + tableRectWidth * 0.85;   // Para "DISFRAZ" (más espacio)
+                        const rankX = tableRectX + tableRectWidth * 0.08;    // Para "Nº"
+                        const scoreX = tableRectX + tableRectWidth * 0.27;   // Para "PUNTOS"
+                        const lengthX = tableRectX + tableRectWidth * 0.50;  // Para "LONG." (ajustado)
+                        const skinX = tableRectX + tableRectWidth * 0.79;   // Para "DISFRAZ" (más espacio)
 
                         const headerFont = `${tableHeaderFontSize}px 'Press Start 2P'`;
                         const headerColor = "#F5F5F5";
@@ -3253,7 +3263,7 @@
         function changeDirection(newDirectionCmd) { // Renamed parameter for clarity
             if (gameOver) return; 
             // Solo actualizar nextDirection, no direction directamente
-            // This keeps the logic from the previous version of snake_game_v5_1
+            // nextDirection queues turns so direction updates only once per frame
             switch (newDirectionCmd) {
                 case "up":    if (direction !== "down")  nextDirection = "up"; break;
                 case "down":  if (direction !== "up")    nextDirection = "down"; break;
@@ -3541,8 +3551,13 @@
             const savedAudioGeneral = localStorage.getItem('snakeGameAudioGeneral');
             if (savedAudioGeneral) audioToggleSelector.value = savedAudioGeneral;
 
-            const savedMusicVolume = localStorage.getItem('snakeGameMusicVolume');
-            if (savedMusicVolume) musicVolumeSlider.value = savedMusicVolume;
+            const savedMusicVolume = parseInt(localStorage.getItem('snakeGameMusicVolume'), 10);
+            if (Number.isFinite(savedMusicVolume) && savedMusicVolume >= 0 && savedMusicVolume <= 100) {
+                musicVolumeSlider.value = savedMusicVolume;
+            } else {
+                musicVolumeSlider.value = 50;
+            }
+            if (musicVolumeValue) musicVolumeValue.textContent = musicVolumeSlider.value;
             
             const savedGameMode = localStorage.getItem('snakeGameMode');
             if (savedGameMode && (savedGameMode === 'levels' || savedGameMode === 'freeMode')) { // Ensure only valid modes are loaded
@@ -3552,14 +3567,14 @@
             }
             
             // Levels mode specific
-            const savedCurrentWorld = localStorage.getItem('snakeCurrentWorld');
-            if (savedCurrentWorld) currentWorld = parseInt(savedCurrentWorld); else currentWorld = 1;
+            const savedCurrentWorld = parseInt(localStorage.getItem('snakeCurrentWorld'), 10);
+            currentWorld = Number.isFinite(savedCurrentWorld) && savedCurrentWorld >= 1 ? savedCurrentWorld : 1;
 
-            const savedCurrentLevelInWorld = localStorage.getItem('snakeCurrentLevelInWorld');
-            if (savedCurrentLevelInWorld) currentLevelInWorld = parseInt(savedCurrentLevelInWorld); else currentLevelInWorld = 1;
-            
-            const savedMaxUnlockedWorld = localStorage.getItem('snakeMaxUnlockedWorld');
-            if (savedMaxUnlockedWorld) maxUnlockedWorld = parseInt(savedMaxUnlockedWorld); else maxUnlockedWorld = 1;
+            const savedCurrentLevelInWorld = parseInt(localStorage.getItem('snakeCurrentLevelInWorld'), 10);
+            currentLevelInWorld = Number.isFinite(savedCurrentLevelInWorld) && savedCurrentLevelInWorld >= 1 ? savedCurrentLevelInWorld : 1;
+
+            const savedMaxUnlockedWorld = parseInt(localStorage.getItem('snakeMaxUnlockedWorld'), 10);
+            maxUnlockedWorld = Number.isFinite(savedMaxUnlockedWorld) && savedMaxUnlockedWorld >= 1 ? savedMaxUnlockedWorld : 1;
 
             const savedLevelsProgress = localStorage.getItem('snakeLevelsProgress');
             if (savedLevelsProgress) {
@@ -3708,7 +3723,6 @@
             const splashStartButtonEl = document.getElementById('splash-start-button');
             const splashTopImageEl = document.getElementById('splash-top-image');
             const splashBottomImageEl = document.getElementById('splash-bottom-image');
-            let splashResizeListenerAdded = false; // Moved declaration earlier
 
             // Initialize synthSplashStart (Tone.Player) here
             if (typeof Tone !== 'undefined') {
@@ -3722,90 +3736,6 @@
                 // ensureAudioContextRunning (on first click) will handle it.
             }
 
-            let loadedCount = 0;
-            const imagesToLoad = [splashTopImageEl, splashBottomImageEl, splashStartButtonEl].filter(img => img);
-
-            function checkAllLoaded() {
-                if (loadedCount === imagesToLoad.length) {
-                    positionSplashElements();
-                    if (!splashResizeListenerAdded) { 
-                        window.addEventListener('resize', positionSplashElements);
-                        splashResizeListenerAdded = true;
-                    }
-                }
-            }
-            
-            function positionSplashElements() {
-                if (!splashTopImageEl || !splashBottomImageEl || !splashStartButtonEl) {
-                     console.warn("Faltan elementos del splash para posicionar.");
-                    return;
-                }
-                
-                if (splashTopImageEl.offsetHeight === 0 || splashBottomImageEl.offsetHeight === 0) {
-                    console.warn("Dimensiones de imágenes del splash aún no disponibles, reintentando en breve.");
-                    setTimeout(positionSplashElements, 100); 
-                    return;
-                }
-
-                const topImgRect = splashTopImageEl.getBoundingClientRect();
-                const bottomImgRect = splashBottomImageEl.getBoundingClientRect();
-                const PADDING_BELOW_BUTTON = 30; 
-                const topImageBottomEdgeViewport = topImgRect.bottom; 
-                const bottomImageTopEdgeViewport = bottomImgRect.top;  
-                let buttonTopPosition = topImageBottomEdgeViewport; 
-                let calculatedButtonHeight = bottomImageTopEdgeViewport - PADDING_BELOW_BUTTON - buttonTopPosition;
-                
-                if (calculatedButtonHeight < 20) { 
-                    calculatedButtonHeight = Math.max(20, splashStartButtonEl.naturalHeight || 50); // Use naturalHeight or a fallback
-                    const totalSpace = bottomImageTopEdgeViewport - topImageBottomEdgeViewport;
-                    buttonTopPosition = topImageBottomEdgeViewport + Math.max(0, (totalSpace - PADDING_BELOW_BUTTON - calculatedButtonHeight) / 2);
-                }
-                splashStartButtonEl.style.top = buttonTopPosition + 'px';
-                splashStartButtonEl.style.height = calculatedButtonHeight + 'px';
-                splashStartButtonEl.style.visibility = 'visible'; 
-            }
-
-            imagesToLoad.forEach(img => {
-                if (img.complete && img.naturalHeight !== 0) { 
-                    loadedCount++;
-                } else {
-                    img.onload = () => {
-                        loadedCount++;
-                        checkAllLoaded();
-                    };
-                    img.onerror = () => { 
-                        loadedCount++;
-                        console.error("Error cargando imagen del splash: ", img.src);
-                        checkAllLoaded(); 
-                    };
-                }
-            });
-
-            if (loadedCount === imagesToLoad.length && imagesToLoad.length > 0) { 
-                setTimeout(positionSplashElements, 50); // Give a slight delay for rendering
-                 if (!splashResizeListenerAdded) {
-                    window.addEventListener('resize', positionSplashElements);
-                    splashResizeListenerAdded = true;
-                }
-            } else if (imagesToLoad.length === 0) {
-                 console.warn("No se encontraron imágenes del splash para posicionar.");
-                 if (splashStartButtonEl) splashStartButtonEl.style.visibility = 'visible'; 
-            }
-            
-            // Fallback positioning if images load too slow or fail, but ensure button is visible.
-            setTimeout(() => { 
-                if (splashStartButtonEl && splashStartButtonEl.style.top === '') { 
-                    console.warn("Fallback: Posicionando elementos del splash por timeout (final).");
-                    positionSplashElements();
-                    if (!splashResizeListenerAdded) {
-                        window.addEventListener('resize', positionSplashElements);
-                        splashResizeListenerAdded = true;
-                    }
-                }
-                 if (splashStartButtonEl && splashStartButtonEl.style.visibility === 'hidden') {
-                    splashStartButtonEl.style.visibility = 'visible'; 
-                }
-            }, 1500); // Increased timeout slightly
 
 
             if (splashStartButtonEl) {
