@@ -467,7 +467,7 @@
         }
 
 
-        #difficultySelector, #worldsSelector, #audioToggleSelector, #skinSelector, #gameModeSelector { 
+        #difficultySelector, #worldsSelector, #audioToggleSelector, #skinSelector, #gameModeSelector, #foodSelector {
             padding: 4px 6px; 
             font-size: 0.8em; 
             border: none; 
@@ -485,14 +485,14 @@
             margin-top: 4px; 
         }
         
-        #difficultySelector option, #worldsSelector option, #audioToggleSelector option, #skinSelector option, #gameModeSelector option { 
+        #difficultySelector option, #worldsSelector option, #audioToggleSelector option, #skinSelector option, #gameModeSelector option, #foodSelector option {
             background-color: #374151;
             color: #f5f5f5;
             font-family: 'Press Start 2P', sans-serif;
             text-align: left; 
         }
         
-        #difficultySelector, #worldsSelector, #audioToggleSelector, #skinSelector, #gameModeSelector {
+        #difficultySelector, #worldsSelector, #audioToggleSelector, #skinSelector, #gameModeSelector, #foodSelector {
             text-align-last: left;
         }
         select option {
@@ -500,11 +500,11 @@
         }
 
 
-        #difficultySelector:focus, #worldsSelector:focus, #audioToggleSelector:focus, #skinSelector:focus, #gameModeSelector:focus { 
+        #difficultySelector:focus, #worldsSelector:focus, #audioToggleSelector:focus, #skinSelector:focus, #gameModeSelector:focus, #foodSelector:focus {
             outline: 1px solid #6ee7b7; 
             box-shadow: none; 
         }
-        #difficultySelector:disabled, #worldsSelector:disabled, #audioToggleSelector:disabled, #skinSelector:disabled, #gameModeSelector:disabled, #musicVolumeSlider:disabled { 
+        #difficultySelector:disabled, #worldsSelector:disabled, #audioToggleSelector:disabled, #skinSelector:disabled, #gameModeSelector:disabled, #foodSelector:disabled, #musicVolumeSlider:disabled {
             opacity: 0.7;
             cursor: not-allowed;
         }
@@ -521,7 +521,8 @@
         .control-group.interactive-mode:hover #audioToggleSelector,
         .control-group.interactive-mode:hover #skinSelector,
         .control-group.interactive-mode:hover #gameModeSelector,
-        .control-group.interactive-mode:hover #musicVolumeSlider { 
+        .control-group.interactive-mode:hover #foodSelector,
+        .control-group.interactive-mode:hover #musicVolumeSlider {
             cursor: pointer;
         }
         
@@ -921,24 +922,41 @@
                     <select id="worldsSelector" class="hidden">
                     </select>
                 </div>
-                 <div class="control-group" id="skin-control-group">
+                <div class="control-group" id="skin-control-group">
                     <div class="control-label-icon-row">
-                        <label class="control-label" for="skinSelector">Disfraz:</label>
-                        <button class="setting-info-button" data-setting="skin" aria-label="Información sobre disfraces">
+                        <label class="control-label" for="skinSelector">Jugador:</label>
+                        <button class="setting-info-button" data-setting="skin" aria-label="Información sobre jugadores">
                             <svg class="setting-info-icon" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" /></svg>
                         </button>
                     </div>
                     <select id="skinSelector">
-                        <option value="clasico" selected>Clásico</option> 
-                        <option value="rubiSnake">RubiSnake</option> 
+                        <option value="clasico" selected>Clásico</option>
+                        <option value="rubiSnake">RubiSnake</option>
                         <option value="aitorSnake">AitorSnake</option>
                         <option value="noemiSnake">NoemiSnake</option>
                         <option value="raquelSnake">RaquelSnake</option>
-                        <option value="almuSnake">AlmuSnake</option> 
+                        <option value="almuSnake">AlmuSnake</option>
                         <option value="mimiSnake">MimiSnake</option>
                     </select>
                 </div>
-                <div class="control-group" id="audio-control-group"> 
+                <div class="control-group" id="food-control-group">
+                    <div class="control-label-icon-row">
+                        <label class="control-label" for="foodSelector">Comestible:</label>
+                        <button class="setting-info-button" data-setting="food" aria-label="Información sobre comestibles">
+                            <svg class="setting-info-icon" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" /></svg>
+                        </button>
+                    </div>
+                    <select id="foodSelector">
+                        <option value="clasico" selected>Clásico</option>
+                        <option value="rubiSnake">RubiSnake</option>
+                        <option value="aitorSnake">AitorSnake</option>
+                        <option value="noemiSnake">NoemiSnake</option>
+                        <option value="raquelSnake">RaquelSnake</option>
+                        <option value="almuSnake">AlmuSnake</option>
+                        <option value="mimiSnake">MimiSnake</option>
+                    </select>
+                </div>
+                <div class="control-group" id="audio-control-group">
                     <div class="control-label-icon-row">
                         <label class="control-label" for="audioToggleSelector">Audio General:</label>
                         <button class="setting-info-button" data-setting="audioGeneral" aria-label="Información sobre audio general">
@@ -1074,11 +1092,13 @@
         const worldsSelector = document.getElementById("worldsSelector"); 
         const difficultyLabel = document.getElementById("difficulty-label"); 
         const audioToggleSelector = document.getElementById("audioToggleSelector"); 
-        const skinSelector = document.getElementById("skinSelector"); 
+        const skinSelector = document.getElementById("skinSelector");
+        const foodSelector = document.getElementById("foodSelector");
         const gameModeSelector = document.getElementById("gameModeSelector");
-        const difficultyControlGroup = document.getElementById("difficulty-control-group"); 
-        const audioControlGroup = document.getElementById("audio-control-group"); 
-        const skinControlGroup = document.getElementById("skin-control-group"); 
+        const difficultyControlGroup = document.getElementById("difficulty-control-group");
+        const audioControlGroup = document.getElementById("audio-control-group");
+        const skinControlGroup = document.getElementById("skin-control-group");
+        const foodControlGroup = document.getElementById("food-control-group");
         const gameModeControlGroup = document.getElementById("game-mode-control-group");
         const musicVolumeSlider = document.getElementById("musicVolumeSlider");
         const musicVolumeValue = document.getElementById("musicVolumeValue");
@@ -1194,8 +1214,18 @@
             difficult: "Difícil"
         };
 
-        // Mapping para nombres de disfraces en el ranking
+        // Mapping para nombres de jugadores en el ranking
         const SKIN_DISPLAY_NAMES = {
+            clasico: "Clásico",
+            rubiSnake: "RubiSnake",
+            aitorSnake: "AitorSnake",
+            noemiSnake: "NoemiSnake",
+            raquelSnake: "RaquelSnake",
+            almuSnake: "AlmuSnake",
+            mimiSnake: "MimiSnake"
+        };
+
+        const FOOD_DISPLAY_NAMES = {
             clasico: "Clásico",
             rubiSnake: "RubiSnake",
             aitorSnake: "AitorSnake",
@@ -1241,53 +1271,43 @@
                     upDown: classicSnakeHeadDownImg, 
                     left: classicSnakeHeadLeftImg   
                 }, 
-                foodAsset: classicFoodImg, 
-                snakeHeadScale: 2.0, 
-                foodScale: 1.5,
+                snakeHeadScale: 2.0,
                 bodyTintColor: '#A8F031',
-                bodyStrokeColor: adjustColor('#A8F031', 0.30), 
+                bodyStrokeColor: adjustColor('#A8F031', 0.30),
             },
             rubiSnake: {
                 snakeHeadAsset: { 
                     upDown: rubiSnakeHeadUpDownImg, 
                     left: rubiSnakeHeadLeftImg, 
                 },
-                foodAsset: rubiSnakeFoodImg,
-                snakeHeadScale: 2.0, 
-                foodScale: 1.5,
+                snakeHeadScale: 2.0,
                 bodyTintColor: '#E74C3C',
-                bodyStrokeColor: adjustColor('#E74C3C', 0.30), 
+                bodyStrokeColor: adjustColor('#E74C3C', 0.30),
             },
             aitorSnake: { 
                 snakeHeadAsset: {
                     upDown: aitorSnakeHeadUpDownImg, 
                     left: aitorSnakeHeadLeftImg,
                 },
-                foodAsset: aitorSnakeFoodImg,
-                snakeHeadScale: 2.0, 
-                foodScale: 1.5,
-                bodyTintColor: '#772CE8', 
-                bodyStrokeColor: adjustColor('#772CE8', 0.30), 
+                snakeHeadScale: 2.0,
+                bodyTintColor: '#772CE8',
+                bodyStrokeColor: adjustColor('#772CE8', 0.30),
             },
             noemiSnake: { 
                 snakeHeadAsset: {
                     upDown: noemiSnakeHeadUpDownImg, 
                     left: noemiSnakeHeadLeftImg,
                 },
-                foodAsset: noemiSnakeFoodImg,
-                snakeHeadScale: 2.0, 
-                foodScale: 1.5,
-                bodyTintColor: '#FFC0EB', 
-                bodyStrokeColor: adjustColor('#FFC0EB', 0.30), 
+                snakeHeadScale: 2.0,
+                bodyTintColor: '#FFC0EB',
+                bodyStrokeColor: adjustColor('#FFC0EB', 0.30),
             },
             raquelSnake: {
                 snakeHeadAsset: {
                     upDown: raquelSnakeHeadUpDownImg,
                     left: raquelSnakeHeadLeftImg,
                 },
-                foodAsset: raquelSnakeFoodImg,
                 snakeHeadScale: 2.0,
-                foodScale: 1.5,
                 bodyTintColor: '#FCE9BC',
                 bodyStrokeColor: adjustColor('#FCE9BC', 0.30),
             },
@@ -1296,9 +1316,7 @@
                     upDown: almuSnakeHeadUpDownImg,
                     left: almuSnakeHeadLeftImg,
                 },
-                foodAsset: almuSnakeFoodImg,
                 snakeHeadScale: 2.0,
-                foodScale: 1.5,
                 bodyTintColor: '#C96B20',
                 bodyStrokeColor: adjustColor('#C96B20', 0.30),
             },
@@ -1307,14 +1325,22 @@
                     upDown: mimiSnakeHeadUpDownImg,
                     left: mimiSnakeHeadLeftImg,
                 },
-                foodAsset: mimiSnakeFoodImg,
                 snakeHeadScale: 2.0,
-                foodScale: 1.5,
                 bodyTintColor: '#FFFFFF',
                 bodyStrokeColor: adjustColor('#FFFFFF', 0.30),
             }
         };
-        let currentSkin = 'clasico'; 
+        let currentSkin = 'clasico';
+        const FOODS = {
+            clasico: { foodAsset: classicFoodImg, foodScale: 1.5 },
+            rubiSnake: { foodAsset: rubiSnakeFoodImg, foodScale: 1.5 },
+            aitorSnake: { foodAsset: aitorSnakeFoodImg, foodScale: 1.5 },
+            noemiSnake: { foodAsset: noemiSnakeFoodImg, foodScale: 1.5 },
+            raquelSnake: { foodAsset: raquelSnakeFoodImg, foodScale: 1.5 },
+            almuSnake: { foodAsset: almuSnakeFoodImg, foodScale: 1.5 },
+            mimiSnake: { foodAsset: mimiSnakeFoodImg, foodScale: 1.5 }
+        };
+        let currentFood = 'clasico';
         // --- Fin Configuración de Disfraces ---
 
 
@@ -1499,7 +1525,7 @@
 
         function applySkin(skinName) {
             currentSkin = skinName;
-            console.log(`Disfraz aplicado: ${currentSkin}`); 
+            console.log(`Jugador seleccionado: ${currentSkin}`);
 
             if (gameOver) {
                 if (ctx && canvasEl) {
@@ -1708,6 +1734,8 @@
                     skinSelector.disabled = false;
                     gameModeControlGroup.classList.add("interactive-mode");
                     skinControlGroup.classList.add("interactive-mode");
+                    foodSelector.disabled = false;
+                    foodControlGroup.classList.add("interactive-mode");
                     if (gameMode === 'levels') worldsSelector.disabled = false; else difficultySelector.disabled = false;
                     difficultyControlGroup.classList.add("interactive-mode");
                     if (typeof Tone !== 'undefined') {
@@ -1901,8 +1929,12 @@
                 text_free: "<h4> (Solo en Modo Libre)</h4><p>Ajusta el nivel de desafío para que se adapte a tu habilidad y preferencias. La dificultad influye principalmente en la velocidad de la serpiente y el tiempo de desaparición de los comestibles.</p><h4>Fácil</h4><p>La opción perfecta si estás empezando o si prefieres una experiencia de juego más relajada. La serpiente se mueve a una velocidad considerablemente reducida y los comestibles tardan más tiempo en desaparecer, dándote más tiempo para reaccionar y planificar tus movimientos.</p><h4>Normal</h4><p>Un reto equilibrado, recomendado para la mayoría de los jugadores que ya conocen la mecánica básica de Snake. La velocidad de la serpiente es moderada al igual que el tiempo de desaparición de los comestibles, exigiendo buena anticipación y reflejos para conseguir puntuaciones altas.</p><h4>Difícil</h4><p>¡Prepárate para un desafío intenso! En esta dificultad, la serpiente se mueve muy rápido desde el inicio y los comestibles desaparecen mucho más rápido, poniendo a prueba tu concentración y destreza al máximo.</p>"
             },
             skin: {
-                title: "Disfraz",
-                text: "<p>Personaliza tu serpiente, juega con el look que más te guste y convierte tu experiencia en algo único y divertido</p><h4>Selección de Disfraz</h4><p>Elige entre una variedad de estilos visuales disponibles en el selector. Cada disfraz ofrece una estética diferente para tu reptil protagonista, desde aspectos clásicos hasta diseños más originales y temáticos.</p><p>Algunos disfraces pueden estar disponibles desde el inicio, mientras que otros podrían requerir ser desbloqueados mediante logros en el juego o estar disponibles en futuras actualizaciones.</p><p>Es importante destacar que la elección del disfraz es <strong>puramente estética</strong>. Cambiar la apariencia de tu serpiente no afecta de ninguna manera su velocidad, longitud, la forma en que come, ni las puntuaciones que obtienes.</p><p>¡Así que siéntete libre de experimentar y elegir el que más te guste sin preocuparte por ventajas o desventajas en el juego!</p>"
+                title: "Jugador",
+                text: "<p>Selecciona al personaje con el que quieres jugar. Cada jugador ofrece un aspecto diferente para tu serpiente, pero no afecta a la jugabilidad ni a la puntuación.</p>"
+            },
+            food: {
+                title: "Comestible",
+                text: "<p>Elige el objeto que tu serpiente deberá comer durante la partida. Cambiar el comestible solo modifica su apariencia y no altera la mecánica del juego.</p>"
             },
             audioGeneral: {
                 title: "Audio General",
@@ -1953,6 +1985,8 @@
                 skinSelector.disabled = false;
                 gameModeControlGroup.classList.add("interactive-mode");
                 skinControlGroup.classList.add("interactive-mode");
+                foodSelector.disabled = false;
+                foodControlGroup.classList.add("interactive-mode");
 
                 if (gameMode === 'levels') {
                     worldsSelector.disabled = false;
@@ -1995,14 +2029,14 @@
 
         function drawFoodItem(x, y) {
             if (!ctx) return; 
-            const skinData = SKINS[currentSkin];
-            const foodImg = skinData.foodAsset;
+            const foodData = FOODS[currentFood];
+            const foodImg = foodData.foodAsset;
             
             let foodVisualTopY;
             let foodVisualHeight;
 
             if (foodImg && foodImg.complete && foodImg.naturalHeight !== 0) {
-                const drawSize = GRID_SIZE * skinData.foodScale; 
+                const drawSize = GRID_SIZE * foodData.foodScale;
                 const offset = (drawSize - GRID_SIZE) / 2;
                 foodVisualTopY = y * GRID_SIZE - offset;
                 foodVisualHeight = drawSize;
@@ -2020,7 +2054,7 @@
 
             if (foodIsVisible && foodTimeRemaining > 0) {
                 if (foodImg && foodImg.complete && foodImg.naturalHeight !== 0) {
-                    const drawSize = GRID_SIZE * skinData.foodScale;
+                    const drawSize = GRID_SIZE * foodData.foodScale;
                     const offset = (drawSize - GRID_SIZE) / 2;
                     ctx.drawImage(foodImg, x * GRID_SIZE - offset, y * GRID_SIZE - offset, drawSize, drawSize);
                 } else {
@@ -2328,6 +2362,8 @@
             skinSelector.disabled = false;
             gameModeControlGroup.classList.add("interactive-mode");
             skinControlGroup.classList.add("interactive-mode");
+            foodControlGroup.classList.add("interactive-mode");
+            foodSelector.disabled = false;
 
             if (gameMode === 'levels') {
                 worldsSelector.disabled = false; 
@@ -2746,7 +2782,7 @@
                         const rankX = tableRectX + tableRectWidth * 0.08;    // Para "Nº"
                         const scoreX = tableRectX + tableRectWidth * 0.27;   // Para "PUNTOS"
                         const lengthX = tableRectX + tableRectWidth * 0.50;  // Para "LONG." (ajustado)
-                        const skinX = tableRectX + tableRectWidth * 0.79;   // Para "DISFRAZ" (más espacio)
+                        const skinX = tableRectX + tableRectWidth * 0.79;   // Para "JUGADOR" (más espacio)
 
                         const headerFont = `${tableHeaderFontSize}px 'Press Start 2P'`;
                         const headerColor = "#F5F5F5";
@@ -2758,7 +2794,7 @@
                         ctx.fillText("Nº", rankX, headerTextY);
                         ctx.fillText("PUNTOS", scoreX, headerTextY);
                         ctx.fillText("LONG.", lengthX, headerTextY);
-                        ctx.fillText("DISFRAZ", skinX, headerTextY); // Usar el texto "DISFRAZ"
+                        ctx.fillText("JUGADOR", skinX, headerTextY); // Usar el texto "JUGADOR"
                         currentDrawingYForTable = headerRowActualY + headerRowHeight;
 
                         const highScores = loadHighScores(difficulty);
@@ -2810,7 +2846,7 @@
                                 ctx.fillText(`${i + 1}.`, rankX, rowTextY);
                                 ctx.fillText(`${entry.score}`, scoreX, rowTextY);
                                 ctx.fillText(`${entry.length}`, lengthX, rowTextY);
-                                // USAR SKIN_DISPLAY_NAMES para mostrar el nombre del disfraz
+                                // USAR SKIN_DISPLAY_NAMES para mostrar el nombre del jugador
                                 const skinDisplayName = SKIN_DISPLAY_NAMES[entry.skin] || entry.skin || '-';
                                 ctx.fillText(skinDisplayName, skinX, rowTextY);
                             } else {
@@ -3233,7 +3269,8 @@
                  snakeSpeed = DIFFICULTY_SETTINGS[difficultySelector.value].speed;
             }
 
-            applySkin(skinSelector.value); 
+            applySkin(skinSelector.value);
+            currentFood = foodSelector.value;
             
             resizeGameElements(); 
             if (tileCountX <= 0 || tileCountY <= 0) { 
@@ -3292,12 +3329,14 @@
             difficultySelector.disabled = true;
             worldsSelector.disabled = true;
             audioToggleSelector.disabled = true;
-            skinSelector.disabled = true; 
+            skinSelector.disabled = true;
+            foodSelector.disabled = true;
             musicVolumeSlider.disabled = true;
             gameModeControlGroup.classList.remove("interactive-mode");
-            difficultyControlGroup.classList.remove("interactive-mode"); 
+            difficultyControlGroup.classList.remove("interactive-mode");
             audioControlGroup.classList.remove("interactive-mode");
             skinControlGroup.classList.remove("interactive-mode");
+            foodControlGroup.classList.remove("interactive-mode");
             musicVolumeControlGroup.classList.remove("interactive-mode");
             draw(); 
         }
@@ -3409,9 +3448,15 @@
         });
 
 
-        skinSelector.addEventListener('change', function() { 
-            applySkin(this.value);
+skinSelector.addEventListener('change', function() {
+    applySkin(this.value);
+    saveGameSettings();
+});
+
+        foodSelector.addEventListener('change', function() {
+            currentFood = this.value;
             saveGameSettings();
+            if (!gameIntervalId) draw();
         });
 
         difficultySelector.addEventListener('change', function() {
@@ -3572,6 +3617,7 @@
         function saveGameSettings() {
             localStorage.setItem('snakeGameDifficulty', difficultySelector.value);
             localStorage.setItem('snakeGameSkin', skinSelector.value);
+            localStorage.setItem('snakeGameFood', foodSelector.value);
             localStorage.setItem('snakeGameAudioGeneral', audioToggleSelector.value);
             localStorage.setItem('snakeGameMusicVolume', musicVolumeSlider.value);
             localStorage.setItem('snakeGameMode', gameModeSelector.value);
@@ -3589,6 +3635,9 @@
 
             const savedSkin = localStorage.getItem('snakeGameSkin');
             if (savedSkin) skinSelector.value = savedSkin;
+
+            const savedFood = localStorage.getItem('snakeGameFood');
+            if (savedFood) foodSelector.value = savedFood;
             
             const savedAudioGeneral = localStorage.getItem('snakeGameAudioGeneral');
             if (savedAudioGeneral) audioToggleSelector.value = savedAudioGeneral;
@@ -3653,7 +3702,8 @@
 
             difficulty = difficultySelector.value;
             snakeSpeed = DIFFICULTY_SETTINGS[difficulty].speed;
-            currentSkin = skinSelector.value; 
+            currentSkin = skinSelector.value;
+            currentFood = foodSelector.value;
             
             isMusicEnabled = (audioToggleSelector.value === 'all');
             areSfxEnabled = (audioToggleSelector.value === 'all' || audioToggleSelector.value === 'sfx_only');
