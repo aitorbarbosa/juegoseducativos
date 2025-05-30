@@ -1,0 +1,3863 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0, minimum-scale=1.0, viewport-fit=cover">
+    <title>Snake Barbosas (Responsive)</title>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
+    <style>
+        /* Estilos base del cuerpo y contenedor del juego */
+        html {
+            height: 100%;
+            overflow: hidden; 
+        }
+        body {
+            height: 100%; 
+            font-family: 'Press Start 2P', sans-serif;
+            margin: 0;
+            display: flex;
+            justify-content: center; 
+            align-items: center;   
+            background-color: #111827; 
+            color: #f5f5f5; 
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            overflow: hidden; 
+            touch-action: none; 
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        #splash-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #02030D; /* Color de fondo solicitado */
+            z-index: 2000; 
+            display: flex; 
+            flex-direction: column;
+            justify-content: space-between; 
+            align-items: center;
+        }
+
+        #splash-top-image {
+            position: absolute; 
+            top: 0; 
+            left: 50%; 
+            transform: translateX(-50%); 
+            width: 100%; 
+            max-width: 600px; /* Límite para PC, un poco más grande que el juego */
+            height: auto; 
+            object-fit: contain; 
+            padding-top: 20px; 
+            padding-bottom: 20px; 
+            box-sizing: border-box; 
+        }
+
+        #splash-start-button {
+            position: absolute; 
+            left: 50%;
+            transform: translateX(-50%); 
+            cursor: pointer;
+            width: auto; 
+            height: auto; 
+            max-width: min(60vw, 400px); /* Responsivo pero con límite en PC */
+            object-fit: contain; 
+            z-index: 2001; 
+            visibility: hidden; 
+            transition: transform 0.05s ease-out, filter 0.05s ease-out; 
+        }
+
+        #splash-start-button.splash-button-pressed { 
+            transform: translateX(-50%) scale(0.90) translateY(2px);
+            filter: brightness(0.7);
+        }
+
+        #splash-bottom-image {
+            position: absolute; 
+            bottom: 0; 
+            left: 50%; 
+            transform: translateX(-50%);
+            width: 100%;
+            max-width: 600px; /* Límite para PC, un poco más grande que el juego */
+            height: auto; 
+            max-height: calc(25vh + 60px); 
+            object-fit: contain; 
+            padding-top: 30px; 
+            padding-bottom: 30px; 
+            box-sizing: border-box; 
+        }
+
+
+        .game-container {
+            text-align: center;
+            background-color: #1F2937; 
+            padding-top: 10px; 
+            padding-left: 10px;
+            padding-right: 10px;
+            padding-bottom: calc(10px + env(safe-area-inset-bottom)); 
+            border-radius: 12px; 
+            box-shadow: 0 8px 16px rgba(0,0,0,0.3);
+            width: 100%; 
+            max-width: 520px; 
+            box-sizing: border-box; 
+            height: 100%; 
+            display: flex; 
+            flex-direction: column; 
+        }
+
+        #top-info-bar {
+            display: grid; 
+            grid-template-columns: 1fr 1fr 1fr; 
+            gap: 8px;
+            width: 100%;
+            margin: 0 auto 5px auto; 
+            position: relative; 
+            z-index: 10; 
+        }
+
+        #top-info-bar .info-group {
+            display: flex;
+            flex-direction: column; 
+            align-items: center;
+            justify-content: center; 
+            background-color: #374151; 
+            border-radius: 8px;
+            padding: 8px 10px; 
+            min-width: 80px; 
+            min-height: 55px; 
+            box-sizing: border-box;
+            text-align: center;
+        }
+        #top-info-bar .info-label {
+            font-size: 0.65em; 
+            color: #a0aec0; 
+            margin-bottom: 4px; 
+            display: block; 
+            line-height: 1.1;
+            word-break: break-word; 
+        }
+        #top-info-bar .info-value {
+            font-size: 0.85em; 
+            color: #f5f5f5;
+            font-family: 'Press Start 2P', sans-serif;
+            line-height: 1.3;
+        }
+
+        #progress-panel {
+            display: grid; 
+            grid-template-columns: 1fr 1fr 1fr; 
+            gap: 8px;
+            width: 100%;
+            margin: 0 auto 5px auto; 
+            position: relative;
+            z-index: 10; 
+        }
+
+        #current-world-info-group { 
+            display: flex;
+            flex-direction: column; 
+            align-items: center;
+            justify-content: center; 
+            background-color: #374151; 
+            border-radius: 8px;
+            padding: 8px 10px; 
+            grid-column: 1 / 2; 
+            min-width: 80px; 
+            min-height: 55px; 
+            box-sizing: border-box;
+            text-align: center;
+        }
+         #current-world-info-group .info-label { 
+            font-size: 0.65em; 
+            color: #a0aec0; 
+            margin-bottom: 4px; 
+            display: block; 
+            line-height: 1.1;
+        }
+        #current-world-info-group .info-value { 
+            font-size: 0.85em; 
+            color: #f5f5f5;
+            font-family: 'Press Start 2P', sans-serif;
+        }
+
+        #star-progress-wrapper { 
+            grid-column: 2 / 4; 
+            display: flex;
+            justify-content: center; 
+            align-items: center;
+            background-color: #374151; 
+            border-radius: 8px; 
+            padding: 8px 10px; 
+            min-height: 55px; 
+            box-sizing: border-box;
+            text-align: center;
+        }
+
+        #star-progress-container {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 12px; 
+            padding: 0; 
+            justify-items: center;
+            align-items: center;
+            width: 100%; 
+            max-width: 260px; 
+        }
+        .star-svg {
+            width: 38px; 
+            height: 38px; 
+        }
+
+        #high-score-display {
+            display: flex;
+            flex-direction: column; 
+            align-items: center; 
+            justify-content: center;
+            gap: 2px; /* Reducido espacio entre label y valores */
+            width: 100%;
+            font-size: 0.85em; 
+            line-height: 1.2; /* Ajustado */
+        }
+        #high-score-display #hs-main-label { 
+            font-size: 0.65em; 
+            color: #a0aec0; 
+            margin-bottom: 3px; /* Espacio debajo del label principal */
+            display: block; 
+            line-height: 1.1;
+            text-align: center;
+        }
+        #hs-values-container { 
+            display: flex;
+            flex-direction: row;
+            align-items: baseline;
+            justify-content: center;
+            gap: 3px; /* Reducido espacio entre valores */
+            white-space: nowrap;
+        }
+        #high-score-display .hs-value { 
+            color: #f5f5f5; 
+            font-family: 'Press Start 2P', sans-serif;
+            font-size: 0.9em; /* Ligeramente más pequeño para que quepa mejor */
+        }
+        #high-score-display .hs-label-unit { 
+            color: #a0aec0; 
+            font-size: 0.65em; /* Igual que el label principal */
+            margin-left: 1px; 
+            margin-right: 3px; /* Espacio antes del separador */
+        }
+         #high-score-display .hs-separator {
+            margin-left: 3px; /* Reducido */
+            margin-right: 3px; /* Reducido */
+            color: #a0aec0; /* Color más suave para el separador */
+            font-size: 0.8em;
+        }
+        #high-score-display #hs-skin-value.hs-value { /* Estilo específico para el valor del disfraz */
+            max-width: 75px; /* Limitar ancho para nombres largos */
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            display: inline-block; /* Necesario para text-overflow */
+            vertical-align: baseline;
+        }
+
+
+        canvas {
+            background-color: #374151; 
+            border: 4px solid #4b5563; 
+            display: block; 
+            margin: 0 auto 5px auto; 
+            max-width: 100%; 
+            border-radius: 8px; 
+            aspect-ratio: 1 / 1; 
+        }
+
+        #mobile-controls {
+            display: flex;
+            justify-content: flex-start; 
+            align-items: center;
+            width: 100%;
+            margin: 0 auto; 
+            padding: 0 0px; 
+            box-sizing: border-box;
+            flex-grow: 1; 
+            flex-direction: column; 
+        }
+
+        #d-pad-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr; 
+            grid-template-rows: 1fr 1fr;   
+            gap: 8px; 
+            width: 100%;
+            min-height: 120px; 
+            height: 100%; 
+        }
+
+        .control-button {
+            background-color: #384152; 
+            border: 1px solid #2D3748; 
+            border-radius: 12px; 
+            color: #fff3e1; 
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 5px; 
+            user-select: none; 
+            -webkit-user-select: none; 
+            -ms-user-select: none; 
+            transition: background-color 0.2s ease, transform 0.05s ease-out, filter 0.05s ease-out;
+            width: 100%; 
+            height: 100%; 
+            box-sizing: border-box;
+        }
+        .d-pad-button-pressed { 
+            transform: scale(0.95) translateY(1px);
+            filter: brightness(0.8);
+        }
+        
+        #up-button    { 
+            grid-column: 2; 
+            grid-row: 1; 
+        } 
+        #left-button  { 
+            grid-column: 1; 
+            grid-row: 1 / span 2; 
+        } 
+        #right-button { 
+            grid-column: 3; 
+            grid-row: 1 / span 2; 
+        } 
+        #down-button  { 
+            grid-column: 2; 
+            grid-row: 2; 
+        } 
+
+        .control-button:hover { background-color: #4a5568; }
+        
+        .arrow-svg {
+            width: 60%; 
+            height: 60%;
+            fill: currentColor; 
+        }
+        
+        #setup-controls { 
+            display: flex;
+            flex-direction: column; 
+            align-items: center;
+            gap: 8px; 
+            margin-top: 5px; 
+            margin-bottom: 0px;  
+            position: relative; 
+            width: 100%; 
+        }
+        
+        .control-row { 
+            display: flex;
+            align-items: stretch; 
+            gap: 8px; 
+            width: 100%;
+            flex-wrap: wrap; 
+            justify-content: center; 
+        }
+        
+        .control-group { 
+            display: flex;
+            flex-direction: column; 
+            justify-content: center; 
+            background-color: #374151; 
+            border-radius: 8px;
+            padding: 8px 12px; 
+            flex: 1; 
+            min-width: 100px; 
+            box-sizing: border-box;
+            transition: background-color 0.2s ease;
+        }
+
+        .control-label-icon-row {
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center;
+            width: 100%;
+            margin-bottom: 6px; 
+        }
+
+        .control-label { 
+            font-size: 0.7em; 
+            color: #a0aec0; 
+            display: block; 
+            line-height: 1.1;
+            text-align: left; 
+            flex-grow: 1; 
+            margin-right: 8px; 
+        }
+        
+        .setting-info-button {
+            background-color: #384152; 
+            border: none;
+            border-radius: 8px;
+            padding: 0; 
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 44px;  
+            height: 38px; 
+            box-sizing: border-box;
+            flex-shrink: 0; 
+        }
+        .setting-info-button:hover {
+            background-color: #4a5568; 
+        }
+        .setting-info-icon {
+            width: 24px; 
+            height: 24px; 
+            fill: #f5f5f5; 
+        }
+
+
+        #difficultySelector, #worldsSelector, #audioToggleSelector, #skinSelector, #gameModeSelector { 
+            padding: 4px 6px; 
+            font-size: 0.8em; 
+            border: none; 
+            border-radius: 4px; 
+            background-color: transparent; 
+            color: #f5f5f5; 
+            font-family: 'Press Start 2P', sans-serif;
+            text-align: left; 
+            width: 100%; 
+            height: 38px; 
+            box-sizing: border-box;
+            -moz-appearance: none; 
+            -webkit-appearance: none; 
+            appearance: none; 
+            margin-top: 4px; 
+        }
+        
+        #difficultySelector option, #worldsSelector option, #audioToggleSelector option, #skinSelector option, #gameModeSelector option { 
+            background-color: #374151;
+            color: #f5f5f5;
+            font-family: 'Press Start 2P', sans-serif;
+            text-align: left; 
+        }
+        
+        #difficultySelector, #worldsSelector, #audioToggleSelector, #skinSelector, #gameModeSelector {
+            text-align-last: left;
+        }
+        select option {
+            direction: ltr; 
+        }
+
+
+        #difficultySelector:focus, #worldsSelector:focus, #audioToggleSelector:focus, #skinSelector:focus, #gameModeSelector:focus { 
+            outline: 1px solid #6ee7b7; 
+            box-shadow: none; 
+        }
+        #difficultySelector:disabled, #worldsSelector:disabled, #audioToggleSelector:disabled, #skinSelector:disabled, #gameModeSelector:disabled, #musicVolumeSlider:disabled { 
+            opacity: 0.7;
+            cursor: not-allowed;
+        }
+        
+        .control-group.interactive-mode { 
+            background-color: #4A5568; 
+        }
+        .control-group.interactive-mode:hover {
+            background-color: #5A6578; 
+            cursor: pointer;
+        }
+        .control-group.interactive-mode:hover #difficultySelector,
+        .control-group.interactive-mode:hover #worldsSelector,
+        .control-group.interactive-mode:hover #audioToggleSelector,
+        .control-group.interactive-mode:hover #skinSelector,
+        .control-group.interactive-mode:hover #gameModeSelector,
+        .control-group.interactive-mode:hover #musicVolumeSlider { 
+            cursor: pointer;
+        }
+        
+        #musicVolumeSlider {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 100%;
+            height: 8px; 
+            background: #4B5563; 
+            border-radius: 5px;
+            outline: none;
+            transition: opacity .2s;
+             margin-top: 4px; 
+        }
+        #musicVolumeSlider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            background: #6ee7b7; 
+            cursor: pointer;
+            border-radius: 50%;
+        }
+        #musicVolumeSlider::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
+            background: #6ee7b7; 
+            cursor: pointer;
+            border-radius: 50%;
+            border: none; 
+        }
+
+        #action-buttons-row {
+            justify-content: center; 
+            min-height: 65px; 
+        }
+        .action-button-wrapper { 
+            background-color: transparent !important; 
+            padding: 0 !important; 
+            min-height: auto !important;
+            min-width: auto; 
+            display: flex; 
+        }
+        #info-button-wrapper {
+            flex-grow: 1;
+        }
+        #start-button-wrapper {
+            flex-grow: 3;
+        }
+        #config-button-wrapper {
+            flex-grow: 1;
+        }
+
+
+        #startButton, #configButton, #infoButton { 
+            padding: 10px 15px; 
+            font-size: 0.85em;  
+            color: #f5f5f5;
+            border: none;
+            border-radius: 8px; 
+            cursor: pointer;
+            transition: background-color 0.3s ease; 
+            width: 100%; 
+            height: 65px; 
+            font-family: 'Press Start 2P', sans-serif; 
+            display: flex; 
+            align-items: center;
+            justify-content: center;
+            box-sizing: border-box;
+        }
+        #startButton {
+            background-color: #4CAF50; 
+        }
+        #configButton, #infoButton { 
+            background-color: #384152; 
+            min-width: 65px; 
+        }
+
+        #startButton:hover { background-color: #45a049; }
+        #configButton:hover, #infoButton:hover { background-color: #4a5568; }
+
+        #startButton:disabled, #configButton:disabled, #infoButton:disabled { 
+            background-color: #94a3b8; 
+            cursor: not-allowed; 
+        }
+        .config-svg, .info-svg { 
+            width: 24px;
+            height: 24px;
+            fill: currentColor;
+        }
+
+        .settings-panel-hidden, .info-panel-hidden, .specific-info-panel-hidden { 
+            display: none !important;
+        }
+        #settings-panel, #info-panel, #specific-info-panel { 
+            position: fixed;
+            left: 50%;
+            transform: translateX(-50%) scale(0.95); 
+            background-color: #1F2937; 
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+            z-index: 1001; 
+            width: 90%;
+            max-width: 400px; 
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            border: 2px solid #4b5563; 
+            overflow-y: auto; 
+            opacity: 0; 
+            transition: opacity 0.3s ease-out, transform 0.3s ease-out; 
+        }
+        #settings-panel.panel-visible, 
+        #info-panel.panel-visible, 
+        #specific-info-panel.panel-visible { 
+            opacity: 1;
+            transform: translateX(-50%) scale(1);
+        }
+
+         #specific-info-panel {
+            z-index: 1002; 
+        }
+        .settings-header, .info-header, .specific-info-header { 
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: #6ee7b7; 
+            margin-bottom: 10px;
+        }
+        .settings-header h2, .info-header h2, .specific-info-header h2 { 
+            font-size: 1.4em; 
+            margin: 0;
+        }
+        #close-settings-button, #close-info-button, #close-specific-info-button { 
+            background: none;
+            border: none;
+            color: #f5f5f5;
+            font-size: 2em; 
+            cursor: pointer;
+            padding: 0;
+            line-height: 1;
+        }
+        #close-settings-button:hover, #close-info-button:hover, #close-specific-info-button:hover { 
+            color: #6ee7b7;
+        }
+        #settings-panel .control-group { 
+            background-color: #374151; 
+            min-width: unset; 
+            width:100%;
+        }
+
+        /* Estilos para el contenido del panel de información */
+        #info-panel-content, #specific-info-content {
+            line-height: 1.6;
+            overflow-y: auto; 
+            padding-right: 10px; 
+            color: #d1d5db; 
+        }
+        #info-panel-content h3#main-info-title,
+        #info-panel-content h4, 
+        #specific-info-content h4 { 
+            font-size: 1.1em; 
+            color: #6ee7b7; 
+            margin-top: 20px; 
+            margin-bottom: 10px; 
+            text-align: left; 
+        }
+         #specific-info-content h3 { 
+            font-size: 0.85em; 
+            color: #f5f5f5; 
+            margin-bottom: 12px;
+            text-align: center; 
+        }
+        #info-panel-content p, #info-panel-content ul, #specific-info-content p, #specific-info-content ul {
+            font-size: 0.85em; 
+            margin-bottom: 12px;
+            text-align: justify; 
+        }
+        #info-panel-content ul, #specific-info-content ul {
+            list-style-type: disc; 
+            list-style-position: inside;
+            padding-left: 5px;
+        }
+        #info-panel-content li, #specific-info-content li {
+            margin-bottom: 6px;
+        }
+        #info-panel-content::-webkit-scrollbar, #specific-info-content::-webkit-scrollbar {
+            width: 8px;
+        }
+        #info-panel-content::-webkit-scrollbar-track, #specific-info-content::-webkit-scrollbar-track {
+            background: #2d3748; 
+            border-radius: 4px;
+        }
+        #info-panel-content::-webkit-scrollbar-thumb, #specific-info-content::-webkit-scrollbar-thumb {
+            background: #4b5563; 
+            border-radius: 4px;
+        }
+        #info-panel-content::-webkit-scrollbar-thumb:hover, #specific-info-content::-webkit-scrollbar-thumb:hover {
+            background: #6ee7b7; 
+        }
+
+
+        @media screen and (max-width: 600px) {
+            #high-score-display { font-size: 0.8em; gap: 2px; } /* Ajustado gap */
+            #high-score-display #hs-main-label { font-size: 0.6em; margin-bottom: 2px;}
+            #hs-values-container { gap: 3px; } /* Ajustado gap */
+            #high-score-display .hs-value { font-size: 0.85em; } /* Ajustado tamaño de valores */
+            #high-score-display .hs-label-unit { font-size: 0.6em; margin-left:1px; margin-right: 2px;}
+            #high-score-display .hs-separator { margin-left: 2px; margin-right: 2px; font-size: 0.75em;}
+            #high-score-display #hs-skin-value.hs-value { max-width: 65px; }
+
+
+            #top-info-bar .info-group { min-height: 50px; padding: 6px; min-width: 70px;} 
+            #top-info-bar .info-label { font-size: 0.6em; }
+            #top-info-bar .info-value { font-size: 0.8em; }
+
+            #current-world-info-group { min-height: 50px; padding: 6px; min-width: 70px;}
+            #current-world-info-group .info-label { font-size: 0.6em; }
+            #current-world-info-group .info-value { font-size: 0.8em; }
+            #star-progress-wrapper { min-height: 50px; padding: 6px;}
+            .star-svg { width: 30px; height: 30px; } 
+            #star-progress-container { max-width: 200px; gap: 10px;} 
+
+
+            #d-pad-container {
+                min-height: 110px; 
+                gap: 6px;
+            }
+            .arrow-svg { width: 55%; height: 55%; } 
+            
+             #startButton, #configButton, #infoButton { 
+                 font-size: 0.75em; 
+                 height: 55px; 
+            }
+            #configButton, #infoButton { 
+                min-width: 55px;
+            }
+
+            #settings-panel, #info-panel, #specific-info-panel { 
+                width: calc(100% - 20px); 
+                padding: 20px; 
+            }
+            .settings-header h2, .info-header h2, .specific-info-header h2 { 
+                font-size: 1.1em;
+            }
+             #settings-panel .control-group {
+                min-height: 50px;
+            }
+             #settings-panel #difficultySelector, 
+             #settings-panel #worldsSelector, 
+             #settings-panel #audioToggleSelector,
+             #settings-panel #skinSelector,
+             #settings-panel #gameModeSelector,
+             #settings-panel #musicVolumeSlider { font-size: 0.7em; }
+
+
+             #info-panel-content h3#main-info-title, #specific-info-content h3 { font-size: 1em; } 
+             #info-panel-content h4, #specific-info-content h4 { font-size: 1em; } 
+             #info-panel-content p, #info-panel-content ul, #specific-info-content p, #specific-info-content ul { font-size: 0.8em; } 
+        }
+         @media screen and (max-width: 400px) { 
+            #high-score-display { font-size: 0.7em; gap: 1px; }
+            #high-score-display #hs-main-label { font-size: 0.55em; margin-bottom: 1px;}
+            #hs-values-container { gap: 2px; }
+            #high-score-display .hs-value { font-size: 0.75em; }
+            #high-score-display .hs-label-unit { font-size: 0.55em; margin-left:1px; margin-right: 1px;}
+            #high-score-display .hs-separator { margin-left: 1px; margin-right: 1px; font-size: 0.7em;}
+            #high-score-display #hs-skin-value.hs-value { max-width: 55px; }
+
+
+             #top-info-bar .info-label { font-size: 0.55em; }
+            #top-info-bar .info-value { font-size: 0.7em; }
+            #top-info-bar .info-group { min-width: 60px;} 
+
+            #current-world-info-group .info-label { font-size: 0.55em; }
+            #current-world-info-group .info-value { font-size: 0.7em; }
+            #current-world-info-group { min-width: 60px;}
+            .star-svg { width: 24px; height: 24px; } 
+            #star-progress-container { max-width: 170px; gap: 8px;} 
+
+
+            #d-pad-container {
+                min-height: 100px; 
+                gap: 5px;
+            }
+            .arrow-svg { width: 50%; height: 50%; }
+
+             #startButton, #configButton, #infoButton { 
+                 font-size: 0.7em; 
+                 height: 50px;
+            }
+            #configButton, #infoButton { 
+                min-width: 50px;
+            }
+            .config-svg, .info-svg {  
+                width: 20px;
+                height: 20px;
+            }
+             #settings-panel, #info-panel, #specific-info-panel {
+                padding: 15px;
+            }
+            #info-panel-content h3#main-info-title, #specific-info-content h3 { font-size: 0.9em; } 
+            #info-panel-content h4, #specific-info-content h4 { font-size: 0.9em; } 
+            #info-panel-content p, #info-panel-content ul, #specific-info-content p, #specific-info-content ul { font-size: 0.75em; } 
+        }
+    </style>
+</head>
+<body>
+    <div id="splash-screen">
+        <img id="splash-top-image" src="https://i.imgur.com/tWVwXbv.png" alt="Logotipo superior del splash" onerror="this.src='https://placehold.co/600x200/02030D/FFFFFF?text=Splash+Top+Error'; console.error('Error loading splash-top-image');">
+        <img id="splash-start-button" src="https://i.imgur.com/HqNpn3w.png" alt="Botón de iniciar juego" onerror="this.src='https://placehold.co/300x100/02030D/FFFFFF?text=Start+Error'; console.error('Error loading splash-start-button');">
+        <img id="splash-bottom-image" src="https://i.imgur.com/YJ1xHZO.png" alt="Imagen inferior del splash" onerror="this.src='https://placehold.co/600x150/02030D/FFFFFF?text=Splash+Bottom+Error'; console.error('Error loading splash-bottom-image');">
+    </div>
+
+    <div class="game-container hidden">
+        <div id="progress-panel" class="hidden">
+            <div id="current-world-info-group">
+                <span id="progress-panel-left-label" class="info-label">Nivel:</span> <span id="progress-panel-left-value" class="info-value">1.1</span> </div>
+            <div id="star-progress-wrapper">
+                 <div id="star-progress-container" class="hidden">
+                 </div>
+                 <div id="high-score-display" class="hidden">
+                    <span id="hs-main-label" class="info-label">Máxima puntuación</span>
+                    <div id="hs-values-container">
+                        <span id="hs-score-value" class="hs-value">-</span>
+                        <span class="hs-label-unit">Puntos</span>
+                        <span class="hs-separator hs-value">|</span>
+                        <span id="hs-length-value" class="hs-value">-</span>
+                        <span class="hs-label-unit">Long</span>
+                        <span class="hs-separator hs-value">|</span>
+                        <span id="hs-skin-value" class="hs-value">-</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="top-info-bar">
+            <div class="info-group">
+                <span class="info-label">Puntos:</span>
+                <div class="flex items-center justify-center">
+                    <span id="scoreValue" class="info-value">0</span>
+                    <span id="target-score-divider" class="info-value mx-1 hidden">/</span>
+                    <span id="targetScoreValue" class="info-value hidden">0</span>
+                </div>
+            </div>
+            <div class="info-group">
+                <span class="info-label">Racha:</span>
+                <span id="streakValue" class="info-value">1x</span>
+            </div>
+            <div class="info-group"> 
+                <span id="timeLengthLabel" class="info-label">Tiempo:</span>
+                <span id="timeLengthValue" class="info-value">60</span>
+            </div>
+        </div>
+        
+        <canvas id="gameCanvas"></canvas>
+
+        <div id="setup-controls"> 
+            <div id="settings-panel" class="settings-panel-hidden">
+                <div class="settings-header">
+                    <h2>Configuración</h2>
+                    <button id="close-settings-button" aria-label="Cerrar configuración">&times;</button>
+                </div>
+                <div class="control-group" id="game-mode-control-group">
+                    <div class="control-label-icon-row">
+                        <label class="control-label" for="gameModeSelector">Tipo de Juego:</label>
+                        <button class="setting-info-button" data-setting="gameMode" aria-label="Información sobre tipo de juego">
+                            <svg class="setting-info-icon" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" /></svg>
+                        </button>
+                    </div>
+                    <select id="gameModeSelector">
+                        <option value="levels">Modo Aventura</option> 
+                        <option value="freeMode">Modo Libre</option> 
+                    </select>
+                </div>
+                <div class="control-group" id="difficulty-control-group">
+                     <div class="control-label-icon-row">
+                        <label class="control-label" id="difficulty-label" for="difficultySelector">Dificultad:</label>
+                        <button class="setting-info-button" data-setting="difficulty" aria-label="Información sobre dificultad/mundo">
+                            <svg class="setting-info-icon" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" /></svg>
+                        </button>
+                    </div>
+                    <select id="difficultySelector">
+                        <option value="easy" selected>Fácil</option> 
+                        <option value="normal">Normal</option> 
+                        <option value="difficult">Difícil</option>
+                    </select>
+                    <select id="worldsSelector" class="hidden">
+                    </select>
+                </div>
+                 <div class="control-group" id="skin-control-group">
+                    <div class="control-label-icon-row">
+                        <label class="control-label" for="skinSelector">Disfraz:</label>
+                        <button class="setting-info-button" data-setting="skin" aria-label="Información sobre disfraces">
+                            <svg class="setting-info-icon" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" /></svg>
+                        </button>
+                    </div>
+                    <select id="skinSelector">
+                        <option value="clasico" selected>Clásico</option> 
+                        <option value="rubiSnake">RubiSnake</option> 
+                        <option value="aitorSnake">AitorSnake</option>
+                        <option value="noemiSnake">NoemiSnake</option>
+                        <option value="raquelSnake">RaquelSnake</option>
+                        <option value="almuSnake">AlmuSnake</option> 
+                        <option value="mimiSnake">MimiSnake</option>
+                    </select>
+                </div>
+                <div class="control-group" id="audio-control-group"> 
+                    <div class="control-label-icon-row">
+                        <label class="control-label" for="audioToggleSelector">Audio General:</label>
+                        <button class="setting-info-button" data-setting="audioGeneral" aria-label="Información sobre audio general">
+                            <svg class="setting-info-icon" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" /></svg>
+                        </button>
+                    </div>
+                    <select id="audioToggleSelector">
+                        <option value="all" selected>Activado (Música y FX)</option> 
+                        <option value="sfx_only">Sólo SFX</option> 
+                        <option value="off">Desactivado</option> 
+                    </select>
+                </div>
+                <div class="control-group" id="music-volume-control-group"> 
+                    <div class="control-label-icon-row">
+                        <label class="control-label" for="musicVolumeSlider">Volumen Música: <span id="musicVolumeValue">50</span>%</label>
+                         <button class="setting-info-button" data-setting="musicVolume" aria-label="Información sobre volumen de música">
+                            <svg class="setting-info-icon" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" /></svg>
+                        </button>
+                    </div>
+                    <input type="range" id="musicVolumeSlider" min="0" max="100" value="50">
+                </div>
+            </div>
+            
+            <div id="info-panel" class="info-panel-hidden">
+                <div class="info-header">
+                    <h2>Información</h2> 
+                    <button id="close-info-button" aria-label="Cerrar información">&times;</button>
+                </div>
+                <div id="info-panel-content">
+                    <h3 id="main-info-title">Snake Mobile</h3>
+                    <p>¡Prepárate para la clásica diversión de la serpiente con un toque moderno y desafiante! Guía a tu serpiente para que devore la comida, crezca lo más posible y acumule puntos. ¡Pero cuidado! No choques contra los bordes del escenario ni contra tu propio cuerpo o la partida terminará. ¡No te rindas! Cada partida es una nueva oportunidad para superar tu récord.</p>
+                    
+                    <h4>Cómo Jugar</h4>
+                    <p>Usa los controles en pantalla (o las teclas de flecha en escritorio) para dirigir a la serpiente. Come la comida que aparece para crecer y sumar puntos.</p>
+                    <ul>
+                        <li><strong>Puntos:</strong> Aumentan 10 puntos con cada comida.</li>
+                        <li><strong>Racha:</strong> Consigue comida consecutivamente sin fallar para multiplicar tus puntos. La racha máxima es de x5</li>
+                        <li><strong>Tiempo:</strong> En el Modo Aventura, dispones de un máximo de 60 segundos para completar cada nivel. En el Modo libre tienes tiempo ilimitado.</li>
+                        <li><strong>Longitud:</strong> Indica la longitud de tu serpiente, en el Modo libre servirá para desempatar puntuaciones idénticas.</li>
+                    </ul>
+
+                    <h4>Más información</h4>
+                    <p>Para más detalles sobre cada tipo de juego u opciones de configuración o personalización, accede al menú de ajustes y pulsa sobre el icono de información del elemento sobre el que te interese obtener más información.</p>
+                    <p style="text-align: center; margin-top: 20px;"><strong>¡Diviértete y que crezca la serpiente!</strong></p>
+                </div>
+            </div>
+
+            <div id="specific-info-panel" class="specific-info-panel-hidden">
+                <div class="specific-info-header">
+                    <h2 id="specific-info-title">Detalle del Ajuste</h2>
+                    <button id="close-specific-info-button" aria-label="Cerrar detalle">&times;</button>
+                </div>
+                <div id="specific-info-content">
+                 </div>
+            </div>
+            
+            <div class="control-row" id="action-buttons-row">
+                <div class="action-button-wrapper" id="info-button-wrapper">
+                    <button id="infoButton" aria-label="Información">
+                        <svg class="info-svg" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 15c-.55 0-1-.45-1-1v-4c0-.55.45-1 1-1s1 .45 1 1v4c0 .55-.45 1-1 1zm1-8h-2V7h2v2z"/>
+                        </svg>
+                    </button>
+                </div>
+                <div class="action-button-wrapper" id="start-button-wrapper">
+                    <button id="startButton">Empezar</button>
+                </div>
+                <div class="action-button-wrapper" id="config-button-wrapper">
+                    <button id="configButton" aria-label="Configuración">
+                        <svg class="config-svg" viewBox="0 0 24 24" fill="currentColor"> <path d="M19.14,12.94c0.04-0.3,0.06-0.61,0.06-0.94c0-0.32-0.02-0.64-0.07-0.94l2.03-1.58c0.18-0.14,0.23-0.41,0.12-0.61 l-1.92-3.32c-0.12-0.22-0.37-0.29-0.59-0.22l-2.39,0.96c-0.5-0.38-1.03-0.7-1.62-0.94L14.4,2.25 C14.34,2.09,14.19,2,14,2h-4C9.81,2,9.66,2.09,9.6,2.25L9.22,4.65C8.63,4.89,8.1,5.21,7.6,5.59L5.22,4.63 C4.99,4.56,4.74,4.62,4.62,4.83L2.71,8.15c-0.11,0.2-0.06,0.47,0.12,0.61l2.03,1.58C4.8,10.69,4.78,11,4.78,11.31 c0,0.32,0.02,0.64,0.07,0.95l-2.03,1.58c-0.18,0.14-0.23-0.41-0.12,0.61l1.92,3.32c0.12,0.22,0.37,0.29,0.59,0.22 l2.39-0.96c0.5,0.38,1.03,0.7,1.62,0.94l0.38,2.41c0.05,0.16,0.2,0.25,0.39,0.25h4c0.19,0,0.34-0.09,0.39-0.25l0.38-2.41 c0.59-0.24,1.12-0.56,1.62-0.94l2.39,0.96c0.22,0.08,0.47,0.02,0.59-0.22l1.92-3.32c0.12-0.2,0.07-0.47-0.12-0.61 L19.14,12.94z M12,15.6c-1.98,0-3.6-1.62-3.6-3.6s1.62-3.6,3.6-3.6s3.6,1.62,3.6,3.6S13.98,15.6,12,15.6z"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <div id="mobile-controls">
+            <div id="d-pad-container">
+                <button id="up-button" class="control-button">
+                    <svg class="arrow-svg" viewBox="0 0 24 24"><path d="M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6z"/></svg>
+                </button>
+                <button id="left-button" class="control-button">
+                    <svg class="arrow-svg" viewBox="0 0 24 24"><path d="M15.41 7.41L10.83 12l4.58 4.59L14 18l-6-6 6-6z"/></svg>
+                </button>
+                <button id="right-button" class="control-button">
+                    <svg class="arrow-svg" viewBox="0 0 24 24"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/></svg>
+                </button>
+                <button id="down-button" class="control-button">
+                    <svg class="arrow-svg" viewBox="0 0 24 24"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6z"/></svg>
+                </button>
+            </div>
+        </div>
+
+        </div>
+
+    <script>
+        // Helper function to adjust hex color by a percentage (lighten)
+        function adjustColor(hex, percent) {
+            let r = parseInt(hex.slice(1, 3), 16);
+            let g = parseInt(hex.slice(3, 5), 16);
+            let b = parseInt(hex.slice(5, 7), 16);
+
+            // Add white (lighten)
+            r = Math.round(r + (255 - r) * percent);
+            g = Math.round(g + (255 - g) * percent);
+            b = Math.round(b + (255 - b) * percent);
+
+            r = Math.min(255, Math.max(0, r));
+            g = Math.min(255, Math.max(0, g));
+            b = Math.min(255, Math.max(0, b));
+
+            const toHex = (c) => {
+                const hexVal = c.toString(16);
+                return hexVal.length === 1 ? "0" + hexVal : hexVal;
+            };
+
+            return `#${toHex(r)}${toHex(g)}${toHex(b)}`;
+        }
+
+        // Selección de elementos del DOM
+        const splashScreen = document.getElementById("splash-screen"); 
+        const canvasEl = document.getElementById("gameCanvas"); 
+        let ctx; 
+        const gameContainer = document.querySelector('.game-container'); 
+        const scoreValueDisplay = document.getElementById("scoreValue"); 
+        const targetScoreDivider = document.getElementById("target-score-divider"); 
+        const targetScoreValueDisplay = document.getElementById("targetScoreValue"); 
+        const streakValueDisplay = document.getElementById("streakValue"); 
+        const timeLengthLabelEl = document.getElementById("timeLengthLabel");
+        const timeLengthValueEl = document.getElementById("timeLengthValue");
+        const startButton = document.getElementById("startButton");
+        const difficultySelector = document.getElementById("difficultySelector");
+        const worldsSelector = document.getElementById("worldsSelector"); 
+        const difficultyLabel = document.getElementById("difficulty-label"); 
+        const audioToggleSelector = document.getElementById("audioToggleSelector"); 
+        const skinSelector = document.getElementById("skinSelector"); 
+        const gameModeSelector = document.getElementById("gameModeSelector");
+        const difficultyControlGroup = document.getElementById("difficulty-control-group"); 
+        const audioControlGroup = document.getElementById("audio-control-group"); 
+        const skinControlGroup = document.getElementById("skin-control-group"); 
+        const gameModeControlGroup = document.getElementById("game-mode-control-group");
+        const musicVolumeSlider = document.getElementById("musicVolumeSlider");
+        const musicVolumeValue = document.getElementById("musicVolumeValue");
+        const musicVolumeControlGroup = document.getElementById("music-volume-control-group");
+        
+        const progressPanel = document.getElementById("progress-panel"); 
+        const progressPanelLeftLabel = document.getElementById("progress-panel-left-label");
+        const progressPanelLeftValue = document.getElementById("progress-panel-left-value");
+        const starProgressContainer = document.getElementById("star-progress-container"); 
+        const highScoreDisplay = document.getElementById("high-score-display");
+        const hsScoreValue = document.getElementById("hs-score-value");
+        const hsLengthValue = document.getElementById("hs-length-value");
+        // Se obtendrá hsSkinValue dentro de la función displayHighScoreInPanel
+
+
+        const upButton = document.getElementById("up-button");
+        const leftButton = document.getElementById("left-button");
+        const downButton = document.getElementById("down-button");
+        const rightButton = document.getElementById("right-button");
+        const settingsPanel = document.getElementById("settings-panel");
+        const configButton = document.getElementById("configButton");
+        const closeSettingsButton = document.getElementById("close-settings-button");
+
+        const infoButton = document.getElementById("infoButton");
+        const infoPanel = document.getElementById("info-panel");
+        const infoPanelContent = document.getElementById("info-panel-content"); 
+        const closeInfoButton = document.getElementById("close-info-button");
+        const topInfoBar = document.getElementById('top-info-bar'); 
+        const actionButtonsRow = document.getElementById('action-buttons-row');
+
+        // New DOM elements for specific info panel
+        const specificInfoPanel = document.getElementById("specific-info-panel");
+        const specificInfoTitle = document.getElementById("specific-info-title");
+        const specificInfoContent = document.getElementById("specific-info-content");
+        const closeSpecificInfoButton = document.getElementById("close-specific-info-button");
+
+
+        // --- INICIO: Declaración de Objetos Image ---
+        const classicSnakeHeadLeftImg = new Image(); 
+        const classicSnakeHeadDownImg = new Image(); 
+        const classicFoodImg = new Image();
+        const snakeBodyTexture = new Image(); 
+
+        const rubiSnakeHeadUpDownImg = new Image();
+        const rubiSnakeHeadLeftImg = new Image();
+        const rubiSnakeFoodImg = new Image();
+
+        const aitorSnakeHeadUpDownImg = new Image();
+        const aitorSnakeHeadLeftImg = new Image();
+        const aitorSnakeFoodImg = new Image();
+
+        const noemiSnakeHeadUpDownImg = new Image();
+        const noemiSnakeHeadLeftImg = new Image();
+        const noemiSnakeFoodImg = new Image();
+
+        const raquelSnakeHeadUpDownImg = new Image();
+        const raquelSnakeHeadLeftImg = new Image();
+        const raquelSnakeFoodImg = new Image();
+
+        const almuSnakeHeadUpDownImg = new Image(); 
+        const almuSnakeHeadLeftImg = new Image();   
+        const almuSnakeFoodImg = new Image();   
+
+        const mimiSnakeHeadUpDownImg = new Image(); 
+        const mimiSnakeHeadLeftImg = new Image();   
+        const mimiSnakeFoodImg = new Image();   
+
+        const worldCoverImages = {
+            1: new Image(),
+            2: new Image(),
+            3: new Image()
+        };
+        const worldCompleteImages = { 
+            1: new Image(),
+            2: new Image(),
+            3: new Image()
+        };
+        const levelCompleteImages = { 
+            1: new Image(),
+            2: new Image(),
+            3: new Image()
+        };
+        const defeatImages = { 
+            1: new Image(),
+            2: new Image(),
+            3: new Image()
+        };
+        const freeModeCoverImg = new Image(); 
+        let worldImagesLoaded = 0;
+        const totalWorldImagesToLoad = 13; 
+        // --- FIN: Declaración de Objetos Image ---
+
+        // --- Música de fondo y SFX ---
+        let generalBackgroundMusic; 
+        let inGameBackgroundMusic;  
+        const generalBackgroundMusicURL = 'https://raw.githubusercontent.com/GamificAitor/JuegosEducativos/1ffc16f7db7280cf31d5e7209c5c23e7d533d1e3/Instrumental%20fondo%20-%20Recuerdos%20Pixelados%20(1).mp3';
+        const inGameBackgroundMusicURL = 'https://raw.githubusercontent.com/GamificAitor/JuegosEducativos/3aeda14c787b0f8775a3b655d2d4953d289ef883/Serpiente%20de%20Ne%C3%B3n.mp3';
+        let synthSplashStart; 
+        const MAX_ACTUAL_SLIDER_MAPPED_VOLUME = 0.2; 
+
+
+        // Configuración del juego
+        const GRID_SIZE = 20; 
+        let tileCountX; 
+        let tileCountY; 
+        const INITIAL_SNAKE_LENGTH = 3; 
+        const MAX_STREAK = 5; 
+        
+        // Mapping for difficulty display names
+        const DIFFICULTY_DISPLAY_NAMES = {
+            easy: "Fácil",
+            normal: "Normal",
+            difficult: "Difícil"
+        };
+
+        // Mapping para nombres de disfraces en el ranking
+        const SKIN_DISPLAY_NAMES = {
+            clasico: "Clásico",
+            rubiSnake: "RubiSnake",
+            aitorSnake: "AitorSnake",
+            noemiSnake: "NoemiSnake",
+            raquelSnake: "RaquelSnake",
+            almuSnake: "AlmuSnake",
+            mimiSnake: "MimiSnake"
+        };
+
+
+        // --- LEVELS MODE CONFIG ---
+        const LEVELS_PER_WORLD = 5;
+        const TOTAL_WORLDS = 3;
+        const LEVEL_TIME_LIMIT = 60000; 
+        const TARGET_SCORES_LEVELS = [
+            // World 1
+            100, 200, 300, 400, 500,
+            // World 2
+            600, 700, 800, 900, 1000,
+            // World 3
+            1100, 1200, 1300, 1400, 1500
+        ];
+        const WORLD_DIFFICULTY_MAP = {
+            1: 'easy',
+            2: 'normal',
+            3: 'difficult'
+        };
+        let currentWorld = 1;
+        let currentLevelInWorld = 1; 
+        let maxUnlockedWorld = 1;
+        let levelsProgress = Array(TOTAL_WORLDS * LEVELS_PER_WORLD).fill(false);
+
+        // --- Variables de visualización para UI ---
+        let displayWorld = 1;
+        let displayLevelInWorld = 1;
+        let displayTargetScore = TARGET_SCORES_LEVELS[0];
+
+
+        // --- Configuración de Disfraces (Skins) ---
+        const SKINS = {
+            clasico: {
+                snakeHeadAsset: { 
+                    upDown: classicSnakeHeadDownImg, 
+                    left: classicSnakeHeadLeftImg   
+                }, 
+                foodAsset: classicFoodImg, 
+                snakeHeadScale: 2.0, 
+                foodScale: 1.5,
+                bodyTintColor: '#A8F031',
+                bodyStrokeColor: adjustColor('#A8F031', 0.30), 
+            },
+            rubiSnake: {
+                snakeHeadAsset: { 
+                    upDown: rubiSnakeHeadUpDownImg, 
+                    left: rubiSnakeHeadLeftImg, 
+                },
+                foodAsset: rubiSnakeFoodImg,
+                snakeHeadScale: 2.0, 
+                foodScale: 1.5,
+                bodyTintColor: '#E74C3C',
+                bodyStrokeColor: adjustColor('#E74C3C', 0.30), 
+            },
+            aitorSnake: { 
+                snakeHeadAsset: {
+                    upDown: aitorSnakeHeadUpDownImg, 
+                    left: aitorSnakeHeadLeftImg,
+                },
+                foodAsset: aitorSnakeFoodImg,
+                snakeHeadScale: 2.0, 
+                foodScale: 1.5,
+                bodyTintColor: '#772CE8', 
+                bodyStrokeColor: adjustColor('#772CE8', 0.30), 
+            },
+            noemiSnake: { 
+                snakeHeadAsset: {
+                    upDown: noemiSnakeHeadUpDownImg, 
+                    left: noemiSnakeHeadLeftImg,
+                },
+                foodAsset: noemiSnakeFoodImg,
+                snakeHeadScale: 2.0, 
+                foodScale: 1.5,
+                bodyTintColor: '#FFC0EB', 
+                bodyStrokeColor: adjustColor('#FFC0EB', 0.30), 
+            },
+            raquelSnake: {
+                snakeHeadAsset: {
+                    upDown: raquelSnakeHeadUpDownImg,
+                    left: raquelSnakeHeadLeftImg,
+                },
+                foodAsset: raquelSnakeFoodImg,
+                snakeHeadScale: 2.0,
+                foodScale: 1.5,
+                bodyTintColor: '#FCE9BC',
+                bodyStrokeColor: adjustColor('#FCE9BC', 0.30),
+            },
+            almuSnake: { 
+                snakeHeadAsset: {
+                    upDown: almuSnakeHeadUpDownImg,
+                    left: almuSnakeHeadLeftImg,
+                },
+                foodAsset: almuSnakeFoodImg,
+                snakeHeadScale: 2.0,
+                foodScale: 1.5,
+                bodyTintColor: '#C96B20',
+                bodyStrokeColor: adjustColor('#C96B20', 0.30),
+            },
+            mimiSnake: { 
+                snakeHeadAsset: {
+                    upDown: mimiSnakeHeadUpDownImg,
+                    left: mimiSnakeHeadLeftImg,
+                },
+                foodAsset: mimiSnakeFoodImg,
+                snakeHeadScale: 2.0,
+                foodScale: 1.5,
+                bodyTintColor: '#FFFFFF',
+                bodyStrokeColor: adjustColor('#FFFFFF', 0.30),
+            }
+        };
+        let currentSkin = 'clasico'; 
+        // --- Fin Configuración de Disfraces ---
+
+
+        // Estado del juego
+        let snake = []; 
+        let direction = "right"; 
+        let nextDirection = "right"; // Buffer para la siguiente dirección (MANTENIDO DE LA VERSIÓN ANTERIOR)
+        let score = 0; 
+        let gameOver = false; 
+        let gameIntervalId; 
+        let gameTimeRemaining; 
+        let gameTimerIntervalId; 
+        let gameMode = 'levels'; // Default to levels
+        let isNewHighScore = false; // Flag for new high score
+        
+        let currentFoodItem = {}; 
+        const FOOD_SHAPE_FALLBACK = { 
+            name: 'Comida', 
+            color: '#FF7043', 
+            borderColor: '#E64A19', 
+        };
+
+        let difficulty = 'easy'; 
+        let snakeSpeed = 150; 
+        let foodTimeRemaining = 0; 
+        let foodDisappearTimeoutId; 
+        let foodVisualTimerIntervalId;
+        let streakMultiplier = 1; 
+        let lastWarningSoundSecond = -1; 
+
+        // Game state variables for screen display
+        let screenState = {
+            showCoverForWorld: 0, 
+            showLevelCompleteCover: 0, 
+            showWorldCompleteCover: 0, 
+            showDefeatCoverForWorld: 0, 
+            showFreeModeCover: false,
+            gameActuallyStarted: false
+        };
+
+        const DIFFICULTY_SETTINGS = {
+            easy: { speed: 200, initialLifespan: 11000 }, 
+            normal: { speed: 150, initialLifespan: 9000 }, 
+            difficult: { speed: 100, initialLifespan: 8000 } 
+        };
+        const MIN_FOOD_LIFESPAN = 4000; 
+        const FOOD_WARNING_TIME = 3000; 
+        const POINTS_PER_FOOD = 10;
+        const MAX_HIGH_SCORES = 10; 
+
+        // Nuevas variables para el estado del audio
+        let isMusicEnabled = true; 
+        let areSfxEnabled = true; 
+        let synthsInitialized = false; // Flag to track synth initialization
+        let synthEat, synthEatNoise, synthWarning, synthTimeout, synthGameOver, synthStartGame, synthWin; 
+
+
+        // --- Configuración para la animación de parpadeo del high score ---
+        let blinkAnimation = {
+            active: false,
+            startTime: 0,
+            rowIndex: -1,
+            duration: 2000, 
+            interval: 250   
+        };
+        
+        // --- Funciones de Carga y Aplicación de Disfraces ---
+        function loadWorldImages() {
+            worldCoverImages[1].src = 'https://i.imgur.com/h7iNXJT.png'; 
+            worldCoverImages[2].src = 'https://i.imgur.com/KIiKaTr.png'; 
+            worldCoverImages[3].src = 'https://i.imgur.com/Iv2Pzet.png'; 
+
+            worldCompleteImages[1].src = 'https://i.imgur.com/nkdJEmV.png'; 
+            worldCompleteImages[2].src = 'https://i.imgur.com/mX7hh0c.png'; 
+            worldCompleteImages[3].src = 'https://i.imgur.com/tDOyHXc.png'; 
+
+            levelCompleteImages[1].src = 'https://i.imgur.com/gijG9ec.png'; 
+            levelCompleteImages[2].src = 'https://i.imgur.com/WUfSzpY.png'; 
+            levelCompleteImages[3].src = 'https://i.imgur.com/2ZlgclU.png'; 
+
+            defeatImages[1].src = 'https://i.imgur.com/FZTIteF.png'; 
+            defeatImages[2].src = 'https://i.imgur.com/0OmpfWR.png'; 
+            defeatImages[3].src = 'https://i.imgur.com/Y4kPsNM.png'; 
+
+            freeModeCoverImg.src = 'https://i.imgur.com/IIc2Xb7.png';
+
+
+            const allWorldImages = [
+                worldCoverImages[1], worldCoverImages[2], worldCoverImages[3],
+                worldCompleteImages[1], worldCompleteImages[2], worldCompleteImages[3],
+                levelCompleteImages[1], levelCompleteImages[2], levelCompleteImages[3],
+                defeatImages[1], defeatImages[2], defeatImages[3],
+                freeModeCoverImg
+            ];
+
+            allWorldImages.forEach(img => {
+                img.onload = () => {
+                    worldImagesLoaded++;
+                    if (worldImagesLoaded === totalWorldImagesToLoad) {
+                        console.log("Todas las imágenes de mundo, completado de mundo, completado de nivel, derrota y modo libre cargadas.");
+                        if (ctx && (
+                            (gameMode === 'levels' && (screenState.showCoverForWorld > 0 || screenState.showLevelCompleteCover > 0 || screenState.showDefeatCoverForWorld > 0) && !screenState.gameActuallyStarted) || 
+                            screenState.showWorldCompleteCover > 0 ||
+                            (gameMode === 'freeMode' && screenState.showFreeModeCover && !screenState.gameActuallyStarted)
+                            )) {
+                           requestAnimationFrame(draw); 
+                        }
+                    }
+                };
+                 img.onerror = () => {
+                    console.error(`Error al cargar imagen: ${img.src}`);
+                    worldImagesLoaded++; 
+                     if (worldImagesLoaded === totalWorldImagesToLoad) {
+                        console.log("Proceso de carga de imágenes de mundo/nivel/derrota/modo libre finalizado (con errores).");
+                         if (ctx && (
+                            (gameMode === 'levels' && (screenState.showCoverForWorld > 0 || screenState.showLevelCompleteCover > 0 || screenState.showDefeatCoverForWorld > 0) && !screenState.gameActuallyStarted) || 
+                            screenState.showWorldCompleteCover > 0 ||
+                            (gameMode === 'freeMode' && screenState.showFreeModeCover && !screenState.gameActuallyStarted)
+                            )) {
+                            requestAnimationFrame(draw); 
+                        }
+                    }
+                };
+            });
+        }
+
+        function loadSkinImages() {
+            classicSnakeHeadLeftImg.src = 'https://i.imgur.com/x3Wrabg.png';
+            classicSnakeHeadDownImg.src = 'https://i.imgur.com/lapIn2F.png';
+            classicFoodImg.src = 'https://i.imgur.com/Rrvl9Fj.png'; 
+            snakeBodyTexture.src = 'https://i.imgur.com/rWlvRt4.png'; 
+
+            rubiSnakeHeadUpDownImg.src = 'https://i.imgur.com/XQzDVMk.png';
+            rubiSnakeHeadLeftImg.src = 'https://i.imgur.com/XQzDVMk.png'; 
+            rubiSnakeFoodImg.src = 'https://i.imgur.com/wXIXaQZ.png';
+
+            aitorSnakeHeadUpDownImg.src = 'https://i.imgur.com/WBS3C4N.png';
+            aitorSnakeHeadLeftImg.src = 'https://i.imgur.com/IfYIEkv.png';
+            aitorSnakeFoodImg.src = 'https://i.imgur.com/rUCsqoq.png'; 
+
+            noemiSnakeHeadUpDownImg.src = 'https://i.imgur.com/h84RIhq.png';
+            noemiSnakeHeadLeftImg.src = 'https://i.imgur.com/TU4CgRq.png';
+            noemiSnakeFoodImg.src = 'https://i.imgur.com/2bGXbM1.png';
+            
+            raquelSnakeHeadUpDownImg.src = 'https://i.imgur.com/LEhLwYV.png';
+            raquelSnakeHeadLeftImg.src = 'https://i.imgur.com/NC8l22x.png';
+            raquelSnakeFoodImg.src = 'https://i.imgur.com/krE9lwu.png';
+
+            almuSnakeHeadUpDownImg.src = 'https://i.imgur.com/2HqLxxp.png';
+            almuSnakeHeadLeftImg.src = 'https://i.imgur.com/27Q7QvA.png';
+            almuSnakeFoodImg.src = 'https://i.imgur.com/Lcurg08.png';
+
+            mimiSnakeHeadUpDownImg.src = 'https://i.imgur.com/2UnTxTM.png';
+            mimiSnakeHeadLeftImg.src = 'https://i.imgur.com/GjJrvUA.png'; 
+            mimiSnakeFoodImg.src = 'https://i.imgur.com/kgOjgCI.png';
+            
+            const allImageObjects = [ 
+                classicSnakeHeadLeftImg, classicSnakeHeadDownImg, classicFoodImg, snakeBodyTexture,
+                rubiSnakeHeadUpDownImg, rubiSnakeHeadLeftImg, rubiSnakeFoodImg,
+                aitorSnakeHeadUpDownImg, aitorSnakeHeadLeftImg, aitorSnakeFoodImg,
+                noemiSnakeHeadUpDownImg, noemiSnakeHeadLeftImg, noemiSnakeFoodImg,
+                raquelSnakeHeadUpDownImg, raquelSnakeHeadLeftImg, raquelSnakeFoodImg,
+                almuSnakeHeadUpDownImg, almuSnakeHeadLeftImg, almuSnakeFoodImg,
+                mimiSnakeHeadUpDownImg, mimiSnakeHeadLeftImg, mimiSnakeFoodImg
+            ];
+
+            allImageObjects.forEach(imgObj => {
+                imgObj.onload = () => {
+                    console.log(`Imagen ${imgObj.src.split('/').pop()} cargada.`);
+                    if (ctx && (gameOver || !gameIntervalId || screenState.showCoverForWorld > 0 || screenState.showLevelCompleteCover > 0 || screenState.showWorldCompleteCover > 0 || screenState.showDefeatCoverForWorld > 0 || screenState.showFreeModeCover)) { 
+                        requestAnimationFrame(draw);
+                    }
+                };
+                imgObj.onerror = () => {
+                    console.error(`Error al cargar la imagen: ${imgObj.src}`);
+                    if (ctx && (gameOver || !gameIntervalId || screenState.showCoverForWorld > 0 || screenState.showLevelCompleteCover > 0 || screenState.showWorldCompleteCover > 0 || screenState.showDefeatCoverForWorld > 0 || screenState.showFreeModeCover)) {
+                        requestAnimationFrame(draw);
+                    }
+                };
+            });
+        }
+
+        function applySkin(skinName) {
+            currentSkin = skinName;
+            console.log(`Disfraz aplicado: ${currentSkin}`); 
+
+            if (gameOver) {
+                if (ctx && canvasEl) {
+                    ctx.fillStyle = "#374151"; 
+                    ctx.fillRect(0, 0, canvasEl.width, canvasEl.height);
+                }
+            } else { 
+                if (!gameIntervalId && ctx) { 
+                    draw(); 
+                }
+            }
+        }
+        
+        function resizeGameElements() {
+            if (!gameContainer || !canvasEl ) { 
+                console.error("Error: gameContainer or canvasEl no están definidos en resizeGameElements.");
+                return;
+            }
+            const containerComputedStyle = getComputedStyle(gameContainer);
+            const canvasComputedStyle = getComputedStyle(canvasEl);
+
+            const containerPadding = 2 * parseFloat(containerComputedStyle.paddingLeft); 
+            let availableWidth = gameContainer.clientWidth - containerPadding;
+            
+            const canvasBorderWidth = 2 * parseFloat(canvasComputedStyle.borderLeftWidth);
+            availableWidth -= canvasBorderWidth;
+
+            let newCanvasSize = Math.floor(availableWidth / GRID_SIZE) * GRID_SIZE;
+
+            const minTiles = 10; 
+            const minCanvasSize = minTiles * GRID_SIZE;
+            newCanvasSize = Math.max(newCanvasSize, minCanvasSize); 
+            
+            canvasEl.width = newCanvasSize;
+            canvasEl.height = newCanvasSize; 
+
+            tileCountX = canvasEl.width / GRID_SIZE;
+            tileCountY = canvasEl.height / GRID_SIZE;
+
+            // If a panel is open, re-calculate its position after resize
+            if (!settingsPanel.classList.contains("settings-panel-hidden")) {
+                positionPanel(settingsPanel);
+            }
+            if (!infoPanel.classList.contains("info-panel-hidden")) {
+                positionPanel(infoPanel);
+            }
+            if (specificInfoPanel && !specificInfoPanel.classList.contains("specific-info-panel-hidden")) {
+                positionPanel(specificInfoPanel);
+            }
+
+
+            if (ctx && (gameIntervalId || gameOver || snake.length > 0 || screenState.showCoverForWorld > 0 || screenState.showLevelCompleteCover > 0 || screenState.showWorldCompleteCover > 0 || screenState.showDefeatCoverForWorld > 0 || screenState.showFreeModeCover)) { 
+                draw();
+            } else if (ctx) { 
+                ctx.fillStyle = "#374151"; 
+                ctx.fillRect(0, 0, canvasEl.width, canvasEl.height);
+            }
+        }
+
+        function resetGameUIDisplays() {
+            scoreValueDisplay.textContent = "0";
+            streakValueDisplay.textContent = "1x";
+            if (gameMode === 'levels') {
+                timeLengthValueEl.textContent = Math.ceil(LEVEL_TIME_LIMIT / 1000);
+            } else { // freeMode
+                 timeLengthValueEl.textContent = INITIAL_SNAKE_LENGTH; 
+            }
+            updateTargetScoreDisplay(); 
+        }
+
+        function positionPanel(panelElement) {
+            let topReferenceElement = progressPanel;
+            if (progressPanel.classList.contains('hidden') || !progressPanel.offsetParent) {
+                topReferenceElement = topInfoBar;
+                if (topInfoBar.classList.contains('hidden') || !topInfoBar.offsetParent) {
+                    topReferenceElement = gameContainer; 
+                }
+            }
+            
+            const mobileControlsEl = document.getElementById('mobile-controls'); 
+
+            if (!topReferenceElement || !mobileControlsEl || !panelElement || !gameContainer) { 
+                console.error("positionPanel: Elemento(s) clave(s) para el posicionamiento no encontrado(s).");
+                return;
+            }
+
+            const topRefRect = topReferenceElement.getBoundingClientRect();
+            const mobileControlsRect = mobileControlsEl.getBoundingClientRect(); 
+            const gameContainerRect = gameContainer.getBoundingClientRect();
+            const panelVerticalMargin = 5; 
+
+            let panelTopPosition = topRefRect.top - gameContainerRect.top;
+            if (topReferenceElement === gameContainer) panelTopPosition = 0; 
+            
+            panelElement.style.top = panelTopPosition + 'px';
+            
+            let panelBottomLimit = mobileControlsRect.top - gameContainerRect.top - panelVerticalMargin; 
+            let availablePanelHeight = panelBottomLimit - panelTopPosition;
+
+            panelElement.style.height = Math.max(100, availablePanelHeight) + 'px'; 
+            panelElement.style.bottom = 'auto'; 
+            console.log(`Panel ${panelElement.id} posicionado. Top: ${panelElement.style.top}, Height: ${panelElement.style.height}, Referencia superior: ${topReferenceElement.id}, Límite inferior: D-Pad`);
+        }
+
+        function updateMainButtonStates() {
+            const isSettingsVisible = !settingsPanel.classList.contains("settings-panel-hidden") && settingsPanel.classList.contains("panel-visible");
+            const isInfoVisible = !infoPanel.classList.contains("info-panel-hidden") && infoPanel.classList.contains("panel-visible");
+            const isAnyMainPanelEffectivelyOpen = isSettingsVisible || isInfoVisible;
+
+            if (isAnyMainPanelEffectivelyOpen) { 
+                startButton.disabled = true;
+                configButton.disabled = true;
+                infoButton.disabled = true;
+                return;
+            }
+
+            if (gameIntervalId) { 
+                startButton.disabled = true;
+                configButton.disabled = true;
+                infoButton.disabled = true;
+            } else { 
+                const isWorldIntroCover = screenState.showCoverForWorld > 0 && !screenState.gameActuallyStarted;
+                const isWorldCompleteScreen = screenState.showWorldCompleteCover > 0; 
+                const isLevelCompleteScreen = screenState.showLevelCompleteCover > 0 && !screenState.gameActuallyStarted; 
+                const isDefeatScreen = screenState.showDefeatCoverForWorld > 0 && !screenState.gameActuallyStarted; 
+                const isFreeModeCoverActive = screenState.showFreeModeCover && !screenState.gameActuallyStarted;
+                
+                startButton.disabled = false; 
+                configButton.disabled = false; 
+                infoButton.disabled = false;    
+
+                if (isLevelCompleteScreen) {
+                    // Text is set by handleLevelsModeEnd
+                } else if (isWorldCompleteScreen) {
+                    // Text is set by handleLevelsModeEnd
+                } else if (isDefeatScreen) {
+                    startButton.textContent = "Reintentar"; 
+                } else if (isWorldIntroCover || isFreeModeCoverActive) {
+                    startButton.textContent = "Empezar"; 
+                } else if (gameOver && gameMode === 'freeMode') { 
+                    startButton.textContent = "Empezar";
+                } else if (gameOver && gameMode === 'levels') { 
+                    // finalizeGameOver (via handleLevelsModeEnd) sets the text
+                    // If we are here after closing settings, it should be "Empezar"
+                     if (!isWorldIntroCover && !isWorldCompleteScreen && !isLevelCompleteScreen && !isDefeatScreen) {
+                        startButton.textContent = "Empezar";
+                    }
+                } else { 
+                    startButton.textContent = "Empezar";
+                }
+                
+                const isAnyCoverScreenActive = isWorldIntroCover || isWorldCompleteScreen || isLevelCompleteScreen || isDefeatScreen || isFreeModeCoverActive;
+                if (!isAnyCoverScreenActive && !gameOver) {
+                     if (isMusicEnabled && generalBackgroundMusic && generalBackgroundMusic.paused) {
+                        if (inGameBackgroundMusic && !inGameBackgroundMusic.paused) inGameBackgroundMusic.pause();
+                        generalBackgroundMusic.play().catch(e => console.error("Error al reproducir música general (updateMainButtonStates):", e));
+                    }
+                }
+            }
+        }
+
+        // --- Panel Management Refactor ---
+        function togglePanel(panelElement, contentContainer, show) {
+            if (!panelElement) {
+                console.error("togglePanel: panelElement no encontrado.");
+                return;
+            }
+            const panelId = panelElement.id;
+            let hiddenClassName;
+            const visibleClassName = "panel-visible";
+
+            if (panelId === "settings-panel") hiddenClassName = "settings-panel-hidden";
+            else if (panelId === "info-panel") hiddenClassName = "info-panel-hidden";
+            else if (panelId === "specific-info-panel") hiddenClassName = "specific-info-panel-hidden";
+            else {
+                console.error("togglePanel: Clase oculta no definida para el panel:", panelId);
+                return;
+            }
+
+            if (show) {
+                if (panelElement === settingsPanel && !infoPanel.classList.contains("info-panel-hidden")) {
+                    togglePanel(infoPanel, infoPanelContent, false);
+                }
+                if (panelElement === infoPanel && !settingsPanel.classList.contains("settings-panel-hidden")) {
+                    togglePanel(settingsPanel, settingsPanel, false);
+                }
+                if (panelElement !== specificInfoPanel && specificInfoPanel && !specificInfoPanel.classList.contains("specific-info-panel-hidden")) {
+                    togglePanel(specificInfoPanel, specificInfoContent, false);
+                }
+
+                panelElement.classList.remove(hiddenClassName);
+                positionPanel(panelElement);
+                
+                requestAnimationFrame(() => { 
+                    panelElement.classList.add(visibleClassName);
+                    const targetScrollElement = contentContainer || panelElement;
+                     if(targetScrollElement) targetScrollElement.scrollTop = 0;
+                });
+                
+                startButton.disabled = true;
+                configButton.disabled = true;
+                infoButton.disabled = true;
+
+                if (panelElement === settingsPanel && !gameIntervalId) {
+                    gameModeSelector.disabled = false;
+                    skinSelector.disabled = false;
+                    gameModeControlGroup.classList.add("interactive-mode");
+                    skinControlGroup.classList.add("interactive-mode");
+                    if (gameMode === 'levels') worldsSelector.disabled = false; else difficultySelector.disabled = false;
+                    difficultyControlGroup.classList.add("interactive-mode");
+                    if (typeof Tone !== 'undefined') {
+                        audioToggleSelector.disabled = false;
+                        audioControlGroup.classList.add("interactive-mode");
+                        musicVolumeSlider.disabled = (audioToggleSelector.value === 'off' || audioToggleSelector.value === 'sfx_only');
+                        if (!musicVolumeSlider.disabled) musicVolumeControlGroup.classList.add("interactive-mode");
+                        else musicVolumeControlGroup.classList.remove("interactive-mode");
+                    }
+                     settingsPanel.querySelectorAll('.setting-info-button').forEach(btn => btn.disabled = false);
+                }
+            } else { // Hiding a panel
+                panelElement.classList.remove(visibleClassName); 
+                setTimeout(() => {
+                    panelElement.classList.add(hiddenClassName); 
+                    panelElement.style.top = '';
+                    panelElement.style.bottom = '';
+                    panelElement.style.height = '';
+                    // Caller of togglePanel(..., false) is now responsible for updateMainButtonStates
+                }, 300); 
+            }
+        }
+
+
+        function openSettingsPanel() {
+            togglePanel(settingsPanel, settingsPanel, true); 
+            if (gameOver && !gameIntervalId) { // Game is over and not running
+                if (ctx && canvasEl) { 
+                    ctx.fillStyle = "#374151"; 
+                    ctx.fillRect(0, 0, canvasEl.width, canvasEl.height);
+                }
+                
+                score = 0; // Reset internal score
+                streakMultiplier = 1; // Reset internal streak
+                
+                if (gameMode === 'levels') {
+                    displayWorld = currentWorld;
+                    displayLevelInWorld = currentLevelInWorld;
+                    const absoluteDisplayLevelIndex = (displayWorld - 1) * LEVELS_PER_WORLD + (displayLevelInWorld - 1);
+                    if (absoluteDisplayLevelIndex >= 0 && absoluteDisplayLevelIndex < TARGET_SCORES_LEVELS.length) {
+                        displayTargetScore = TARGET_SCORES_LEVELS[absoluteDisplayLevelIndex];
+                    } else {
+                        displayTargetScore = TARGET_SCORES_LEVELS[TARGET_SCORES_LEVELS.length - 1];
+                    }
+                    screenState.showCoverForWorld = currentWorld;
+                    screenState.gameActuallyStarted = false;
+                    screenState.showLevelCompleteCover = 0;
+                    screenState.showWorldCompleteCover = 0;
+                    screenState.showDefeatCoverForWorld = 0;
+                    screenState.showFreeModeCover = false;
+                } else if (gameMode === 'freeMode') {
+                    screenState.showFreeModeCover = true;
+                    screenState.gameActuallyStarted = false;
+                    snake = []; // Vaciar la serpiente para que updateTimeLengthDisplay use INITIAL_SNAKE_LENGTH
+                }
+                resetGameUIDisplays(); // Update UI for score, streak, AND length (if free mode and snake is empty)
+                updateGameModeUI(); // This will refresh panel values and target scores
+                requestAnimationFrame(draw); // Redraw canvas to show cover
+            }
+            // updateGameModeUI(); // Called at the end of the if block or if game not over
+        }
+
+        function closeSettingsPanel() {
+            const wasSpecificInfoOpen = specificInfoPanel && !specificInfoPanel.classList.contains("specific-info-panel-hidden");
+            
+            togglePanel(settingsPanel, settingsPanel, false); // Hides panel
+
+            if (wasSpecificInfoOpen) {
+                togglePanel(specificInfoPanel, specificInfoContent, false); // Hides specific info
+            }
+
+            if (gameOver && !gameIntervalId) { // If game was over and not running
+                if (gameMode === 'levels') {
+                    displayWorld = currentWorld;
+                    displayLevelInWorld = currentLevelInWorld;
+                    const absoluteDisplayLevelIndex = (displayWorld - 1) * LEVELS_PER_WORLD + (displayLevelInWorld - 1);
+                    
+                    if (absoluteDisplayLevelIndex >= 0 && absoluteDisplayLevelIndex < TARGET_SCORES_LEVELS.length) {
+                        displayTargetScore = TARGET_SCORES_LEVELS[absoluteDisplayLevelIndex];
+                    } else {
+                        displayTargetScore = TARGET_SCORES_LEVELS[TARGET_SCORES_LEVELS.length - 1]; // Fallback
+                    }
+
+                    screenState.showCoverForWorld = currentWorld; // Show current world cover
+                    screenState.gameActuallyStarted = false;
+                    screenState.showLevelCompleteCover = 0;
+                    screenState.showWorldCompleteCover = 0;
+                    screenState.showDefeatCoverForWorld = 0;
+                    screenState.showFreeModeCover = false;
+                    
+                    // Score and streak should have been reset when settings panel was opened if game was over
+                    updateScoreDisplay(); // Ensure score 0 is displayed
+                    updateTargetScoreDisplay(); // Ensure correct target is displayed
+                } else if (gameMode === 'freeMode') {
+                    screenState.showFreeModeCover = true; // Ensure cover is shown when returning from settings
+                    screenState.gameActuallyStarted = false;
+                    // Score, streak and snake length (via snake=[]) reset when settings opened
+                    updateScoreDisplay();
+                    updateTimeLengthDisplay(); // Ensure length is updated based on empty snake array
+                }
+                updateGameModeUI(); 
+                requestAnimationFrame(draw); 
+            }
+            
+            setTimeout(() => { // Ensure buttons are updated after panel animation
+                updateMainButtonStates();
+            }, 0); 
+        }
+
+        function openInfoPanel() {
+            togglePanel(infoPanel, infoPanelContent, true);
+             if (gameOver && !gameIntervalId) { 
+                if (ctx && canvasEl) { 
+                    ctx.fillStyle = "#374151"; 
+                    ctx.fillRect(0, 0, canvasEl.width, canvasEl.height);
+                }
+                score = 0; 
+                streakMultiplier = 1; 
+
+                if (gameMode === 'levels') {
+                    displayWorld = currentWorld;
+                    displayLevelInWorld = currentLevelInWorld;
+                     const absoluteDisplayLevelIndex = (displayWorld - 1) * LEVELS_PER_WORLD + (displayLevelInWorld - 1);
+                    if (absoluteDisplayLevelIndex >= 0 && absoluteDisplayLevelIndex < TARGET_SCORES_LEVELS.length) {
+                        displayTargetScore = TARGET_SCORES_LEVELS[absoluteDisplayLevelIndex];
+                    } else {
+                        displayTargetScore = TARGET_SCORES_LEVELS[TARGET_SCORES_LEVELS.length - 1];
+                    }
+                    screenState.showCoverForWorld = currentWorld;
+                    screenState.gameActuallyStarted = false;
+                } else { // freeMode
+                    screenState.showFreeModeCover = true;
+                    screenState.gameActuallyStarted = false;
+                    snake = []; // Vaciar la serpiente
+                }
+                resetGameUIDisplays(); // Llamar aquí para que la UI se actualice con los valores reseteados
+                updateGameModeUI();
+                requestAnimationFrame(draw);
+            }
+        }
+
+        function closeInfoPanel() {
+            togglePanel(infoPanel, infoPanelContent, false);
+             if (gameOver && !gameIntervalId) { // If game was over and not running
+                 if (gameMode === 'levels') {
+                    displayWorld = currentWorld;
+                    displayLevelInWorld = currentLevelInWorld;
+                    const absoluteDisplayLevelIndex = (displayWorld - 1) * LEVELS_PER_WORLD + (displayLevelInWorld - 1);
+                    if (absoluteDisplayLevelIndex >= 0 && absoluteDisplayLevelIndex < TARGET_SCORES_LEVELS.length) {
+                        displayTargetScore = TARGET_SCORES_LEVELS[absoluteDisplayLevelIndex];
+                    } else {
+                        displayTargetScore = TARGET_SCORES_LEVELS[TARGET_SCORES_LEVELS.length - 1];
+                    }
+                    screenState.showCoverForWorld = currentWorld;
+                    screenState.gameActuallyStarted = false;
+                    screenState.showLevelCompleteCover = 0;
+                    screenState.showWorldCompleteCover = 0;
+                    screenState.showDefeatCoverForWorld = 0;
+                    screenState.showFreeModeCover = false;
+                    // Score and streak already reset by openInfoPanel if game was over
+                    updateScoreDisplay(); 
+                    updateTargetScoreDisplay();
+                } else if (gameMode === 'freeMode') {
+                    screenState.showFreeModeCover = true; // Ensure cover is shown when returning from info
+                    screenState.gameActuallyStarted = false;
+                    updateScoreDisplay();
+                    updateTimeLengthDisplay(); // Ensure length is updated based on empty snake array
+                }
+                updateGameModeUI();
+                requestAnimationFrame(draw);
+            }
+            setTimeout(() => {
+                updateMainButtonStates();
+            }, 0);
+        }
+        
+        configButton.addEventListener('click', openSettingsPanel);
+        closeSettingsButton.addEventListener('click', closeSettingsPanel);
+        infoButton.addEventListener('click', openInfoPanel); 
+        closeInfoButton.addEventListener('click', closeInfoPanel); 
+
+        // --- Specific Info Panel Logic ---
+        const specificHelpTexts = {
+            gameMode: {
+                title: "Tipo de Juego",
+                text: "<p>Define la estructura principal de tus partidas, eligiendo entre:</p><h4>Modo Aventura</h4><p>Embárcate en un viaje progresivo a través de diversos mundos. En este modo:</p><ul><li>Cada mundo presenta un diseño de escenario único y puede introducir nuevos obstáculos o mecánicas.</li><li>Deberás alcanzar una <strong>puntuación objetivo</strong> en cada nivel para superarlo.</li><li>Desbloquea <strong>nuevos mundos</strong> superando todos los niveles del mundo en el que te encuentras.</li><li>La dificultad de los niveles y mundos aumenta gradualmente, ¿Serás capaz de superarlos todos?</li></ul><h4>Modo Libre</h4><p>Disfruta de la experiencia clásica de Snake sin la presión de superar niveles específicos. En este modo:</p><ul><li>El objetivo principal es conseguir la <strong>máxima puntuación</strong> y la <strong>serpiente más larga</strong> posible en una única partida.</li><li>La dificultad que selecciones (Fácil, Normal, Difícil) afectará directamente la velocidad inicial de la serpiente y a la clasificación en la que se registran las puntuaciones.</li></ul>"
+            },
+            difficulty: { 
+                title: "Dificultad / Mundo", 
+                text_adventure: "<h4> (Solo en Modo Aventura)</h4><p>Cuando juegas en <strong>Modo Aventura</strong>, tendrás disponibles un total de 3 mundos. Cada uno de ellos, dispone de 5 niveles de creciente dificultad. Tendrás que superarlos todos para poder avanzar al siguiente mundo. Complétalos todos para finalizar este modo de juego.</p><p>El selector de <strong>Mundos</strong> (que aparece al seleccionar \"Modo Aventura\") te permite elegir en qué mundo específico deseas comenzar tu aventura, siempre y cuando ya lo hayas desbloqueado previamente jugando y superando los anteriores en la dificultad seleccionada. ¡Supera los mundos para acceder a nuevos escenarios y desafíos más emocionantes o volver a jugar a los que ya hayas superado!</p><p>No olvides estar atento a las novedades del juego, ¡Puede que haya nuevos niveles muy pronto!</p>",
+                text_free: "<h4> (Solo en Modo Libre)</h4><p>Ajusta el nivel de desafío para que se adapte a tu habilidad y preferencias. La dificultad influye principalmente en la velocidad de la serpiente y el tiempo de desaparición de los comestibles.</p><h4>Fácil</h4><p>La opción perfecta si estás empezando o si prefieres una experiencia de juego más relajada. La serpiente se mueve a una velocidad considerablemente reducida y los comestibles tardan más tiempo en desaparecer, dándote más tiempo para reaccionar y planificar tus movimientos.</p><h4>Normal</h4><p>Un reto equilibrado, recomendado para la mayoría de los jugadores que ya conocen la mecánica básica de Snake. La velocidad de la serpiente es moderada al igual que el tiempo de desaparición de los comestibles, exigiendo buena anticipación y reflejos para conseguir puntuaciones altas.</p><h4>Difícil</h4><p>¡Prepárate para un desafío intenso! En esta dificultad, la serpiente se mueve muy rápido desde el inicio y los comestibles desaparecen mucho más rápido, poniendo a prueba tu concentración y destreza al máximo.</p>"
+            },
+            skin: {
+                title: "Disfraz",
+                text: "<p>Personaliza tu serpiente, juega con el look que más te guste y convierte tu experiencia en algo único y divertido</p><h4>Selección de Disfraz</h4><p>Elige entre una variedad de estilos visuales disponibles en el selector. Cada disfraz ofrece una estética diferente para tu reptil protagonista, desde aspectos clásicos hasta diseños más originales y temáticos.</p><p>Algunos disfraces pueden estar disponibles desde el inicio, mientras que otros podrían requerir ser desbloqueados mediante logros en el juego o estar disponibles en futuras actualizaciones.</p><p>Es importante destacar que la elección del disfraz es <strong>puramente estética</strong>. Cambiar la apariencia de tu serpiente no afecta de ninguna manera su velocidad, longitud, la forma en que come, ni las puntuaciones que obtienes.</p><p>¡Así que siéntete libre de experimentar y elegir el que más te guste sin preocuparte por ventajas o desventajas en el juego!</p>"
+            },
+            audioGeneral: {
+                title: "Audio General",
+                text: "<p>Controla los elementos sonoros del juego para crear la atmósfera perfecta para ti.</p><h4>Activado (Música y FX)</h4><p>Selecciona esta opción para disfrutar de la experiencia sonora completa. Esto incluye:</p><ul><li><strong>Música de fondo:</strong> Utilizada para ambientar, tanto el juego en general, como tus partidas.</li><li><strong>Efectos de sonido (SFX):</strong> Indicaciones auditivas para acciones cruciales como comenzar una partida, comer, superar un nivel, perder, conseguir un récord...</li></ul><h4>Sólo SFX</h4><p>Si la música de fondo te resulta distractora pero aun así deseas la retroalimentación auditiva de tus acciones en el juego, esta es tu opción.</p><h4>Desactivado</h4><p>Elige esta opción para silenciar completamente el juego. Es ideal si prefieres jugar mientras escuchas tu propia música o podcast mientras juegas.</p>"
+            },
+            musicVolume: {
+                title: "Volumen Música",
+                text: "<p>Ajusta con precisión qué tan fuerte o suave quieres que suene la música de fondo del juego, siempre que la tengas activada.</p><h4>Control de Volumen</h4><p>Utiliza el deslizador (slider) para regular el nivel del volumen de la música. Moviéndolo hacia la derecha aumentarás el volumen, y hacia la izquierda lo disminuirás.</p><p>Encuentra el punto perfecto que te permita disfrutar de la banda sonora del juego sin que resulte abrumadora o tape otros sonidos importantes, especialmente si también tienes los efectos de sonido (SFX) activados.</p><h4>Condiciones de Uso</h4><p>Es fundamental recordar que para que este ajuste de volumen de música tenga algún efecto, la opción de <strong>\"Audio General\"</strong> debe estar configurada en <strong>\"Activado (Música y FX)\"</strong>.</p><p>Si el \"Audio General\" está seleccionado como \"Sólo SFX\" o \"Desactivado\", no escucharás la música independientemente del nivel que establezcas en este control de volumen, ya que la fuente principal de música estará deshabilitada.</p>"
+            }
+        };
+
+        function openSpecificInfoPanel(settingKey) {
+            if (!specificInfoPanel || !specificInfoTitle || !specificInfoContent) return;
+
+            let helpData = specificHelpTexts[settingKey];
+            if (!helpData) {
+                console.error(`No help text found for setting: ${settingKey}`);
+                return;
+            }
+            
+            specificInfoTitle.textContent = helpData.title;
+
+            if (settingKey === 'difficulty') {
+                if (gameMode === 'levels') { 
+                    specificInfoTitle.textContent = "Mundos"; 
+                    specificInfoContent.innerHTML = helpData.text_adventure;
+                } else { 
+                    specificInfoTitle.textContent = "Dificultad";
+                    specificInfoContent.innerHTML = helpData.text_free;
+                }
+            } else {
+                specificInfoContent.innerHTML = helpData.text;
+            }
+            
+            // Disable controls in the settings panel before showing specific info
+            Array.from(settingsPanel.querySelectorAll('select, input[type="range"], .setting-info-button')).forEach(el => el.disabled = true);
+            Array.from(settingsPanel.querySelectorAll('.control-group.interactive-mode')).forEach(el => el.classList.remove("interactive-mode")); // Visually indicate disabled state
+
+            togglePanel(specificInfoPanel, specificInfoContent, true);
+        }
+
+        function closeSpecificInfoPanel() {
+            togglePanel(specificInfoPanel, specificInfoContent, false); // Hide specific info panel
+
+            // Re-enable controls in the settings panel if it's still meant to be open
+            if (!settingsPanel.classList.contains("settings-panel-hidden") && !gameIntervalId) {
+                gameModeSelector.disabled = false;
+                skinSelector.disabled = false;
+                gameModeControlGroup.classList.add("interactive-mode");
+                skinControlGroup.classList.add("interactive-mode");
+
+                if (gameMode === 'levels') {
+                    worldsSelector.disabled = false;
+                } else {
+                    difficultySelector.disabled = false;
+                }
+                difficultyControlGroup.classList.add("interactive-mode");
+
+                if (typeof Tone !== 'undefined') {
+                    audioToggleSelector.disabled = false;
+                    audioControlGroup.classList.add("interactive-mode");
+                    musicVolumeSlider.disabled = (audioToggleSelector.value === 'off' || audioToggleSelector.value === 'sfx_only');
+                    if (!musicVolumeSlider.disabled) musicVolumeControlGroup.classList.add("interactive-mode");
+                    else musicVolumeControlGroup.classList.remove("interactive-mode");
+                }
+                settingsPanel.querySelectorAll('.setting-info-button').forEach(btn => btn.disabled = false);
+                
+                // Ensure main action buttons reflect that settings panel is still the context
+                startButton.disabled = true;
+                configButton.disabled = true;
+                infoButton.disabled = true;
+            } else {
+                // If settings panel was not open, or game is running, update main buttons normally
+                updateMainButtonStates();
+            }
+        }
+
+
+        if (closeSpecificInfoButton) {
+            closeSpecificInfoButton.addEventListener('click', closeSpecificInfoPanel);
+        }
+
+        document.querySelectorAll('.setting-info-button').forEach(button => { 
+            button.addEventListener('click', function() {
+                const settingKey = this.dataset.setting;
+                openSpecificInfoPanel(settingKey);
+            });
+        });
+
+
+        function drawFoodItem(x, y) {
+            if (!ctx) return; 
+            const skinData = SKINS[currentSkin];
+            const foodImg = skinData.foodAsset;
+            
+            let foodVisualTopY;
+            let foodVisualHeight;
+
+            if (foodImg && foodImg.complete && foodImg.naturalHeight !== 0) {
+                const drawSize = GRID_SIZE * skinData.foodScale; 
+                const offset = (drawSize - GRID_SIZE) / 2;
+                foodVisualTopY = y * GRID_SIZE - offset;
+                foodVisualHeight = drawSize;
+            } else {
+                foodVisualTopY = y * GRID_SIZE + 2; 
+                foodVisualHeight = GRID_SIZE - 4; 
+            }
+            const foodVisualBottomY = foodVisualTopY + foodVisualHeight;
+
+            let foodIsVisible = true;
+            if (!gameOver && foodTimeRemaining <= FOOD_WARNING_TIME && foodTimeRemaining > 0) {
+                const blinkInterval = 500; 
+                foodIsVisible = (Math.floor(foodTimeRemaining / blinkInterval) % 2 !== 0);
+            }
+
+            if (foodIsVisible && foodTimeRemaining > 0) {
+                if (foodImg && foodImg.complete && foodImg.naturalHeight !== 0) {
+                    const drawSize = GRID_SIZE * skinData.foodScale;
+                    const offset = (drawSize - GRID_SIZE) / 2;
+                    ctx.drawImage(foodImg, x * GRID_SIZE - offset, y * GRID_SIZE - offset, drawSize, drawSize);
+                } else {
+                    ctx.fillStyle = FOOD_SHAPE_FALLBACK.color;
+                    ctx.fillRect(x * GRID_SIZE + 2, y * GRID_SIZE + 2, GRID_SIZE - 4, GRID_SIZE - 4);
+                    ctx.strokeStyle = FOOD_SHAPE_FALLBACK.borderColor;
+                    ctx.lineWidth = 2;
+                    ctx.strokeRect(x * GRID_SIZE + 2, y * GRID_SIZE + 2, GRID_SIZE - 4, GRID_SIZE - 4);
+                }
+            }
+
+            if (!gameOver && foodTimeRemaining > 0 && currentFoodItem.initialLifespanForThisFood > 0) {
+                const barProgress = foodTimeRemaining / currentFoodItem.initialLifespanForThisFood;
+                const barWidth = (GRID_SIZE - 4) * barProgress; 
+                const barHeight = 3;
+                const barGap = 2; 
+
+                let timeBarYPosition = foodVisualBottomY + barGap;
+
+                if (timeBarYPosition + barHeight > canvasEl.height) {
+                   timeBarYPosition = canvasEl.height - barHeight -1; 
+                }
+                 if (timeBarYPosition < 0){ 
+                       timeBarYPosition = 1; 
+                }
+                
+                let barColor = 'rgba(76, 175, 80, 0.85)'; 
+                const percentageRemaining = (foodTimeRemaining / currentFoodItem.initialLifespanForThisFood) * 100;
+
+                if (percentageRemaining <= 25) {
+                    barColor = 'rgba(220, 38, 38, 0.85)'; 
+                } else if (percentageRemaining <= 50) {
+                    barColor = 'rgba(255, 235, 59, 0.85)'; 
+                }
+                
+                ctx.fillStyle = barColor;
+                ctx.fillRect(
+                    x * GRID_SIZE + 2, 
+                    timeBarYPosition,
+                    barWidth,
+                    barHeight
+                );
+            }
+        }
+        
+        function calculateNextFoodLifespan() {
+            const currentDifficultySetting = gameMode === 'levels' ? WORLD_DIFFICULTY_MAP[currentWorld] : difficulty;
+            const baseLifespan = DIFFICULTY_SETTINGS[currentDifficultySetting].initialLifespan;
+            let streakReduction = 0;
+            const effectiveStreakForReduction = Math.floor(streakMultiplier); 
+            if (effectiveStreakForReduction >= 2) { 
+                streakReduction = (Math.min(effectiveStreakForReduction, 5) - 1) * 1000; 
+            }
+            const calculatedLifespan = baseLifespan - streakReduction;
+            return Math.max(MIN_FOOD_LIFESPAN, calculatedLifespan); 
+        }
+
+        function generateFood() {
+            clearTimeout(foodDisappearTimeoutId);
+            clearInterval(foodVisualTimerIntervalId);
+            lastWarningSoundSecond = -1; 
+            let newFoodPosition;
+            do {
+                newFoodPosition = {
+                    x: Math.floor(Math.random() * tileCountX),
+                    y: Math.floor(Math.random() * tileCountY),
+                };
+            } while (isFoodOnSnake(newFoodPosition) && tileCountX > 0 && tileCountY > 0); 
+            
+            if (tileCountX <=0 || tileCountY <=0) { 
+                console.warn("Canvas too small to generate food.");
+                currentFoodItem = {}; 
+                return;
+            }
+
+            currentFoodItem = { 
+                x: newFoodPosition.x, 
+                y: newFoodPosition.y, 
+                initialLifespanForThisFood: calculateNextFoodLifespan()
+            };
+            foodTimeRemaining = currentFoodItem.initialLifespanForThisFood;
+            foodDisappearTimeoutId = setTimeout(handleFoodTimeout, foodTimeRemaining);
+            foodVisualTimerIntervalId = setInterval(() => {
+                if (gameOver) {
+                    clearInterval(foodVisualTimerIntervalId);
+                    return;
+                }
+                foodTimeRemaining -= 100; 
+                if (foodTimeRemaining < 0) foodTimeRemaining = 0;
+                if (foodTimeRemaining <= FOOD_WARNING_TIME && foodTimeRemaining > 0) {
+                    const currentSecondInWarning = Math.ceil(foodTimeRemaining / 1000);
+                    if (currentSecondInWarning !== lastWarningSoundSecond) { 
+                        if (areSfxEnabled) playSound('warning');
+                        lastWarningSoundSecond = currentSecondInWarning;
+                    }
+                } else {
+                    lastWarningSoundSecond = -1; 
+                }
+            }, 100);
+        }
+        
+        function handleFoodTimeout() {
+            if (gameOver) return;
+            console.log("¡Comida no recogida! Racha perdida."); 
+            if (areSfxEnabled) playSound('timeout');
+            streakMultiplier = 1; 
+            foodTimeRemaining = 0; 
+            generateFood(); 
+            updateScoreDisplay();
+            draw(); 
+        }
+
+        function isFoodOnSnake(foodPosition) {
+            for (let segment of snake) {
+                if (segment.x === foodPosition.x && segment.y === foodPosition.y) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        function splitTextIntoLines(ctx, text, maxWidth) {
+            const words = text.split(' ');
+            const lines = [];
+            if (words.length === 0) return lines;
+            let currentLine = words[0];
+
+            for (let i = 1; i < words.length; i++) {
+                const word = words[i];
+                const testLine = currentLine + " " + word;
+                const metrics = ctx.measureText(testLine);
+                const testWidth = metrics.width;
+                if (testWidth < maxWidth) {
+                    currentLine = testLine;
+                } else {
+                    lines.push(currentLine);
+                    currentLine = word;
+                }
+            }
+            lines.push(currentLine);
+            return lines;
+        }
+
+        // --- High Score Functions ---
+        function getHighScoreKey(difficultyLevel) {
+            return `snakeHighScores_${difficultyLevel}`;
+        }
+
+        function loadHighScores(difficultyLevel) {
+            const key = getHighScoreKey(difficultyLevel);
+            const scoresJSON = localStorage.getItem(key);
+            return scoresJSON ? JSON.parse(scoresJSON) : [];
+        }
+
+        function saveHighScore(currentScore, snakeLengthValue, difficultyLevel) { 
+            const key = getHighScoreKey(difficultyLevel);
+            let highScores = loadHighScores(difficultyLevel);
+            const newEntry = { 
+                score: currentScore, 
+                length: snakeLengthValue, 
+                difficulty: DIFFICULTY_DISPLAY_NAMES[difficultyLevel],
+                skin: currentSkin, // Guardamos el 'value' del skin actual
+            };
+
+            highScores.push(newEntry);
+            highScores.sort((a, b) => {
+                if (b.score === a.score) {
+                    return b.length - a.length; 
+                }
+                return b.score - a.score; 
+            });
+
+            highScores = highScores.slice(0, MAX_HIGH_SCORES); 
+            localStorage.setItem(key, JSON.stringify(highScores));
+            console.log(`Puntuaciones guardadas para ${difficultyLevel}:`, highScores);
+            
+            let isActuallyNewHighScoreThisGame = false;
+            let newRecordIndex = -1;
+            for (let i = 0; i < highScores.length; i++) {
+                if (highScores[i].score === currentScore && highScores[i].length === snakeLengthValue) {
+                    isActuallyNewHighScoreThisGame = true;
+                    newRecordIndex = i;
+                    break; 
+                }
+            }
+            return { isNewRecord: isActuallyNewHighScoreThisGame, rowIndex: newRecordIndex };
+        }
+
+        // --- Funciones de Refactorización de finalizeGameOver ---
+        function clearGameTimersAndMusic() {
+            clearInterval(gameIntervalId);
+            gameIntervalId = null;
+            clearTimeout(foodDisappearTimeoutId);
+            clearInterval(foodVisualTimerIntervalId);
+            clearInterval(gameTimerIntervalId);
+
+            if (inGameBackgroundMusic) {
+                inGameBackgroundMusic.pause();
+                console.log("Música de partida pausada (clearGameTimersAndMusic).");
+            }
+        }
+
+        function handleFreeModeEnd(currentScore, snakeLengthValue, difficultyValue) {
+            const highScoreData = saveHighScore(currentScore, snakeLengthValue, difficultyValue);
+            
+            console.log("FinalizeGameOver - Modo Libre - isNewRecord:", highScoreData.isNewRecord, "Score:", currentScore, "Length:", snakeLengthValue, "Difficulty:", difficultyValue, "Blink Row Index:", highScoreData.rowIndex);
+            
+            if (highScoreData.isNewRecord) {
+                blinkAnimation.startTime = Date.now();
+                blinkAnimation.active = true; 
+                console.log("Blink animation activated for new high score.");
+            }
+            return { isNewRecord: highScoreData.isNewRecord, isEffectivelyWon: highScoreData.isNewRecord, rowIndex: highScoreData.rowIndex };
+        }
+
+        function handleLevelsModeEnd(currentScore, timeRemaining) {
+            const absoluteLevelIndex = (currentWorld - 1) * LEVELS_PER_WORLD + (currentLevelInWorld - 1);
+            const currentTarget = TARGET_SCORES_LEVELS[absoluteLevelIndex];
+            const levelWon = (currentScore >= currentTarget && timeRemaining > 0);
+
+            if (levelWon) {
+                levelsProgress[absoluteLevelIndex] = true; // Se marca la estrella
+
+                if (currentLevelInWorld === LEVELS_PER_WORLD) { // Mundo completado
+                    screenState.showWorldCompleteCover = currentWorld;
+
+                    if (currentWorld === TOTAL_WORLDS) { // Juego completado
+                        startButton.textContent = "Ajustes";
+                        // No hay más niveles a los que avanzar. currentWorld y currentLevelInWorld permanecen en el máximo.
+                    } else { // Avanzar al siguiente mundo
+                        startButton.textContent = "Nuevo Mundo";
+                        // Actualizamos inmediatamente el estado para el próximo inicio
+                        currentWorld++;
+                        currentLevelInWorld = 1;
+                        if (currentWorld > maxUnlockedWorld) {
+                            maxUnlockedWorld = currentWorld;
+                        }
+                    }
+                } else { // Nivel completado (no es el último del mundo)
+                    currentLevelInWorld++; // Avanzamos el nivel inmediatamente
+                    screenState.showLevelCompleteCover = currentWorld;
+                    startButton.textContent = `Nivel ${currentWorld}.${currentLevelInWorld}`; // Botón para el *nuevo* nivel actual
+                }
+                // Limpiamos otros estados de pantalla
+                screenState.showCoverForWorld = 0;
+                screenState.showDefeatCoverForWorld = 0;
+
+            } else { // Nivel perdido
+                startButton.textContent = "Reintentar";
+                screenState.showDefeatCoverForWorld = currentWorld;
+                // Limpiamos otros estados de pantalla por si acaso
+                screenState.showCoverForWorld = 0;
+                screenState.showWorldCompleteCover = 0;
+                screenState.showLevelCompleteCover = 0;
+            }
+            drawStarProgress(); // Dibuja las estrellas con la nueva completada
+            return levelWon;
+        }
+
+
+        function playSoundForGameOver(levelWon) {
+            if (areSfxEnabled) {
+                if (levelWon) {
+                    playSound('win');
+                } else {
+                    playSound('gameOver');
+                }
+            }
+        }
+        
+        function managePostGameOverMusicAndAnimation() {
+            if (blinkAnimation.active && gameOver) { 
+                requestAnimationFrame(gameEndAnimationLoop);
+            } else {
+                const isSettingsCurrentlyOpen = settingsPanel && !settingsPanel.classList.contains("settings-panel-hidden");
+                const isInfoCurrentlyOpen = infoPanel && !infoPanel.classList.contains("info-panel-hidden");
+                if (isMusicEnabled && generalBackgroundMusic && !isSettingsCurrentlyOpen && !isInfoCurrentlyOpen) {
+                    if (generalBackgroundMusic.paused) {
+                        generalBackgroundMusic.play().catch(e => console.error("Error al reproducir música general (managePostGameOverMusic):", e));
+                        console.log("Música general iniciada (managePostGameOverMusic - no blink).");
+                    }
+                }
+            }
+        }
+        
+        function gameEndAnimationLoop() { // This is the loop for the blinking animation
+            if (gameOver && blinkAnimation.active) { 
+                draw(); 
+                const elapsedTime = Date.now() - blinkAnimation.startTime;
+                if (elapsedTime >= blinkAnimation.duration) {
+                    blinkAnimation.active = false; 
+                    draw(); 
+                    managePostGameOverMusicAndAnimation(); // Check for music again once blink is done
+                } else {
+                    requestAnimationFrame(gameEndAnimationLoop); 
+                }
+            }
+        }
+
+        function updateUIOnGameOver() {
+            updateMainButtonStates(); 
+            
+            gameModeSelector.disabled = false;
+            skinSelector.disabled = false;
+            gameModeControlGroup.classList.add("interactive-mode");
+            skinControlGroup.classList.add("interactive-mode");
+
+            if (gameMode === 'levels') {
+                worldsSelector.disabled = false; 
+            } else { 
+                difficultySelector.disabled = false;
+            }
+            difficultyControlGroup.classList.add("interactive-mode"); 
+            
+            if (typeof Tone !== 'undefined') { 
+                 audioToggleSelector.disabled = false;
+                 audioControlGroup.classList.add("interactive-mode");
+                 musicVolumeSlider.disabled = (audioToggleSelector.value === 'off' || audioToggleSelector.value === 'sfx_only');
+                 if (!musicVolumeSlider.disabled) musicVolumeControlGroup.classList.add("interactive-mode");
+                 else musicVolumeControlGroup.classList.remove("interactive-mode");
+            } else {
+                 audioToggleSelector.disabled = true;
+                 audioControlGroup.classList.remove("interactive-mode");
+                 musicVolumeSlider.disabled = true;
+                 musicVolumeControlGroup.classList.remove("interactive-mode");
+            }
+            
+            updateScoreDisplay(); 
+            updateTimeLengthDisplay();
+            updateGameModeUI(); 
+        }
+        // --- Fin de Funciones de Refactorización ---
+
+        function finalizeGameOver() { 
+            if (gameOver && startButton.disabled === false && configButton.disabled === false && infoButton.disabled === false && gameIntervalId === null) return; 
+
+            gameOver = true;
+            screenState.gameActuallyStarted = false; // Game is no longer "actually started"
+
+            // Crucial for Free Mode: Ensure cover is not shown when game ends, so classification appears
+            if (gameMode === 'freeMode') {
+                screenState.showFreeModeCover = false; // Ensure no cover is shown
+                screenState.showCoverForWorld = 0;
+                screenState.showLevelCompleteCover = 0;
+                screenState.showWorldCompleteCover = 0;
+                screenState.showDefeatCoverForWorld = 0;
+            }
+
+
+            clearGameTimersAndMusic();
+
+            let levelEffectivelyWon = false; 
+            isNewHighScore = false; 
+
+            if (gameMode === 'freeMode') {
+                const freeModeResult = handleFreeModeEnd(score, snake.length, difficulty);
+                isNewHighScore = freeModeResult.isNewRecord; 
+                levelEffectivelyWon = freeModeResult.isEffectivelyWon;
+                if (isNewHighScore) {
+                    blinkAnimation.rowIndex = freeModeResult.rowIndex; 
+                }
+            } else if (gameMode === 'levels') {
+                levelEffectivelyWon = handleLevelsModeEnd(score, gameTimeRemaining);
+            }
+
+            playSoundForGameOver(levelEffectivelyWon);
+            draw(); 
+            managePostGameOverMusicAndAnimation(); 
+            updateUIOnGameOver(); 
+
+            if (gameMode === 'levels') { 
+                saveGameSettings(); // Guardamos el estado actualizado (nivel/mundo avanzado)
+            }
+        }
+        
+        function drawWorldCoverImage(worldNumber) {
+            if (!ctx || !canvasEl) return;
+            ctx.fillStyle = "#374151"; 
+            ctx.fillRect(0, 0, canvasEl.width, canvasEl.height);
+
+            const img = worldCoverImages[worldNumber];
+            if (img && img.complete && img.naturalHeight !== 0) {
+                ctx.drawImage(img, 0, 0, canvasEl.width, canvasEl.height);
+            } else {
+                ctx.fillStyle = "white";
+                ctx.textAlign = "center";
+                ctx.font = `${Math.floor(canvasEl.width / 15)}px 'Press Start 2P'`;
+                ctx.fillText(`Mundo ${worldNumber}`, canvasEl.width / 2, canvasEl.height / 2);
+                if (!img.complete) {
+                    console.warn(`Imagen de portada para Mundo ${worldNumber} aún no cargada.`);
+                } else if (img.naturalHeight === 0) {
+                    console.warn(`Imagen de portada para Mundo ${worldNumber} parece estar corrupta o no es una imagen válida.`);
+                }
+            }
+        }
+        
+        function drawWorldCompleteScreen(worldNumber) {
+            if (!ctx || !canvasEl) return;
+            ctx.fillStyle = "#374151"; 
+            ctx.fillRect(0, 0, canvasEl.width, canvasEl.height);
+
+            const img = worldCompleteImages[worldNumber];
+            if (img && img.complete && img.naturalHeight !== 0) {
+                 ctx.drawImage(img, 0, 0, canvasEl.width, canvasEl.height);
+            } else {
+                // Fallback text if image fails to load
+                ctx.fillStyle = "white";
+                ctx.textAlign = "center";
+                ctx.font = `${Math.floor(canvasEl.width / 10)}px 'Press Start 2P'`;
+                if (worldNumber === TOTAL_WORLDS) {
+                    ctx.fillText("¡JUEGO COMPLETADO!", canvasEl.width / 2, canvasEl.height / 2);
+                } else {
+                    ctx.fillText(`¡MUNDO ${worldNumber} SUPERADO!`, canvasEl.width / 2, canvasEl.height / 2);
+                }
+                 if (!img.complete) {
+                    console.warn(`Imagen de mundo completado para Mundo ${worldNumber} aún no cargada.`);
+                } else if (img.naturalHeight === 0) {
+                    console.warn(`Imagen de mundo completado para Mundo ${worldNumber} parece estar corrupta o no es una imagen válida.`);
+                }
+            }
+        }
+
+        function drawLevelCompleteImage(worldNumber) { 
+            if (!ctx || !canvasEl) return;
+            ctx.fillStyle = "#374151"; 
+            ctx.fillRect(0, 0, canvasEl.width, canvasEl.height);
+
+            const img = levelCompleteImages[worldNumber];
+            if (img && img.complete && img.naturalHeight !== 0) {
+                ctx.drawImage(img, 0, 0, canvasEl.width, canvasEl.height);
+            } else {
+                ctx.fillStyle = "white";
+                ctx.textAlign = "center";
+                ctx.font = `${Math.floor(canvasEl.width / 15)}px 'Press Start 2P'`;
+                ctx.fillText(`¡Nivel Superado!`, canvasEl.width / 2, canvasEl.height / 2 - 20);
+                ctx.font = `${Math.floor(canvasEl.width / 25)}px 'Press Start 2P'`;
+                ctx.fillText(`(Mundo ${worldNumber})`, canvasEl.width / 2, canvasEl.height / 2 + 20);
+
+                if (!img.complete) {
+                    console.warn(`Imagen de nivel completado para Mundo ${worldNumber} aún no cargada.`);
+                } else if (img.naturalHeight === 0) {
+                    console.warn(`Imagen de nivel completado para Mundo ${worldNumber} parece estar corrupta o no es una imagen válida.`);
+                }
+            }
+        }
+
+        function drawDefeatScreen(worldNumber) { // New function for defeat screen
+            if (!ctx || !canvasEl) return;
+            ctx.fillStyle = "#374151"; 
+            ctx.fillRect(0, 0, canvasEl.width, canvasEl.height);
+
+            const img = defeatImages[worldNumber];
+            if (img && img.complete && img.naturalHeight !== 0) {
+                ctx.drawImage(img, 0, 0, canvasEl.width, canvasEl.height);
+            } else {
+                ctx.fillStyle = "white";
+                ctx.textAlign = "center";
+                ctx.font = `${Math.floor(canvasEl.width / 15)}px 'Press Start 2P'`;
+                ctx.fillText(`¡Has Perdido!`, canvasEl.width / 2, canvasEl.height / 2 - 20);
+                ctx.font = `${Math.floor(canvasEl.width / 25)}px 'Press Start 2P'`;
+                ctx.fillText(`(Mundo ${worldNumber})`, canvasEl.width / 2, canvasEl.height / 2 + 20);
+
+                if (!img.complete) {
+                    console.warn(`Imagen de derrota para Mundo ${worldNumber} aún no cargada.`);
+                } else if (img.naturalHeight === 0) {
+                    console.warn(`Imagen de derrota para Mundo ${worldNumber} parece estar corrupta o no es una imagen válida.`);
+                }
+            }
+        }
+        function drawFreeModeCover() { // New function for free mode cover
+            if (!ctx || !canvasEl) return;
+            ctx.fillStyle = "#374151"; 
+            ctx.fillRect(0, 0, canvasEl.width, canvasEl.height);
+
+            const img = freeModeCoverImg;
+            if (img && img.complete && img.naturalHeight !== 0) {
+                ctx.drawImage(img, 0, 0, canvasEl.width, canvasEl.height);
+            } else {
+                ctx.fillStyle = "white";
+                ctx.textAlign = "center";
+                ctx.font = `${Math.floor(canvasEl.width / 15)}px 'Press Start 2P'`;
+                ctx.fillText(`Modo Libre`, canvasEl.width / 2, canvasEl.height / 2);
+                if (!img.complete) {
+                    console.warn(`Imagen de portada de Modo Libre aún no cargada.`);
+                } else if (img.naturalHeight === 0) {
+                    console.warn(`Imagen de portada de Modo Libre parece estar corrupta o no es una imagen válida.`);
+                }
+            }
+        }
+
+
+        function draw() {
+             if (!ctx) return; 
+            ctx.fillStyle = "#374151"; 
+            ctx.fillRect(0, 0, canvasEl.width, canvasEl.height);
+
+            if (screenState.showFreeModeCover && !screenState.gameActuallyStarted) {
+                drawFreeModeCover();
+                updateMainButtonStates();
+                return;
+            }
+            if (screenState.showDefeatCoverForWorld > 0 && gameMode === 'levels' && !screenState.gameActuallyStarted) { 
+                drawDefeatScreen(screenState.showDefeatCoverForWorld);
+                updateMainButtonStates();
+                return;
+            }
+            if (screenState.showWorldCompleteCover > 0 && gameMode === 'levels') { 
+                drawWorldCompleteScreen(screenState.showWorldCompleteCover);
+                updateMainButtonStates(); 
+                return;
+            }
+            if (screenState.showLevelCompleteCover > 0 && gameMode === 'levels' && !screenState.gameActuallyStarted) { 
+                drawLevelCompleteImage(screenState.showLevelCompleteCover); 
+                updateMainButtonStates(); 
+                return;
+            }
+            if (screenState.showCoverForWorld > 0 && gameMode === 'levels' && !screenState.gameActuallyStarted) {
+                drawWorldCoverImage(screenState.showCoverForWorld);
+                updateMainButtonStates(); 
+                return; 
+            }
+
+
+            if (tileCountX <= 0 || tileCountY <= 0) return; 
+
+            const currentSkinData = SKINS[currentSkin]; 
+
+            if (!gameOver) {
+                // Draw snake body
+                for (let i = 1; i < snake.length; i++) {
+                    const segmentX = snake[i].x * GRID_SIZE;
+                    const segmentY = snake[i].y * GRID_SIZE;
+                    const skinData = SKINS[currentSkin]; 
+
+                    if (snakeBodyTexture && snakeBodyTexture.complete && snakeBodyTexture.naturalHeight !== 0) {
+                        ctx.drawImage(snakeBodyTexture, segmentX, segmentY, GRID_SIZE - 1, GRID_SIZE - 1);
+                        if (skinData.bodyTintColor) {
+                            ctx.globalCompositeOperation = 'multiply';
+                            ctx.fillStyle = skinData.bodyTintColor;
+                            ctx.fillRect(segmentX, segmentY, GRID_SIZE - 1, GRID_SIZE - 1);
+                            ctx.globalCompositeOperation = 'source-over'; 
+                        }
+                    } else {
+                        ctx.fillStyle = skinData.bodyTintColor || '#A8F031'; 
+                        ctx.fillRect(segmentX, segmentY, GRID_SIZE - 1, GRID_SIZE - 1);
+                    }
+                    if (skinData.bodyStrokeColor) {
+                        ctx.strokeStyle = skinData.bodyStrokeColor;
+                        ctx.lineWidth = 1; 
+                        ctx.strokeRect(segmentX, segmentY, GRID_SIZE - 1, GRID_SIZE - 1);
+                    }
+                }
+
+                // Draw food
+                if (currentFoodItem.x !== undefined) { 
+                    drawFoodItem(currentFoodItem.x, currentFoodItem.y);
+                }
+
+                // Draw snake head
+                if (snake.length > 0) {
+                    const head = snake[0];
+                    if (currentSkinData && currentSkinData.snakeHeadAsset) {
+                        let imgToDraw;
+                        let baseImageForUp = currentSkinData.snakeHeadAsset.upDown;
+                        let baseImageForDown = currentSkinData.snakeHeadAsset.upDown;
+                        let baseImageForLeft = currentSkinData.snakeHeadAsset.left;
+                        let baseImageForRight = currentSkinData.snakeHeadAsset.left; 
+                        let flipHorizontal = false;
+                        let flipVertical = false;
+
+                        if (direction === 'up') { imgToDraw = baseImageForUp; flipVertical = true; }
+                        else if (direction === 'down') { imgToDraw = baseImageForDown; }
+                        else if (direction === 'left') { imgToDraw = baseImageForLeft; }
+                        else if (direction === 'right') { imgToDraw = baseImageForRight; flipHorizontal = true; }
+
+                        if (imgToDraw && imgToDraw.complete && imgToDraw.naturalHeight !== 0) {
+                            const drawSize = GRID_SIZE * currentSkinData.snakeHeadScale;
+                            const offset = (drawSize - GRID_SIZE) / 2;
+                            const drawX = head.x * GRID_SIZE - offset;
+                            const drawY = head.y * GRID_SIZE - offset;
+                            ctx.save(); 
+                            ctx.translate(drawX + drawSize / 2, drawY + drawSize / 2); 
+                            let scaleX = 1; let scaleY = 1;
+                            if (flipHorizontal) scaleX = -1; if (flipVertical) scaleY = -1;
+                            ctx.scale(scaleX, scaleY); 
+                            ctx.drawImage(imgToDraw, -drawSize / 2, -drawSize / 2, drawSize, drawSize); 
+                            ctx.restore(); 
+                        } else { 
+                            ctx.fillStyle = "#a7f3d0"; 
+                            ctx.fillRect(head.x * GRID_SIZE, head.y * GRID_SIZE, GRID_SIZE - 1, GRID_SIZE - 1);
+                        }
+                    } else { 
+                        ctx.fillStyle = "#a7f3d0";
+                        ctx.fillRect(head.x * GRID_SIZE, head.y * GRID_SIZE, GRID_SIZE - 1, GRID_SIZE - 1);
+                        ctx.strokeStyle = "#065f46"; 
+                        ctx.strokeRect(head.x * GRID_SIZE, head.y * GRID_SIZE, GRID_SIZE -1, GRID_SIZE -1);
+                    }
+                }
+            } else { // Game Over Screen (but not world/level complete or defeat screen)
+                if (!screenState.showWorldCompleteCover && !screenState.showLevelCompleteCover && !screenState.showDefeatCoverForWorld && !screenState.showFreeModeCover) { 
+                    ctx.fillStyle = "rgba(0, 0, 0, 0.65)"; 
+                    ctx.fillRect(0, 0, canvasEl.width, canvasEl.height);
+                    
+                    const baseFontSize = Math.min(16, Math.floor(canvasEl.width / 20)); 
+                    const highScoreTitleFontSize = Math.max(9, baseFontSize * 0.9);
+                    const highScoreEntryFontSize = Math.max(7, baseFontSize * 0.7);
+                    const tableHeaderFontSize = Math.max(7, baseFontSize * 0.7);
+                    
+                    let endMessageFontSize = baseFontSize;
+                    let mainTitle = "";
+                    let subTitle = "";
+                    let titleColor = "rgba(220, 38, 38, 1)"; 
+
+                    if (gameMode === 'levels') {
+                        mainTitle = `Nivel ${displayWorld}.${displayLevelInWorld} Fallido`; // Use display variables
+                        subTitle = "Inténtalo de nuevo";
+                    } else if (gameMode === 'freeMode') { 
+                        mainTitle = isNewHighScore ? "¡Nuevo Récord!" : "Game Over";
+                         if (isNewHighScore) titleColor = "rgba(76, 175, 80, 1)";
+                    }
+
+
+                    const targetWidthForEndMessage = canvasEl.width * 0.9;
+                    let optimalSizeForEndMessage = Math.floor(canvasEl.height / 5); 
+                    if (optimalSizeForEndMessage < 15) optimalSizeForEndMessage = 15;
+                    ctx.font = `${optimalSizeForEndMessage}px 'Press Start 2P'`;
+                    while(ctx.measureText(mainTitle).width > targetWidthForEndMessage && optimalSizeForEndMessage > 10) {
+                        optimalSizeForEndMessage--;
+                        ctx.font = `${optimalSizeForEndMessage}px 'Press Start 2P'`;
+                    }
+                    endMessageFontSize = optimalSizeForEndMessage;
+
+                    let currentY = canvasEl.height * 0.08; 
+
+                    ctx.fillStyle = titleColor;
+                    ctx.font = `${endMessageFontSize}px 'Press Start 2P'`;
+                    ctx.textAlign = "center";
+                    ctx.textBaseline = "middle"; 
+                    ctx.shadowColor = "rgba(0,0,0,0.8)";
+                    ctx.shadowBlur = 10;
+                    ctx.fillText(mainTitle, canvasEl.width / 2, currentY);
+                    ctx.shadowBlur = 0; 
+                    currentY += endMessageFontSize * 1.2;
+
+                    if (subTitle) {
+                        const subTitleFontSize = Math.max(10, Math.floor(endMessageFontSize * 0.7));
+                        ctx.font = `${subTitleFontSize}px 'Press Start 2P'`;
+                        ctx.fillStyle = titleColor; 
+                        ctx.fillText(subTitle, canvasEl.width / 2, currentY);
+                        currentY += subTitleFontSize * 1.5;
+                    }
+                    
+                    currentY += 10; 
+
+                    if (gameMode === 'freeMode') { 
+                        const tableOuterTopPadding = 30; 
+                        const tableBottomPadding = 10; 
+                        const tableSidePadding = canvasEl.width * 0.05;
+                        const tableRectX = tableSidePadding;
+                        const tableRectWidth = canvasEl.width - (2 * tableSidePadding);
+                        const tableCornerRadius = 10; 
+                        const tableBorderWidth = 2;
+                        const tableBorderColor = "#4B5563";
+                        const internalLineWidth = tableBorderWidth; 
+
+                        const classificationTitleText = `Clasificación (${DIFFICULTY_DISPLAY_NAMES[difficulty] || difficulty})`;
+                        let classificationTitleY = currentY; 
+                        
+                        const titleRowBgColor = "#1F2937"; 
+                        const headerRowBgColor = "#1F2937"; 
+                        const titleRowPaddingY = 5;
+
+                        const titleRowHeight = highScoreTitleFontSize + 2 * titleRowPaddingY;
+                        const headerRowHeight = tableHeaderFontSize + 10; 
+                        
+                        const tableContentStartY = classificationTitleY - highScoreTitleFontSize * 0.5 - titleRowPaddingY; 
+                        const tableBgEndY = canvasEl.height - tableBottomPadding;
+                        const tableBgHeight = tableBgEndY - tableContentStartY;
+
+                        const availableHeightForScores = tableBgHeight - titleRowHeight - headerRowHeight - (tableBorderWidth * 2);
+                        let dynamicScoreRowHeight = highScoreEntryFontSize + 10; 
+                        if (MAX_HIGH_SCORES > 0 && availableHeightForScores > 0) {
+                            dynamicScoreRowHeight = Math.max(highScoreEntryFontSize + 4, availableHeightForScores / MAX_HIGH_SCORES);
+                        }
+
+                        if (tableBgHeight > 0) {
+                            ctx.fillStyle = "#374151"; 
+                            ctx.strokeStyle = tableBorderColor;
+                            ctx.lineWidth = tableBorderWidth;
+                            ctx.beginPath();
+                            ctx.roundRect(tableRectX, tableContentStartY, tableRectWidth, tableBgHeight, tableCornerRadius);
+                            ctx.fill();
+                            ctx.stroke();
+                        }
+                        
+                        const titleRowActualY = tableContentStartY;
+                        ctx.fillStyle = titleRowBgColor;
+                        
+                        ctx.save();
+                        ctx.beginPath();
+                        ctx.rect(tableRectX + tableBorderWidth / 2, titleRowActualY + tableBorderWidth / 2, tableRectWidth - tableBorderWidth, titleRowHeight);
+                        ctx.clip(); 
+                        ctx.beginPath();
+                        ctx.roundRect(tableRectX, titleRowActualY, tableRectWidth, titleRowHeight + tableCornerRadius, [tableCornerRadius, tableCornerRadius, 0, 0]); 
+                        ctx.fill();
+                        ctx.restore();
+                        
+                        ctx.font = `${highScoreTitleFontSize}px 'Press Start 2P'`;
+                        ctx.fillStyle = "#6ee7b7";
+                        ctx.textAlign = "center";
+                        ctx.textBaseline = "middle";
+                        ctx.fillText(classificationTitleText, canvasEl.width / 2, titleRowActualY + titleRowHeight / 2);
+
+                        let currentDrawingYForTable = titleRowActualY + titleRowHeight;
+                        
+                        const headerRowActualY = currentDrawingYForTable;
+                        ctx.fillStyle = headerRowBgColor;
+                        ctx.fillRect(tableRectX + tableBorderWidth/2, headerRowActualY, tableRectWidth - tableBorderWidth, headerRowHeight);
+
+                        const headerTextY = headerRowActualY + headerRowHeight / 2;
+                        // AJUSTE DE POSICIONES X PARA LA TABLA DE PUNTUACIONES
+                        const rankX = tableRectX + tableRectWidth * 0.10;    // Para "Nº"
+                        const scoreX = tableRectX + tableRectWidth * 0.35;   // Para "PUNTOS"
+                        const lengthX = tableRectX + tableRectWidth * 0.60;  // Para "LONG." (ajustado)
+                        const skinX = tableRectX + tableRectWidth * 0.85;   // Para "DISFRAZ" (más espacio)
+
+                        const headerFont = `${tableHeaderFontSize}px 'Press Start 2P'`;
+                        const headerColor = "#F5F5F5";
+                        ctx.font = headerFont;
+                        ctx.fillStyle = headerColor;
+                        ctx.textAlign = "center"; // Asegurar alineación central
+                        ctx.textBaseline = "middle"; // Asegurar alineación vertical
+
+                        ctx.fillText("Nº", rankX, headerTextY);
+                        ctx.fillText("PUNTOS", scoreX, headerTextY);
+                        ctx.fillText("LONG.", lengthX, headerTextY);
+                        ctx.fillText("DISFRAZ", skinX, headerTextY); // Usar el texto "DISFRAZ"
+                        currentDrawingYForTable = headerRowActualY + headerRowHeight;
+
+                        const highScores = loadHighScores(difficulty);
+                        const entryFont = `${highScoreEntryFontSize}px 'Press Start 2P'`;
+                        const defaultEntryColor = "#F5F5F5";
+                        const highlightEntryColor = "#6ee7b7"; 
+                        const blinkOffColor = "#5A6578"; 
+                        
+                        let newHighScoreEntryProcessedForVisuals = false; 
+
+                        for (let i = 0; i < MAX_HIGH_SCORES; i++) { 
+                            const scoreRowActualY = currentDrawingYForTable;
+                            if (scoreRowActualY + dynamicScoreRowHeight > tableBgEndY - tableBorderWidth/2) break; 
+
+                            const rowTextY = scoreRowActualY + dynamicScoreRowHeight / 2; 
+                            
+                            if (i > 0 || headerRowActualY + headerRowHeight < scoreRowActualY) {
+                                ctx.strokeStyle = tableBorderColor; 
+                                ctx.lineWidth = internalLineWidth; 
+                                ctx.beginPath();
+                                ctx.moveTo(tableRectX + tableBorderWidth / 2, scoreRowActualY); 
+                                ctx.lineTo(tableRectX + tableRectWidth - tableBorderWidth / 2, scoreRowActualY);
+                                ctx.stroke();
+                            }
+                            
+                            if (highScores[i]) {
+                                const entry = highScores[i];
+                                let currentEntryColor = defaultEntryColor;
+                                
+                                let isThisTheNewRecordFromThisGame = isNewHighScore && 
+                                                                entry.score === score && 
+                                                                entry.length === snake.length &&
+                                                                i === blinkAnimation.rowIndex && 
+                                                                !newHighScoreEntryProcessedForVisuals;
+
+
+                                if (blinkAnimation.active && isThisTheNewRecordFromThisGame) {
+                                    const visible = Math.floor((Date.now() - blinkAnimation.startTime) / blinkAnimation.interval) % 2 === 0;
+                                    currentEntryColor = visible ? highlightEntryColor : blinkOffColor;
+                                } else if (isThisTheNewRecordFromThisGame && !blinkAnimation.active) { 
+                                    currentEntryColor = highlightEntryColor;
+                                } else if (isNewHighScore && i === blinkAnimation.rowIndex && !blinkAnimation.active) { 
+                                    currentEntryColor = highlightEntryColor;
+                                }
+                                
+                                ctx.fillStyle = currentEntryColor;
+                                ctx.font = entryFont;
+                                // textAlign y textBaseline ya están en "center" y "middle"
+                                ctx.fillText(`${i + 1}.`, rankX, rowTextY);
+                                ctx.fillText(`${entry.score}`, scoreX, rowTextY);
+                                ctx.fillText(`${entry.length}`, lengthX, rowTextY);
+                                // USAR SKIN_DISPLAY_NAMES para mostrar el nombre del disfraz
+                                const skinDisplayName = SKIN_DISPLAY_NAMES[entry.skin] || entry.skin || '-';
+                                ctx.fillText(skinDisplayName, skinX, rowTextY);
+                            } else {
+                                ctx.fillStyle = defaultEntryColor;
+                                ctx.font = entryFont;
+                                ctx.fillText(`${i + 1}.`, rankX, rowTextY);
+                                ctx.fillText("---", scoreX, rowTextY);
+                                ctx.fillText("---", lengthX, rowTextY);
+                                ctx.fillText("---", skinX, rowTextY); // Placeholder para skin
+                            }
+                            currentDrawingYForTable += dynamicScoreRowHeight; 
+                        }
+                        ctx.strokeStyle = tableBorderColor;
+                        ctx.lineWidth = internalLineWidth; 
+                        ctx.beginPath();
+                        ctx.moveTo(tableRectX + tableBorderWidth / 2, titleRowActualY + titleRowHeight);
+                        ctx.lineTo(tableRectX + tableRectWidth - tableBorderWidth / 2, titleRowActualY + titleRowHeight);
+                        ctx.stroke();
+
+                        ctx.beginPath();
+                        ctx.moveTo(tableRectX + tableBorderWidth / 2, headerRowActualY + headerRowHeight);
+                        ctx.lineTo(tableRectX + tableRectWidth - tableBorderWidth / 2, headerRowActualY + headerRowHeight);
+                        ctx.stroke();
+                    }
+                    ctx.textBaseline = "alphabetic"; 
+                }
+            }
+        }
+        
+        function update() {
+            if (gameOver || tileCountX <= 0 || tileCountY <= 0) return;
+
+            direction = nextDirection; // Actualizar la dirección actual con la siguiente dirección almacenada
+
+            let nextHeadX = snake[0].x;
+            let nextHeadY = snake[0].y;
+            switch (direction) {
+                case "up":    nextHeadY--; break;
+                case "down":  nextHeadY++; break;
+                case "left":  nextHeadX--; break;
+                case "right": nextHeadX++; break;
+            }
+
+            if (nextHeadX < 0 || nextHeadX >= tileCountX || nextHeadY < 0 || nextHeadY >= tileCountY) {
+                gameOver = true;
+            }
+            if (!gameOver) {
+                for (let i = 1; i < snake.length; i++) {
+                    if (nextHeadX === snake[i].x && nextHeadY === snake[i].y) {
+                        gameOver = true;
+                        break;
+                    }
+                }
+            }
+            
+            const nextHead = { x: nextHeadX, y: nextHeadY };
+            let growth = 0; 
+            if (currentFoodItem.x !== undefined && nextHead.x === currentFoodItem.x && nextHead.y === currentFoodItem.y) {
+                score += POINTS_PER_FOOD * streakMultiplier; 
+                if(areSfxEnabled) playSound('eat');
+                
+                if (streakMultiplier < MAX_STREAK) { streakMultiplier += 0.5; }
+                if (streakMultiplier > MAX_STREAK) { streakMultiplier = MAX_STREAK; }
+
+                growth = 1; 
+                clearTimeout(foodDisappearTimeoutId); 
+                clearInterval(foodVisualTimerIntervalId); 
+                foodTimeRemaining = 0; 
+                generateFood(); 
+
+                if (gameMode === 'levels') {
+                    const absoluteLevelIndex = (currentWorld - 1) * LEVELS_PER_WORLD + (currentLevelInWorld - 1);
+                    if (score >= TARGET_SCORES_LEVELS[absoluteLevelIndex]) {
+                        gameOver = true; // Level won by score
+                    }
+                }
+            }
+
+            if (gameOver) { 
+                finalizeGameOver(); 
+                return;
+            }
+            
+            snake.unshift(nextHead); 
+            if (growth === 0) { snake.pop(); }
+
+            updateScoreDisplay(); 
+            if (gameMode === 'freeMode' || gameMode === 'levels') { 
+                updateTimeLengthDisplay(); 
+            }
+            draw();
+        }
+        
+        function updateScoreDisplay() {
+            scoreValueDisplay.textContent = score;
+            streakValueDisplay.textContent = `${Number.isInteger(streakMultiplier) ? streakMultiplier : streakMultiplier.toFixed(1)}x`;
+        }
+
+        function updateTargetScoreDisplay() {
+            if (targetScoreValueDisplay && targetScoreDivider) {
+                 if (gameMode === 'levels') { 
+                    // Use displayTargetScore which is updated at the start of a game or when settings change
+                    targetScoreValueDisplay.textContent = displayTargetScore;
+                    targetScoreValueDisplay.classList.remove('hidden');
+                    targetScoreDivider.classList.remove('hidden');
+                } else { 
+                    targetScoreValueDisplay.classList.add('hidden');
+                    targetScoreDivider.classList.add('hidden');
+                }
+            }
+        }
+        
+        function updateTimeLengthDisplay() {
+            if (gameMode === 'levels') { 
+                timeLengthLabelEl.textContent = "Tiempo:";
+                timeLengthValueEl.textContent = Math.max(0, Math.ceil(gameTimeRemaining / 1000));
+            } else { // freeMode
+                timeLengthLabelEl.textContent = "Longitud:";
+                timeLengthValueEl.textContent = snake.length > 0 ? snake.length : INITIAL_SNAKE_LENGTH; 
+            }
+        }
+
+        function displayHighScoreInPanel() {
+            const selectedDifficulty = difficultySelector.value; // Esto es para el modo libre
+            const highScores = loadHighScores(selectedDifficulty);
+            const hsSkinValueDisplay = document.getElementById("hs-skin-value"); 
+
+            if (highScores.length > 0) {
+                hsScoreValue.textContent = highScores[0].score;
+                hsLengthValue.textContent = highScores[0].length;
+                if (hsSkinValueDisplay) { 
+                    hsSkinValueDisplay.textContent = SKIN_DISPLAY_NAMES[highScores[0].skin] || highScores[0].skin || '-';
+                }
+            } else {
+                hsScoreValue.textContent = "-"; 
+                hsLengthValue.textContent = "-"; 
+                if (hsSkinValueDisplay) { 
+                    hsSkinValueDisplay.textContent = "-"; 
+                }
+            }
+        }
+        
+        function updateGameModeUI() {
+            gameMode = gameModeSelector.value;
+            
+            const isGameCurrentlyRunning = !!gameIntervalId;
+            const isSettingsPanelCurrentlyOpen = !settingsPanel.classList.contains("settings-panel-hidden");
+
+            if (gameMode === 'levels') {
+                progressPanel.classList.remove('hidden');
+                starProgressContainer.classList.remove('hidden');
+                highScoreDisplay.classList.add('hidden');
+                progressPanelLeftLabel.textContent = "Nivel:"; 
+                progressPanelLeftValue.textContent = `${displayWorld}.${displayLevelInWorld}`; 
+                
+                difficultyLabel.textContent = "Mundo Actual:";
+                difficultySelector.classList.add('hidden');
+                worldsSelector.classList.remove('hidden');
+                populateWorldsSelector();
+                drawStarProgress(); 
+
+                if (isSettingsPanelCurrentlyOpen && !isGameCurrentlyRunning) {
+                    worldsSelector.disabled = false;
+                    difficultyControlGroup.classList.add("interactive-mode");
+                } else {
+                    worldsSelector.disabled = true;
+                     if (!isGameCurrentlyRunning) difficultyControlGroup.classList.add("interactive-mode"); 
+                     else difficultyControlGroup.classList.remove("interactive-mode");
+                }
+            } else if (gameMode === 'freeMode') {
+                progressPanel.classList.remove('hidden');
+                starProgressContainer.classList.add('hidden'); // Ocultar estrellas
+                highScoreDisplay.classList.remove('hidden'); // Mostrar panel de high score
+                
+                // Ya no se usa progressPanelLeftLabel/Value para el high score.
+                // El label "Máxima puntuación" está dentro de #high-score-display.
+                // Y progressPanelLeftLabel/Value se ocultan o se dejan como están si se quiere mostrar la dificultad actual del juego.
+                // Por ahora, mantendremos la lógica de que #current-world-info-group muestre la dificultad actual del juego.
+                progressPanelLeftLabel.textContent = "Dificultad:"; 
+                progressPanelLeftValue.textContent = DIFFICULTY_DISPLAY_NAMES[difficultySelector.value] || difficultySelector.value;
+                
+                displayHighScoreInPanel(); 
+
+                difficultyLabel.textContent = "Dificultad:";
+                difficultySelector.classList.remove('hidden');
+                worldsSelector.classList.add('hidden');
+                
+                if (isSettingsPanelCurrentlyOpen && !isGameCurrentlyRunning) {
+                    difficultySelector.disabled = false;
+                    difficultyControlGroup.classList.add("interactive-mode");
+                } else {
+                    difficultySelector.disabled = true;
+                    if (!isGameCurrentlyRunning) difficultyControlGroup.classList.add("interactive-mode");
+                    else difficultyControlGroup.classList.remove("interactive-mode");
+                }
+            } else { 
+                progressPanel.classList.add('hidden'); 
+                difficultyLabel.textContent = "Dificultad:"; 
+                difficultySelector.classList.remove('hidden');
+                worldsSelector.classList.add('hidden');
+                 if (isSettingsPanelCurrentlyOpen && !isGameCurrentlyRunning) {
+                    difficultySelector.disabled = false;
+                    difficultyControlGroup.classList.add("interactive-mode");
+                } else {
+                    difficultySelector.disabled = true;
+                    if (!isGameCurrentlyRunning) difficultyControlGroup.classList.add("interactive-mode");
+                    else difficultyControlGroup.classList.remove("interactive-mode");
+                }
+            }
+
+            updateTargetScoreDisplay(); 
+
+            if (gameMode === 'levels') { 
+                timeLengthLabelEl.textContent = "Tiempo:";
+                if (!screenState.gameActuallyStarted && !gameOver) {
+                     timeLengthValueEl.textContent = Math.ceil(LEVEL_TIME_LIMIT / 1000);
+                } else if (!gameOver) { 
+                     timeLengthValueEl.textContent = Math.max(0, Math.ceil(gameTimeRemaining / 1000));
+                } else { 
+                     timeLengthValueEl.textContent = Math.ceil(LEVEL_TIME_LIMIT / 1000); 
+                }
+            } else { // freeMode
+                timeLengthLabelEl.textContent = "Longitud:";
+                timeLengthValueEl.textContent = snake.length > 0 ? snake.length : INITIAL_SNAKE_LENGTH; 
+            }
+        }
+
+        function populateWorldsSelector() {
+            worldsSelector.innerHTML = ''; 
+            for (let i = 1; i <= TOTAL_WORLDS; i++) {
+                const option = document.createElement('option');
+                option.value = i;
+                option.textContent = `Mundo ${i}`;
+                option.disabled = i > maxUnlockedWorld;
+                if (i === currentWorld) { 
+                    option.selected = true;
+                }
+                worldsSelector.appendChild(option);
+            }
+        }
+
+        function drawStarProgress() {
+            starProgressContainer.innerHTML = ''; 
+            if (gameMode !== 'levels') return;
+
+            const worldToDisplayStarsFor = gameOver ? displayWorld : currentWorld;
+
+
+            const worldLevelStartIndex = (worldToDisplayStarsFor - 1) * LEVELS_PER_WORLD;
+            for (let i = 0; i < LEVELS_PER_WORLD; i++) {
+                const levelIndexInTotal = worldLevelStartIndex + i;
+                const isCompleted = levelsProgress[levelIndexInTotal];
+                const starSvg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+                starSvg.setAttribute("class", "star-svg");
+                starSvg.setAttribute("viewBox", "0 0 24 24");
+                const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+                path.setAttribute("d", "M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z");
+                starSvg.appendChild(path);
+                starSvg.setAttribute("fill", isCompleted ? "#FACC15" : "#6B7280"); 
+                starProgressContainer.appendChild(starSvg);
+            }
+        }
+        
+        async function ensureAudioContextRunning() {
+            if (typeof Tone === 'undefined') return false;
+            if (Tone.context.state !== 'running') {
+                try {
+                    await Tone.start(); 
+                    console.log("Tone.js context (re)started/resumed by ensureAudioContextRunning.");
+                    if (Tone.context.state === 'running' && !synthsInitialized) { 
+                        initializeToneSynths();
+                    }
+                    return Tone.context.state === 'running';
+                } catch (e) {
+                    console.error("Error trying to start/resume Tone.js context in ensureAudioContextRunning:", e);
+                    return false;
+                }
+            } else if (!synthsInitialized) { 
+                 initializeToneSynths();
+            }
+            return true; 
+        }
+        
+        function initializeToneSynths() {
+            if (typeof Tone === 'undefined' || Tone.context.state !== 'running') {
+                console.warn("Tone.js context not running. Synth initialization deferred or skipped.");
+                synthsInitialized = false; 
+                return;
+            }
+            if (synthsInitialized) return; 
+
+            console.log("Initializing Tone.js Synths...");
+            synthEat = new Tone.MonoSynth({ oscillator: { type: 'triangle' }, envelope: { attack: 0.005, decay: 0.04, sustain: 0.01, release: 0.08 }, filterEnvelope: { attack: 0.002, decay: 0.01, sustain: 0, release: 0.02, baseFrequency: 1500, octaves: 1.5, exponent: 2 } }).toDestination();
+            synthEat.volume.value = 0; 
+            synthEatNoise = new Tone.NoiseSynth({ noise: { type: 'white' }, envelope: { attack: 0.001, decay: 0.02, sustain: 0, release: 0.01 } }).toDestination();
+            synthEatNoise.volume.value = -10; 
+            synthWarning = new Tone.Synth({ oscillator: { type: 'sine' }, envelope: { attack: 0.01, decay: 0.05, sustain: 0, release: 0.1 } }).toDestination();
+            synthWarning.volume.value = 0; 
+            synthTimeout = new Tone.Synth({ oscillator: { type: 'square' }, envelope: { attack: 0.01, decay: 0.2, sustain: 0, release: 0.1 } }).toDestination();
+            synthTimeout.volume.value = 0; 
+            synthGameOver = new Tone.Synth({ oscillator: { type: 'triangle' }, envelope: { attack: 0.01, decay: 0.1, sustain: 0.2, release: 0.3 } }).toDestination();
+            synthGameOver.volume.value = 0; 
+            synthStartGame = new Tone.Synth({ oscillator: {type: 'triangle'}, envelope: { attack: 0.005, decay: 0.1, sustain: 0.05, release: 0.1 } }).toDestination();
+            synthStartGame.volume.value = 0; 
+            synthWin = new Tone.Synth({ oscillator: { type: 'square' }, envelope: { attack: 0.01, decay: 0.2, sustain: 0.1, release: 0.4 } }).toDestination(); 
+            synthWin.volume.value = 0; 
+            // synthSplashStart is initialized in window.onload
+
+            synthsInitialized = true; 
+            console.log("Tone.js Synths initialized.");
+        }
+
+
+        async function startGame() { 
+            isNewHighScore = false; 
+            blinkAnimation.active = false;
+            blinkAnimation.rowIndex = -1;
+            
+            const wasOnWorldCompleteCoverForNewWorld = screenState.showWorldCompleteCover > 0 && startButton.textContent === "Nuevo Mundo";
+        
+            // Reset all visual state flags that are managed before game loop starts
+            screenState.showCoverForWorld = 0;
+            screenState.showLevelCompleteCover = 0; 
+            screenState.showDefeatCoverForWorld = 0;
+            screenState.showWorldCompleteCover = 0;
+            screenState.showFreeModeCover = false;
+        
+            if (startButton.textContent === "Ajustes") {
+                openSettingsPanel();
+                screenState.gameActuallyStarted = false; 
+            } else {
+                closeSettingsPanel(); 
+                closeInfoPanel(); 
+        
+                if (gameMode === 'levels' && wasOnWorldCompleteCoverForNewWorld) {
+                    // currentWorld and currentLevelInWorld are already set for the new world
+                    screenState.showCoverForWorld = currentWorld; 
+                    screenState.gameActuallyStarted = false; 
+
+                    // Update display variables for the new world's cover screen
+                    displayWorld = currentWorld;
+                    displayLevelInWorld = 1; // New world starts at level 1
+                    const absoluteDisplayLevelIndex = (displayWorld - 1) * LEVELS_PER_WORLD + (displayLevelInWorld - 1);
+                    if (absoluteDisplayLevelIndex >= 0 && absoluteDisplayLevelIndex < TARGET_SCORES_LEVELS.length) {
+                        displayTargetScore = TARGET_SCORES_LEVELS[absoluteDisplayLevelIndex];
+                    } else {
+                        displayTargetScore = 0; // Should not happen if TOTAL_WORLDS is correct
+                    }
+                    score = 0; // Reset score when transitioning to new world cover
+                    streakMultiplier = 1; // Reset streak
+                    updateScoreDisplay(); // Update UI to show 0 score & 1x streak
+
+                    // Update UI elements that depend on display variables
+                    updateTargetScoreDisplay();
+                    if (progressPanelLeftValue) {
+                        progressPanelLeftValue.textContent = `${displayWorld}.${displayLevelInWorld}`;
+                    }
+                    drawStarProgress(); // Update stars for the new world being displayed
+
+                } else {
+                    screenState.gameActuallyStarted = true;
+                }
+            }
+            
+            if (!screenState.gameActuallyStarted) { 
+                draw(); 
+                updateMainButtonStates(); 
+                return;
+            }
+            
+            // If we reach here, screenState.gameActuallyStarted is true.
+            // Update display variables to the actual level being started
+            displayWorld = currentWorld;
+            displayLevelInWorld = currentLevelInWorld;
+            const absoluteDisplayLevelIndex = (displayWorld - 1) * LEVELS_PER_WORLD + (displayLevelInWorld - 1);
+
+            if (gameMode === 'levels') {
+                 if (absoluteDisplayLevelIndex >= 0 && absoluteDisplayLevelIndex < TARGET_SCORES_LEVELS.length) {
+                    displayTargetScore = TARGET_SCORES_LEVELS[absoluteDisplayLevelIndex];
+                } else { // Should only happen if all levels/worlds are completed
+                    displayTargetScore = TARGET_SCORES_LEVELS[TARGET_SCORES_LEVELS.length -1];
+                     console.warn("Attempting to start a level beyond defined targets. Using last target score.");
+                }
+            } else { // freeMode
+                displayTargetScore = 0; // No target score in free mode
+            }
+
+            updateTargetScoreDisplay(); // Update UI with the target of the level to be played
+            if (progressPanelLeftValue && gameMode === 'levels') { // Update progress panel UI
+                progressPanelLeftValue.textContent = `${displayWorld}.${displayLevelInWorld}`;
+            } else if (progressPanelLeftValue && gameMode === 'freeMode') {
+                // El panel de #high-score-display ahora se encarga de su propio label.
+                // progressPanelLeftValue.textContent = DIFFICULTY_DISPLAY_NAMES[difficultySelector.value] || difficultySelector.value;
+            }
+            drawStarProgress(); // Update stars for the current world being played
+
+
+            const audioContextStarted = await ensureAudioContextRunning(); // Ensures context is running and synths are initialized
+            if (audioContextStarted && areSfxEnabled) {
+                 playSound('startGame');
+            }
+
+
+            if (generalBackgroundMusic) { 
+                generalBackgroundMusic.pause();
+                console.log("Música general pausada (startGame).");
+            }
+            if (isMusicEnabled && inGameBackgroundMusic) { 
+                inGameBackgroundMusic.currentTime = 0; 
+                inGameBackgroundMusic.play().catch(e => console.error("Error al reproducir música de partida (startGame):", e));
+                console.log("Música de partida iniciada (startGame).");
+            } else if (inGameBackgroundMusic) { 
+                inGameBackgroundMusic.pause();
+            }
+
+
+            if (gameMode === 'levels') {
+                snakeSpeed = DIFFICULTY_SETTINGS[WORLD_DIFFICULTY_MAP[currentWorld]].speed;
+            } else { // freeMode
+                 snakeSpeed = DIFFICULTY_SETTINGS[difficultySelector.value].speed;
+            }
+
+            applySkin(skinSelector.value); 
+            
+            resizeGameElements(); 
+            if (tileCountX <= 0 || tileCountY <= 0) { 
+                console.error("Pantalla demasiado pequeña para jugar.");
+                updateMainButtonStates();
+                return;
+            }
+
+            snake = [];
+            const startX = Math.floor(tileCountX / 2);
+            const startY = Math.floor(tileCountY / 2);
+            for (let i = 0; i < INITIAL_SNAKE_LENGTH; i++) {
+                if (startX - i >= 0) { snake.push({ x: startX - i, y: startY }); }
+                else { snake.push({ x: 0, y: startY }); }
+            }
+             if (snake.length === 0 && INITIAL_SNAKE_LENGTH > 0) { 
+                console.error("Error al iniciar la serpiente. Pantalla muy pequeña.");
+                updateMainButtonStates();
+                return;
+            }
+
+            score = 0;
+            streakMultiplier = 1; 
+            gameOver = false; 
+            direction = "right"; 
+            nextDirection = "right"; // Asegurar que nextDirection también se reinicia
+            
+            if (gameMode === 'levels') {
+                gameTimeRemaining = LEVEL_TIME_LIMIT;
+                // Target score already updated via displayTargetScore
+                updateTimeLengthDisplay();
+                clearInterval(gameTimerIntervalId);
+                gameTimerIntervalId = setInterval(() => {
+                    if (gameOver) { clearInterval(gameTimerIntervalId); return; }
+                    gameTimeRemaining -= 1000;
+                    updateTimeLengthDisplay();
+                    if (gameTimeRemaining <= 0) {
+                        if (!gameOver) { gameOver = true; finalizeGameOver(); } 
+                        clearInterval(gameTimerIntervalId);
+                    }
+                }, 1000);
+            } else { // freeMode
+                gameTimeRemaining = Infinity; 
+                updateTimeLengthDisplay(); 
+                clearInterval(gameTimerIntervalId); 
+            }
+            
+            generateFood(); 
+            updateScoreDisplay();
+            clearInterval(gameIntervalId); 
+            gameIntervalId = setInterval(update, snakeSpeed); 
+
+            updateMainButtonStates(); 
+            
+            gameModeSelector.disabled = true;
+            difficultySelector.disabled = true;
+            worldsSelector.disabled = true;
+            audioToggleSelector.disabled = true;
+            skinSelector.disabled = true; 
+            musicVolumeSlider.disabled = true;
+            gameModeControlGroup.classList.remove("interactive-mode");
+            difficultyControlGroup.classList.remove("interactive-mode"); 
+            audioControlGroup.classList.remove("interactive-mode");
+            skinControlGroup.classList.remove("interactive-mode");
+            musicVolumeControlGroup.classList.remove("interactive-mode");
+            draw(); 
+        }
+
+        function changeDirection(newDirectionCmd) { // Renamed parameter for clarity
+            if (gameOver) return; 
+            // Solo actualizar nextDirection, no direction directamente
+            // This keeps the logic from the previous version of snake_game_v5_1
+            switch (newDirectionCmd) {
+                case "up":    if (direction !== "down")  nextDirection = "up"; break;
+                case "down":  if (direction !== "up")    nextDirection = "down"; break;
+                case "left":  if (direction !== "right") nextDirection = "left"; break;
+                case "right": if (direction !== "left")  nextDirection = "right"; break;
+            }
+        }
+
+        async function playSound(type) {
+            if (!areSfxEnabled) return; 
+            
+            const audioContextStarted = await ensureAudioContextRunning(); // Ensures context is running and synths are initialized
+            if (!audioContextStarted) {
+                console.warn(`Audio context not running, cannot play sound: ${type}`);
+                return;
+            }
+            // initializeToneSynths() is called by ensureAudioContextRunning if needed
+
+            if (!synthsInitialized) { // Check again if initialization failed even after ensureAudioContextRunning
+                 console.warn(`Synths not initialized, cannot play sound: ${type}`);
+                return;
+            }
+
+            const now = Tone.now();
+            try {
+                if (type === 'eat') {
+                    if (synthEat) { const baseNote = "D5"; const targetNote = "A4"; const duration = 0.07; synthEat.triggerAttack(baseNote, now); synthEat.frequency.linearRampToValueAtTime(targetNote, now + duration * 0.7); synthEat.triggerRelease(now + duration); }
+                    if (synthEatNoise) { synthEatNoise.triggerAttackRelease("64n", now + 0.005); }
+                } else if (type === 'warning' && synthWarning) { synthWarning.triggerAttackRelease("A4", "32n", now); 
+                } else if (type === 'timeout' && synthTimeout) { synthTimeout.triggerAttackRelease("F#3", "8n", now);
+                } else if (type === 'gameOver' && synthGameOver) { synthGameOver.triggerAttackRelease("G3", "8n", now); synthGameOver.triggerAttackRelease("E3", "8n", now + 0.15); synthGameOver.triggerAttackRelease("C3", "4n", now + 0.3);
+                } else if (type === 'startGame' && synthStartGame) { synthStartGame.triggerAttackRelease("C4", "16n", now); synthStartGame.triggerAttackRelease("E4", "16n", now + 0.1); synthStartGame.triggerAttackRelease("G4", "8n", now + 0.2); 
+                } else if (type === 'win' && synthWin) { 
+                    const tempo = 0.12; 
+                    synthWin.triggerAttackRelease("G4", "16n", now); 
+                    synthWin.triggerAttackRelease("G4", "16n", now + tempo * 1); 
+                    synthWin.triggerAttackRelease("C5", "16n", now + tempo * 2); 
+                    synthWin.triggerAttackRelease("E5", "8n", now + tempo * 3); 
+                    synthWin.triggerAttackRelease("C5", "16n", now + tempo * 5); 
+                    synthWin.triggerAttackRelease("G5", "4n", now + tempo * 6);
+                }
+            } catch (error) { console.error("Error al reproducir sonido con Tone.js:", error); }
+        }
+        
+        function updateMusicVolume() {
+            const sliderValue = parseInt(musicVolumeSlider.value);
+            if (musicVolumeValue) {
+                musicVolumeValue.textContent = sliderValue;
+            }
+            // For HTML5 Audio, volume is 0.0 to 1.0
+            const actualVolume = (sliderValue / 100) * MAX_ACTUAL_SLIDER_MAPPED_VOLUME; 
+            if (generalBackgroundMusic) {
+                generalBackgroundMusic.volume = actualVolume;
+            }
+            if (inGameBackgroundMusic) {
+                inGameBackgroundMusic.volume = actualVolume;
+            }
+            saveGameSettings(); 
+        }
+
+        musicVolumeSlider.addEventListener('input', updateMusicVolume);
+
+        audioToggleSelector.addEventListener('change', async function() { 
+            const audioSetting = this.value;
+            isMusicEnabled = (audioSetting === 'all');
+            areSfxEnabled = (audioSetting === 'all' || audioSetting === 'sfx_only');
+
+            musicVolumeSlider.disabled = !isMusicEnabled;
+            if (isMusicEnabled && !gameIntervalId) { 
+                musicVolumeControlGroup.classList.add("interactive-mode");
+            } else {
+                musicVolumeControlGroup.classList.remove("interactive-mode");
+            }
+
+            const audioContextStarted = await ensureAudioContextRunning(); // Ensures context is running and synths are initialized
+            // initializeToneSynths() is called by ensureAudioContextRunning if needed
+            
+            if (!audioContextStarted && (isMusicEnabled || areSfxEnabled)) { // If context still not started
+                console.warn("Audio context could not be unlocked by user interaction via toggle.");
+            }
+
+
+            if (isMusicEnabled) { // Using HTML5 Audio
+                updateMusicVolume(); 
+                if (gameIntervalId) { // Game is active
+                    if (generalBackgroundMusic) generalBackgroundMusic.pause();
+                    if (inGameBackgroundMusic && inGameBackgroundMusic.paused) {
+                         inGameBackgroundMusic.play().catch(e => console.error("Error al reproducir música de juego (toggle ON):", e));
+                    }
+                } else { // Menu or game over
+                    if (inGameBackgroundMusic) inGameBackgroundMusic.pause();
+                    if (generalBackgroundMusic && generalBackgroundMusic.paused) {
+                         generalBackgroundMusic.play().catch(e => console.error("Error al reproducir música general (toggle ON):", e));
+                    }
+                }
+            } else { 
+                if (generalBackgroundMusic) generalBackgroundMusic.pause();
+                if (inGameBackgroundMusic) inGameBackgroundMusic.pause();
+            }
+            saveGameSettings(); 
+        });
+
+
+        skinSelector.addEventListener('change', function() { 
+            applySkin(this.value);
+            saveGameSettings();
+        });
+
+        difficultySelector.addEventListener('change', function() {
+            difficulty = this.value; 
+            if (!gameIntervalId) { 
+                snakeSpeed = DIFFICULTY_SETTINGS[difficulty].speed;
+            }
+            // updateTargetScoreDisplay(); // No target score in free mode based on difficulty
+            if (gameMode === 'freeMode') { // Update high score display if difficulty changes in free mode
+                displayHighScoreInPanel();
+                // Ya no actualizamos progressPanelLeftValue aquí, #high-score-display es independiente
+                // progressPanelLeftValue.textContent = DIFFICULTY_DISPLAY_NAMES[difficulty] || difficulty;
+            }
+            saveGameSettings();
+        });
+
+        worldsSelector.addEventListener('change', function() {
+            if (gameMode === 'levels') {
+                const newSelectedWorld = parseInt(this.value);
+                if (newSelectedWorld > maxUnlockedWorld) {
+                    this.value = currentWorld.toString(); // Revert if trying to select a locked world
+                    return;
+                }
+
+                currentWorld = newSelectedWorld;
+                currentLevelInWorld = 1; 
+
+                // Update display variables to reflect the new selection
+                displayWorld = currentWorld;
+                displayLevelInWorld = currentLevelInWorld;
+                const absoluteDisplayLevelIndex = (displayWorld - 1) * LEVELS_PER_WORLD + (displayLevelInWorld - 1);
+                if (absoluteDisplayLevelIndex >= 0 && absoluteDisplayLevelIndex < TARGET_SCORES_LEVELS.length) {
+                    displayTargetScore = TARGET_SCORES_LEVELS[absoluteDisplayLevelIndex];
+                } else {
+                    displayTargetScore = 0; 
+                }
+                updateTargetScoreDisplay(); // Update UI for target score
+                if (progressPanelLeftValue) { // Update UI for progress panel
+                    progressPanelLeftValue.textContent = `${displayWorld}.${displayLevelInWorld}`;
+                }
+                drawStarProgress(); // Update stars for the newly selected world
+
+
+                if (!gameIntervalId) { 
+                    snakeSpeed = DIFFICULTY_SETTINGS[WORLD_DIFFICULTY_MAP[currentWorld]].speed;
+                }
+                
+                screenState.showCoverForWorld = currentWorld;
+                screenState.gameActuallyStarted = false; 
+                screenState.showWorldCompleteCover = 0; 
+                screenState.showLevelCompleteCover = 0; 
+                screenState.showDefeatCoverForWorld = 0;
+                screenState.showFreeModeCover = false;
+
+                saveGameSettings(); 
+                
+                closeSettingsPanel(); 
+
+                requestAnimationFrame(draw); 
+            }
+        });
+        
+        gameModeSelector.addEventListener('change', () => {
+            gameMode = gameModeSelector.value; // Update gameMode first
+
+            if (gameMode === 'levels') {
+                // Set display variables to current game state for levels mode
+                displayWorld = currentWorld;
+                displayLevelInWorld = currentLevelInWorld;
+                const absoluteDisplayLevelIndex = (displayWorld - 1) * LEVELS_PER_WORLD + (displayLevelInWorld - 1);
+                if (absoluteDisplayLevelIndex >= 0 && absoluteDisplayLevelIndex < TARGET_SCORES_LEVELS.length) {
+                    displayTargetScore = TARGET_SCORES_LEVELS[absoluteDisplayLevelIndex];
+                } else {
+                    displayTargetScore = TARGET_SCORES_LEVELS[0]; // Default or last
+                }
+                
+                screenState.showCoverForWorld = currentWorld; 
+                screenState.gameActuallyStarted = false;
+                screenState.showLevelCompleteCover = 0;
+                screenState.showDefeatCoverForWorld = 0;
+                screenState.showWorldCompleteCover = 0;
+                screenState.showFreeModeCover = false;
+            } else { // Switching to freeMode
+                displayTargetScore = 0; // No target score in free mode
+
+                screenState.showCoverForWorld = 0;
+                screenState.showLevelCompleteCover = 0;
+                screenState.showDefeatCoverForWorld = 0;
+                screenState.showWorldCompleteCover = 0;
+                screenState.showFreeModeCover = true; // Show free mode cover
+                screenState.gameActuallyStarted = false; 
+                gameOver = false; 
+                snake = []; 
+                currentFoodItem = {}; 
+                if (ctx) { 
+                    ctx.fillStyle = "#374151"; 
+                    ctx.fillRect(0, 0, canvasEl.width, canvasEl.height);
+                }
+            }
+            updateGameModeUI(); // This will now use the correct display variables
+            updateMainButtonStates();
+            requestAnimationFrame(draw);
+            saveGameSettings();
+        }); 
+
+
+        document.addEventListener("keydown", (e) => {
+            const isSettingsOpen = !settingsPanel.classList.contains("settings-panel-hidden");
+            const isInfoOpen = !infoPanel.classList.contains("info-panel-hidden");
+
+            if (!isSettingsOpen && !isInfoOpen) { 
+                if (gameOver && e.key !== "Enter" && gameIntervalId === null) return; 
+                let newDirectionCmd = null; // Use newDirectionCmd to align with function parameter
+                const key = e.key.toLowerCase(); 
+                switch (key) {
+                    case "arrowup": case "w": newDirectionCmd = "up"; break;
+                    case "arrowdown": case "s": newDirectionCmd = "down"; break;
+                    case "arrowleft": case "a": newDirectionCmd = "left"; break;
+                    case "arrowright": case "d": newDirectionCmd = "right"; break;
+                    case "enter": if (gameOver || !gameIntervalId) { startGame(); } break; 
+                }
+                if (newDirectionCmd) { changeDirection(newDirectionCmd); } // Call with newDirectionCmd
+                if (["arrowup", "arrowdown", "arrowleft", "arrowright", "w", "a", "s", "d"].includes(key)) { e.preventDefault(); }
+            } else if (isSettingsOpen) { 
+                 if (e.key === "Escape") { closeSettingsPanel(); }
+            } else if (isInfoOpen) { 
+                 if (e.key === "Escape") { closeInfoPanel(); }
+            }
+        });
+
+        // D-Pad Button Press Feedback
+        [upButton, downButton, leftButton, rightButton].forEach(button => {
+            button.addEventListener("mousedown", () => {
+                if (gameIntervalId) button.classList.add("d-pad-button-pressed");
+            });
+            button.addEventListener("mouseup", () => button.classList.remove("d-pad-button-pressed"));
+            button.addEventListener("mouseleave", () => button.classList.remove("d-pad-button-pressed")); 
+            button.addEventListener("touchstart", (e) => {
+                e.preventDefault(); 
+                if (gameIntervalId) button.classList.add("d-pad-button-pressed");
+                changeDirection(button.id.replace('-button', '')); 
+            });
+            button.addEventListener("touchend", () => button.classList.remove("d-pad-button-pressed"));
+            button.addEventListener("touchcancel", () => button.classList.remove("d-pad-button-pressed"));
+        });
+
+        // Original click listeners for D-Pad 
+        upButton.addEventListener("click", () => changeDirection("up"));
+        downButton.addEventListener("click", () => changeDirection("down"));
+        leftButton.addEventListener("click", () => changeDirection("left"));
+        rightButton.addEventListener("click", () => changeDirection("right"));
+
+
+        startButton.addEventListener("click", startGame);
+        
+        window.addEventListener('resize', resizeGameElements); 
+        
+        function saveGameSettings() {
+            localStorage.setItem('snakeGameDifficulty', difficultySelector.value);
+            localStorage.setItem('snakeGameSkin', skinSelector.value);
+            localStorage.setItem('snakeGameAudioGeneral', audioToggleSelector.value);
+            localStorage.setItem('snakeGameMusicVolume', musicVolumeSlider.value);
+            localStorage.setItem('snakeGameMode', gameModeSelector.value);
+            // Levels mode specific
+            localStorage.setItem('snakeCurrentWorld', currentWorld.toString());
+            localStorage.setItem('snakeCurrentLevelInWorld', currentLevelInWorld.toString());
+            localStorage.setItem('snakeMaxUnlockedWorld', maxUnlockedWorld.toString());
+            localStorage.setItem('snakeLevelsProgress', JSON.stringify(levelsProgress));
+            console.log("Configuraciones guardadas en localStorage.");
+        }
+
+        function loadGameSettings() {
+            const savedDifficulty = localStorage.getItem('snakeGameDifficulty');
+            if (savedDifficulty) difficultySelector.value = savedDifficulty;
+
+            const savedSkin = localStorage.getItem('snakeGameSkin');
+            if (savedSkin) skinSelector.value = savedSkin;
+            
+            const savedAudioGeneral = localStorage.getItem('snakeGameAudioGeneral');
+            if (savedAudioGeneral) audioToggleSelector.value = savedAudioGeneral;
+
+            const savedMusicVolume = localStorage.getItem('snakeGameMusicVolume');
+            if (savedMusicVolume) musicVolumeSlider.value = savedMusicVolume;
+            
+            const savedGameMode = localStorage.getItem('snakeGameMode');
+            if (savedGameMode && (savedGameMode === 'levels' || savedGameMode === 'freeMode')) { // Ensure only valid modes are loaded
+                 gameModeSelector.value = savedGameMode;
+            } else { 
+                gameModeSelector.value = 'levels'; // Default to levels if invalid or no mode saved
+            }
+            
+            // Levels mode specific
+            const savedCurrentWorld = localStorage.getItem('snakeCurrentWorld');
+            if (savedCurrentWorld) currentWorld = parseInt(savedCurrentWorld); else currentWorld = 1;
+
+            const savedCurrentLevelInWorld = localStorage.getItem('snakeCurrentLevelInWorld');
+            if (savedCurrentLevelInWorld) currentLevelInWorld = parseInt(savedCurrentLevelInWorld); else currentLevelInWorld = 1;
+            
+            const savedMaxUnlockedWorld = localStorage.getItem('snakeMaxUnlockedWorld');
+            if (savedMaxUnlockedWorld) maxUnlockedWorld = parseInt(savedMaxUnlockedWorld); else maxUnlockedWorld = 1;
+
+            const savedLevelsProgress = localStorage.getItem('snakeLevelsProgress');
+            if (savedLevelsProgress) {
+                try {
+                    levelsProgress = JSON.parse(savedLevelsProgress);
+                    if (!Array.isArray(levelsProgress) || levelsProgress.length !== TOTAL_WORLDS * LEVELS_PER_WORLD) {
+                        console.warn("Invalid levels progress found in localStorage, resetting.");
+                        levelsProgress = Array(TOTAL_WORLDS * LEVELS_PER_WORLD).fill(false);
+                    }
+                } catch (e) {
+                    console.error("Error parsing levels progress from localStorage, resetting.", e);
+                    levelsProgress = Array(TOTAL_WORLDS * LEVELS_PER_WORLD).fill(false);
+                }
+            } else {
+                 levelsProgress = Array(TOTAL_WORLDS * LEVELS_PER_WORLD).fill(false);
+            }
+
+            // Initialize display variables after loading game state
+            displayWorld = currentWorld;
+            displayLevelInWorld = currentLevelInWorld;
+            gameMode = gameModeSelector.value; // Ensure gameMode is set before calculating displayTargetScore
+
+            if (gameMode === 'levels') {
+                const absoluteDisplayLevelIndex = (displayWorld - 1) * LEVELS_PER_WORLD + (displayLevelInWorld - 1);
+                if (absoluteDisplayLevelIndex >= 0 && absoluteDisplayLevelIndex < TARGET_SCORES_LEVELS.length) {
+                    displayTargetScore = TARGET_SCORES_LEVELS[absoluteDisplayLevelIndex];
+                } else { // Default if out of bounds (e.g., after completing all levels)
+                    displayTargetScore = TARGET_SCORES_LEVELS[TARGET_SCORES_LEVELS.length -1];
+                }
+            } else {
+                displayTargetScore = 0; // No target score for free mode
+            }
+
+
+            difficulty = difficultySelector.value;
+            snakeSpeed = DIFFICULTY_SETTINGS[difficulty].speed;
+            currentSkin = skinSelector.value; 
+            
+            isMusicEnabled = (audioToggleSelector.value === 'all');
+            areSfxEnabled = (audioToggleSelector.value === 'all' || audioToggleSelector.value === 'sfx_only');
+            
+            if(musicVolumeValue) musicVolumeValue.textContent = musicVolumeSlider.value; 
+
+            console.log("Configuraciones cargadas de localStorage y aplicadas a selectores.");
+            updateGameModeUI(); // This will use the newly set display variables
+        }
+
+
+        async function initializeGameLogic() { 
+            if (!canvasEl) { 
+                console.error("Elemento Canvas no encontrado en initializeGameLogic.");
+                return;
+            }
+            if (!ctx) { 
+                 ctx = canvasEl.getContext("2d");
+                 if (!ctx) {
+                    console.error("Fallo al obtener el contexto 2D del canvas en initializeGameLogic.");
+                    return; 
+                 }
+            }
+            
+            // HTML5 Audio objects are now created in window.onload
+            // Volume is also applied there via updateMusicVolume()
+            // Tone.js synths (except splash) are initialized via ensureAudioContextRunning -> initializeToneSynths
+
+            if (typeof Audio !== 'undefined') {
+                // Music playback logic based on current game state
+                const isSettingsOpen = settingsPanel && !settingsPanel.classList.contains("settings-panel-hidden");
+                const isInfoOpen = infoPanel && !infoPanel.classList.contains("info-panel-hidden");
+                if (isMusicEnabled && !gameIntervalId && !gameOver && !isSettingsOpen && !isInfoOpen && !screenState.showCoverForWorld && !screenState.showWorldCompleteCover && !screenState.showLevelCompleteCover && !screenState.showDefeatCoverForWorld && !screenState.showFreeModeCover) {
+                    if (inGameBackgroundMusic && !inGameBackgroundMusic.paused) {
+                        inGameBackgroundMusic.pause();
+                    }
+                    if (generalBackgroundMusic && generalBackgroundMusic.paused) {
+                        generalBackgroundMusic.play().catch(e => console.warn("Reproducción automática de música general (initializeGameLogic) fallida:", e));
+                    }
+                } else if (!isMusicEnabled || screenState.showCoverForWorld || screenState.showWorldCompleteCover || screenState.showLevelCompleteCover || screenState.showDefeatCoverForWorld || screenState.showFreeModeCover) { // Pause if music disabled or any cover shown
+                    if (generalBackgroundMusic) generalBackgroundMusic.pause();
+                    if (inGameBackgroundMusic) inGameBackgroundMusic.pause();
+                }
+            }
+
+
+            requestAnimationFrame(() => {
+                resizeGameElements(); 
+                draw();                 
+                updateMainButtonStates(); 
+            });
+
+            applySkin(currentSkin); // Apply skin based on loaded settings
+
+            // Reset screen states for a fresh start after splash
+            screenState.gameActuallyStarted = false; 
+            screenState.showWorldCompleteCover = 0; 
+            screenState.showLevelCompleteCover = 0; 
+            screenState.showDefeatCoverForWorld = 0;
+            screenState.showFreeModeCover = false;
+
+            // Set initial display state based on loaded gameMode (already done in loadGameSettings -> updateGameModeUI)
+            // but ensure correct cover screen is shown
+            if (gameMode === 'levels') { 
+                screenState.showCoverForWorld = currentWorld; // currentWorld from loaded settings
+            } else if (gameMode === 'freeMode') {
+                screenState.showFreeModeCover = true;
+                 // Ensure gameOver is false if free mode cover is shown before first game
+                if (snake.length === 0) gameOver = false; 
+            }
+            updateGameModeUI(); // Refresh UI based on potentially new screenState
+
+        }
+
+        window.onload = () => {
+            loadSkinImages(); 
+            loadWorldImages(); 
+            loadGameSettings(); // Loads settings including audio preferences and volume
+
+            // Initialize HTML5 Audio Players
+            if (typeof Audio !== 'undefined') {
+                if (!generalBackgroundMusic) {
+                    generalBackgroundMusic = new Audio(generalBackgroundMusicURL);
+                    generalBackgroundMusic.loop = true;
+                    console.log("Reproductor de música general (HTML5 Audio) creado en window.onload.");
+                }
+                if (!inGameBackgroundMusic) {
+                    inGameBackgroundMusic = new Audio(inGameBackgroundMusicURL);
+                    inGameBackgroundMusic.loop = true;
+                    console.log("Reproductor de música de partida (HTML5 Audio) creado en window.onload.");
+                }
+                // Apply loaded volume settings. updateMusicVolume is safe to call.
+                // It reads from musicVolumeSlider.value which is set by loadGameSettings.
+                updateMusicVolume(); 
+            } else {
+                console.warn("HTML5 Audio no soportado, música de fondo desactivada (chequeo en window.onload).");
+                isMusicEnabled = false; // Ensure this is set if Audio is not supported
+                areSfxEnabled = (audioToggleSelector.value === 'sfx_only'); // Keep SFX if it was sfx_only
+                if (audioToggleSelector.value === 'all') {
+                    audioToggleSelector.value = areSfxEnabled ? 'sfx_only' : 'off';
+                }
+                Array.from(audioToggleSelector.options).forEach(option => {
+                   if (option.value === 'all') option.disabled = true;
+                });
+                musicVolumeSlider.disabled = true;
+                if (musicVolumeControlGroup) musicVolumeControlGroup.classList.remove("interactive-mode");
+            }
+
+            const splashStartButtonEl = document.getElementById('splash-start-button');
+            const splashTopImageEl = document.getElementById('splash-top-image');
+            const splashBottomImageEl = document.getElementById('splash-bottom-image');
+            let splashResizeListenerAdded = false; // Moved declaration earlier
+
+            // Initialize synthSplashStart (Tone.Player) here
+            if (typeof Tone !== 'undefined') {
+                synthSplashStart = new Tone.Player({
+                    url: "https://raw.githubusercontent.com/GamificAitor/JuegosEducativos/f8cf11c2f8447c929e260b8ad8b417d1edc6048c/start-game-v2.mp3",
+                    onload: () => { console.log("Sonido del botón de inicio del splash cargado (Tone.Player)."); },
+                    onerror: (error) => { console.error("Error cargando sonido del botón de inicio del splash (Tone.Player):", error); }
+                }).toDestination();
+                synthSplashStart.volume.value = -3.1; // Adjust volume as needed for Tone.Player
+                // We no longer call initializeToneSynths() directly here.
+                // ensureAudioContextRunning (on first click) will handle it.
+            }
+
+            let loadedCount = 0;
+            const imagesToLoad = [splashTopImageEl, splashBottomImageEl, splashStartButtonEl].filter(img => img);
+
+            function checkAllLoaded() {
+                if (loadedCount === imagesToLoad.length) {
+                    positionSplashElements();
+                    if (!splashResizeListenerAdded) { 
+                        window.addEventListener('resize', positionSplashElements);
+                        splashResizeListenerAdded = true;
+                    }
+                }
+            }
+            
+            function positionSplashElements() {
+                if (!splashTopImageEl || !splashBottomImageEl || !splashStartButtonEl) {
+                     console.warn("Faltan elementos del splash para posicionar.");
+                    return;
+                }
+                
+                if (splashTopImageEl.offsetHeight === 0 || splashBottomImageEl.offsetHeight === 0) {
+                    console.warn("Dimensiones de imágenes del splash aún no disponibles, reintentando en breve.");
+                    setTimeout(positionSplashElements, 100); 
+                    return;
+                }
+
+                const topImgRect = splashTopImageEl.getBoundingClientRect();
+                const bottomImgRect = splashBottomImageEl.getBoundingClientRect();
+                const PADDING_BELOW_BUTTON = 30; 
+                const topImageBottomEdgeViewport = topImgRect.bottom; 
+                const bottomImageTopEdgeViewport = bottomImgRect.top;  
+                let buttonTopPosition = topImageBottomEdgeViewport; 
+                let calculatedButtonHeight = bottomImageTopEdgeViewport - PADDING_BELOW_BUTTON - buttonTopPosition;
+                
+                if (calculatedButtonHeight < 20) { 
+                    calculatedButtonHeight = Math.max(20, splashStartButtonEl.naturalHeight || 50); // Use naturalHeight or a fallback
+                    const totalSpace = bottomImageTopEdgeViewport - topImageBottomEdgeViewport;
+                    buttonTopPosition = topImageBottomEdgeViewport + Math.max(0, (totalSpace - PADDING_BELOW_BUTTON - calculatedButtonHeight) / 2);
+                }
+                splashStartButtonEl.style.top = buttonTopPosition + 'px';
+                splashStartButtonEl.style.height = calculatedButtonHeight + 'px';
+                splashStartButtonEl.style.visibility = 'visible'; 
+            }
+
+            imagesToLoad.forEach(img => {
+                if (img.complete && img.naturalHeight !== 0) { 
+                    loadedCount++;
+                } else {
+                    img.onload = () => {
+                        loadedCount++;
+                        checkAllLoaded();
+                    };
+                    img.onerror = () => { 
+                        loadedCount++;
+                        console.error("Error cargando imagen del splash: ", img.src);
+                        checkAllLoaded(); 
+                    };
+                }
+            });
+
+            if (loadedCount === imagesToLoad.length && imagesToLoad.length > 0) { 
+                setTimeout(positionSplashElements, 50); // Give a slight delay for rendering
+                 if (!splashResizeListenerAdded) {
+                    window.addEventListener('resize', positionSplashElements);
+                    splashResizeListenerAdded = true;
+                }
+            } else if (imagesToLoad.length === 0) {
+                 console.warn("No se encontraron imágenes del splash para posicionar.");
+                 if (splashStartButtonEl) splashStartButtonEl.style.visibility = 'visible'; 
+            }
+            
+            // Fallback positioning if images load too slow or fail, but ensure button is visible.
+            setTimeout(() => { 
+                if (splashStartButtonEl && splashStartButtonEl.style.top === '') { 
+                    console.warn("Fallback: Posicionando elementos del splash por timeout (final).");
+                    positionSplashElements();
+                    if (!splashResizeListenerAdded) {
+                        window.addEventListener('resize', positionSplashElements);
+                        splashResizeListenerAdded = true;
+                    }
+                }
+                 if (splashStartButtonEl && splashStartButtonEl.style.visibility === 'hidden') {
+                    splashStartButtonEl.style.visibility = 'visible'; 
+                }
+            }, 1500); // Increased timeout slightly
+
+
+            if (splashStartButtonEl) {
+                splashStartButtonEl.addEventListener('mousedown', () => {
+                    splashStartButtonEl.classList.add('splash-button-pressed');
+                });
+                splashStartButtonEl.addEventListener('mouseup', () => {
+                    splashStartButtonEl.classList.remove('splash-button-pressed');
+                });
+                splashStartButtonEl.addEventListener('mouseleave', () => { 
+                    splashStartButtonEl.classList.remove('splash-button-pressed');
+                });
+                splashStartButtonEl.addEventListener('touchstart', (e) => {
+                    splashStartButtonEl.classList.add('splash-button-pressed');
+                });
+                splashStartButtonEl.addEventListener('touchend', () => {
+                    splashStartButtonEl.classList.remove('splash-button-pressed');
+                });
+                splashStartButtonEl.addEventListener('touchcancel', () => { 
+                     splashStartButtonEl.classList.remove('splash-button-pressed');
+                });
+
+                splashStartButtonEl.addEventListener('click', async () => {
+                    console.log("Splash start button CLICK event triggered.");
+                    try {
+                        splashStartButtonEl.classList.remove('splash-button-pressed'); // Ensure visual state resets
+
+                        const audioContextStarted = await ensureAudioContextRunning(); // This is key for Tone.js
+                        if (audioContextStarted) {
+                             if (areSfxEnabled && synthSplashStart && synthSplashStart.loaded) { // synthSplashStart is Tone.Player
+                                synthSplashStart.start(); // Play the preloaded sound
+                             } else if (areSfxEnabled) {
+                                 console.warn("Splash sound not played: SFX disabled, synth not loaded, or synth undefined.");
+                             }
+                        } else {
+                            console.warn("Tone.js context could not be started by splash button click.");
+                        }
+
+                        if (splashScreen) splashScreen.classList.add('hidden');
+                        if (gameContainer) gameContainer.classList.remove('hidden');
+                        initializeGameLogic(); // This will handle playing HTML5 audio if enabled
+                    } catch (error) {
+                        console.error("Error within splash start button click handler:", error);
+                    }
+                });
+            } else {
+                console.error("Botón de inicio del splash no encontrado!");
+                if (splashScreen) splashScreen.classList.add('hidden');
+                if (gameContainer) gameContainer.classList.remove('hidden');
+                initializeGameLogic();
+            }
+        };
+    </script>
+</body>
+</html>
