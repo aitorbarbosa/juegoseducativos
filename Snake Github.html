@@ -3253,7 +3253,7 @@
         function changeDirection(newDirectionCmd) { // Renamed parameter for clarity
             if (gameOver) return; 
             // Solo actualizar nextDirection, no direction directamente
-            // This keeps the logic from the previous version of snake_game_v5_1
+            // nextDirection queues turns so direction updates only once per frame
             switch (newDirectionCmd) {
                 case "up":    if (direction !== "down")  nextDirection = "up"; break;
                 case "down":  if (direction !== "up")    nextDirection = "down"; break;
