@@ -39,59 +39,57 @@
             width: 100%;
             height: 100%;
             background-color: #02030D; /* Color de fondo solicitado */
-            z-index: 2000; 
-            display: flex; 
-            flex-direction: column;
-            justify-content: space-between; 
+            z-index: 2000;
+            display: flex;
+            justify-content: center;
             align-items: center;
         }
 
+        #splash-content {
+            width: 100%;
+            max-width: 520px; /* Igual que el juego */
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 0;
+            box-sizing: border-box;
+        }
+
         #splash-top-image {
-            position: absolute; 
-            top: 0; 
-            left: 50%; 
-            transform: translateX(-50%); 
-            width: 100%; 
+            width: 100%;
             max-width: 600px; /* Límite para PC, un poco más grande que el juego */
-            height: auto; 
-            object-fit: contain; 
-            padding-top: 20px; 
-            padding-bottom: 20px; 
-            box-sizing: border-box; 
+            height: auto;
+            object-fit: contain;
+            box-sizing: border-box;
+            padding-bottom: 20px;
         }
 
         #splash-start-button {
-            position: absolute; 
-            left: 50%;
-            transform: translateX(-50%); 
             cursor: pointer;
-            width: auto; 
-            height: auto; 
+            width: auto;
+            height: auto;
             max-width: min(60vw, 400px); /* Responsivo pero con límite en PC */
-            object-fit: contain; 
-            z-index: 2001; 
-            visibility: hidden; 
-            transition: transform 0.05s ease-out, filter 0.05s ease-out; 
+            object-fit: contain;
+            z-index: 2001;
+            transition: transform 0.05s ease-out, filter 0.05s ease-out;
         }
 
-        #splash-start-button.splash-button-pressed { 
-            transform: translateX(-50%) scale(0.90) translateY(2px);
+        #splash-start-button.splash-button-pressed {
+            transform: scale(0.90) translateY(2px);
             filter: brightness(0.7);
         }
 
         #splash-bottom-image {
-            position: absolute; 
-            bottom: 0; 
-            left: 50%; 
-            transform: translateX(-50%);
             width: 100%;
             max-width: 600px; /* Límite para PC, un poco más grande que el juego */
-            height: auto; 
-            max-height: calc(25vh + 60px); 
-            object-fit: contain; 
-            padding-top: 30px; 
-            padding-bottom: 30px; 
-            box-sizing: border-box; 
+            height: auto;
+            max-height: calc(25vh + 60px);
+            object-fit: contain;
+            box-sizing: border-box;
+            padding-top: 20px;
+            padding-bottom: calc(20px + env(safe-area-inset-bottom));
         }
 
 
@@ -789,9 +787,11 @@
 </head>
 <body>
     <div id="splash-screen">
-        <img id="splash-top-image" src="https://i.imgur.com/tWVwXbv.png" alt="Logotipo superior del splash" onerror="this.src='https://placehold.co/600x200/02030D/FFFFFF?text=Splash+Top+Error'; console.error('Error loading splash-top-image');">
-        <img id="splash-start-button" src="https://i.imgur.com/HqNpn3w.png" alt="Botón de iniciar juego" onerror="this.src='https://placehold.co/300x100/02030D/FFFFFF?text=Start+Error'; console.error('Error loading splash-start-button');">
-        <img id="splash-bottom-image" src="https://i.imgur.com/YJ1xHZO.png" alt="Imagen inferior del splash" onerror="this.src='https://placehold.co/600x150/02030D/FFFFFF?text=Splash+Bottom+Error'; console.error('Error loading splash-bottom-image');">
+        <div id="splash-content">
+            <img id="splash-top-image" src="https://i.imgur.com/tWVwXbv.png" alt="Logotipo superior del splash" onerror="this.src='https://placehold.co/600x200/02030D/FFFFFF?text=Splash+Top+Error'; console.error('Error loading splash-top-image');">
+            <img id="splash-start-button" src="https://i.imgur.com/HqNpn3w.png" alt="Botón de iniciar juego" onerror="this.src='https://placehold.co/300x100/02030D/FFFFFF?text=Start+Error'; console.error('Error loading splash-start-button');">
+            <img id="splash-bottom-image" src="https://i.imgur.com/YJ1xHZO.png" alt="Imagen inferior del splash" onerror="this.src='https://placehold.co/600x150/02030D/FFFFFF?text=Splash+Bottom+Error'; console.error('Error loading splash-bottom-image');">
+        </div>
     </div>
 
     <div class="game-container hidden">
@@ -3713,7 +3713,6 @@
             const splashStartButtonEl = document.getElementById('splash-start-button');
             const splashTopImageEl = document.getElementById('splash-top-image');
             const splashBottomImageEl = document.getElementById('splash-bottom-image');
-            let splashResizeListenerAdded = false; // Moved declaration earlier
 
             // Initialize synthSplashStart (Tone.Player) here
             if (typeof Tone !== 'undefined') {
@@ -3727,90 +3726,6 @@
                 // ensureAudioContextRunning (on first click) will handle it.
             }
 
-            let loadedCount = 0;
-            const imagesToLoad = [splashTopImageEl, splashBottomImageEl, splashStartButtonEl].filter(img => img);
-
-            function checkAllLoaded() {
-                if (loadedCount === imagesToLoad.length) {
-                    positionSplashElements();
-                    if (!splashResizeListenerAdded) { 
-                        window.addEventListener('resize', positionSplashElements);
-                        splashResizeListenerAdded = true;
-                    }
-                }
-            }
-            
-            function positionSplashElements() {
-                if (!splashTopImageEl || !splashBottomImageEl || !splashStartButtonEl) {
-                     console.warn("Faltan elementos del splash para posicionar.");
-                    return;
-                }
-                
-                if (splashTopImageEl.offsetHeight === 0 || splashBottomImageEl.offsetHeight === 0) {
-                    console.warn("Dimensiones de imágenes del splash aún no disponibles, reintentando en breve.");
-                    setTimeout(positionSplashElements, 100); 
-                    return;
-                }
-
-                const topImgRect = splashTopImageEl.getBoundingClientRect();
-                const bottomImgRect = splashBottomImageEl.getBoundingClientRect();
-                const PADDING_BELOW_BUTTON = 30; 
-                const topImageBottomEdgeViewport = topImgRect.bottom; 
-                const bottomImageTopEdgeViewport = bottomImgRect.top;  
-                let buttonTopPosition = topImageBottomEdgeViewport; 
-                let calculatedButtonHeight = bottomImageTopEdgeViewport - PADDING_BELOW_BUTTON - buttonTopPosition;
-                
-                if (calculatedButtonHeight < 20) { 
-                    calculatedButtonHeight = Math.max(20, splashStartButtonEl.naturalHeight || 50); // Use naturalHeight or a fallback
-                    const totalSpace = bottomImageTopEdgeViewport - topImageBottomEdgeViewport;
-                    buttonTopPosition = topImageBottomEdgeViewport + Math.max(0, (totalSpace - PADDING_BELOW_BUTTON - calculatedButtonHeight) / 2);
-                }
-                splashStartButtonEl.style.top = buttonTopPosition + 'px';
-                splashStartButtonEl.style.height = calculatedButtonHeight + 'px';
-                splashStartButtonEl.style.visibility = 'visible'; 
-            }
-
-            imagesToLoad.forEach(img => {
-                if (img.complete && img.naturalHeight !== 0) { 
-                    loadedCount++;
-                } else {
-                    img.onload = () => {
-                        loadedCount++;
-                        checkAllLoaded();
-                    };
-                    img.onerror = () => { 
-                        loadedCount++;
-                        console.error("Error cargando imagen del splash: ", img.src);
-                        checkAllLoaded(); 
-                    };
-                }
-            });
-
-            if (loadedCount === imagesToLoad.length && imagesToLoad.length > 0) { 
-                setTimeout(positionSplashElements, 50); // Give a slight delay for rendering
-                 if (!splashResizeListenerAdded) {
-                    window.addEventListener('resize', positionSplashElements);
-                    splashResizeListenerAdded = true;
-                }
-            } else if (imagesToLoad.length === 0) {
-                 console.warn("No se encontraron imágenes del splash para posicionar.");
-                 if (splashStartButtonEl) splashStartButtonEl.style.visibility = 'visible'; 
-            }
-            
-            // Fallback positioning if images load too slow or fail, but ensure button is visible.
-            setTimeout(() => { 
-                if (splashStartButtonEl && splashStartButtonEl.style.top === '') { 
-                    console.warn("Fallback: Posicionando elementos del splash por timeout (final).");
-                    positionSplashElements();
-                    if (!splashResizeListenerAdded) {
-                        window.addEventListener('resize', positionSplashElements);
-                        splashResizeListenerAdded = true;
-                    }
-                }
-                 if (splashStartButtonEl && splashStartButtonEl.style.visibility === 'hidden') {
-                    splashStartButtonEl.style.visibility = 'visible'; 
-                }
-            }, 1500); // Increased timeout slightly
 
 
             if (splashStartButtonEl) {
