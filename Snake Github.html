@@ -2134,37 +2134,38 @@
             return scoresJSON ? JSON.parse(scoresJSON) : [];
         }
 
-        function saveHighScore(currentScore, snakeLengthValue, difficultyLevel) { 
+        function saveHighScore(currentScore, snakeLengthValue, difficultyLevel) {
             const key = getHighScoreKey(difficultyLevel);
             let highScores = loadHighScores(difficultyLevel);
-            const newEntry = { 
-                score: currentScore, 
-                length: snakeLengthValue, 
+            const newEntry = {
+                score: currentScore,
+                length: snakeLengthValue,
                 difficulty: DIFFICULTY_DISPLAY_NAMES[difficultyLevel],
                 skin: currentSkin, // Guardamos el 'value' del skin actual
             };
 
-            highScores.push(newEntry);
-            highScores.sort((a, b) => {
-                if (b.score === a.score) {
-                    return b.length - a.length; 
+            let insertIndex = highScores.findIndex(entry => {
+                if (currentScore > entry.score) return true;
+                if (currentScore === entry.score) {
+                    if (snakeLengthValue > entry.length) return true;
+                    if (snakeLengthValue === entry.length) return true; // Nuevo registro se coloca antes de los empates
                 }
-                return b.score - a.score; 
+                return false;
             });
 
-            highScores = highScores.slice(0, MAX_HIGH_SCORES); 
+            if (insertIndex === -1) {
+                highScores.push(newEntry);
+                insertIndex = highScores.length - 1;
+            } else {
+                highScores.splice(insertIndex, 0, newEntry);
+            }
+
+            highScores = highScores.slice(0, MAX_HIGH_SCORES);
             localStorage.setItem(key, JSON.stringify(highScores));
             console.log(`Puntuaciones guardadas para ${difficultyLevel}:`, highScores);
-            
-            let isActuallyNewHighScoreThisGame = false;
-            let newRecordIndex = -1;
-            for (let i = 0; i < highScores.length; i++) {
-                if (highScores[i].score === currentScore && highScores[i].length === snakeLengthValue) {
-                    isActuallyNewHighScoreThisGame = true;
-                    newRecordIndex = i;
-                    break; 
-                }
-            }
+
+            const isActuallyNewHighScoreThisGame = insertIndex < MAX_HIGH_SCORES;
+            const newRecordIndex = isActuallyNewHighScoreThisGame ? insertIndex : -1;
             return { isNewRecord: isActuallyNewHighScoreThisGame, rowIndex: newRecordIndex };
         }
 
