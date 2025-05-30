@@ -733,14 +733,29 @@
             }
              #settings-panel .control-group {
                 min-height: 50px;
+                justify-content: flex-start;
+                padding-top: 6px;
+                padding-bottom: 6px;
             }
-             #settings-panel #difficultySelector, 
+             #settings-panel #difficultySelector,
              #settings-panel #worldsSelector,
              #settings-panel #audioToggleSelector,
              #settings-panel #skinSelector,
              #settings-panel #foodSelector,
              #settings-panel #gameModeSelector,
-             #settings-panel #musicVolumeSlider { font-size: 0.7em; }
+             #settings-panel #musicVolumeSlider {
+                font-size: 0.7em;
+                margin-top: 2px;
+             }
+             #settings-panel .control-label-icon-row { margin-bottom: 2px; }
+             .setting-info-button {
+                width: 36px;
+                height: 32px;
+             }
+             .setting-info-icon {
+                width: 20px;
+                height: 20px;
+             }
 
 
              #info-panel-content h3#main-info-title, #specific-info-content h3 { font-size: 1em; } 
