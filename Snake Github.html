@@ -882,8 +882,8 @@
                 </div>
                  <div class="control-group" id="skin-control-group">
                     <div class="control-label-icon-row">
-                        <label class="control-label" for="skinSelector">Disfraz:</label>
-                        <button class="setting-info-button" data-setting="skin" aria-label="Información sobre disfraces">
+                        <label class="control-label" for="skinSelector">Jugador:</label>
+                        <button class="setting-info-button" data-setting="skin" aria-label="Información sobre jugadores">
                             <svg class="setting-info-icon" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" /></svg>
                         </button>
                     </div>
@@ -1153,7 +1153,7 @@
             difficult: "Difícil"
         };
 
-        // Mapping para nombres de disfraces en el ranking
+        // Mapping para nombres de jugadores en el ranking
         const SKIN_DISPLAY_NAMES = {
             clasico: "Clásico",
             rubiSnake: "RubiSnake",
@@ -1193,7 +1193,7 @@
         let displayTargetScore = TARGET_SCORES_LEVELS[0];
 
 
-        // --- Configuración de Disfraces (Skins) ---
+        // --- Configuración de Jugadores (Skins) ---
         const SKINS = {
             clasico: {
                 snakeHeadAsset: { 
@@ -1274,7 +1274,7 @@
             }
         };
         let currentSkin = 'clasico'; 
-        // --- Fin Configuración de Disfraces ---
+        // --- Fin Configuración de Jugadores ---
 
 
         // Estado del juego
@@ -1340,7 +1340,7 @@
             interval: 250   
         };
         
-        // --- Funciones de Carga y Aplicación de Disfraces ---
+        // --- Funciones de Carga y Aplicación de Jugadores ---
         function loadWorldImages() {
             worldCoverImages[1].src = 'https://i.imgur.com/h7iNXJT.png'; 
             worldCoverImages[2].src = 'https://i.imgur.com/KIiKaTr.png'; 
@@ -1458,7 +1458,7 @@
 
         function applySkin(skinName) {
             currentSkin = skinName;
-            console.log(`Disfraz aplicado: ${currentSkin}`); 
+            console.log(`Jugador aplicado: ${currentSkin}`); 
 
             if (gameOver) {
                 if (ctx && canvasEl) {
@@ -1860,8 +1860,8 @@
                 text_free: "<h4> (Solo en Modo Libre)</h4><p>Ajusta el nivel de desafío para que se adapte a tu habilidad y preferencias. La dificultad influye principalmente en la velocidad de la serpiente y el tiempo de desaparición de los comestibles.</p><h4>Fácil</h4><p>La opción perfecta si estás empezando o si prefieres una experiencia de juego más relajada. La serpiente se mueve a una velocidad considerablemente reducida y los comestibles tardan más tiempo en desaparecer, dándote más tiempo para reaccionar y planificar tus movimientos.</p><h4>Normal</h4><p>Un reto equilibrado, recomendado para la mayoría de los jugadores que ya conocen la mecánica básica de Snake. La velocidad de la serpiente es moderada al igual que el tiempo de desaparición de los comestibles, exigiendo buena anticipación y reflejos para conseguir puntuaciones altas.</p><h4>Difícil</h4><p>¡Prepárate para un desafío intenso! En esta dificultad, la serpiente se mueve muy rápido desde el inicio y los comestibles desaparecen mucho más rápido, poniendo a prueba tu concentración y destreza al máximo.</p>"
             },
             skin: {
-                title: "Disfraz",
-                text: "<p>Personaliza tu serpiente, juega con el look que más te guste y convierte tu experiencia en algo único y divertido</p><h4>Selección de Disfraz</h4><p>Elige entre una variedad de estilos visuales disponibles en el selector. Cada disfraz ofrece una estética diferente para tu reptil protagonista, desde aspectos clásicos hasta diseños más originales y temáticos.</p><p>Algunos disfraces pueden estar disponibles desde el inicio, mientras que otros podrían requerir ser desbloqueados mediante logros en el juego o estar disponibles en futuras actualizaciones.</p><p>Es importante destacar que la elección del disfraz es <strong>puramente estética</strong>. Cambiar la apariencia de tu serpiente no afecta de ninguna manera su velocidad, longitud, la forma en que come, ni las puntuaciones que obtienes.</p><p>¡Así que siéntete libre de experimentar y elegir el que más te guste sin preocuparte por ventajas o desventajas en el juego!</p>"
+                title: "Jugador",
+                text: "<p>Personaliza tu serpiente, juega con el look que más te guste y convierte tu experiencia en algo único y divertido</p><h4>Selección de Jugador</h4><p>Elige entre una variedad de estilos visuales disponibles en el selector. Cada jugador ofrece una estética diferente para tu reptil protagonista, desde aspectos clásicos hasta diseños más originales y temáticos.</p><p>Algunos jugadores pueden estar disponibles desde el inicio, mientras que otros podrían requerir ser desbloqueados mediante logros en el juego o estar disponibles en futuras actualizaciones.</p><p>Es importante destacar que la elección del jugador es <strong>puramente estética</strong>. Cambiar la apariencia de tu serpiente no afecta de ninguna manera su velocidad, longitud, la forma en que come, ni las puntuaciones que obtienes.</p><p>¡Así que siéntete libre de experimentar y elegir el que más te guste sin preocuparte por ventajas o desventajas en el juego!</p>"
             },
             audioGeneral: {
                 title: "Audio General",
@@ -2705,7 +2705,7 @@
                         const rankX = tableRectX + tableRectWidth * 0.08;    // Para "Nº"
                         const scoreX = tableRectX + tableRectWidth * 0.27;   // Para "PUNTOS"
                         const lengthX = tableRectX + tableRectWidth * 0.50;  // Para "LONG." (ajustado)
-                        const skinX = tableRectX + tableRectWidth * 0.79;   // Para "DISFRAZ" (más espacio)
+                        const skinX = tableRectX + tableRectWidth * 0.79;   // Para "JUGADOR" (más espacio)
 
                         const headerFont = `${tableHeaderFontSize}px 'Press Start 2P'`;
                         const headerColor = "#F5F5F5";
@@ -2717,7 +2717,7 @@
                         ctx.fillText("Nº", rankX, headerTextY);
                         ctx.fillText("PUNTOS", scoreX, headerTextY);
                         ctx.fillText("LONG.", lengthX, headerTextY);
-                        ctx.fillText("DISFRAZ", skinX, headerTextY); // Usar el texto "DISFRAZ"
+                        ctx.fillText("JUGADOR", skinX, headerTextY); // Usar el texto "JUGADOR"
                         currentDrawingYForTable = headerRowActualY + headerRowHeight;
 
                         const highScores = loadHighScores(difficulty);
@@ -2769,7 +2769,7 @@
                                 ctx.fillText(`${i + 1}.`, rankX, rowTextY);
                                 ctx.fillText(`${entry.score}`, scoreX, rowTextY);
                                 ctx.fillText(`${entry.length}`, lengthX, rowTextY);
-                                // USAR SKIN_DISPLAY_NAMES para mostrar el nombre del disfraz
+                                // USAR SKIN_DISPLAY_NAMES para mostrar el nombre del jugador
                                 const skinDisplayName = SKIN_DISPLAY_NAMES[entry.skin] || entry.skin || '-';
                                 ctx.fillText(skinDisplayName, skinX, rowTextY);
                             } else {
