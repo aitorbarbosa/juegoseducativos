@@ -370,17 +370,18 @@
             justify-content: center; 
         }
         
-        .control-group { 
+        .control-group {
             display: flex;
-            flex-direction: column; 
-            justify-content: center; 
-            background-color: #374151; 
+            flex-direction: column;
+            justify-content: center;
+            background-color: #374151;
             border-radius: 8px;
-            padding: 8px 12px; 
-            flex: 1; 
-            min-width: 100px; 
+            padding: 8px 12px;
+            flex: 1;
+            min-width: 100px;
             box-sizing: border-box;
             transition: background-color 0.2s ease;
+            min-height: 50px;
         }
 
         .control-label-icon-row {
@@ -810,8 +811,21 @@
                 padding: 15px;
             }
             #info-panel-content h3#main-info-title, #specific-info-content h3 { font-size: 0.9em; } 
-            #info-panel-content h4, #specific-info-content h4 { font-size: 0.9em; } 
-            #info-panel-content p, #info-panel-content ul, #specific-info-content p, #specific-info-content ul { font-size: 0.75em; } 
+            #info-panel-content h4, #specific-info-content h4 { font-size: 0.9em; }
+            #info-panel-content p, #info-panel-content ul, #specific-info-content p, #specific-info-content ul { font-size: 0.75em; }
+        }
+
+        @media screen and (min-width: 600px) {
+            #settings-panel #difficultySelector,
+            #settings-panel #worldsSelector,
+            #settings-panel #audioToggleSelector,
+            #settings-panel #skinSelector,
+            #settings-panel #foodSelector,
+            #settings-panel #gameModeSelector {
+                height: 30px;
+                margin-top: 2px;
+                margin-bottom: 2px;
+            }
         }
     </style>
 </head>
