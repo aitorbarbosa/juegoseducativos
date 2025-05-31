@@ -1618,13 +1618,16 @@
             const gameContainerRect = gameContainer.getBoundingClientRect();
             const panelVerticalMargin = 5; 
 
-            let panelTopPosition = topRefRect.top - gameContainerRect.top;
-            if (topReferenceElement === gameContainer) panelTopPosition = 0; 
-            
+            const panelTopPosition = topRefRect.top;
             panelElement.style.top = panelTopPosition + 'px';
-            
-            let panelBottomLimit = mobileControlsRect.top - gameContainerRect.top - panelVerticalMargin; 
-            let availablePanelHeight = panelBottomLimit - panelTopPosition;
+
+            let panelBottomLimit;
+            if (window.innerWidth >= 600) {
+                panelBottomLimit = gameContainerRect.bottom - panelVerticalMargin;
+            } else {
+                panelBottomLimit = mobileControlsRect.top - panelVerticalMargin;
+            }
+            const availablePanelHeight = panelBottomLimit - panelTopPosition;
 
             panelElement.style.height = Math.max(100, availablePanelHeight) + 'px'; 
             panelElement.style.bottom = 'auto'; 
