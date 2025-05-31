@@ -1623,7 +1623,12 @@
             
             panelElement.style.top = panelTopPosition + 'px';
             
-            let panelBottomLimit = mobileControlsRect.top - gameContainerRect.top - panelVerticalMargin; 
+            let panelBottomLimit;
+            if (window.innerWidth >= 600) {
+                panelBottomLimit = gameContainerRect.height - panelVerticalMargin;
+            } else {
+                panelBottomLimit = mobileControlsRect.top - gameContainerRect.top - panelVerticalMargin;
+            }
             let availablePanelHeight = panelBottomLimit - panelTopPosition;
 
             panelElement.style.height = Math.max(100, availablePanelHeight) + 'px'; 
