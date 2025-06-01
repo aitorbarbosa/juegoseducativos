@@ -926,7 +926,7 @@
                         <option value="rubiSnake">RubiSnake</option>
                         <option value="aitorSnake">AitorSnake</option>
                         <option value="noemiSnake">NoemiSnake</option>
-                        <option value="raquelSnake">RaquelSnake</option>
+                        <option value="maraSnake">MaraSnake</option>
                         <option value="almuSnake">AlmuSnake</option>
                         <option value="mimiSnake">MimiSnake</option>
                     </select>
@@ -946,6 +946,7 @@
                         <option value="lotus">Lotus</option>
                         <option value="cerveza">Cerveza</option>
                         <option value="pan">Pan</option>
+                        <option value="oreo">Oreo</option>
                     </select>
                 </div>
                 <div class="control-group" id="audio-control-group">
@@ -1146,17 +1147,19 @@
         const noemiSnakeHeadLeftImg = new Image();
         const noemiSnakeFoodImg = new Image();
 
-        const raquelSnakeHeadUpDownImg = new Image();
-        const raquelSnakeHeadLeftImg = new Image();
-        const raquelSnakeFoodImg = new Image();
+        const maraSnakeHeadUpDownImg = new Image();
+        const maraSnakeHeadLeftImg = new Image();
+        const maraSnakeFoodImg = new Image();
 
         const almuSnakeHeadUpDownImg = new Image(); 
         const almuSnakeHeadLeftImg = new Image();   
         const almuSnakeFoodImg = new Image();   
 
-        const mimiSnakeHeadUpDownImg = new Image(); 
-        const mimiSnakeHeadLeftImg = new Image();   
-        const mimiSnakeFoodImg = new Image();   
+        const mimiSnakeHeadUpDownImg = new Image();
+        const mimiSnakeHeadLeftImg = new Image();
+        const mimiSnakeFoodImg = new Image();
+
+        const oreoFoodImg = new Image();
 
         const worldCoverImages = {
             1: new Image(),
@@ -1213,7 +1216,7 @@
             rubiSnake: "RubiSnake",
             aitorSnake: "AitorSnake",
             noemiSnake: "NoemiSnake",
-            raquelSnake: "RaquelSnake",
+            maraSnake: "MaraSnake",
             almuSnake: "AlmuSnake",
             mimiSnake: "MimiSnake"
         };
@@ -1293,12 +1296,12 @@
                 bodyTintColor: '#FFC0EB', 
                 bodyStrokeColor: adjustColor('#FFC0EB', 0.30), 
             },
-            raquelSnake: {
+            maraSnake: {
                 snakeHeadAsset: {
-                    upDown: raquelSnakeHeadUpDownImg,
-                    left: raquelSnakeHeadLeftImg,
+                    upDown: maraSnakeHeadUpDownImg,
+                    left: maraSnakeHeadLeftImg,
                 },
-                foodAsset: raquelSnakeFoodImg,
+                foodAsset: maraSnakeFoodImg,
                 snakeHeadScale: 2.0,
                 foodScale: 1.5,
                 bodyTintColor: '#FCE9BC',
@@ -1336,9 +1339,10 @@
             cerveza: { asset: rubiSnakeFoodImg, scale: 1.5 },
             croqueta: { asset: aitorSnakeFoodImg, scale: 1.5 },
             aguacate: { asset: noemiSnakeFoodImg, scale: 1.5 },
-            sushi: { asset: raquelSnakeFoodImg, scale: 1.5 },
+            sushi: { asset: maraSnakeFoodImg, scale: 1.5 },
             lotus: { asset: almuSnakeFoodImg, scale: 1.5 },
-            pan: { asset: mimiSnakeFoodImg, scale: 1.5 }
+            pan: { asset: mimiSnakeFoodImg, scale: 1.5 },
+            oreo: { asset: oreoFoodImg, scale: 1.5 }
         };
         let currentFood = 'apple';
         // --- Fin Configuración de Comestibles ---
@@ -1485,26 +1489,29 @@
             noemiSnakeHeadLeftImg.src = 'https://i.imgur.com/TU4CgRq.png';
             noemiSnakeFoodImg.src = 'https://i.imgur.com/2bGXbM1.png';
             
-            raquelSnakeHeadUpDownImg.src = 'https://i.imgur.com/LEhLwYV.png';
-            raquelSnakeHeadLeftImg.src = 'https://i.imgur.com/NC8l22x.png';
-            raquelSnakeFoodImg.src = 'https://i.imgur.com/krE9lwu.png';
+            maraSnakeHeadUpDownImg.src = 'https://i.imgur.com/YvQ2uni.png';
+            maraSnakeHeadLeftImg.src = 'https://i.imgur.com/oiBGoud.png';
+            maraSnakeFoodImg.src = 'https://i.imgur.com/krE9lwu.png';
 
             almuSnakeHeadUpDownImg.src = 'https://i.imgur.com/2HqLxxp.png';
             almuSnakeHeadLeftImg.src = 'https://i.imgur.com/27Q7QvA.png';
             almuSnakeFoodImg.src = 'https://i.imgur.com/Lcurg08.png';
 
             mimiSnakeHeadUpDownImg.src = 'https://i.imgur.com/2UnTxTM.png';
-            mimiSnakeHeadLeftImg.src = 'https://i.imgur.com/GjJrvUA.png'; 
+            mimiSnakeHeadLeftImg.src = 'https://i.imgur.com/GjJrvUA.png';
             mimiSnakeFoodImg.src = 'https://i.imgur.com/kgOjgCI.png';
+
+            oreoFoodImg.src = 'https://i.imgur.com/Yv5ioX3.png';
             
             const allImageObjects = [ 
                 classicSnakeHeadLeftImg, classicSnakeHeadDownImg, classicFoodImg, snakeBodyTexture,
                 rubiSnakeHeadUpDownImg, rubiSnakeHeadLeftImg, rubiSnakeFoodImg,
                 aitorSnakeHeadUpDownImg, aitorSnakeHeadLeftImg, aitorSnakeFoodImg,
                 noemiSnakeHeadUpDownImg, noemiSnakeHeadLeftImg, noemiSnakeFoodImg,
-                raquelSnakeHeadUpDownImg, raquelSnakeHeadLeftImg, raquelSnakeFoodImg,
+                maraSnakeHeadUpDownImg, maraSnakeHeadLeftImg, maraSnakeFoodImg,
                 almuSnakeHeadUpDownImg, almuSnakeHeadLeftImg, almuSnakeFoodImg,
-                mimiSnakeHeadUpDownImg, mimiSnakeHeadLeftImg, mimiSnakeFoodImg
+                mimiSnakeHeadUpDownImg, mimiSnakeHeadLeftImg, mimiSnakeFoodImg,
+                oreoFoodImg
             ];
 
             allImageObjects.forEach(imgObj => {
