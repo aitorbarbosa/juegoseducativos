@@ -281,14 +281,18 @@
 
         #mobile-controls {
             display: flex;
-            justify-content: flex-start; 
+            justify-content: flex-start;
             align-items: center;
             width: 100%;
-            margin: 0 auto; 
-            padding: 0 0px; 
+            margin: 0 auto;
+            padding: 0 0px;
             box-sizing: border-box;
-            flex-grow: 1; 
-            flex-direction: column; 
+            flex-grow: 1;
+            flex-direction: column;
+        }
+
+        @media (hover: hover) and (pointer: fine) {
+            #mobile-controls { display: none; }
         }
 
         #d-pad-container {
@@ -1656,12 +1660,18 @@
             
             panelElement.style.top = panelTopPosition + 'px';
             
-            let panelBottomLimit = mobileControlsRect.top - gameContainerRect.top - panelVerticalMargin; 
+            let panelBottomLimit;
+            if (mobileControlsEl.offsetParent === null) {
+                panelBottomLimit = gameContainerRect.height - panelVerticalMargin;
+            } else {
+                panelBottomLimit = mobileControlsRect.top - gameContainerRect.top - panelVerticalMargin;
+            }
             let availablePanelHeight = panelBottomLimit - panelTopPosition;
 
-            panelElement.style.height = Math.max(100, availablePanelHeight) + 'px'; 
-            panelElement.style.bottom = 'auto'; 
-            console.log(`Panel ${panelElement.id} posicionado. Top: ${panelElement.style.top}, Height: ${panelElement.style.height}, Referencia superior: ${topReferenceElement.id}, Límite inferior: D-Pad`);
+            panelElement.style.height = Math.max(100, availablePanelHeight) + 'px';
+            panelElement.style.bottom = 'auto';
+            const limitSource = mobileControlsEl.offsetParent === null ? 'Contenedor' : 'D-Pad';
+            console.log(`Panel ${panelElement.id} posicionado. Top: ${panelElement.style.top}, Height: ${panelElement.style.height}, Referencia superior: ${topReferenceElement.id}, Límite inferior: ${limitSource}`);
         }
 
         function updateMainButtonStates() {
