@@ -1207,26 +1207,46 @@
         const worldCoverImages = {
             1: new Image(),
             2: new Image(),
-            3: new Image()
+            3: new Image(),
+            4: new Image(),
+            5: new Image(),
+            6: new Image(),
+            7: new Image(),
+            8: new Image()
         };
-        const worldCompleteImages = { 
+        const worldCompleteImages = {
             1: new Image(),
             2: new Image(),
-            3: new Image()
+            3: new Image(),
+            4: new Image(),
+            5: new Image(),
+            6: new Image(),
+            7: new Image(),
+            8: new Image()
         };
-        const levelCompleteImages = { 
+        const levelCompleteImages = {
             1: new Image(),
             2: new Image(),
-            3: new Image()
+            3: new Image(),
+            4: new Image(),
+            5: new Image(),
+            6: new Image(),
+            7: new Image(),
+            8: new Image()
         };
-        const defeatImages = { 
+        const defeatImages = {
             1: new Image(),
             2: new Image(),
-            3: new Image()
+            3: new Image(),
+            4: new Image(),
+            5: new Image(),
+            6: new Image(),
+            7: new Image(),
+            8: new Image()
         };
-        const freeModeCoverImg = new Image(); 
+        const freeModeCoverImg = new Image();
         let worldImagesLoaded = 0;
-        const totalWorldImagesToLoad = 13; 
+        const totalWorldImagesToLoad = 33;
         // --- FIN: Declaración de Objetos Image ---
 
         // --- Música de fondo y SFX ---
@@ -1268,7 +1288,7 @@
 
         // --- LEVELS MODE CONFIG ---
         const LEVELS_PER_WORLD = 5;
-        const TOTAL_WORLDS = 3;
+        const TOTAL_WORLDS = 8;
         const LEVEL_TIME_LIMIT = 60000; 
         const TARGET_SCORES_LEVELS = [
             // World 1
@@ -1276,12 +1296,27 @@
             // World 2
             600, 700, 800, 900, 1000,
             // World 3
-            1100, 1200, 1300, 1400, 1500
+            1100, 1200, 1300, 1400, 1500,
+            // World 4
+            1600, 1700, 1800, 1900, 2000,
+            // World 5
+            2100, 2200, 2300, 2400, 2500,
+            // World 6
+            2600, 2700, 2800, 2900, 3000,
+            // World 7
+            3100, 3200, 3300, 3400, 3500,
+            // World 8
+            3600, 3700, 3800, 3900, 4000
         ];
         const WORLD_DIFFICULTY_MAP = {
             1: 'easy',
-            2: 'normal',
-            3: 'difficult'
+            2: 'easy',
+            3: 'easy',
+            4: 'normal',
+            5: 'normal',
+            6: 'normal',
+            7: 'difficult',
+            8: 'difficult'
         };
         let currentWorld = 1;
         let currentLevelInWorld = 1; 
@@ -1457,30 +1492,54 @@
         
         // --- Funciones de Carga y Aplicación de Jugadores ---
         function loadWorldImages() {
-            worldCoverImages[1].src = 'https://i.imgur.com/h7iNXJT.png'; 
-            worldCoverImages[2].src = 'https://i.imgur.com/KIiKaTr.png'; 
-            worldCoverImages[3].src = 'https://i.imgur.com/Iv2Pzet.png'; 
+            worldCoverImages[1].src = 'https://i.imgur.com/h7iNXJT.png';
+            worldCoverImages[2].src = 'https://i.imgur.com/4pKJmP2.png';
+            worldCoverImages[3].src = 'https://i.imgur.com/Iv2Pzet.png';
+            worldCoverImages[4].src = 'https://i.imgur.com/X6KtQtD.png';
+            worldCoverImages[5].src = 'https://i.imgur.com/LYCR9nT.png';
+            worldCoverImages[6].src = 'https://i.imgur.com/KIiKaTr.png';
+            worldCoverImages[7].src = 'https://i.imgur.com/j27VS0G.png';
+            worldCoverImages[8].src = 'https://i.imgur.com/JYjHEgy.png';
 
-            worldCompleteImages[1].src = 'https://i.imgur.com/nkdJEmV.png'; 
-            worldCompleteImages[2].src = 'https://i.imgur.com/mX7hh0c.png'; 
-            worldCompleteImages[3].src = 'https://i.imgur.com/tDOyHXc.png'; 
+            worldCompleteImages[1].src = 'https://i.imgur.com/nkdJEmV.png';
+            worldCompleteImages[2].src = 'https://i.imgur.com/rYz9bjn.png';
+            worldCompleteImages[3].src = 'https://i.imgur.com/tDOyHXc.png';
+            worldCompleteImages[4].src = 'https://i.imgur.com/uoSRiRo.png';
+            worldCompleteImages[5].src = 'https://i.imgur.com/PnP5i1q.png';
+            worldCompleteImages[6].src = 'https://i.imgur.com/mX7hh0c.png';
+            worldCompleteImages[7].src = 'https://i.imgur.com/bzZRnVl.png';
+            worldCompleteImages[8].src = 'https://i.imgur.com/4XIUM5E.png';
 
-            levelCompleteImages[1].src = 'https://i.imgur.com/gijG9ec.png'; 
-            levelCompleteImages[2].src = 'https://i.imgur.com/WUfSzpY.png'; 
-            levelCompleteImages[3].src = 'https://i.imgur.com/2ZlgclU.png'; 
+            levelCompleteImages[1].src = 'https://i.imgur.com/gijG9ec.png';
+            levelCompleteImages[2].src = 'https://i.imgur.com/YKVlhix.png';
+            levelCompleteImages[3].src = 'https://i.imgur.com/2ZlgclU.png';
+            levelCompleteImages[4].src = 'https://i.imgur.com/GniQn3h.png';
+            levelCompleteImages[5].src = 'https://i.imgur.com/YtiDSF1.png';
+            levelCompleteImages[6].src = 'https://i.imgur.com/WUfSzpY.png';
+            levelCompleteImages[7].src = 'https://i.imgur.com/IY7T8Jm.png';
+            levelCompleteImages[8].src = 'https://i.imgur.com/7iK51vy.png';
 
-            defeatImages[1].src = 'https://i.imgur.com/FZTIteF.png'; 
-            defeatImages[2].src = 'https://i.imgur.com/0OmpfWR.png'; 
-            defeatImages[3].src = 'https://i.imgur.com/Y4kPsNM.png'; 
+            defeatImages[1].src = 'https://i.imgur.com/FZTIteF.png';
+            defeatImages[2].src = 'https://i.imgur.com/3snKeSJ.png';
+            defeatImages[3].src = 'https://i.imgur.com/Y4kPsNM.png';
+            defeatImages[4].src = 'https://i.imgur.com/3FilGNV.png';
+            defeatImages[5].src = 'https://i.imgur.com/ADe82lc.png';
+            defeatImages[6].src = 'https://i.imgur.com/0OmpfWR.png';
+            defeatImages[7].src = 'https://i.imgur.com/6Bc4w92.png';
+            defeatImages[8].src = 'https://i.imgur.com/dd6Zkda.png';
 
             freeModeCoverImg.src = 'https://i.imgur.com/IIc2Xb7.png';
 
 
             const allWorldImages = [
-                worldCoverImages[1], worldCoverImages[2], worldCoverImages[3],
-                worldCompleteImages[1], worldCompleteImages[2], worldCompleteImages[3],
-                levelCompleteImages[1], levelCompleteImages[2], levelCompleteImages[3],
-                defeatImages[1], defeatImages[2], defeatImages[3],
+                worldCoverImages[1], worldCoverImages[2], worldCoverImages[3], worldCoverImages[4],
+                worldCoverImages[5], worldCoverImages[6], worldCoverImages[7], worldCoverImages[8],
+                worldCompleteImages[1], worldCompleteImages[2], worldCompleteImages[3], worldCompleteImages[4],
+                worldCompleteImages[5], worldCompleteImages[6], worldCompleteImages[7], worldCompleteImages[8],
+                levelCompleteImages[1], levelCompleteImages[2], levelCompleteImages[3], levelCompleteImages[4],
+                levelCompleteImages[5], levelCompleteImages[6], levelCompleteImages[7], levelCompleteImages[8],
+                defeatImages[1], defeatImages[2], defeatImages[3], defeatImages[4],
+                defeatImages[5], defeatImages[6], defeatImages[7], defeatImages[8],
                 freeModeCoverImg
             ];
 
@@ -2024,7 +2083,7 @@
             },
             difficulty: { 
                 title: "Dificultad / Mundo", 
-                text_adventure: "<h4> (Solo en Modo Aventura)</h4><p>Cuando juegas en <strong>Modo Aventura</strong>, tendrás disponibles un total de 3 mundos. Cada uno de ellos, dispone de 5 niveles de creciente dificultad. Tendrás que superarlos todos para poder avanzar al siguiente mundo. Complétalos todos para finalizar este modo de juego.</p><p>El selector de <strong>Mundos</strong> (que aparece al seleccionar \"Modo Aventura\") te permite elegir en qué mundo específico deseas comenzar tu aventura, siempre y cuando ya lo hayas desbloqueado previamente jugando y superando los anteriores en la dificultad seleccionada. ¡Supera los mundos para acceder a nuevos escenarios y desafíos más emocionantes o volver a jugar a los que ya hayas superado!</p><p>No olvides estar atento a las novedades del juego, ¡Puede que haya nuevos niveles muy pronto!</p>",
+                text_adventure: "<h4> (Solo en Modo Aventura)</h4><p>Cuando juegas en <strong>Modo Aventura</strong>, tendrás disponibles un total de 8 mundos. Cada uno de ellos dispone de 5 niveles de creciente dificultad. Tendrás que superarlos todos para poder avanzar al siguiente mundo. Complétalos todos para finalizar este modo de juego.</p><p>El selector de <strong>Mundos</strong> (que aparece al seleccionar \"Modo Aventura\") te permite elegir en qué mundo específico deseas comenzar tu aventura, siempre y cuando ya lo hayas desbloqueado previamente jugando y superando los anteriores en la dificultad seleccionada. ¡Supera los mundos para acceder a nuevos escenarios y desafíos más emocionantes o volver a jugar a los que ya hayas superado!</p><p>No olvides estar atento a las novedades del juego, ¡Puede que haya nuevos niveles muy pronto!</p>",
                 text_free: "<h4> (Solo en Modo Libre)</h4><p>Ajusta el nivel de desafío para que se adapte a tu habilidad y preferencias. La dificultad influye principalmente en la velocidad de la serpiente y el tiempo de desaparición de los comestibles.</p><h4>Fácil</h4><p>La opción perfecta si estás empezando o si prefieres una experiencia de juego más relajada. La serpiente se mueve a una velocidad considerablemente reducida y los comestibles tardan más tiempo en desaparecer, dándote más tiempo para reaccionar y planificar tus movimientos.</p><h4>Normal</h4><p>Un reto equilibrado, recomendado para la mayoría de los jugadores que ya conocen la mecánica básica de Snake. La velocidad de la serpiente es moderada al igual que el tiempo de desaparición de los comestibles, exigiendo buena anticipación y reflejos para conseguir puntuaciones altas.</p><h4>Difícil</h4><p>¡Prepárate para un desafío intenso! En esta dificultad, la serpiente se mueve muy rápido desde el inicio y los comestibles desaparecen mucho más rápido, poniendo a prueba tu concentración y destreza al máximo.</p>"
             },
             skin: {
