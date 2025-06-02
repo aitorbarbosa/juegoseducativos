@@ -298,8 +298,18 @@
             margin: 0 auto;
             padding: 0 0px;
             box-sizing: border-box;
-            flex-grow: 1;
             flex-direction: column;
+            margin-top: auto;
+        }
+
+        #play-area {
+            display: grid;
+            grid-template-rows: auto 1fr auto;
+            flex-grow: 1;
+        }
+        #gameCanvas {
+            justify-self: center;
+            align-self: center;
         }
 
         @media (hover: hover) and (pointer: fine) {
@@ -370,7 +380,7 @@
             align-items: center;
             gap: 8px;
             padding-top: 5px;
-            margin-top: auto;
+            margin-top: 10px;
             margin-bottom: 0px;
             position: relative;
             width: 100%;
@@ -887,6 +897,7 @@
                 </div>
             </div>
         </div>
+        <div id="play-area">
 
         <div id="top-info-bar">
             <div class="info-group">
@@ -1052,6 +1063,7 @@
                     </button>
                 </div>
             </div>
+        </div>
         </div>
         
         <div id="mobile-controls">
