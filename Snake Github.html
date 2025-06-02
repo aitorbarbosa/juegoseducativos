@@ -1146,7 +1146,8 @@
         const infoPanel = document.getElementById("info-panel");
         const infoPanelContent = document.getElementById("info-panel-content"); 
         const closeInfoButton = document.getElementById("close-info-button");
-        const topInfoBar = document.getElementById('top-info-bar'); 
+        const topInfoBar = document.getElementById('top-info-bar');
+        const setupControls = document.getElementById('setup-controls');
         const actionButtonsRow = document.getElementById('action-buttons-row');
 
         // New DOM elements for specific info panel
@@ -1597,26 +1598,49 @@
             const containerComputedStyle = getComputedStyle(gameContainer);
             const canvasComputedStyle = getComputedStyle(canvasEl);
 
-            const containerPadding = 2 * parseFloat(containerComputedStyle.paddingLeft);
-            let availableWidth = gameContainer.clientWidth - containerPadding;
+            const containerPaddingX =
+                parseFloat(containerComputedStyle.paddingLeft) +
+                parseFloat(containerComputedStyle.paddingRight);
+            const containerPaddingY =
+                parseFloat(containerComputedStyle.paddingTop) +
+                parseFloat(containerComputedStyle.paddingBottom);
 
-            const canvasBorderWidth = 2 * parseFloat(canvasComputedStyle.borderLeftWidth);
-            availableWidth -= canvasBorderWidth;
+            const canvasBorderWidth =
+                parseFloat(canvasComputedStyle.borderLeftWidth) +
+                parseFloat(canvasComputedStyle.borderRightWidth);
+
+            let availableWidth =
+                window.innerWidth - containerPaddingX - canvasBorderWidth;
+
+            let availableHeight =
+                window.innerHeight -
+                containerPaddingY -
+                canvasBorderWidth -
+                topInfoBar.offsetHeight -
+                setupControls.offsetHeight;
 
             const isDesktop = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
 
             if (isDesktop) {
-                let newGridSize = Math.floor(availableWidth / TILE_COUNT);
+                let newGridSize = Math.floor(
+                    Math.min(availableWidth, availableHeight) / TILE_COUNT
+                );
                 const minGridSize = 10;
                 if (newGridSize < minGridSize) {
                     newGridSize = minGridSize;
                 }
 
                 GRID_SIZE = newGridSize;
+
                 const newCanvasSize = GRID_SIZE * TILE_COUNT;
 
                 canvasEl.width = newCanvasSize;
                 canvasEl.height = newCanvasSize;
+
+                document.documentElement.style.setProperty(
+                    '--game-max-width',
+                    `${newCanvasSize + containerPaddingX + canvasBorderWidth}px`
+                );
 
                 tileCountX = TILE_COUNT;
                 tileCountY = TILE_COUNT;
@@ -1631,6 +1655,11 @@
 
                 canvasEl.width = newCanvasSize;
                 canvasEl.height = newCanvasSize;
+
+                document.documentElement.style.setProperty(
+                    '--game-max-width',
+                    `${newCanvasSize + containerPaddingX + canvasBorderWidth}px`
+                );
 
                 tileCountX = canvasEl.width / GRID_SIZE;
                 tileCountY = canvasEl.height / GRID_SIZE;
