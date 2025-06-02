@@ -3619,11 +3619,12 @@
         document.addEventListener("keydown", (e) => {
             const isSettingsOpen = !settingsPanel.classList.contains("settings-panel-hidden");
             const isInfoOpen = !infoPanel.classList.contains("info-panel-hidden");
+            const isSpecificInfoOpen = specificInfoPanel && !specificInfoPanel.classList.contains("specific-info-panel-hidden");
 
-            if (!isSettingsOpen && !isInfoOpen) { 
-                if (gameOver && e.key !== "Enter" && gameIntervalId === null) return; 
+            if (!isSettingsOpen && !isInfoOpen && !isSpecificInfoOpen) {
+                if (gameOver && e.key !== "Enter" && gameIntervalId === null) return;
                 let newDirectionCmd = null; // Use newDirectionCmd to align with function parameter
-                const key = e.key.toLowerCase(); 
+                const key = e.key.toLowerCase();
                 switch (key) {
                     case "arrowup": case "w": newDirectionCmd = "up"; break;
                     case "arrowdown": case "s": newDirectionCmd = "down"; break;
@@ -3633,9 +3634,11 @@
                 }
                 if (newDirectionCmd) { changeDirection(newDirectionCmd); } // Call with newDirectionCmd
                 if (["arrowup", "arrowdown", "arrowleft", "arrowright", "w", "a", "s", "d"].includes(key)) { e.preventDefault(); }
-            } else if (isSettingsOpen) { 
+            } else if (isSpecificInfoOpen) {
+                 if (e.key === "Escape") { closeSpecificInfoPanel(); }
+            } else if (isSettingsOpen) {
                  if (e.key === "Escape") { closeSettingsPanel(); }
-            } else if (isInfoOpen) { 
+            } else if (isInfoOpen) {
                  if (e.key === "Escape") { closeInfoPanel(); }
             }
         });
