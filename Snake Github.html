@@ -1223,9 +1223,10 @@
 
 
         // Configuración del juego
-        const GRID_SIZE = 20; 
-        let tileCountX; 
-        let tileCountY; 
+        let GRID_SIZE = 20;
+        const TILE_COUNT = 24;
+        let tileCountX;
+        let tileCountY;
         const INITIAL_SNAKE_LENGTH = 3; 
         const MAX_STREAK = 5; 
         
@@ -1596,23 +1597,26 @@
             const containerComputedStyle = getComputedStyle(gameContainer);
             const canvasComputedStyle = getComputedStyle(canvasEl);
 
-            const containerPadding = 2 * parseFloat(containerComputedStyle.paddingLeft); 
+            const containerPadding = 2 * parseFloat(containerComputedStyle.paddingLeft);
             let availableWidth = gameContainer.clientWidth - containerPadding;
-            
+
             const canvasBorderWidth = 2 * parseFloat(canvasComputedStyle.borderLeftWidth);
             availableWidth -= canvasBorderWidth;
 
-            let newCanvasSize = Math.floor(availableWidth / GRID_SIZE) * GRID_SIZE;
+            let newGridSize = Math.floor(availableWidth / TILE_COUNT);
+            const minGridSize = 10;
+            if (newGridSize < minGridSize) {
+                newGridSize = minGridSize;
+            }
 
-            const minTiles = 10; 
-            const minCanvasSize = minTiles * GRID_SIZE;
-            newCanvasSize = Math.max(newCanvasSize, minCanvasSize); 
-            
+            GRID_SIZE = newGridSize;
+            const newCanvasSize = GRID_SIZE * TILE_COUNT;
+
             canvasEl.width = newCanvasSize;
-            canvasEl.height = newCanvasSize; 
+            canvasEl.height = newCanvasSize;
 
-            tileCountX = canvasEl.width / GRID_SIZE;
-            tileCountY = canvasEl.height / GRID_SIZE;
+            tileCountX = TILE_COUNT;
+            tileCountY = TILE_COUNT;
 
             // If a panel is open, re-calculate its position after resize
             if (!settingsPanel.classList.contains("settings-panel-hidden")) {
