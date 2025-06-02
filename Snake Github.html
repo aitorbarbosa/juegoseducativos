@@ -578,22 +578,22 @@
         .settings-panel-hidden, .info-panel-hidden, .specific-info-panel-hidden { 
             display: none !important;
         }
-        #settings-panel, #info-panel, #specific-info-panel { 
+        #settings-panel, #info-panel, #specific-info-panel {
             position: fixed;
             left: 50%;
-            transform: translateX(-50%) scale(0.95); 
-            background-color: #1F2937; 
+            transform: translateX(-50%) scale(0.95);
+            background-color: #1F2937;
             padding: 25px;
             border-radius: 12px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.6);
-            z-index: 1001; 
-            width: 90%;
-            max-width: 400px; 
+            z-index: 1001;
+            width: 100%;
+            max-width: 520px;
             display: flex;
             flex-direction: column;
             gap: 15px;
-            border: 2px solid #4b5563; 
-            overflow-y: auto; 
+            border: 2px solid #4b5563;
+            overflow-y: auto;
             opacity: 0; 
             transition: opacity 0.3s ease-out, transform 0.3s ease-out; 
         }
