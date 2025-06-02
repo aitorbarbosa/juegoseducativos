@@ -281,13 +281,13 @@
 
 
         canvas {
-            background-color: #374151; 
-            border: 4px solid #4b5563; 
-            display: block; 
-            margin: 0 auto 5px auto; 
-            max-width: 100%; 
-            border-radius: 8px; 
-            aspect-ratio: 1 / 1; 
+            background-color: #374151;
+            border: 4px solid #4b5563;
+            display: block;
+            margin: 0 auto;
+            max-width: 100%;
+            border-radius: 8px;
+            aspect-ratio: 1 / 1;
         }
 
         #mobile-controls {
@@ -1146,7 +1146,8 @@
         const infoPanel = document.getElementById("info-panel");
         const infoPanelContent = document.getElementById("info-panel-content"); 
         const closeInfoButton = document.getElementById("close-info-button");
-        const topInfoBar = document.getElementById('top-info-bar'); 
+        const topInfoBar = document.getElementById('top-info-bar');
+        const setupControls = document.getElementById('setup-controls');
         const actionButtonsRow = document.getElementById('action-buttons-row');
 
         // New DOM elements for specific info panel
@@ -1597,26 +1598,45 @@
             const containerComputedStyle = getComputedStyle(gameContainer);
             const canvasComputedStyle = getComputedStyle(canvasEl);
 
-            const containerPadding = 2 * parseFloat(containerComputedStyle.paddingLeft);
-            let availableWidth = gameContainer.clientWidth - containerPadding;
+            const containerPaddingX =
+                parseFloat(containerComputedStyle.paddingLeft) +
+                parseFloat(containerComputedStyle.paddingRight);
+            let availableWidth = gameContainer.clientWidth - containerPaddingX;
 
-            const canvasBorderWidth = 2 * parseFloat(canvasComputedStyle.borderLeftWidth);
-            availableWidth -= canvasBorderWidth;
+            const canvasBorderX =
+                parseFloat(canvasComputedStyle.borderLeftWidth) +
+                parseFloat(canvasComputedStyle.borderRightWidth);
+            availableWidth -= canvasBorderX;
+
+            const containerPaddingY =
+                parseFloat(containerComputedStyle.paddingTop) +
+                parseFloat(containerComputedStyle.paddingBottom);
+            let availableHeight =
+                gameContainer.clientHeight -
+                containerPaddingY -
+                topInfoBar.offsetHeight -
+                setupControls.offsetHeight;
+
+            const canvasBorderY =
+                parseFloat(canvasComputedStyle.borderTopWidth) +
+                parseFloat(canvasComputedStyle.borderBottomWidth);
+            availableHeight -= canvasBorderY;
 
             const isDesktop = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
 
             if (isDesktop) {
-                let newGridSize = Math.floor(availableWidth / TILE_COUNT);
+                let newGridSize = Math.floor(
+                    Math.min(availableWidth, availableHeight) / TILE_COUNT
+                );
                 const minGridSize = 10;
                 if (newGridSize < minGridSize) {
                     newGridSize = minGridSize;
                 }
 
                 GRID_SIZE = newGridSize;
-                const newCanvasSize = GRID_SIZE * TILE_COUNT;
 
-                canvasEl.width = newCanvasSize;
-                canvasEl.height = newCanvasSize;
+                canvasEl.width = GRID_SIZE * TILE_COUNT;
+                canvasEl.height = GRID_SIZE * TILE_COUNT;
 
                 tileCountX = TILE_COUNT;
                 tileCountY = TILE_COUNT;
