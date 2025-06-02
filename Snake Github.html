@@ -298,12 +298,24 @@
             margin: 0 auto;
             padding: 0 0px;
             box-sizing: border-box;
-            flex-grow: 1;
             flex-direction: column;
+            flex-grow: 1;
         }
+
 
         @media (hover: hover) and (pointer: fine) {
             #mobile-controls { display: none; }
+            #play-area {
+                display: grid;
+                grid-template-rows: auto 1fr auto;
+                flex-grow: 1;
+            }
+            #gameCanvas {
+                justify-self: center;
+                align-self: center;
+                margin-bottom: 0;
+            }
+            #setup-controls { margin-top: 5px; }
         }
 
         #d-pad-container {
@@ -887,6 +899,7 @@
                 </div>
             </div>
         </div>
+        <div id="play-area">
 
         <div id="top-info-bar">
             <div class="info-group">
@@ -1052,6 +1065,7 @@
                     </button>
                 </div>
             </div>
+        </div>
         </div>
         
         <div id="mobile-controls">
