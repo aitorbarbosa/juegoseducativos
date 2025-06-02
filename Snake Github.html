@@ -8,6 +8,17 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
     <style>
+        /* Variable de ancho máximo para sincronizar Splash y juego */
+        :root {
+            --game-max-width: 520px;
+        }
+
+        @media (hover: hover) and (pointer: fine) {
+            :root {
+                --game-max-width: min(75vmin, 700px);
+            }
+        }
+
         /* Estilos base del cuerpo y contenedor del juego */
         html {
             height: 100%;
@@ -47,7 +58,7 @@
 
         #splash-content {
             width: 100%;
-            max-width: 520px;
+            max-width: var(--game-max-width);
             height: 100%;
             display: flex;
             background-color: #02010a;
@@ -63,7 +74,7 @@
 
         #splash-top-image {
             width: 95%;
-            max-width: 520px; /* Límite para PC, un poco más grande que el juego */
+            max-width: var(--game-max-width); /* Límite para PC, un poco más grande que el juego */
             height: auto;
             object-fit: contain;
             box-sizing: border-box;
@@ -86,7 +97,7 @@
 
         #splash-bottom-image {
             width: 100%;
-            max-width: 520px; /* Límite para PC, un poco más grande que el juego */
+            max-width: var(--game-max-width); /* Límite para PC, un poco más grande que el juego */
             height: auto;
             max-height: calc(25vh + 60px);
             object-fit: contain;
@@ -106,7 +117,7 @@
             border-radius: 12px; 
             box-shadow: 0 8px 16px rgba(0,0,0,0.3);
             width: 100%; 
-            max-width: 520px; 
+            max-width: var(--game-max-width); 
             box-sizing: border-box; 
             height: 100%; 
             display: flex; 
@@ -592,7 +603,7 @@
             box-shadow: 0 10px 30px rgba(0,0,0,0.6);
             z-index: 1001;
             width: 100%;
-            max-width: 520px;
+            max-width: var(--game-max-width);
             display: flex;
             flex-direction: column;
             gap: 15px;
