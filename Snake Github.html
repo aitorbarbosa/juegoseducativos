@@ -912,7 +912,7 @@
             </div>
             <div class="info-group">
                 <span class="info-label">Racha:</span>
-                <span id="streakValue" class="info-value">1x</span>
+                <span id="streakValue" class="info-value">x1</span>
             </div>
             <div class="info-group"> 
                 <span id="timeLengthLabel" class="info-label">Tiempo:</span>
@@ -1749,7 +1749,7 @@
 
         function resetGameUIDisplays() {
             scoreValueDisplay.textContent = "0";
-            streakValueDisplay.textContent = "1x";
+            streakValueDisplay.textContent = "x1";
             if (gameMode === 'levels') {
                 timeLengthValueEl.textContent = Math.ceil(LEVEL_TIME_LIMIT / 1000);
             } else { // freeMode
@@ -3110,7 +3110,7 @@
         
         function updateScoreDisplay() {
             scoreValueDisplay.textContent = score;
-            streakValueDisplay.textContent = `${Number.isInteger(streakMultiplier) ? streakMultiplier : streakMultiplier.toFixed(1)}x`;
+            streakValueDisplay.textContent = `x${Number.isInteger(streakMultiplier) ? streakMultiplier : streakMultiplier.toFixed(1)}`;
         }
 
         function updateTargetScoreDisplay() {
@@ -3365,7 +3365,7 @@
                     }
                     score = 0; // Reset score when transitioning to new world cover
                     streakMultiplier = 1; // Reset streak
-                    updateScoreDisplay(); // Update UI to show 0 score & 1x streak
+                    updateScoreDisplay(); // Update UI to show 0 score & x1 streak
 
                     // Update UI elements that depend on display variables
                     updateTargetScoreDisplay();
