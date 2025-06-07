@@ -1352,15 +1352,15 @@
                 { speed: 180, initialLength: 6, initialLifespan: 9750 }
             ],
             // World 4 - El Bosque de los Engaños
-            Array(5).fill({ speed: 170, initialLength: 6, initialLifespan: 10500 }),
+            Array(5).fill({ speed: 170, initialLength: 7, initialLifespan: 10500 }),
             // World 5 - Default Normal difficulty
-            Array(5).fill({ speed: 160, initialLength: 6, initialLifespan: 10500 }),
+            Array(5).fill({ speed: 160, initialLength: 8, initialLifespan: 10500 }),
             // World 6 - Default Normal difficulty
-            Array(5).fill({ speed: 150, initialLength: 6, initialLifespan: 10250 }),
+            Array(5).fill({ speed: 150, initialLength: 9, initialLifespan: 10250 }),
             // World 7 - Default Difficult difficulty
-            Array(5).fill({ speed: 140, initialLength: 6, initialLifespan: 10000 }),
+            Array(5).fill({ speed: 140, initialLength: 10, initialLifespan: 10000 }),
             // World 8 - Default Difficult difficulty
-            Array(5).fill({ speed: 130, initialLength: 10, initialLifespan: 9750 })
+            Array(5).fill({ speed: 130, initialLength: 15, initialLifespan: 9750 })
         ];
         let currentWorld = 1;
         let currentLevelInWorld = 1; 
@@ -2524,12 +2524,14 @@
         function drawLightningItem(item) {
             if (!ctx) return;
             const img = item.color === 'yellow' ? lightningYellowImg : lightningRedImg;
+            const drawSize = GRID_SIZE * 1.5;
+            const offset = (drawSize - GRID_SIZE) / 2;
             if (img && img.complete && img.naturalHeight !== 0) {
-                ctx.drawImage(img, item.x * GRID_SIZE, item.y * GRID_SIZE, GRID_SIZE, GRID_SIZE);
+                ctx.drawImage(img, item.x * GRID_SIZE - offset, item.y * GRID_SIZE - offset, drawSize, drawSize);
             } else {
                 const color = item.color === 'yellow' ? 'yellow' : 'red';
                 ctx.fillStyle = color;
-                ctx.fillRect(item.x * GRID_SIZE + 2, item.y * GRID_SIZE + 2, GRID_SIZE - 4, GRID_SIZE - 4);
+                ctx.fillRect(item.x * GRID_SIZE + 2 - offset, item.y * GRID_SIZE + 2 - offset, GRID_SIZE - 4 + (drawSize - GRID_SIZE), GRID_SIZE - 4 + (drawSize - GRID_SIZE));
             }
         }
 
