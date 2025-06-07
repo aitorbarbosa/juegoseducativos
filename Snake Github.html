@@ -2305,9 +2305,11 @@
             }
             if (baseLifespan <= 0) return 0;
             let streakReduction = 0;
-            const effectiveStreakForReduction = Math.floor(streakMultiplier); 
-            if (effectiveStreakForReduction >= 2) { 
-                streakReduction = (Math.min(effectiveStreakForReduction, 5) - 1) * 1000; 
+            const effectiveStreakForReduction = Math.floor(streakMultiplier);
+            if (effectiveStreakForReduction >= 2) {
+                // Previously each streak level reduced lifespan by 1 second.
+                // Reduce by half a second instead for a smoother difficulty curve.
+                streakReduction = (Math.min(effectiveStreakForReduction, 5) - 1) * 500;
             }
             const calculatedLifespan = baseLifespan - streakReduction;
             return Math.max(MIN_FOOD_LIFESPAN, calculatedLifespan); 
