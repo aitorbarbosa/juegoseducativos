@@ -1535,6 +1535,15 @@
             [2000, 4000],
             [1000, 3000]
         ];
+        const LIGHTNING_SPAWN_RANGE_WORLD7 = [7000, 12000];
+        const MIRROR_SPAWN_RANGES_WORLD7 = [
+            [5000, 7000],
+            [4000, 6000],
+            [3000, 5000],
+            [2000, 4000],
+            [1000, 3000]
+        ];
+        const MIRROR_EFFECT_DURATION = 3000;
         const LIGHTNING_LIFESPAN = 5000;
         const SPEED_BOOST_DURATION = 3000;
         let obstacles = [];
@@ -1542,6 +1551,10 @@
         let falseFoodSpawnTimeoutId;
         let lightningItems = [];
         let lightningSpawnTimeoutId;
+        let mirrorItems = [];
+        let mirrorSpawnTimeoutId;
+        let controlsInverted = false;
+        let mirrorEffect = { active: false, startTime: 0 };
         let speedBoost = { active: false, color: '', change: 0, startTime: 0 };
 
 
@@ -2666,8 +2679,13 @@
         }
 
         function scheduleNextLightningSpawn() {
-            if (gameMode !== "levels" || currentWorld !== 6 || gameOver) return;
-            const range = LIGHTNING_SPAWN_RANGES_WORLD6[currentLevelInWorld - 1] || [5000, 7000];
+            if (gameMode !== "levels" || (currentWorld !== 6 && currentWorld !== 7) || gameOver) return;
+            let range;
+            if (currentWorld === 6) {
+                range = LIGHTNING_SPAWN_RANGES_WORLD6[currentLevelInWorld - 1] || [5000, 7000];
+            } else {
+                range = LIGHTNING_SPAWN_RANGE_WORLD7;
+            }
             const delay = Math.random() * (range[1] - range[0]) + range[0];
             lightningSpawnTimeoutId = setTimeout(() => {
                 generateLightning();
@@ -2690,6 +2708,115 @@
                 clearInterval(item.intervalId);
             });
             lightningItems = [];
+        }
+
+        function drawMirrorItem(item) {
+            if (!ctx) return;
+            const foodData = FOODS[currentFood] || FOODS["apple"];
+            const img = foodData.asset;
+            let foodVisualTopY;
+            let foodVisualHeight;
+            if (img && img.complete && img.naturalHeight !== 0) {
+                const size = GRID_SIZE * foodData.scale;
+                const off = (size - GRID_SIZE) / 2;
+                foodVisualTopY = item.y * GRID_SIZE - off;
+                foodVisualHeight = size;
+                drawImageWithTint(ctx, img, item.x * GRID_SIZE - off, item.y * GRID_SIZE - off, size, size, 'rgba(0,0,255,0.2)');
+            } else {
+                foodVisualTopY = item.y * GRID_SIZE + 2;
+                foodVisualHeight = GRID_SIZE - 4;
+                ctx.fillStyle = '#0000ff';
+                ctx.fillRect(item.x * GRID_SIZE + 2, item.y * GRID_SIZE + 2, GRID_SIZE - 4, GRID_SIZE - 4);
+            }
+
+            const foodVisualBottomY = foodVisualTopY + foodVisualHeight;
+
+            if (!gameOver && item.remaining > 0) {
+                const totalLifespan = item.lifespan || FALSE_FOOD_LIFESPAN;
+                const barProgress = item.remaining / totalLifespan;
+                const barWidth = (GRID_SIZE - 4) * barProgress;
+                const barHeight = 3;
+                const barGap = 2;
+
+                let timeBarYPosition = foodVisualBottomY + barGap;
+
+                if (timeBarYPosition + barHeight > canvasEl.height) {
+                    timeBarYPosition = canvasEl.height - barHeight - 1;
+                }
+                if (timeBarYPosition < 0) {
+                    timeBarYPosition = 1;
+                }
+
+                let barColor = 'rgba(76, 175, 80, 0.85)';
+                const percentageRemaining = (item.remaining / totalLifespan) * 100;
+
+                if (percentageRemaining <= 25) {
+                    barColor = 'rgba(220, 38, 38, 0.85)';
+                } else if (percentageRemaining <= 50) {
+                    barColor = 'rgba(255, 235, 59, 0.85)';
+                }
+
+                ctx.fillStyle = barColor;
+                ctx.fillRect(
+                    item.x * GRID_SIZE + 2,
+                    timeBarYPosition,
+                    barWidth,
+                    barHeight
+                );
+            }
+        }
+
+        function removeMirrorItem(item) {
+            clearTimeout(item.timeoutId);
+            clearInterval(item.intervalId);
+            const idx = mirrorItems.indexOf(item);
+            if (idx !== -1) mirrorItems.splice(idx, 1);
+        }
+
+        function generateMirror() {
+            if (tileCountX <= 0 || tileCountY <= 0) return;
+            let pos; let attempts = 0;
+            do {
+                pos = { x: Math.floor(Math.random()*tileCountX), y: Math.floor(Math.random()*tileCountY) };
+                attempts++;
+            } while ((isFoodOnSnake(pos) ||
+                    obstacles.some(o => o.x === pos.x && o.y === pos.y) ||
+                    mirrorItems.some(m => m.x === pos.x && m.y === pos.y) ||
+                    isAdjacentToAnyFood(pos)) && attempts < 100);
+            if (attempts >= 100) return;
+            const item = { x: pos.x, y: pos.y, remaining: FALSE_FOOD_LIFESPAN, lifespan: FALSE_FOOD_LIFESPAN };
+            item.timeoutId = setTimeout(() => removeMirrorItem(item), FALSE_FOOD_LIFESPAN);
+            item.intervalId = setInterval(() => { item.remaining -= 100; if (item.remaining <= 0) removeMirrorItem(item); }, 100);
+            mirrorItems.push(item);
+        }
+
+        function scheduleNextMirrorSpawn() {
+            if (gameMode !== "levels" || currentWorld !== 7 || gameOver) return;
+            const range = MIRROR_SPAWN_RANGES_WORLD7[currentLevelInWorld - 1] || [5000, 7000];
+            const delay = Math.random() * (range[1] - range[0]) + range[0];
+            mirrorSpawnTimeoutId = setTimeout(() => {
+                generateMirror();
+                scheduleNextMirrorSpawn();
+            }, delay);
+        }
+
+        function startWorld7MirrorMechanics() {
+            stopWorld7MirrorMechanics();
+            scheduleNextMirrorSpawn();
+        }
+
+        function stopWorld7MirrorMechanics() {
+            if (mirrorSpawnTimeoutId) {
+                clearTimeout(mirrorSpawnTimeoutId);
+                mirrorSpawnTimeoutId = null;
+            }
+            mirrorItems.forEach(item => {
+                clearTimeout(item.timeoutId);
+                clearInterval(item.intervalId);
+            });
+            mirrorItems = [];
+            controlsInverted = false;
+            mirrorEffect = { active: false, startTime: 0 };
         }
 
         function applySpeedChange(change) {
@@ -2794,6 +2921,7 @@
             stopWorld5Obstacles();
             stopWorld6Obstacles();
             stopWorld6LightningMechanics();
+            stopWorld7MirrorMechanics();
 
             if (inGameBackgroundMusic) {
                 inGameBackgroundMusic.pause();
@@ -2952,10 +3080,12 @@
 
             clearGameTimersAndMusic();
 
-            // Ensure any active speed boost ends immediately when the game does
+            // Ensure any active speed boost or mirror effect ends when the game does
             if (speedBoost.active) {
                 speedBoost = { active: false, color: '', change: 0, startTime: 0 };
             }
+            controlsInverted = false;
+            mirrorEffect = { active: false, startTime: 0 };
 
             let levelEffectivelyWon = false; 
             isNewHighScore = false; 
@@ -3111,6 +3241,16 @@
                     speedBoostVisible = remaining > 1000 || Math.floor(remaining / 100) % 2 === 0;
                 }
             }
+            let mirrorVisible = false;
+            let mirrorOverlayColor = 'rgba(0,0,255,0.3)';
+            if (mirrorEffect.active) {
+                const remaining = MIRROR_EFFECT_DURATION - (Date.now() - mirrorEffect.startTime);
+                if (remaining > 0) {
+                    mirrorVisible = remaining > 1000 || Math.floor(remaining / 100) % 2 === 0;
+                } else {
+                    mirrorEffect.active = false;
+                }
+            }
 
             if (screenState.showFreeModeCover && !screenState.gameActuallyStarted) {
                 drawFreeModeCover();
@@ -3164,12 +3304,21 @@
                         if (speedBoostVisible) {
                             drawImageWithTint(ctx, snakeBodyTexture, segmentX, segmentY, GRID_SIZE - 1, GRID_SIZE - 1, speedBoostOverlayColor);
                         }
+                        if (mirrorVisible) {
+                            drawImageWithTint(ctx, snakeBodyTexture, segmentX, segmentY, GRID_SIZE - 1, GRID_SIZE - 1, mirrorOverlayColor);
+                        }
                     } else {
                         ctx.fillStyle = skinData.bodyTintColor || '#A8F031';
                         ctx.fillRect(segmentX, segmentY, GRID_SIZE - 1, GRID_SIZE - 1);
                         if (speedBoostVisible) {
                             ctx.globalCompositeOperation = 'multiply';
                             ctx.fillStyle = speedBoostOverlayColor;
+                            ctx.fillRect(segmentX, segmentY, GRID_SIZE - 1, GRID_SIZE - 1);
+                            ctx.globalCompositeOperation = 'source-over';
+                        }
+                        if (mirrorVisible) {
+                            ctx.globalCompositeOperation = 'multiply';
+                            ctx.fillStyle = mirrorOverlayColor;
                             ctx.fillRect(segmentX, segmentY, GRID_SIZE - 1, GRID_SIZE - 1);
                             ctx.globalCompositeOperation = 'source-over';
                         }
@@ -3190,6 +3339,9 @@
                 }
                 if (lightningItems.length > 0) {
                     lightningItems.forEach(item => drawLightningItem(item));
+                }
+                if (mirrorItems.length > 0) {
+                    mirrorItems.forEach(item => drawMirrorItem(item));
                 }
 
                 // Draw snake head
@@ -3223,6 +3375,9 @@
                             if (speedBoostVisible) {
                                 drawImageWithTint(ctx, imgToDraw, -drawSize / 2, -drawSize / 2, drawSize, drawSize, speedBoostOverlayColor);
                             }
+                            if (mirrorVisible) {
+                                drawImageWithTint(ctx, imgToDraw, -drawSize / 2, -drawSize / 2, drawSize, drawSize, mirrorOverlayColor);
+                            }
                             ctx.restore();
                         } else {
                             ctx.fillStyle = "#a7f3d0";
@@ -3230,6 +3385,12 @@
                             if (speedBoostVisible) {
                                 ctx.globalCompositeOperation = 'multiply';
                                 ctx.fillStyle = speedBoostOverlayColor;
+                                ctx.fillRect(head.x * GRID_SIZE, head.y * GRID_SIZE, GRID_SIZE -1, GRID_SIZE -1);
+                                ctx.globalCompositeOperation = 'source-over';
+                            }
+                            if (mirrorVisible) {
+                                ctx.globalCompositeOperation = 'multiply';
+                                ctx.fillStyle = mirrorOverlayColor;
                                 ctx.fillRect(head.x * GRID_SIZE, head.y * GRID_SIZE, GRID_SIZE -1, GRID_SIZE -1);
                                 ctx.globalCompositeOperation = 'source-over';
                             }
@@ -3242,6 +3403,12 @@
                         if (speedBoostVisible) {
                             ctx.globalCompositeOperation = 'multiply';
                             ctx.fillStyle = speedBoostOverlayColor;
+                            ctx.fillRect(head.x * GRID_SIZE, head.y * GRID_SIZE, GRID_SIZE -1, GRID_SIZE -1);
+                            ctx.globalCompositeOperation = 'source-over';
+                        }
+                        if (mirrorVisible) {
+                            ctx.globalCompositeOperation = 'multiply';
+                            ctx.fillStyle = mirrorOverlayColor;
                             ctx.fillRect(head.x * GRID_SIZE, head.y * GRID_SIZE, GRID_SIZE -1, GRID_SIZE -1);
                             ctx.globalCompositeOperation = 'source-over';
                         }
@@ -3497,17 +3664,18 @@
             const nextHead = { x: nextHeadX, y: nextHeadY };
             let growth = 0; 
             if (currentFoodItem.x !== undefined && nextHead.x === currentFoodItem.x && nextHead.y === currentFoodItem.y) {
-                score += POINTS_PER_FOOD * streakMultiplier; 
+                score += POINTS_PER_FOOD * streakMultiplier;
                 if(areSfxEnabled) playSound('eat');
-                
+
                 if (streakMultiplier < MAX_STREAK) { streakMultiplier += 0.5; }
                 if (streakMultiplier > MAX_STREAK) { streakMultiplier = MAX_STREAK; }
 
-                growth = 1; 
-                clearTimeout(foodDisappearTimeoutId); 
-                clearInterval(foodVisualTimerIntervalId); 
-                foodTimeRemaining = 0; 
-                generateFood(); 
+                growth = 1;
+                clearTimeout(foodDisappearTimeoutId);
+                clearInterval(foodVisualTimerIntervalId);
+                foodTimeRemaining = 0;
+                generateFood();
+                controlsInverted = false;
 
                 if (gameMode === 'levels') {
                     const absoluteLevelIndex = (currentWorld - 1) * LEVELS_PER_WORLD + (currentLevelInWorld - 1);
@@ -3535,6 +3703,15 @@
                 if (nextHead.x === lt.x && nextHead.y === lt.y) {
                     activateSpeedBoost(lt.color);
                     removeLightningItem(lt);
+                    if (areSfxEnabled) playSound('eat');
+                }
+            }
+            for (let i = mirrorItems.length - 1; i >= 0; i--) {
+                const mi = mirrorItems[i];
+                if (nextHead.x === mi.x && nextHead.y === mi.y) {
+                    controlsInverted = true;
+                    mirrorEffect = { active: true, startTime: Date.now() };
+                    removeMirrorItem(mi);
                     if (areSfxEnabled) playSound('eat');
                 }
             }
@@ -3786,8 +3963,10 @@ async function startGame() {
     blinkAnimation.active = false;
     blinkAnimation.rowIndex = -1;
 
-    // Reset any lingering speed boost from a previous game
+    // Reset any lingering speed boost or mirror effect from a previous game
     speedBoost = { active: false, color: '', change: 0, startTime: 0 };
+    controlsInverted = false;
+    mirrorEffect = { active: false, startTime: 0 };
             
             const wasOnWorldCompleteCoverForNewWorld = screenState.showWorldCompleteCover > 0 && startButton.textContent === "Nuevo Mundo";
         
@@ -3953,10 +4132,15 @@ async function startGame() {
             } else if (gameMode === "levels" && currentWorld === 6) {
                 startWorld6Obstacles();
                 startWorld6LightningMechanics();
+            } else if (gameMode === "levels" && currentWorld === 7) {
+                startWorld6Obstacles();
+                startWorld6LightningMechanics();
+                startWorld7MirrorMechanics();
             } else {
                 stopWorld5Obstacles();
                 stopWorld6Obstacles();
                 stopWorld6LightningMechanics();
+                stopWorld7MirrorMechanics();
             }
             
             generateFood(); 
@@ -3983,9 +4167,17 @@ async function startGame() {
         }
 
         function changeDirection(newDirectionCmd) { // Renamed parameter for clarity
-            if (gameOver) return; 
+            if (gameOver) return;
+            // Invert controls if mirror effect active
+            if (controlsInverted) {
+                switch (newDirectionCmd) {
+                    case "up": newDirectionCmd = "down"; break;
+                    case "down": newDirectionCmd = "up"; break;
+                    case "left": newDirectionCmd = "right"; break;
+                    case "right": newDirectionCmd = "left"; break;
+                }
+            }
             // Solo actualizar nextDirection, no direction directamente
-            // nextDirection queues turns so direction updates only once per frame
             switch (newDirectionCmd) {
                 case "up":    if (direction !== "down")  nextDirection = "up"; break;
                 case "down":  if (direction !== "up")    nextDirection = "down"; break;
