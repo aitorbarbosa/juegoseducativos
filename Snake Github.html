@@ -1510,6 +1510,22 @@
         ];
         let falseFoodItems = [];
         let falseFoodSpawnTimeoutId;
+        const falseFoodTintCache = new Map();
+
+        function getFalseFoodTint(img) {
+            if (!falseFoodTintCache.has(img)) {
+                const c = document.createElement('canvas');
+                c.width = img.naturalWidth;
+                c.height = img.naturalHeight;
+                const cctx = c.getContext('2d');
+                cctx.drawImage(img, 0, 0);
+                cctx.globalCompositeOperation = 'source-in';
+                cctx.fillStyle = 'rgba(255,0,0,0.5)';
+                cctx.fillRect(0, 0, c.width, c.height);
+                falseFoodTintCache.set(img, c);
+            }
+            return falseFoodTintCache.get(img);
+        }
 
 
         // Nuevas variables para el estado del audio
@@ -2402,10 +2418,10 @@
                 const size = GRID_SIZE * foodData.scale;
                 const off = (size - GRID_SIZE) / 2;
                 ctx.drawImage(img, item.x * GRID_SIZE - off, item.y * GRID_SIZE - off, size, size);
-                ctx.fillStyle = "rgba(255,0,0,0.5)";
-                ctx.globalCompositeOperation = "source-atop";
-                ctx.fillRect(item.x * GRID_SIZE - off, item.y * GRID_SIZE - off, size, size);
-                ctx.globalCompositeOperation = "source-over";
+                const tintImg = getFalseFoodTint(img);
+                if (tintImg) {
+                    ctx.drawImage(tintImg, item.x * GRID_SIZE - off, item.y * GRID_SIZE - off, size, size);
+                }
             } else {
                 ctx.fillStyle = "#ff0000";
                 ctx.fillRect(item.x * GRID_SIZE + 2, item.y * GRID_SIZE + 2, GRID_SIZE - 4, GRID_SIZE - 4);
