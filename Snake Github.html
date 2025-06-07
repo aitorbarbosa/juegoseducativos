@@ -1671,7 +1671,7 @@
             mimiSnakeFoodImg.src = 'https://i.imgur.com/kgOjgCI.png';
 
             oreoFoodImg.src = 'https://i.imgur.com/Yv5ioX3.png';
-            obstacleImg.src = 'https://i.imgur.com/aYjwa5Z.png';
+            obstacleImg.src = 'https://i.imgur.com/wk1u29m.png';
             
             const allImageObjects = [ 
                 classicSnakeHeadLeftImg, classicSnakeHeadDownImg, classicFoodImg, snakeBodyTexture,
@@ -2494,8 +2494,8 @@
 
         function drawObstacle(ob) {
             if (!ctx) return;
-            const drawSize = GRID_SIZE * 1.25;
-            const offset = (drawSize - GRID_SIZE) / 2;
+            const drawSize = GRID_SIZE;
+            const offset = 0;
             if (obstacleImg && obstacleImg.complete && obstacleImg.naturalHeight !== 0) {
                 ctx.drawImage(obstacleImg, ob.x * GRID_SIZE - offset, ob.y * GRID_SIZE - offset, drawSize, drawSize);
             } else {
