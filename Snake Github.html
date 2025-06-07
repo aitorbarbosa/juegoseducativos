@@ -1263,7 +1263,8 @@
         const TILE_COUNT = 24;
         let tileCountX;
         let tileCountY;
-        const INITIAL_SNAKE_LENGTH = 3; 
+        const DEFAULT_INITIAL_SNAKE_LENGTH = 3; // Used for free mode
+        let initialSnakeLength = DEFAULT_INITIAL_SNAKE_LENGTH;
         const MAX_STREAK = 5; 
         
         // Mapping for difficulty display names
@@ -1296,28 +1297,54 @@
             // World 2
             200, 300, 400, 500, 600,
             // World 3
-            300, 400, 500, 600, 700,
+            200, 300, 400, 500, 600,
             // World 4
-            400, 500, 600, 700, 800,
+            200, 300, 400, 500, 600,
             // World 5
-            500, 600, 700, 800, 900,
+            200, 300, 400, 500, 600,
             // World 6
-            600, 700, 800, 900, 1000,
+            300, 400, 500, 600, 700,
             // World 7
-            700, 800, 900, 1000, 1100,
+            300, 400, 500, 600, 700,
             // World 8
-            800, 900, 1000, 1100, 1200
+            400, 500, 600, 700, 800
         ];
-        const WORLD_DIFFICULTY_MAP = {
-            1: 'easy',
-            2: 'easy',
-            3: 'easy',
-            4: 'normal',
-            5: 'normal',
-            6: 'normal',
-            7: 'difficult',
-            8: 'difficult'
-        };
+        const LEVEL_SETTINGS = [
+            // World 1 - Valle del Despertar
+            [
+                { speed: 200, initialLength: 4, initialLifespan: 0 },
+                { speed: 200, initialLength: 4, initialLifespan: 0 },
+                { speed: 200, initialLength: 4, initialLifespan: 0 },
+                { speed: 200, initialLength: 4, initialLifespan: 0 },
+                { speed: 200, initialLength: 4, initialLifespan: 0 }
+            ],
+            // World 2 - Cueva del Crecimiento
+            [
+                { speed: 190, initialLength: 5, initialLifespan: 0 },
+                { speed: 190, initialLength: 8, initialLifespan: 0 },
+                { speed: 190, initialLength: 11, initialLifespan: 0 },
+                { speed: 190, initialLength: 15, initialLifespan: 0 },
+                { speed: 190, initialLength: 20, initialLifespan: 0 }
+            ],
+            // World 3 - Hambre Voraz
+            [
+                { speed: 180, initialLength: 6, initialLifespan: 11000 },
+                { speed: 180, initialLength: 6, initialLifespan: 10500 },
+                { speed: 180, initialLength: 6, initialLifespan: 10000 },
+                { speed: 180, initialLength: 6, initialLifespan: 9500 },
+                { speed: 180, initialLength: 6, initialLifespan: 9000 }
+            ],
+            // World 4 - Default Normal difficulty
+            Array(5).fill({ speed: 150, initialLength: 6, initialLifespan: 9000 }),
+            // World 5 - Default Normal difficulty
+            Array(5).fill({ speed: 150, initialLength: 6, initialLifespan: 9000 }),
+            // World 6 - Default Normal difficulty
+            Array(5).fill({ speed: 150, initialLength: 6, initialLifespan: 9000 }),
+            // World 7 - Default Difficult difficulty
+            Array(5).fill({ speed: 100, initialLength: 6, initialLifespan: 8000 }),
+            // World 8 - Default Difficult difficulty
+            Array(5).fill({ speed: 100, initialLength: 6, initialLifespan: 8000 })
+        ];
         let currentWorld = 1;
         let currentLevelInWorld = 1; 
         let maxUnlockedWorld = 1;
@@ -1753,7 +1780,7 @@
             if (gameMode === 'levels') {
                 timeLengthValueEl.textContent = Math.ceil(LEVEL_TIME_LIMIT / 1000);
             } else { // freeMode
-                 timeLengthValueEl.textContent = INITIAL_SNAKE_LENGTH; 
+                timeLengthValueEl.textContent = initialSnakeLength;
             }
             updateTargetScoreDisplay(); 
         }
@@ -1957,7 +1984,7 @@
                 } else if (gameMode === 'freeMode') {
                     screenState.showFreeModeCover = true;
                     screenState.gameActuallyStarted = false;
-                    snake = []; // Vaciar la serpiente para que updateTimeLengthDisplay use INITIAL_SNAKE_LENGTH
+                    snake = []; // Vaciar la serpiente para que updateTimeLengthDisplay use initialSnakeLength
                 }
                 resetGameUIDisplays(); // Update UI for score, streak, AND length (if free mode and snake is empty)
                 updateGameModeUI(); // This will refresh panel values and target scores
@@ -2269,8 +2296,14 @@
         }
         
         function calculateNextFoodLifespan() {
-            const currentDifficultySetting = gameMode === 'levels' ? WORLD_DIFFICULTY_MAP[currentWorld] : difficulty;
-            const baseLifespan = DIFFICULTY_SETTINGS[currentDifficultySetting].initialLifespan;
+            let baseLifespan;
+            if (gameMode === 'levels') {
+                const levelCfg = LEVEL_SETTINGS[currentWorld - 1][currentLevelInWorld - 1];
+                baseLifespan = levelCfg.initialLifespan || 0;
+            } else {
+                baseLifespan = DIFFICULTY_SETTINGS[difficulty].initialLifespan;
+            }
+            if (baseLifespan <= 0) return 0;
             let streakReduction = 0;
             const effectiveStreakForReduction = Math.floor(streakMultiplier); 
             if (effectiveStreakForReduction >= 2) { 
@@ -2298,19 +2331,20 @@
                 return;
             }
 
-            currentFoodItem = { 
-                x: newFoodPosition.x, 
-                y: newFoodPosition.y, 
+            currentFoodItem = {
+                x: newFoodPosition.x,
+                y: newFoodPosition.y,
                 initialLifespanForThisFood: calculateNextFoodLifespan()
             };
             foodTimeRemaining = currentFoodItem.initialLifespanForThisFood;
-            foodDisappearTimeoutId = setTimeout(handleFoodTimeout, foodTimeRemaining);
-            foodVisualTimerIntervalId = setInterval(() => {
+            if (foodTimeRemaining > 0) {
+                foodDisappearTimeoutId = setTimeout(handleFoodTimeout, foodTimeRemaining);
+                foodVisualTimerIntervalId = setInterval(() => {
                 if (gameOver) {
                     clearInterval(foodVisualTimerIntervalId);
                     return;
                 }
-                foodTimeRemaining -= 100; 
+                foodTimeRemaining -= 100;
                 if (foodTimeRemaining < 0) foodTimeRemaining = 0;
                 if (foodTimeRemaining <= FOOD_WARNING_TIME && foodTimeRemaining > 0) {
                     const currentSecondInWarning = Math.ceil(foodTimeRemaining / 1000);
@@ -2322,6 +2356,10 @@
                     lastWarningSoundSecond = -1; 
                 }
             }, 100);
+            } else {
+                foodDisappearTimeoutId = null;
+                foodVisualTimerIntervalId = null;
+            }
         }
         
         function handleFoodTimeout() {
@@ -3133,7 +3171,7 @@
                 timeLengthValueEl.textContent = Math.max(0, Math.ceil(gameTimeRemaining / 1000));
             } else { // freeMode
                 timeLengthLabelEl.textContent = "Longitud:";
-                timeLengthValueEl.textContent = snake.length > 0 ? snake.length : INITIAL_SNAKE_LENGTH; 
+                timeLengthValueEl.textContent = snake.length > 0 ? snake.length : initialSnakeLength;
             }
         }
 
@@ -3238,7 +3276,7 @@
                 }
             } else { // freeMode
                 timeLengthLabelEl.textContent = "Longitud:";
-                timeLengthValueEl.textContent = snake.length > 0 ? snake.length : INITIAL_SNAKE_LENGTH; 
+                timeLengthValueEl.textContent = snake.length > 0 ? snake.length : initialSnakeLength;
             }
         }
 
@@ -3432,9 +3470,12 @@
 
 
             if (gameMode === 'levels') {
-                snakeSpeed = DIFFICULTY_SETTINGS[WORLD_DIFFICULTY_MAP[currentWorld]].speed;
+                const levelCfg = LEVEL_SETTINGS[currentWorld - 1][currentLevelInWorld - 1];
+                snakeSpeed = levelCfg.speed;
+                initialSnakeLength = levelCfg.initialLength;
             } else { // freeMode
                  snakeSpeed = DIFFICULTY_SETTINGS[difficultySelector.value].speed;
+                 initialSnakeLength = DEFAULT_INITIAL_SNAKE_LENGTH;
             }
 
             applySkin(skinSelector.value); 
@@ -3449,11 +3490,11 @@
             snake = [];
             const startX = Math.floor(tileCountX / 2);
             const startY = Math.floor(tileCountY / 2);
-            for (let i = 0; i < INITIAL_SNAKE_LENGTH; i++) {
+            for (let i = 0; i < initialSnakeLength; i++) {
                 if (startX - i >= 0) { snake.push({ x: startX - i, y: startY }); }
                 else { snake.push({ x: 0, y: startY }); }
             }
-             if (snake.length === 0 && INITIAL_SNAKE_LENGTH > 0) { 
+             if (snake.length === 0 && initialSnakeLength > 0) {
                 console.error("Error al iniciar la serpiente. Pantalla muy pequeña.");
                 updateMainButtonStates();
                 return;
@@ -3666,8 +3707,10 @@
                 drawStarProgress(); // Update stars for the newly selected world
 
 
-                if (!gameIntervalId) { 
-                    snakeSpeed = DIFFICULTY_SETTINGS[WORLD_DIFFICULTY_MAP[currentWorld]].speed;
+                if (!gameIntervalId) {
+                    const levelCfg = LEVEL_SETTINGS[currentWorld - 1][currentLevelInWorld - 1];
+                    snakeSpeed = levelCfg.speed;
+                    initialSnakeLength = levelCfg.initialLength;
                 }
                 
                 screenState.showCoverForWorld = currentWorld;
