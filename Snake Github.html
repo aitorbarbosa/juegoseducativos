@@ -1555,6 +1555,15 @@
         let mirrorSpawnTimeoutId;
         let controlsInverted = false;
         let mirrorEffect = { active: false, startTime: 0 };
+        
+        function updateMirrorEffect() {
+            if (!mirrorEffect.active) return;
+            const elapsed = Date.now() - mirrorEffect.startTime;
+            if (elapsed >= MIRROR_EFFECT_DURATION) {
+                mirrorEffect.active = false;
+                controlsInverted = false;
+            }
+        }
         let speedBoost = { active: false, color: '', change: 0, startTime: 0 };
 
 
@@ -3637,6 +3646,7 @@
        function update() {
             if (gameOver || tileCountX <= 0 || tileCountY <= 0) return;
             updateSpeedBoost();
+            updateMirrorEffect();
 
             direction = nextDirection; // Actualizar la dirección actual con la siguiente dirección almacenada
 
@@ -3675,7 +3685,6 @@
                 clearInterval(foodVisualTimerIntervalId);
                 foodTimeRemaining = 0;
                 generateFood();
-                controlsInverted = false;
 
                 if (gameMode === 'levels') {
                     const absoluteLevelIndex = (currentWorld - 1) * LEVELS_PER_WORLD + (currentLevelInWorld - 1);
