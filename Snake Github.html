@@ -1334,8 +1334,8 @@
                 { speed: 180, initialLength: 6, initialLifespan: 10500 },
                 { speed: 180, initialLength: 6, initialLifespan: 10000 }
             ],
-            // World 4 - Default Normal difficulty
-            Array(5).fill({ speed: 150, initialLength: 6, initialLifespan: 11000 }),
+            // World 4 - El Bosque de los Engaños
+            Array(5).fill({ speed: 170, initialLength: 6, initialLifespan: 11000 }),
             // World 5 - Default Normal difficulty
             Array(5).fill({ speed: 150, initialLength: 6, initialLifespan: 11000 }),
             // World 6 - Default Normal difficulty
@@ -1500,6 +1500,17 @@
         const FOOD_WARNING_TIME = 3000; 
         const POINTS_PER_FOOD = 10;
         const MAX_HIGH_SCORES = 10; 
+        const FALSE_FOOD_LIFESPAN = 5000;
+        const FALSE_FOOD_SPAWN_RANGES_WORLD4 = [
+            [7000, 10000],
+            [6000, 9000],
+            [5000, 8000],
+            [4000, 7000],
+            [3000, 6000]
+        ];
+        let falseFoodItems = [];
+        let falseFoodSpawnTimeoutId;
+
 
         // Nuevas variables para el estado del audio
         let isMusicEnabled = true; 
@@ -2383,6 +2394,72 @@
             return false;
         }
 
+        function drawFalseFoodItem(item) {
+            if (!ctx) return;
+            const foodData = FOODS[currentFood] || FOODS["apple"];
+            const img = foodData.asset;
+            if (img && img.complete && img.naturalHeight !== 0) {
+                const size = GRID_SIZE * foodData.scale;
+                const off = (size - GRID_SIZE) / 2;
+                ctx.drawImage(img, item.x * GRID_SIZE - off, item.y * GRID_SIZE - off, size, size);
+                ctx.fillStyle = "rgba(255,0,0,0.5)";
+                ctx.globalCompositeOperation = "source-atop";
+                ctx.fillRect(item.x * GRID_SIZE - off, item.y * GRID_SIZE - off, size, size);
+                ctx.globalCompositeOperation = "source-over";
+            } else {
+                ctx.fillStyle = "#ff0000";
+                ctx.fillRect(item.x * GRID_SIZE + 2, item.y * GRID_SIZE + 2, GRID_SIZE - 4, GRID_SIZE - 4);
+            }
+        }
+
+        function removeFalseFoodItem(item) {
+            clearTimeout(item.timeoutId);
+            clearInterval(item.intervalId);
+            const idx = falseFoodItems.indexOf(item);
+            if (idx !== -1) falseFoodItems.splice(idx, 1);
+        }
+
+        function generateFalseFood() {
+            if (tileCountX <= 0 || tileCountY <= 0) return;
+            let pos;
+            let attempts = 0;
+            do {
+                pos = { x: Math.floor(Math.random()*tileCountX), y: Math.floor(Math.random()*tileCountY) };
+                attempts++;
+            } while ((isFoodOnSnake(pos) || (currentFoodItem.x === pos.x && currentFoodItem.y === pos.y) || falseFoodItems.some(f => f.x === pos.x && f.y === pos.y)) && attempts < 100);
+            if (attempts >= 100) return;
+            const item = { x: pos.x, y: pos.y, remaining: FALSE_FOOD_LIFESPAN };
+            item.timeoutId = setTimeout(() => removeFalseFoodItem(item), FALSE_FOOD_LIFESPAN);
+            item.intervalId = setInterval(() => { item.remaining -= 100; if (item.remaining <= 0) removeFalseFoodItem(item); }, 100);
+            falseFoodItems.push(item);
+        }
+
+        function scheduleNextFalseFoodSpawn() {
+            if (gameMode !== "levels" || currentWorld !== 4 || gameOver) return;
+            const range = FALSE_FOOD_SPAWN_RANGES_WORLD4[currentLevelInWorld - 1] || [5000,8000];
+            const delay = Math.random() * (range[1] - range[0]) + range[0];
+            falseFoodSpawnTimeoutId = setTimeout(() => {
+                generateFalseFood();
+                scheduleNextFalseFoodSpawn();
+            }, delay);
+        }
+
+        function startWorld4FalseFoodMechanics() {
+            stopWorld4FalseFoodMechanics();
+            scheduleNextFalseFoodSpawn();
+        }
+
+        function stopWorld4FalseFoodMechanics() {
+            if (falseFoodSpawnTimeoutId) {
+                clearTimeout(falseFoodSpawnTimeoutId);
+                falseFoodSpawnTimeoutId = null;
+            }
+            falseFoodItems.forEach(item => {
+                clearTimeout(item.timeoutId);
+                clearInterval(item.intervalId);
+            });
+            falseFoodItems = [];
+        }
         function splitTextIntoLines(ctx, text, maxWidth) {
             const words = text.split(' ');
             const lines = [];
@@ -2458,6 +2535,7 @@
             clearTimeout(foodDisappearTimeoutId);
             clearInterval(foodVisualTimerIntervalId);
             clearInterval(gameTimerIntervalId);
+            stopWorld4FalseFoodMechanics();
 
             if (inGameBackgroundMusic) {
                 inGameBackgroundMusic.pause();
@@ -2822,6 +2900,9 @@
                 if (currentFoodItem.x !== undefined) { 
                     drawFoodItem(currentFoodItem.x, currentFoodItem.y);
                 }
+                if (falseFoodItems.length > 0) {
+                    falseFoodItems.forEach(item => drawFalseFoodItem(item));
+                }
 
                 // Draw snake head
                 if (snake.length > 0) {
@@ -3135,6 +3216,14 @@
             if (gameOver) { 
                 finalizeGameOver(); 
                 return;
+            }
+            for (let i = falseFoodItems.length - 1; i >= 0; i--) {
+                const ff = falseFoodItems[i];
+                if (nextHead.x === ff.x && nextHead.y === ff.y) {
+                    score = Math.max(0, score - 30);
+                    streakMultiplier = 1;
+                    removeFalseFoodItem(ff);
+                }
             }
             
             snake.unshift(nextHead); 
@@ -3525,6 +3614,11 @@
                 gameTimeRemaining = Infinity; 
                 updateTimeLengthDisplay(); 
                 clearInterval(gameTimerIntervalId); 
+            }
+            if (gameMode === "levels" && currentWorld === 4) {
+                startWorld4FalseFoodMechanics();
+            } else {
+                stopWorld4FalseFoodMechanics();
             }
             
             generateFood(); 
