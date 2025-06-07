@@ -2426,13 +2426,55 @@
             if (!ctx) return;
             const foodData = FOODS[currentFood] || FOODS["apple"];
             const img = foodData.asset;
+            let foodVisualTopY;
+            let foodVisualHeight;
             if (img && img.complete && img.naturalHeight !== 0) {
                 const size = GRID_SIZE * foodData.scale;
                 const off = (size - GRID_SIZE) / 2;
+                foodVisualTopY = item.y * GRID_SIZE - off;
+                foodVisualHeight = size;
                 drawImageWithTint(ctx, img, item.x * GRID_SIZE - off, item.y * GRID_SIZE - off, size, size, 'rgba(255,0,0,0.2)');
             } else {
+                foodVisualTopY = item.y * GRID_SIZE + 2;
+                foodVisualHeight = GRID_SIZE - 4;
                 ctx.fillStyle = '#ff0000';
                 ctx.fillRect(item.x * GRID_SIZE + 2, item.y * GRID_SIZE + 2, GRID_SIZE - 4, GRID_SIZE - 4);
+            }
+
+            const foodVisualBottomY = foodVisualTopY + foodVisualHeight;
+
+            if (!gameOver && item.remaining > 0) {
+                const totalLifespan = item.lifespan || FALSE_FOOD_LIFESPAN;
+                const barProgress = item.remaining / totalLifespan;
+                const barWidth = (GRID_SIZE - 4) * barProgress;
+                const barHeight = 3;
+                const barGap = 2;
+
+                let timeBarYPosition = foodVisualBottomY + barGap;
+
+                if (timeBarYPosition + barHeight > canvasEl.height) {
+                    timeBarYPosition = canvasEl.height - barHeight - 1;
+                }
+                if (timeBarYPosition < 0) {
+                    timeBarYPosition = 1;
+                }
+
+                let barColor = 'rgba(76, 175, 80, 0.85)';
+                const percentageRemaining = (item.remaining / totalLifespan) * 100;
+
+                if (percentageRemaining <= 25) {
+                    barColor = 'rgba(220, 38, 38, 0.85)';
+                } else if (percentageRemaining <= 50) {
+                    barColor = 'rgba(255, 235, 59, 0.85)';
+                }
+
+                ctx.fillStyle = barColor;
+                ctx.fillRect(
+                    item.x * GRID_SIZE + 2,
+                    timeBarYPosition,
+                    barWidth,
+                    barHeight
+                );
             }
         }
 
@@ -2455,7 +2497,7 @@
                     falseFoodItems.some(f => f.x === pos.x && f.y === pos.y) ||
                     isAdjacentToAnyFood(pos)) && attempts < 100);
             if (attempts >= 100) return;
-            const item = { x: pos.x, y: pos.y, remaining: FALSE_FOOD_LIFESPAN };
+            const item = { x: pos.x, y: pos.y, remaining: FALSE_FOOD_LIFESPAN, lifespan: FALSE_FOOD_LIFESPAN };
             item.timeoutId = setTimeout(() => removeFalseFoodItem(item), FALSE_FOOD_LIFESPAN);
             item.intervalId = setInterval(() => { item.remaining -= 100; if (item.remaining <= 0) removeFalseFoodItem(item); }, 100);
             falseFoodItems.push(item);
