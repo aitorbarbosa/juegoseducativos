@@ -2932,8 +2932,8 @@
         }
         // --- Fin de Funciones de Refactorización ---
 
-        function finalizeGameOver() { 
-            if (gameOver && startButton.disabled === false && configButton.disabled === false && infoButton.disabled === false && gameIntervalId === null) return; 
+        function finalizeGameOver() {
+            if (gameOver && startButton.disabled === false && configButton.disabled === false && infoButton.disabled === false && gameIntervalId === null) return;
 
             gameOver = true;
             screenState.gameActuallyStarted = false; // Game is no longer "actually started"
@@ -2949,6 +2949,11 @@
 
 
             clearGameTimersAndMusic();
+
+            // Ensure any active speed boost ends immediately when the game does
+            if (speedBoost.active) {
+                speedBoost = { active: false, color: '', change: 0, startTime: 0 };
+            }
 
             let levelEffectivelyWon = false; 
             isNewHighScore = false; 
@@ -3774,10 +3779,13 @@
         }
 
 
-        async function startGame() { 
-            isNewHighScore = false; 
-            blinkAnimation.active = false;
-            blinkAnimation.rowIndex = -1;
+async function startGame() {
+    isNewHighScore = false;
+    blinkAnimation.active = false;
+    blinkAnimation.rowIndex = -1;
+
+    // Reset any lingering speed boost from a previous game
+    speedBoost = { active: false, color: '', change: 0, startTime: 0 };
             
             const wasOnWorldCompleteCoverForNewWorld = screenState.showWorldCompleteCover > 0 && startButton.textContent === "Nuevo Mundo";
         
