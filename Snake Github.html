@@ -2220,7 +2220,7 @@
                 foodIsVisible = (Math.floor(foodTimeRemaining / blinkInterval) % 2 !== 0);
             }
 
-            if (foodIsVisible && foodTimeRemaining > 0) {
+            if (foodIsVisible && (foodTimeRemaining > 0 || currentFoodItem.initialLifespanForThisFood === 0)) {
                 if (foodImg && foodImg.complete && foodImg.naturalHeight !== 0) {
                     const drawSize = GRID_SIZE * foodData.scale;
                     const offset = (drawSize - GRID_SIZE) / 2;
