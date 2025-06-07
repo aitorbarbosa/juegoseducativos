@@ -1217,6 +1217,7 @@
         const mimiSnakeFoodImg = new Image();
 
         const oreoFoodImg = new Image();
+        const obstacleImg = new Image();
 
         const worldCoverImages = {
             1: new Image(),
@@ -1522,6 +1523,9 @@
             [2000, 4000],
             [1000, 3000]
         ];
+        const FALSE_FOOD_SPAWN_RANGE_WORLD5 = [4000, 6000];
+        const OBSTACLE_COUNTS_WORLD5 = [5, 8, 11, 15, 20];
+        let obstacles = [];
         let falseFoodItems = [];
         let falseFoodSpawnTimeoutId;
 
@@ -1667,6 +1671,7 @@
             mimiSnakeFoodImg.src = 'https://i.imgur.com/kgOjgCI.png';
 
             oreoFoodImg.src = 'https://i.imgur.com/Yv5ioX3.png';
+            obstacleImg.src = 'https://i.imgur.com/aYjwa5Z.png';
             
             const allImageObjects = [ 
                 classicSnakeHeadLeftImg, classicSnakeHeadDownImg, classicFoodImg, snakeBodyTexture,
@@ -1676,7 +1681,7 @@
                 maraSnakeHeadUpDownImg, maraSnakeHeadLeftImg, maraSnakeFoodImg,
                 almuSnakeHeadUpDownImg, almuSnakeHeadLeftImg, almuSnakeFoodImg,
                 mimiSnakeHeadUpDownImg, mimiSnakeHeadLeftImg, mimiSnakeFoodImg,
-                oreoFoodImg
+                oreoFoodImg, obstacleImg
             ];
 
             allImageObjects.forEach(imgObj => {
@@ -2349,7 +2354,7 @@
                     x: Math.floor(Math.random() * tileCountX),
                     y: Math.floor(Math.random() * tileCountY),
                 };
-            } while (isFoodOnSnake(newFoodPosition) && tileCountX > 0 && tileCountY > 0); 
+            } while ((isFoodOnSnake(newFoodPosition) || obstacles.some(ob => ob.x === newFoodPosition.x && ob.y === newFoodPosition.y)) && tileCountX > 0 && tileCountY > 0);
             
             if (tileCountX <=0 || tileCountY <=0) { 
                 console.warn("Canvas too small to generate food.");
@@ -2478,6 +2483,16 @@
             }
         }
 
+        function drawObstacle(ob) {
+            if (!ctx) return;
+            if (obstacleImg && obstacleImg.complete && obstacleImg.naturalHeight !== 0) {
+                ctx.drawImage(obstacleImg, ob.x * GRID_SIZE, ob.y * GRID_SIZE, GRID_SIZE - 1, GRID_SIZE - 1);
+            } else {
+                ctx.fillStyle = '#555';
+                ctx.fillRect(ob.x * GRID_SIZE, ob.y * GRID_SIZE, GRID_SIZE - 1, GRID_SIZE - 1);
+            }
+        }
+
         function removeFalseFoodItem(item) {
             clearTimeout(item.timeoutId);
             clearInterval(item.intervalId);
@@ -2504,8 +2519,13 @@
         }
 
         function scheduleNextFalseFoodSpawn() {
-            if (gameMode !== "levels" || currentWorld !== 4 || gameOver) return;
-            const range = FALSE_FOOD_SPAWN_RANGES_WORLD4[currentLevelInWorld - 1] || [5000,8000];
+            if (gameMode !== "levels" || !(currentWorld === 4 || currentWorld === 5) || gameOver) return;
+            let range;
+            if (currentWorld === 4) {
+                range = FALSE_FOOD_SPAWN_RANGES_WORLD4[currentLevelInWorld - 1] || [5000,8000];
+            } else {
+                range = FALSE_FOOD_SPAWN_RANGE_WORLD5;
+            }
             const delay = Math.random() * (range[1] - range[0]) + range[0];
             falseFoodSpawnTimeoutId = setTimeout(() => {
                 generateFalseFood();
@@ -2528,6 +2548,30 @@
                 clearInterval(item.intervalId);
             });
             falseFoodItems = [];
+        }
+
+        function generateWorld5Obstacles() {
+            obstacles = [];
+            const count = OBSTACLE_COUNTS_WORLD5[currentLevelInWorld - 1] || 0;
+            for (let i = 0; i < count; i++) {
+                let pos; let attempts = 0;
+                do {
+                    pos = {
+                        x: Math.floor(Math.random() * (tileCountX - 2)) + 1,
+                        y: Math.floor(Math.random() * (tileCountY - 2)) + 1,
+                    };
+                    attempts++;
+                } while ((isFoodOnSnake(pos) || obstacles.some(o => o.x === pos.x && o.y === pos.y)) && attempts < 100);
+                if (attempts < 100) obstacles.push(pos);
+            }
+        }
+
+        function startWorld5Obstacles() {
+            generateWorld5Obstacles();
+        }
+
+        function stopWorld5Obstacles() {
+            obstacles = [];
         }
         function splitTextIntoLines(ctx, text, maxWidth) {
             const words = text.split(' ');
@@ -2605,6 +2649,7 @@
             clearInterval(foodVisualTimerIntervalId);
             clearInterval(gameTimerIntervalId);
             stopWorld4FalseFoodMechanics();
+            stopWorld5Obstacles();
 
             if (inGameBackgroundMusic) {
                 inGameBackgroundMusic.pause();
@@ -2940,6 +2985,9 @@
             const currentSkinData = SKINS[currentSkin]; 
 
             if (!gameOver) {
+                if (obstacles.length > 0) {
+                    obstacles.forEach(ob => drawObstacle(ob));
+                }
                 // Draw snake body
                 for (let i = 1; i < snake.length; i++) {
                     const segmentX = snake[i].x * GRID_SIZE;
@@ -2966,7 +3014,7 @@
                 }
 
                 // Draw food
-                if (currentFoodItem.x !== undefined) { 
+                if (currentFoodItem.x !== undefined) {
                     drawFoodItem(currentFoodItem.x, currentFoodItem.y);
                 }
                 if (falseFoodItems.length > 0) {
@@ -3282,8 +3330,8 @@
                 }
             }
 
-            if (gameOver) { 
-                finalizeGameOver(); 
+            if (gameOver) {
+                finalizeGameOver();
                 return;
             }
             for (let i = falseFoodItems.length - 1; i >= 0; i--) {
@@ -3295,8 +3343,18 @@
                     if (areSfxEnabled) playSound('badEat');
                 }
             }
-            
-            snake.unshift(nextHead); 
+            for (const ob of obstacles) {
+                if (nextHead.x === ob.x && nextHead.y === ob.y) {
+                    gameOver = true;
+                    break;
+                }
+            }
+            if (gameOver) {
+                finalizeGameOver();
+                return;
+            }
+
+            snake.unshift(nextHead);
             if (growth === 0) { snake.pop(); }
 
             updateScoreDisplay(); 
@@ -3687,10 +3745,15 @@
                 updateTimeLengthDisplay(); 
                 clearInterval(gameTimerIntervalId); 
             }
-            if (gameMode === "levels" && currentWorld === 4) {
+            if (gameMode === "levels" && (currentWorld === 4 || currentWorld === 5)) {
                 startWorld4FalseFoodMechanics();
             } else {
                 stopWorld4FalseFoodMechanics();
+            }
+            if (gameMode === "levels" && currentWorld === 5) {
+                startWorld5Obstacles();
+            } else {
+                stopWorld5Obstacles();
             }
             
             generateFood(); 
