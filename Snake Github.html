@@ -1111,6 +1111,20 @@
             return `#${toHex(r)}${toHex(g)}${toHex(b)}`;
         }
 
+        // Draws an image tinted with a given color onto the main context
+        function drawImageWithTint(ctx, img, x, y, w, h, color) {
+            const tempCanvas = document.createElement('canvas');
+            tempCanvas.width = w;
+            tempCanvas.height = h;
+            const tctx = tempCanvas.getContext('2d');
+            tctx.drawImage(img, 0, 0, w, h);
+            tctx.globalCompositeOperation = 'source-atop';
+            tctx.fillStyle = color;
+            tctx.fillRect(0, 0, w, h);
+            tctx.globalCompositeOperation = 'source-over';
+            ctx.drawImage(tempCanvas, x, y);
+        }
+
         // Selección de elementos del DOM
         const splashScreen = document.getElementById("splash-screen"); 
         const canvasEl = document.getElementById("gameCanvas"); 
@@ -2415,13 +2429,9 @@
             if (img && img.complete && img.naturalHeight !== 0) {
                 const size = GRID_SIZE * foodData.scale;
                 const off = (size - GRID_SIZE) / 2;
-                ctx.drawImage(img, item.x * GRID_SIZE - off, item.y * GRID_SIZE - off, size, size);
-                ctx.fillStyle = "rgba(255,0,0,0.5)";
-                ctx.globalCompositeOperation = "source-atop";
-                ctx.fillRect(item.x * GRID_SIZE - off, item.y * GRID_SIZE - off, size, size);
-                ctx.globalCompositeOperation = "source-over";
+                drawImageWithTint(ctx, img, item.x * GRID_SIZE - off, item.y * GRID_SIZE - off, size, size, 'rgba(255,0,0,0.5)');
             } else {
-                ctx.fillStyle = "#ff0000";
+                ctx.fillStyle = '#ff0000';
                 ctx.fillRect(item.x * GRID_SIZE + 2, item.y * GRID_SIZE + 2, GRID_SIZE - 4, GRID_SIZE - 4);
             }
         }
