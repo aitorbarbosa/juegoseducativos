@@ -1218,6 +1218,8 @@
 
         const oreoFoodImg = new Image();
         const obstacleImg = new Image();
+        const lightningYellowImg = new Image();
+        const lightningRedImg = new Image();
 
         const worldCoverImages = {
             1: new Image(),
@@ -1525,9 +1527,22 @@
         ];
         const FALSE_FOOD_SPAWN_RANGE_WORLD5 = [7000, 12000];
         const OBSTACLE_COUNTS_WORLD5 = [3, 5, 8, 11, 15];
+        const OBSTACLE_COUNT_WORLD6 = 8;
+        const LIGHTNING_SPAWN_RANGES_WORLD6 = [
+            [5000, 7000],
+            [4000, 6000],
+            [3000, 5000],
+            [2000, 4000],
+            [1000, 3000]
+        ];
+        const LIGHTNING_LIFESPAN = 5000;
+        const SPEED_BOOST_DURATION = 3000;
         let obstacles = [];
         let falseFoodItems = [];
         let falseFoodSpawnTimeoutId;
+        let lightningItems = [];
+        let lightningSpawnTimeoutId;
+        let speedBoost = { active: false, color: '', change: 0, startTime: 0 };
 
 
         // Nuevas variables para el estado del audio
@@ -1558,7 +1573,7 @@
             worldCoverImages[3].src = 'https://i.imgur.com/Iv2Pzet.png';
             worldCoverImages[4].src = 'https://i.imgur.com/X6KtQtD.png';
             worldCoverImages[5].src = 'https://i.imgur.com/LYCR9nT.png';
-            worldCoverImages[6].src = 'https://i.imgur.com/KIiKaTr.png';
+            worldCoverImages[6].src = 'https://i.imgur.com/t07LsqT.png';
             worldCoverImages[7].src = 'https://i.imgur.com/j27VS0G.png';
             worldCoverImages[8].src = 'https://i.imgur.com/JYjHEgy.png';
 
@@ -1672,6 +1687,8 @@
 
             oreoFoodImg.src = 'https://i.imgur.com/Yv5ioX3.png';
             obstacleImg.src = 'https://i.imgur.com/wk1u29m.png';
+            lightningYellowImg.src = 'https://i.imgur.com/AJL2p3j.png';
+            lightningRedImg.src = 'https://i.imgur.com/4sNOTpi.png';
             
             const allImageObjects = [ 
                 classicSnakeHeadLeftImg, classicSnakeHeadDownImg, classicFoodImg, snakeBodyTexture,
@@ -1681,7 +1698,7 @@
                 maraSnakeHeadUpDownImg, maraSnakeHeadLeftImg, maraSnakeFoodImg,
                 almuSnakeHeadUpDownImg, almuSnakeHeadLeftImg, almuSnakeFoodImg,
                 mimiSnakeHeadUpDownImg, mimiSnakeHeadLeftImg, mimiSnakeFoodImg,
-                oreoFoodImg, obstacleImg
+                oreoFoodImg, obstacleImg, lightningYellowImg, lightningRedImg
             ];
 
             allImageObjects.forEach(imgObj => {
@@ -2504,6 +2521,18 @@
             }
         }
 
+        function drawLightningItem(item) {
+            if (!ctx) return;
+            const img = item.color === 'yellow' ? lightningYellowImg : lightningRedImg;
+            if (img && img.complete && img.naturalHeight !== 0) {
+                ctx.drawImage(img, item.x * GRID_SIZE, item.y * GRID_SIZE, GRID_SIZE, GRID_SIZE);
+            } else {
+                const color = item.color === 'yellow' ? 'yellow' : 'red';
+                ctx.fillStyle = color;
+                ctx.fillRect(item.x * GRID_SIZE + 2, item.y * GRID_SIZE + 2, GRID_SIZE - 4, GRID_SIZE - 4);
+            }
+        }
+
         function removeFalseFoodItem(item) {
             clearTimeout(item.timeoutId);
             clearInterval(item.intervalId);
@@ -2530,7 +2559,7 @@
         }
 
         function scheduleNextFalseFoodSpawn() {
-            if (gameMode !== "levels" || !(currentWorld === 4 || currentWorld === 5) || gameOver) return;
+            if (gameMode !== "levels" || !(currentWorld === 4 || currentWorld === 5 || currentWorld === 6) || gameOver) return;
             let range;
             if (currentWorld === 4) {
                 range = FALSE_FOOD_SPAWN_RANGES_WORLD4[currentLevelInWorld - 1] || [5000,8000];
@@ -2583,6 +2612,106 @@
 
         function stopWorld5Obstacles() {
             obstacles = [];
+        }
+
+        function generateWorld6Obstacles() {
+            obstacles = [];
+            const count = OBSTACLE_COUNT_WORLD6;
+            for (let i = 0; i < count; i++) {
+                let pos; let attempts = 0;
+                do {
+                    pos = {
+                        x: Math.floor(Math.random() * (tileCountX - 2)) + 1,
+                        y: Math.floor(Math.random() * (tileCountY - 2)) + 1,
+                    };
+                    attempts++;
+                } while ((isFoodOnSnake(pos) || obstacles.some(o => o.x === pos.x && o.y === pos.y) || isAdjacentToAnyObstacle(pos)) && attempts < 100);
+                if (attempts < 100) obstacles.push(pos);
+            }
+        }
+
+        function startWorld6Obstacles() {
+            generateWorld6Obstacles();
+        }
+
+        function stopWorld6Obstacles() {
+            obstacles = [];
+        }
+
+        function removeLightningItem(item) {
+            clearTimeout(item.timeoutId);
+            clearInterval(item.intervalId);
+            const idx = lightningItems.indexOf(item);
+            if (idx !== -1) lightningItems.splice(idx, 1);
+        }
+
+        function generateLightning() {
+            if (tileCountX <= 0 || tileCountY <= 0) return;
+            let pos; let attempts = 0;
+            do {
+                pos = { x: Math.floor(Math.random()*tileCountX), y: Math.floor(Math.random()*tileCountY) };
+                attempts++;
+            } while ((isFoodOnSnake(pos) ||
+                    obstacles.some(o => o.x === pos.x && o.y === pos.y) ||
+                    lightningItems.some(l => l.x === pos.x && l.y === pos.y) ||
+                    isAdjacentToAnyFood(pos)) && attempts < 100);
+            if (attempts >= 100) return;
+            const color = Math.random() < 0.75 ? 'yellow' : 'red';
+            const item = { x: pos.x, y: pos.y, color, remaining: LIGHTNING_LIFESPAN, lifespan: LIGHTNING_LIFESPAN };
+            item.timeoutId = setTimeout(() => removeLightningItem(item), LIGHTNING_LIFESPAN);
+            item.intervalId = setInterval(() => { item.remaining -= 100; if (item.remaining <= 0) removeLightningItem(item); }, 100);
+            lightningItems.push(item);
+        }
+
+        function scheduleNextLightningSpawn() {
+            if (gameMode !== "levels" || currentWorld !== 6 || gameOver) return;
+            const range = LIGHTNING_SPAWN_RANGES_WORLD6[currentLevelInWorld - 1] || [5000, 7000];
+            const delay = Math.random() * (range[1] - range[0]) + range[0];
+            lightningSpawnTimeoutId = setTimeout(() => {
+                generateLightning();
+                scheduleNextLightningSpawn();
+            }, delay);
+        }
+
+        function startWorld6LightningMechanics() {
+            stopWorld6LightningMechanics();
+            scheduleNextLightningSpawn();
+        }
+
+        function stopWorld6LightningMechanics() {
+            if (lightningSpawnTimeoutId) {
+                clearTimeout(lightningSpawnTimeoutId);
+                lightningSpawnTimeoutId = null;
+            }
+            lightningItems.forEach(item => {
+                clearTimeout(item.timeoutId);
+                clearInterval(item.intervalId);
+            });
+            lightningItems = [];
+        }
+
+        function applySpeedChange(change) {
+            clearInterval(gameIntervalId);
+            snakeSpeed = Math.max(50, snakeSpeed + change);
+            gameIntervalId = setInterval(update, snakeSpeed);
+        }
+
+        function activateSpeedBoost(color) {
+            const change = color === 'yellow' ? -25 : -50;
+            if (speedBoost.active) {
+                applySpeedChange(-speedBoost.change);
+            }
+            applySpeedChange(change);
+            speedBoost = { active: true, color, change, startTime: Date.now() };
+        }
+
+        function updateSpeedBoost() {
+            if (!speedBoost.active) return;
+            const elapsed = Date.now() - speedBoost.startTime;
+            if (elapsed >= SPEED_BOOST_DURATION) {
+                applySpeedChange(-speedBoost.change);
+                speedBoost.active = false;
+            }
         }
         function splitTextIntoLines(ctx, text, maxWidth) {
             const words = text.split(' ');
@@ -2661,6 +2790,8 @@
             clearInterval(gameTimerIntervalId);
             stopWorld4FalseFoodMechanics();
             stopWorld5Obstacles();
+            stopWorld6Obstacles();
+            stopWorld6LightningMechanics();
 
             if (inGameBackgroundMusic) {
                 inGameBackgroundMusic.pause();
@@ -2960,9 +3091,19 @@
 
 
         function draw() {
-             if (!ctx) return; 
-            ctx.fillStyle = "#374151"; 
+             if (!ctx) return;
+            ctx.fillStyle = "#374151";
             ctx.fillRect(0, 0, canvasEl.width, canvasEl.height);
+
+            let speedBoostVisible = false;
+            let speedBoostOverlayColor = '';
+            if (speedBoost.active) {
+                const remaining = SPEED_BOOST_DURATION - (Date.now() - speedBoost.startTime);
+                if (remaining > 0) {
+                    speedBoostOverlayColor = speedBoost.color === 'yellow' ? 'rgba(255,255,0,0.9)' : 'rgba(255,0,0,0.9)';
+                    speedBoostVisible = remaining > 1000 || Math.floor(remaining / 100) % 2 === 0;
+                }
+            }
 
             if (screenState.showFreeModeCover && !screenState.gameActuallyStarted) {
                 drawFreeModeCover();
@@ -3011,11 +3152,23 @@
                             ctx.globalCompositeOperation = 'multiply';
                             ctx.fillStyle = skinData.bodyTintColor;
                             ctx.fillRect(segmentX, segmentY, GRID_SIZE - 1, GRID_SIZE - 1);
-                            ctx.globalCompositeOperation = 'source-over'; 
+                            ctx.globalCompositeOperation = 'source-over';
+                        }
+                        if (speedBoostVisible) {
+                            ctx.globalCompositeOperation = 'multiply';
+                            ctx.fillStyle = speedBoostOverlayColor;
+                            ctx.fillRect(segmentX, segmentY, GRID_SIZE - 1, GRID_SIZE - 1);
+                            ctx.globalCompositeOperation = 'source-over';
                         }
                     } else {
-                        ctx.fillStyle = skinData.bodyTintColor || '#A8F031'; 
+                        ctx.fillStyle = skinData.bodyTintColor || '#A8F031';
                         ctx.fillRect(segmentX, segmentY, GRID_SIZE - 1, GRID_SIZE - 1);
+                        if (speedBoostVisible) {
+                            ctx.globalCompositeOperation = 'multiply';
+                            ctx.fillStyle = speedBoostOverlayColor;
+                            ctx.fillRect(segmentX, segmentY, GRID_SIZE - 1, GRID_SIZE - 1);
+                            ctx.globalCompositeOperation = 'source-over';
+                        }
                     }
                     if (skinData.bodyStrokeColor) {
                         ctx.strokeStyle = skinData.bodyStrokeColor;
@@ -3030,6 +3183,9 @@
                 }
                 if (falseFoodItems.length > 0) {
                     falseFoodItems.forEach(item => drawFalseFoodItem(item));
+                }
+                if (lightningItems.length > 0) {
+                    lightningItems.forEach(item => drawLightningItem(item));
                 }
 
                 // Draw snake head
@@ -3054,22 +3210,40 @@
                             const offset = (drawSize - GRID_SIZE) / 2;
                             const drawX = head.x * GRID_SIZE - offset;
                             const drawY = head.y * GRID_SIZE - offset;
-                            ctx.save(); 
+                            ctx.save();
                             ctx.translate(drawX + drawSize / 2, drawY + drawSize / 2); 
                             let scaleX = 1; let scaleY = 1;
                             if (flipHorizontal) scaleX = -1; if (flipVertical) scaleY = -1;
                             ctx.scale(scaleX, scaleY); 
                             ctx.drawImage(imgToDraw, -drawSize / 2, -drawSize / 2, drawSize, drawSize); 
-                            ctx.restore(); 
-                        } else { 
-                            ctx.fillStyle = "#a7f3d0"; 
+                            ctx.restore();
+                            if (speedBoostVisible) {
+                                ctx.globalCompositeOperation = 'multiply';
+                                ctx.fillStyle = speedBoostOverlayColor;
+                                ctx.fillRect(head.x * GRID_SIZE, head.y * GRID_SIZE, GRID_SIZE -1, GRID_SIZE -1);
+                                ctx.globalCompositeOperation = 'source-over';
+                            }
+                        } else {
+                            ctx.fillStyle = "#a7f3d0";
                             ctx.fillRect(head.x * GRID_SIZE, head.y * GRID_SIZE, GRID_SIZE - 1, GRID_SIZE - 1);
+                            if (speedBoostVisible) {
+                                ctx.globalCompositeOperation = 'multiply';
+                                ctx.fillStyle = speedBoostOverlayColor;
+                                ctx.fillRect(head.x * GRID_SIZE, head.y * GRID_SIZE, GRID_SIZE -1, GRID_SIZE -1);
+                                ctx.globalCompositeOperation = 'source-over';
+                            }
                         }
-                    } else { 
+                    } else {
                         ctx.fillStyle = "#a7f3d0";
                         ctx.fillRect(head.x * GRID_SIZE, head.y * GRID_SIZE, GRID_SIZE - 1, GRID_SIZE - 1);
-                        ctx.strokeStyle = "#065f46"; 
+                        ctx.strokeStyle = "#065f46";
                         ctx.strokeRect(head.x * GRID_SIZE, head.y * GRID_SIZE, GRID_SIZE -1, GRID_SIZE -1);
+                        if (speedBoostVisible) {
+                            ctx.globalCompositeOperation = 'multiply';
+                            ctx.fillStyle = speedBoostOverlayColor;
+                            ctx.fillRect(head.x * GRID_SIZE, head.y * GRID_SIZE, GRID_SIZE -1, GRID_SIZE -1);
+                            ctx.globalCompositeOperation = 'source-over';
+                        }
                     }
                 }
             } else { // Game Over Screen (but not world/level complete or defeat screen)
@@ -3292,8 +3466,9 @@
             }
         }
         
-        function update() {
+       function update() {
             if (gameOver || tileCountX <= 0 || tileCountY <= 0) return;
+            updateSpeedBoost();
 
             direction = nextDirection; // Actualizar la dirección actual con la siguiente dirección almacenada
 
@@ -3352,6 +3527,14 @@
                     streakMultiplier = 1;
                     removeFalseFoodItem(ff);
                     if (areSfxEnabled) playSound('badEat');
+                }
+            }
+            for (let i = lightningItems.length - 1; i >= 0; i--) {
+                const lt = lightningItems[i];
+                if (nextHead.x === lt.x && nextHead.y === lt.y) {
+                    activateSpeedBoost(lt.color);
+                    removeLightningItem(lt);
+                    if (areSfxEnabled) playSound('eat');
                 }
             }
             for (const ob of obstacles) {
@@ -3756,15 +3939,20 @@
                 updateTimeLengthDisplay(); 
                 clearInterval(gameTimerIntervalId); 
             }
-            if (gameMode === "levels" && (currentWorld === 4 || currentWorld === 5)) {
+            if (gameMode === "levels" && (currentWorld === 4 || currentWorld === 5 || currentWorld === 6)) {
                 startWorld4FalseFoodMechanics();
             } else {
                 stopWorld4FalseFoodMechanics();
             }
             if (gameMode === "levels" && currentWorld === 5) {
                 startWorld5Obstacles();
+            } else if (gameMode === "levels" && currentWorld === 6) {
+                startWorld6Obstacles();
+                startWorld6LightningMechanics();
             } else {
                 stopWorld5Obstacles();
+                stopWorld6Obstacles();
+                stopWorld6LightningMechanics();
             }
             
             generateFood(); 
