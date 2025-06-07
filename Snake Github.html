@@ -2416,12 +2416,13 @@
                 const size = GRID_SIZE * foodData.scale;
                 const off = (size - GRID_SIZE) / 2;
                 ctx.drawImage(img, item.x * GRID_SIZE - off, item.y * GRID_SIZE - off, size, size);
-                ctx.fillStyle = "rgba(255,0,0,0.5)";
+                ctx.save();
+                ctx.fillStyle = "rgba(255,0,0,0.35)";
                 ctx.globalCompositeOperation = "source-atop";
                 ctx.fillRect(item.x * GRID_SIZE - off, item.y * GRID_SIZE - off, size, size);
-                ctx.globalCompositeOperation = "source-over";
+                ctx.restore();
             } else {
-                ctx.fillStyle = "#ff0000";
+                ctx.fillStyle = "rgba(255,0,0,0.35)";
                 ctx.fillRect(item.x * GRID_SIZE + 2, item.y * GRID_SIZE + 2, GRID_SIZE - 4, GRID_SIZE - 4);
             }
         }
