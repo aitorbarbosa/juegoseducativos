@@ -2394,6 +2394,20 @@
             return false;
         }
 
+        function isAdjacentToAnyFood(pos) {
+            if (currentFoodItem.x !== undefined) {
+                if (Math.abs(currentFoodItem.x - pos.x) <= 1 && Math.abs(currentFoodItem.y - pos.y) <= 1) {
+                    return true;
+                }
+            }
+            for (let ff of falseFoodItems) {
+                if (Math.abs(ff.x - pos.x) <= 1 && Math.abs(ff.y - pos.y) <= 1) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
         function drawFalseFoodItem(item) {
             if (!ctx) return;
             const foodData = FOODS[currentFood] || FOODS["apple"];
@@ -2426,7 +2440,10 @@
             do {
                 pos = { x: Math.floor(Math.random()*tileCountX), y: Math.floor(Math.random()*tileCountY) };
                 attempts++;
-            } while ((isFoodOnSnake(pos) || (currentFoodItem.x === pos.x && currentFoodItem.y === pos.y) || falseFoodItems.some(f => f.x === pos.x && f.y === pos.y)) && attempts < 100);
+            } while ((isFoodOnSnake(pos) ||
+                    (currentFoodItem.x === pos.x && currentFoodItem.y === pos.y) ||
+                    falseFoodItems.some(f => f.x === pos.x && f.y === pos.y) ||
+                    isAdjacentToAnyFood(pos)) && attempts < 100);
             if (attempts >= 100) return;
             const item = { x: pos.x, y: pos.y, remaining: FALSE_FOOD_LIFESPAN };
             item.timeoutId = setTimeout(() => removeFalseFoodItem(item), FALSE_FOOD_LIFESPAN);
