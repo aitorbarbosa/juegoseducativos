@@ -1523,7 +1523,7 @@
             [2000, 4000],
             [1000, 3000]
         ];
-        const FALSE_FOOD_SPAWN_RANGE_WORLD5 = [5000, 7000];
+        const FALSE_FOOD_SPAWN_RANGE_WORLD5 = [7000, 12000];
         const OBSTACLE_COUNTS_WORLD5 = [3, 5, 8, 11, 15];
         let obstacles = [];
         let falseFoodItems = [];
@@ -2427,6 +2427,15 @@
             return false;
         }
 
+        function isAdjacentToAnyObstacle(pos) {
+            for (let ob of obstacles) {
+                if (Math.abs(ob.x - pos.x) <= 1 && Math.abs(ob.y - pos.y) <= 1) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
         function drawFalseFoodItem(item) {
             if (!ctx) return;
             const foodData = FOODS[currentFood] || FOODS["apple"];
@@ -2485,7 +2494,7 @@
 
         function drawObstacle(ob) {
             if (!ctx) return;
-            const drawSize = GRID_SIZE * 1.5;
+            const drawSize = GRID_SIZE * 1.25;
             const offset = (drawSize - GRID_SIZE) / 2;
             if (obstacleImg && obstacleImg.complete && obstacleImg.naturalHeight !== 0) {
                 ctx.drawImage(obstacleImg, ob.x * GRID_SIZE - offset, ob.y * GRID_SIZE - offset, drawSize, drawSize);
@@ -2563,7 +2572,7 @@
                         y: Math.floor(Math.random() * (tileCountY - 2)) + 1,
                     };
                     attempts++;
-                } while ((isFoodOnSnake(pos) || obstacles.some(o => o.x === pos.x && o.y === pos.y)) && attempts < 100);
+                } while ((isFoodOnSnake(pos) || obstacles.some(o => o.x === pos.x && o.y === pos.y) || isAdjacentToAnyObstacle(pos)) && attempts < 100);
                 if (attempts < 100) obstacles.push(pos);
             }
         }
