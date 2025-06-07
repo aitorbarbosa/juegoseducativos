@@ -1523,8 +1523,8 @@
             [2000, 4000],
             [1000, 3000]
         ];
-        const FALSE_FOOD_SPAWN_RANGE_WORLD5 = [4000, 6000];
-        const OBSTACLE_COUNTS_WORLD5 = [5, 8, 11, 15, 20];
+        const FALSE_FOOD_SPAWN_RANGE_WORLD5 = [5000, 7000];
+        const OBSTACLE_COUNTS_WORLD5 = [3, 5, 8, 11, 15];
         let obstacles = [];
         let falseFoodItems = [];
         let falseFoodSpawnTimeoutId;
@@ -2485,11 +2485,13 @@
 
         function drawObstacle(ob) {
             if (!ctx) return;
+            const drawSize = GRID_SIZE * 1.5;
+            const offset = (drawSize - GRID_SIZE) / 2;
             if (obstacleImg && obstacleImg.complete && obstacleImg.naturalHeight !== 0) {
-                ctx.drawImage(obstacleImg, ob.x * GRID_SIZE, ob.y * GRID_SIZE, GRID_SIZE - 1, GRID_SIZE - 1);
+                ctx.drawImage(obstacleImg, ob.x * GRID_SIZE - offset, ob.y * GRID_SIZE - offset, drawSize, drawSize);
             } else {
                 ctx.fillStyle = '#555';
-                ctx.fillRect(ob.x * GRID_SIZE, ob.y * GRID_SIZE, GRID_SIZE - 1, GRID_SIZE - 1);
+                ctx.fillRect(ob.x * GRID_SIZE - offset, ob.y * GRID_SIZE - offset, drawSize, drawSize);
             }
         }
 
