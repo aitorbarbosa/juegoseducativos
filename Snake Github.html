@@ -1328,22 +1328,22 @@
             ],
             // World 3 - Hambre Voraz
             [
+                { speed: 180, initialLength: 6, initialLifespan: 11500 },
+                { speed: 180, initialLength: 6, initialLifespan: 11300 },
                 { speed: 180, initialLength: 6, initialLifespan: 11000 },
-                { speed: 180, initialLength: 6, initialLifespan: 10800 },
                 { speed: 180, initialLength: 6, initialLifespan: 10500 },
-                { speed: 180, initialLength: 6, initialLifespan: 10000 },
-                { speed: 180, initialLength: 6, initialLifespan: 9500 }
+                { speed: 180, initialLength: 6, initialLifespan: 10000 }
             ],
             // World 4 - Default Normal difficulty
-            Array(5).fill({ speed: 150, initialLength: 6, initialLifespan: 10500 }),
+            Array(5).fill({ speed: 150, initialLength: 6, initialLifespan: 11000 }),
             // World 5 - Default Normal difficulty
-            Array(5).fill({ speed: 150, initialLength: 6, initialLifespan: 10500 }),
+            Array(5).fill({ speed: 150, initialLength: 6, initialLifespan: 11000 }),
             // World 6 - Default Normal difficulty
             Array(5).fill({ speed: 150, initialLength: 6, initialLifespan: 10500 }),
             // World 7 - Default Difficult difficulty
-            Array(5).fill({ speed: 100, initialLength: 6, initialLifespan: 10000 }),
+            Array(5).fill({ speed: 100, initialLength: 6, initialLifespan: 10500 }),
             // World 8 - Default Difficult difficulty
-            Array(5).fill({ speed: 100, initialLength: 10, initialLifespan: 9500 })
+            Array(5).fill({ speed: 100, initialLength: 10, initialLifespan: 10000 })
         ];
         let currentWorld = 1;
         let currentLevelInWorld = 1; 
@@ -2305,14 +2305,13 @@
             }
             if (baseLifespan <= 0) return 0;
             let streakReduction = 0;
-            const effectiveStreakForReduction = Math.floor(streakMultiplier);
-            if (effectiveStreakForReduction >= 2) {
-                // Previously each streak level reduced lifespan by 1 second.
-                // Reduce by half a second instead for a smoother difficulty curve.
-                streakReduction = (Math.min(effectiveStreakForReduction, 5) - 1) * 500;
+            const effectiveStreak = Math.min(streakMultiplier, MAX_STREAK);
+            if (effectiveStreak > 1) {
+                // Reduce food lifespan by 0.5 s per 0.5 streak increase
+                streakReduction = (effectiveStreak - 1) * 1000;
             }
             const calculatedLifespan = baseLifespan - streakReduction;
-            return Math.max(MIN_FOOD_LIFESPAN, calculatedLifespan); 
+            return Math.max(MIN_FOOD_LIFESPAN, calculatedLifespan);
         }
 
         function generateFood() {
