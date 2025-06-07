@@ -3107,7 +3107,7 @@
             if (speedBoost.active) {
                 const remaining = SPEED_BOOST_DURATION - (Date.now() - speedBoost.startTime);
                 if (remaining > 0) {
-                    speedBoostOverlayColor = speedBoost.color === 'yellow' ? 'rgba(255,255,0,0.5)' : 'rgba(255,0,0,0.5)';
+                    speedBoostOverlayColor = speedBoost.color === 'yellow' ? 'rgba(255,255,0,0.3)' : 'rgba(255,0,0,0.3)';
                     speedBoostVisible = remaining > 1000 || Math.floor(remaining / 100) % 2 === 0;
                 }
             }
