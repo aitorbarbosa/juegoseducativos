@@ -563,16 +563,16 @@
             display: flex;
             gap: 4px;
         }
-        #start-button-wrapper.split #startButton { flex-grow: 3; }
+        #start-button-wrapper.split #startButton { flex-grow: 2; }
         #start-button-wrapper.split #restartMazeButton { flex-grow: 1; }
         #config-button-wrapper {
             flex-grow: 1;
         }
 
 
-        #startButton, #configButton, #infoButton { 
-            padding: 10px 15px; 
-            font-size: 0.85em;  
+        #startButton, #restartMazeButton, #configButton, #infoButton {
+            padding: 10px 15px;
+            font-size: 0.85em;
             color: #f5f5f5;
             border: none;
             border-radius: 8px; 
@@ -591,6 +591,7 @@
         }
         #restartMazeButton {
             background-color: #4CAF50;
+            min-width: 65px;
         }
         #configButton, #infoButton {
             background-color: #384152;
@@ -758,11 +759,11 @@
             }
             .arrow-svg { width: 55%; height: 55%; } 
             
-             #startButton, #configButton, #infoButton { 
-                 font-size: 0.75em; 
-                 height: 55px; 
+             #startButton, #restartMazeButton, #configButton, #infoButton {
+                 font-size: 0.75em;
+                 height: 55px;
             }
-            #configButton, #infoButton { 
+            #restartMazeButton, #configButton, #infoButton {
                 min-width: 55px;
             }
 
@@ -835,11 +836,11 @@
             }
             .arrow-svg { width: 50%; height: 50%; }
 
-             #startButton, #configButton, #infoButton { 
-                 font-size: 0.7em; 
+             #startButton, #restartMazeButton, #configButton, #infoButton {
+                 font-size: 0.7em;
                  height: 50px;
             }
-            #configButton, #infoButton { 
+            #restartMazeButton, #configButton, #infoButton {
                 min-width: 50px;
             }
             .config-svg, .info-svg {  
