@@ -3951,7 +3951,7 @@
                 starProgressContainer.classList.remove('hidden');
                 highScoreDisplay.classList.add('hidden');
                 progressPanelLeftLabel.textContent = "Nivel:";
-                progressPanelLeftValue.textContent = displayLevelInWorld;
+                progressPanelLeftValue.textContent = `${displayWorld}.${displayLevelInWorld}`;
                 
                 difficultyLabel.textContent = "Mundo Actual:";
                 difficultySelector.classList.add('hidden');
@@ -4193,7 +4193,7 @@ async function startGame() {
                     // Update UI elements that depend on display variables
                     updateTargetScoreDisplay();
                     if (progressPanelLeftValue) {
-                        progressPanelLeftValue.textContent = displayLevelInWorld;
+                        progressPanelLeftValue.textContent = `${displayWorld}.${displayLevelInWorld}`;
                     }
                     drawStarProgress(); // Update stars for the new world being displayed
 
@@ -4230,7 +4230,7 @@ async function startGame() {
 
             updateTargetScoreDisplay(); // Update UI with the target of the level to be played
             if (progressPanelLeftValue && gameMode === 'levels') { // Update progress panel UI
-                progressPanelLeftValue.textContent = displayLevelInWorld;
+                progressPanelLeftValue.textContent = `${displayWorld}.${displayLevelInWorld}`;
             } else if (progressPanelLeftValue && gameMode === 'maze') {
                 progressPanelLeftValue.textContent = currentMazeLevel;
             } else if (progressPanelLeftValue && gameMode === 'freeMode') {
@@ -4535,7 +4535,7 @@ async function startGame() {
                 }
                 updateTargetScoreDisplay(); // Update UI for target score
                 if (progressPanelLeftValue) { // Update UI for progress panel
-                    progressPanelLeftValue.textContent = displayLevelInWorld;
+                    progressPanelLeftValue.textContent = `${displayWorld}.${displayLevelInWorld}`;
                 }
                 drawStarProgress(); // Update stars for the newly selected world
 
