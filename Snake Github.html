@@ -2618,6 +2618,23 @@
             falseFoodItems = [];
         }
 
+        function generateLevel1CornerObstacles() {
+            obstacles = [
+                { x: 0, y: 0 }, { x: 1, y: 0 }, { x: 0, y: 1 },
+                { x: tileCountX - 1, y: 0 }, { x: tileCountX - 2, y: 0 }, { x: tileCountX - 1, y: 1 },
+                { x: 0, y: tileCountY - 1 }, { x: 1, y: tileCountY - 1 }, { x: 0, y: tileCountY - 2 },
+                { x: tileCountX - 1, y: tileCountY - 1 }, { x: tileCountX - 2, y: tileCountY - 1 }, { x: tileCountX - 1, y: tileCountY - 2 }
+            ];
+        }
+
+        function startLevel1CornerObstacles() {
+            generateLevel1CornerObstacles();
+        }
+
+        function stopLevel1CornerObstacles() {
+            obstacles = [];
+        }
+
         function generateWorld5Obstacles() {
             obstacles = [];
             const count = OBSTACLE_COUNTS_WORLD5[currentLevelInWorld - 1] || 0;
@@ -4317,6 +4334,11 @@ async function startGame(isRestart = false) {
                 gameTimeRemaining = Infinity;
                 updateTimeLengthDisplay();
                 clearInterval(gameTimerIntervalId);
+            }
+            if (gameMode === "levels" && currentWorld === 1 && currentLevelInWorld === 1) {
+                startLevel1CornerObstacles();
+            } else {
+                stopLevel1CornerObstacles();
             }
             if (gameMode === "levels" && (currentWorld === 4 || currentWorld === 5 || currentWorld === 6)) {
                 startWorld4FalseFoodMechanics();
