@@ -4353,11 +4353,11 @@ async function startGame(isRestart = false) {
                 startWorld6LightningMechanics();
                 startWorld7MirrorMechanics();
             } else if (gameMode === 'maze') {
-                startMazeLevel();
                 stopWorld5Obstacles();
                 stopWorld6Obstacles();
                 stopWorld6LightningMechanics();
                 stopWorld7MirrorMechanics();
+                startMazeLevel();
             } else {
                 stopWorld5Obstacles();
                 stopWorld6Obstacles();
