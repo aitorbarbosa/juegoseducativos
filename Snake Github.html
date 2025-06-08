@@ -2133,18 +2133,22 @@
 
         function openInfoPanel() {
             togglePanel(infoPanel, infoPanelContent, true);
-             if (gameOver && !gameIntervalId) { 
-                if (ctx && canvasEl) { 
-                    ctx.fillStyle = "#374151"; 
+            if (gameOver && !gameIntervalId) {
+                if (ctx && canvasEl) {
+                    ctx.fillStyle = "#374151";
                     ctx.fillRect(0, 0, canvasEl.width, canvasEl.height);
                 }
-                score = 0; 
-                streakMultiplier = 1; 
+                score = 0;
+                streakMultiplier = 1;
 
-                if (gameMode === 'levels') {
+                if (gameMode === 'levels' || gameMode === 'maze') {
                     screenState.showCoverForWorld = currentWorld;
                     screenState.gameActuallyStarted = false;
-                } else { // freeMode
+                    screenState.showLevelCompleteCover = 0;
+                    screenState.showWorldCompleteCover = 0;
+                    screenState.showDefeatCoverForWorld = 0;
+                    screenState.showFreeModeCover = false;
+                } else if (gameMode === 'freeMode') {
                     screenState.showFreeModeCover = true;
                     screenState.gameActuallyStarted = false;
                     snake = []; // Vaciar la serpiente
