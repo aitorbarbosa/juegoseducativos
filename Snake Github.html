@@ -2074,14 +2074,6 @@
                 streakMultiplier = 1; // Reset internal streak
                 
                 if (gameMode === 'levels' || gameMode === 'maze') {
-                    displayWorld = currentWorld;
-                    displayLevelInWorld = currentLevelInWorld;
-                    const absoluteDisplayLevelIndex = (displayWorld - 1) * LEVELS_PER_WORLD + (displayLevelInWorld - 1);
-                    if (absoluteDisplayLevelIndex >= 0 && absoluteDisplayLevelIndex < TARGET_SCORES_LEVELS.length) {
-                        displayTargetScore = TARGET_SCORES_LEVELS[absoluteDisplayLevelIndex];
-                    } else {
-                        displayTargetScore = TARGET_SCORES_LEVELS[TARGET_SCORES_LEVELS.length - 1];
-                    }
                     screenState.showCoverForWorld = currentWorld;
                     screenState.gameActuallyStarted = false;
                     screenState.showLevelCompleteCover = 0;
@@ -2111,15 +2103,6 @@
 
             if (gameOver && !gameIntervalId) { // If game was over and not running
                 if (gameMode === 'levels') {
-                    displayWorld = currentWorld;
-                    displayLevelInWorld = currentLevelInWorld;
-                    const absoluteDisplayLevelIndex = (displayWorld - 1) * LEVELS_PER_WORLD + (displayLevelInWorld - 1);
-                    
-                    if (absoluteDisplayLevelIndex >= 0 && absoluteDisplayLevelIndex < TARGET_SCORES_LEVELS.length) {
-                        displayTargetScore = TARGET_SCORES_LEVELS[absoluteDisplayLevelIndex];
-                    } else {
-                        displayTargetScore = TARGET_SCORES_LEVELS[TARGET_SCORES_LEVELS.length - 1]; // Fallback
-                    }
 
                     screenState.showCoverForWorld = currentWorld; // Show current world cover
                     screenState.gameActuallyStarted = false;
@@ -2158,14 +2141,6 @@
                 streakMultiplier = 1; 
 
                 if (gameMode === 'levels') {
-                    displayWorld = currentWorld;
-                    displayLevelInWorld = currentLevelInWorld;
-                     const absoluteDisplayLevelIndex = (displayWorld - 1) * LEVELS_PER_WORLD + (displayLevelInWorld - 1);
-                    if (absoluteDisplayLevelIndex >= 0 && absoluteDisplayLevelIndex < TARGET_SCORES_LEVELS.length) {
-                        displayTargetScore = TARGET_SCORES_LEVELS[absoluteDisplayLevelIndex];
-                    } else {
-                        displayTargetScore = TARGET_SCORES_LEVELS[TARGET_SCORES_LEVELS.length - 1];
-                    }
                     screenState.showCoverForWorld = currentWorld;
                     screenState.gameActuallyStarted = false;
                 } else { // freeMode
@@ -2182,29 +2157,20 @@
         function closeInfoPanel() {
             togglePanel(infoPanel, infoPanelContent, false);
              if (gameOver && !gameIntervalId) { // If game was over and not running
-                 if (gameMode === 'levels') {
-                    displayWorld = currentWorld;
-                    displayLevelInWorld = currentLevelInWorld;
-                    const absoluteDisplayLevelIndex = (displayWorld - 1) * LEVELS_PER_WORLD + (displayLevelInWorld - 1);
-                    if (absoluteDisplayLevelIndex >= 0 && absoluteDisplayLevelIndex < TARGET_SCORES_LEVELS.length) {
-                        displayTargetScore = TARGET_SCORES_LEVELS[absoluteDisplayLevelIndex];
-                    } else {
-                        displayTargetScore = TARGET_SCORES_LEVELS[TARGET_SCORES_LEVELS.length - 1];
-                    }
+                if (gameMode === "levels") {
                     screenState.showCoverForWorld = currentWorld;
                     screenState.gameActuallyStarted = false;
                     screenState.showLevelCompleteCover = 0;
                     screenState.showWorldCompleteCover = 0;
                     screenState.showDefeatCoverForWorld = 0;
                     screenState.showFreeModeCover = false;
-                    // Score and streak already reset by openInfoPanel if game was over
-                    updateScoreDisplay(); 
+                    updateScoreDisplay();
                     updateTargetScoreDisplay();
-                } else if (gameMode === 'freeMode') {
-                    screenState.showFreeModeCover = true; // Ensure cover is shown when returning from info
+                } else if (gameMode === "freeMode") {
+                    screenState.showFreeModeCover = true;
                     screenState.gameActuallyStarted = false;
                     updateScoreDisplay();
-                    updateTimeLengthDisplay(); // Ensure length is updated based on empty snake array
+                    updateTimeLengthDisplay();
                 }
                 updateGameModeUI();
                 requestAnimationFrame(draw);
