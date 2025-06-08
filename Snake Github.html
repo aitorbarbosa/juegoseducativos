@@ -1242,9 +1242,6 @@
         const lightningYellowImg = new Image();
         const lightningRedImg = new Image();
 
-        const mazeEdgeImg = new Image();
-        const mazeMiddleImg = new Image();
-        const mazeCornerImg = new Image();
         const mazeModeCoverImg = new Image();
         const mazeFailImg = new Image();
         const mazePartialImg = new Image();
@@ -1293,7 +1290,7 @@
         };
         const freeModeCoverImg = new Image();
         let worldImagesLoaded = 0;
-        const totalWorldImagesToLoad = 41;
+        const totalWorldImagesToLoad = 38;
         // --- FIN: Declaración de Objetos Image ---
 
         // --- Música de fondo y SFX ---
@@ -1673,9 +1670,6 @@
 
             freeModeCoverImg.src = 'https://i.imgur.com/IIc2Xb7.png';
 
-            mazeEdgeImg.src = 'https://i.imgur.com/vPYR7zo.png';
-            mazeMiddleImg.src = 'https://i.imgur.com/nz34M3H.png';
-            mazeCornerImg.src = 'https://i.imgur.com/u2Epc1a.png';
             mazeModeCoverImg.src = 'https://i.imgur.com/auJR4Im.png';
             mazeFailImg.src = 'https://i.imgur.com/3snKeSJ.png';
             mazePartialImg.src = 'https://i.imgur.com/fMyiqXm.png';
@@ -1692,7 +1686,7 @@
                 levelCompleteImages[5], levelCompleteImages[6], levelCompleteImages[7], levelCompleteImages[8],
                 defeatImages[1], defeatImages[2], defeatImages[3], defeatImages[4],
                 defeatImages[5], defeatImages[6], defeatImages[7], defeatImages[8],
-                freeModeCoverImg, mazeModeCoverImg, mazeEdgeImg, mazeMiddleImg, mazeCornerImg,
+                freeModeCoverImg, mazeModeCoverImg,
                 mazeFailImg, mazePartialImg, mazePerfectImg, mazeCompleteImg
             ];
 
@@ -2544,15 +2538,9 @@
         function drawObstacle(ob) {
             if (!ctx) return;
             const drawSize = GRID_SIZE;
-            const img = ob.img || obstacleImg;
-            const rotation = ob.rotation || 0;
             const offset = 0;
-            if (img && img.complete && img.naturalHeight !== 0) {
-                ctx.save();
-                ctx.translate(ob.x * GRID_SIZE + drawSize / 2, ob.y * GRID_SIZE + drawSize / 2);
-                ctx.rotate(rotation);
-                ctx.drawImage(img, -drawSize / 2 - offset, -drawSize / 2 - offset, drawSize, drawSize);
-                ctx.restore();
+            if (obstacleImg && obstacleImg.complete && obstacleImg.naturalHeight !== 0) {
+                ctx.drawImage(obstacleImg, ob.x * GRID_SIZE - offset, ob.y * GRID_SIZE - offset, drawSize, drawSize);
             } else {
                 ctx.fillStyle = '#555';
                 ctx.fillRect(ob.x * GRID_SIZE - offset, ob.y * GRID_SIZE - offset, drawSize, drawSize);
@@ -2846,18 +2834,10 @@
 
         function generateMazeLevel(levelIndex) {
             obstacles = [
-                { x: 0, y: 0, img: mazeCornerImg, rotation: 0 },
-                { x: 1, y: 0, img: mazeEdgeImg, rotation: 0 },
-                { x: 0, y: 1, img: mazeEdgeImg, rotation: -Math.PI / 2 },
-                { x: tileCountX - 1, y: 0, img: mazeCornerImg, rotation: Math.PI / 2 },
-                { x: tileCountX - 2, y: 0, img: mazeEdgeImg, rotation: 0 },
-                { x: tileCountX - 1, y: 1, img: mazeEdgeImg, rotation: Math.PI / 2 },
-                { x: 0, y: tileCountY - 1, img: mazeCornerImg, rotation: -Math.PI / 2 },
-                { x: 1, y: tileCountY - 1, img: mazeEdgeImg, rotation: Math.PI },
-                { x: 0, y: tileCountY - 2, img: mazeEdgeImg, rotation: -Math.PI / 2 },
-                { x: tileCountX - 1, y: tileCountY - 1, img: mazeCornerImg, rotation: Math.PI },
-                { x: tileCountX - 2, y: tileCountY - 1, img: mazeEdgeImg, rotation: Math.PI },
-                { x: tileCountX - 1, y: tileCountY - 2, img: mazeEdgeImg, rotation: Math.PI / 2 }
+                { x: 0, y: 0 },
+                { x: tileCountX - 1, y: 0 },
+                { x: 0, y: tileCountY - 1 },
+                { x: tileCountX - 1, y: tileCountY - 1 }
             ];
         }
 
