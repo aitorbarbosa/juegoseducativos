@@ -4589,6 +4589,8 @@ async function startGame(isRestart = false) {
                 screenState.mazeResultType = '';
                 restartMazeButton.classList.add('hidden');
                 startButtonWrapperEl.classList.remove('split');
+                // Ensure maze level display is synced when leaving maze mode
+                displayMazeLevel = currentMazeLevel;
             }
 
             if (gameMode === 'levels') {
@@ -4627,6 +4629,8 @@ async function startGame(isRestart = false) {
                     ctx.fillRect(0, 0, canvasEl.width, canvasEl.height);
                 }
             } else { // maze mode
+                // Sync displayed level with actual progress when entering maze mode
+                displayMazeLevel = currentMazeLevel;
                 displayTargetScore = MAZE_STAR_TARGETS[0];
                 mazeStarsEarned = 0;
 
