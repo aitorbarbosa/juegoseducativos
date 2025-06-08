@@ -3043,7 +3043,8 @@
                 } else {
                     resultType = 'perfect';
                     startButton.textContent = 'Continuar';
-                    currentMazeLevel++;
+                    // El avance de nivel se realizará cuando el jugador pulse
+                    // "Continuar" para iniciar la siguiente partida
                 }
                 restartMazeButton.classList.add('hidden');
                 startButtonWrapperEl.classList.remove('split');
@@ -3052,7 +3053,7 @@
                     levelWon = true;
                     resultType = 'partial';
                     startButton.textContent = 'Continuar';
-                    currentMazeLevel++;
+                    // El avance de nivel se hará al pulsar "Continuar"
                     restartMazeButton.classList.remove('hidden');
                     startButtonWrapperEl.classList.add('split');
                 } else {
@@ -4142,7 +4143,7 @@
         }
 
 
-async function startGame() {
+async function startGame(isRestart = false) {
     isNewHighScore = false;
     blinkAnimation.active = false;
     blinkAnimation.rowIndex = -1;
@@ -4150,7 +4151,19 @@ async function startGame() {
     // Reset any lingering speed boost or mirror effect from a previous game
     speedBoost = { active: false, color: '', change: 0, startTime: 0 };
     controlsInverted = false;
+
     mirrorEffect = { active: false, startTime: 0 };
+
+    // Si venimos de completar un nivel en modo laberinto con 
+    // “Continuar” y no estamos reiniciando, avanzamos de nivel ahora
+    if (!isRestart && gameMode === 'maze' &&
+        (screenState.mazeResultType === 'partial' || screenState.mazeResultType === 'perfect')) {
+        currentMazeLevel++;
+        if (progressPanelLeftValue) {
+            progressPanelLeftValue.textContent = currentMazeLevel;
+        }
+        saveGameSettings();
+    }
             
             const wasOnWorldCompleteCoverForNewWorld = screenState.showWorldCompleteCover > 0 && startButton.textContent === "Nuevo Mundo";
         
@@ -4639,7 +4652,7 @@ async function startGame() {
                     case "arrowdown": case "s": newDirectionCmd = "down"; break;
                     case "arrowleft": case "a": newDirectionCmd = "left"; break;
                     case "arrowright": case "d": newDirectionCmd = "right"; break;
-                    case "enter": if (gameOver || !gameIntervalId) { startGame(); } break; 
+                    case "enter": if (gameOver || !gameIntervalId) { startGame(false); } break;
                 }
                 if (newDirectionCmd) { changeDirection(newDirectionCmd); } // Call with newDirectionCmd
                 if (["arrowup", "arrowdown", "arrowleft", "arrowright", "w", "a", "s", "d"].includes(key)) { e.preventDefault(); }
@@ -4675,8 +4688,8 @@ async function startGame() {
         rightButton.addEventListener("click", () => changeDirection("right"));
 
 
-        startButton.addEventListener("click", startGame);
-        restartMazeButton.addEventListener("click", startGame);
+        startButton.addEventListener("click", () => startGame(false));
+        restartMazeButton.addEventListener("click", () => startGame(true));
         
         window.addEventListener('resize', resizeGameElements); 
         
