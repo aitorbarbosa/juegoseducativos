@@ -1407,6 +1407,7 @@
         // --- Variables de visualización para UI ---
         let displayWorld = 1;
         let displayLevelInWorld = 1;
+        let displayMazeLevel = 1;
         let displayTargetScore = TARGET_SCORES_LEVELS[0];
 
 
@@ -2861,7 +2862,7 @@
         }
 
         function startMazeLevel() {
-            generateMazeLevel(currentMazeLevel);
+            generateMazeLevel(displayMazeLevel);
         }
 
         function stopMazeLevel() {
@@ -3036,7 +3037,7 @@
         }
 
         function handleMazeModeEnd(currentScore, timeRemaining) {
-            const isLastLevel = currentMazeLevel === MAZE_LEVEL_COUNT;
+            const isLastLevel = displayMazeLevel === MAZE_LEVEL_COUNT;
             let levelWon = false;
             let resultType = 'fail';
 
@@ -3048,8 +3049,7 @@
                 } else {
                     resultType = 'perfect';
                     startButton.textContent = 'Continuar';
-                    // El avance de nivel se realizará cuando el jugador pulse
-                    // "Continuar" para iniciar la siguiente partida
+                    // El avance de nivel ya se ha realizado automáticamente
                 }
                 restartMazeButton.classList.add('hidden');
                 startButtonWrapperEl.classList.remove('split');
@@ -3058,7 +3058,7 @@
                     levelWon = true;
                     resultType = 'partial';
                     startButton.textContent = 'Continuar';
-                    // El avance de nivel se hará al pulsar "Continuar"
+                    // El avance de nivel ya se ha realizado automáticamente
                     restartMazeButton.classList.remove('hidden');
                     startButtonWrapperEl.classList.add('split');
                 } else {
@@ -3071,6 +3071,11 @@
                 startButton.textContent = 'Reintentar';
                 restartMazeButton.classList.add('hidden');
                 startButtonWrapperEl.classList.remove('split');
+            }
+
+            if (levelWon && !isLastLevel && displayMazeLevel === currentMazeLevel) {
+                currentMazeLevel++;
+                saveGameSettings();
             }
 
             screenState.mazeResultType = resultType;
@@ -4004,7 +4009,7 @@
                 starProgressContainer.classList.remove('hidden');
                 highScoreDisplay.classList.add('hidden');
                 progressPanelLeftLabel.textContent = "Nivel:";
-                progressPanelLeftValue.textContent = currentMazeLevel;
+                progressPanelLeftValue.textContent = displayMazeLevel;
                 drawStarProgress();
 
                 difficultyLabel.textContent = "Dificultad:";
@@ -4159,15 +4164,12 @@ async function startGame(isRestart = false) {
 
     mirrorEffect = { active: false, startTime: 0 };
 
-    // Si venimos de completar un nivel en modo laberinto con 
-    // “Continuar” y no estamos reiniciando, avanzamos de nivel ahora
-    if (!isRestart && gameMode === 'maze' &&
-        (screenState.mazeResultType === 'partial' || screenState.mazeResultType === 'perfect')) {
-        currentMazeLevel++;
-        if (progressPanelLeftValue) {
-            progressPanelLeftValue.textContent = currentMazeLevel;
+    if (gameMode === 'maze') {
+        if (isRestart && (screenState.mazeResultType === 'partial' || screenState.mazeResultType === 'perfect')) {
+            displayMazeLevel = currentMazeLevel - 1;
+        } else {
+            displayMazeLevel = currentMazeLevel;
         }
-        saveGameSettings();
     }
             
             const wasOnWorldCompleteCoverForNewWorld = screenState.showWorldCompleteCover > 0 && startButton.textContent === "Nuevo Mundo";
@@ -4250,7 +4252,7 @@ async function startGame(isRestart = false) {
             if (progressPanelLeftValue && gameMode === 'levels') { // Update progress panel UI
                 progressPanelLeftValue.textContent = `${displayWorld}.${displayLevelInWorld}`;
             } else if (progressPanelLeftValue && gameMode === 'maze') {
-                progressPanelLeftValue.textContent = currentMazeLevel;
+                progressPanelLeftValue.textContent = displayMazeLevel;
             } else if (progressPanelLeftValue && gameMode === 'freeMode') {
                 // El panel de #high-score-display ahora se encarga de su propio label.
                 // progressPanelLeftValue.textContent = DIFFICULTY_DISPLAY_NAMES[difficultySelector.value] || difficultySelector.value;
@@ -4777,6 +4779,7 @@ async function startGame(isRestart = false) {
 
             const savedMazeLevel = parseInt(localStorage.getItem('snakeCurrentMazeLevel'), 10);
             currentMazeLevel = Number.isFinite(savedMazeLevel) && savedMazeLevel >= 1 ? savedMazeLevel : 1;
+            displayMazeLevel = currentMazeLevel;
 
             // Initialize display variables after loading game state
             displayWorld = currentWorld;
