@@ -4580,7 +4580,14 @@ async function startGame(isRestart = false) {
         });
         
         gameModeSelector.addEventListener('change', () => {
+            const previousMode = gameMode;
             gameMode = gameModeSelector.value; // Update gameMode first
+
+            if (previousMode === 'maze' && gameMode !== 'maze') {
+                screenState.mazeResultType = '';
+                restartMazeButton.classList.add('hidden');
+                startButtonWrapperEl.classList.remove('split');
+            }
 
             if (gameMode === 'levels') {
                 // Set display variables to current game state for levels mode
