@@ -1333,6 +1333,9 @@
             300, 400, 500, 600, 700,
         ];
 
+        const MAZE_STAR_TARGETS = [100, 300, 500, 800, 1000];
+        let mazeStarsEarned = 0;
+
         const MAZE_LEVEL_COUNT = 10;
         let currentMazeLevel = 1;
         const LEVEL_SETTINGS = [
@@ -1844,7 +1847,7 @@
         function resetGameUIDisplays() {
             scoreValueDisplay.textContent = "0";
             streakValueDisplay.textContent = "x1";
-            if (gameMode === 'levels') {
+            if (gameMode === 'levels' || gameMode === 'maze') {
                 timeLengthValueEl.textContent = Math.ceil(LEVEL_TIME_LIMIT / 1000);
             } else { // freeMode
                 timeLengthValueEl.textContent = initialSnakeLength;
@@ -2034,7 +2037,7 @@
                 score = 0; // Reset internal score
                 streakMultiplier = 1; // Reset internal streak
                 
-                if (gameMode === 'levels') {
+                if (gameMode === 'levels' || gameMode === 'maze') {
                     displayWorld = currentWorld;
                     displayLevelInWorld = currentLevelInWorld;
                     const absoluteDisplayLevelIndex = (displayWorld - 1) * LEVELS_PER_WORLD + (displayLevelInWorld - 1);
@@ -3025,6 +3028,12 @@
             return levelWon;
         }
 
+        function handleMazeModeEnd(currentScore, timeRemaining) {
+            const levelWon = (mazeStarsEarned >= MAZE_STAR_TARGETS.length && timeRemaining > 0);
+            startButton.textContent = levelWon ? 'Reiniciar' : 'Reintentar';
+            return levelWon;
+        }
+
 
         function playSoundForGameOver(levelWon) {
             if (areSfxEnabled) {
@@ -3138,6 +3147,8 @@
                 }
             } else if (gameMode === 'levels') {
                 levelEffectivelyWon = handleLevelsModeEnd(score, gameTimeRemaining);
+            } else if (gameMode === 'maze') {
+                levelEffectivelyWon = handleMazeModeEnd(score, gameTimeRemaining);
             }
 
             playSoundForGameOver(levelEffectivelyWon);
@@ -3747,6 +3758,18 @@
                     if (score >= TARGET_SCORES_LEVELS[absoluteLevelIndex]) {
                         gameOver = true; // Level won by score
                     }
+                } else if (gameMode === 'maze') {
+                    while (mazeStarsEarned < MAZE_STAR_TARGETS.length && score >= MAZE_STAR_TARGETS[mazeStarsEarned]) {
+                        mazeStarsEarned++;
+                        if (mazeStarsEarned === MAZE_STAR_TARGETS.length) {
+                            gameOver = true;
+                            break;
+                        } else {
+                            displayTargetScore = MAZE_STAR_TARGETS[mazeStarsEarned];
+                        }
+                    }
+                    drawStarProgress();
+                    updateTargetScoreDisplay();
                 }
             }
 
@@ -3808,7 +3831,7 @@
 
         function updateTargetScoreDisplay() {
             if (targetScoreValueDisplay && targetScoreDivider) {
-                 if (gameMode === 'levels') { 
+                 if (gameMode === 'levels' || gameMode === 'maze') { 
                     // Use displayTargetScore which is updated at the start of a game or when settings change
                     targetScoreValueDisplay.textContent = displayTargetScore;
                     targetScoreValueDisplay.classList.remove('hidden');
@@ -3821,7 +3844,7 @@
         }
         
         function updateTimeLengthDisplay() {
-            if (gameMode === 'levels') { 
+            if (gameMode === 'levels' || gameMode === 'maze') { 
                 timeLengthLabelEl.textContent = "Tiempo:";
                 timeLengthValueEl.textContent = Math.max(0, Math.ceil(gameTimeRemaining / 1000));
             } else { // freeMode
@@ -3905,10 +3928,11 @@
                 }
             } else if (gameMode === 'maze') {
                 progressPanel.classList.remove('hidden');
-                starProgressContainer.classList.add('hidden');
+                starProgressContainer.classList.remove('hidden');
                 highScoreDisplay.classList.add('hidden');
                 progressPanelLeftLabel.textContent = "Nivel:";
                 progressPanelLeftValue.textContent = currentMazeLevel;
+                drawStarProgress();
 
                 difficultyLabel.textContent = "Dificultad:";
                 difficultySelector.classList.add('hidden');
@@ -3968,24 +3992,34 @@
         }
 
         function drawStarProgress() {
-            starProgressContainer.innerHTML = ''; 
-            if (gameMode !== 'levels') return;
-
-            const worldToDisplayStarsFor = gameOver ? displayWorld : currentWorld;
-
-
-            const worldLevelStartIndex = (worldToDisplayStarsFor - 1) * LEVELS_PER_WORLD;
-            for (let i = 0; i < LEVELS_PER_WORLD; i++) {
-                const levelIndexInTotal = worldLevelStartIndex + i;
-                const isCompleted = levelsProgress[levelIndexInTotal];
-                const starSvg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-                starSvg.setAttribute("class", "star-svg");
-                starSvg.setAttribute("viewBox", "0 0 24 24");
-                const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
-                path.setAttribute("d", "M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z");
-                starSvg.appendChild(path);
-                starSvg.setAttribute("fill", isCompleted ? "#FACC15" : "#6B7280"); 
-                starProgressContainer.appendChild(starSvg);
+            starProgressContainer.innerHTML = '';
+            if (gameMode === 'levels') {
+                const worldToDisplayStarsFor = gameOver ? displayWorld : currentWorld;
+                const worldLevelStartIndex = (worldToDisplayStarsFor - 1) * LEVELS_PER_WORLD;
+                for (let i = 0; i < LEVELS_PER_WORLD; i++) {
+                    const levelIndexInTotal = worldLevelStartIndex + i;
+                    const isCompleted = levelsProgress[levelIndexInTotal];
+                    const starSvg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+                    starSvg.setAttribute("class", "star-svg");
+                    starSvg.setAttribute("viewBox", "0 0 24 24");
+                    const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+                    path.setAttribute("d", "M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z");
+                    starSvg.appendChild(path);
+                    starSvg.setAttribute("fill", isCompleted ? "#FACC15" : "#6B7280");
+                    starProgressContainer.appendChild(starSvg);
+                }
+            } else if (gameMode === 'maze') {
+                for (let i = 0; i < MAZE_STAR_TARGETS.length; i++) {
+                    const isEarned = i < mazeStarsEarned;
+                    const starSvg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+                    starSvg.setAttribute("class", "star-svg");
+                    starSvg.setAttribute("viewBox", "0 0 24 24");
+                    const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+                    path.setAttribute("d", "M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z");
+                    starSvg.appendChild(path);
+                    starSvg.setAttribute("fill", isEarned ? "#FACC15" : "#6B7280");
+                    starProgressContainer.appendChild(starSvg);
+                }
             }
         }
         
@@ -4111,18 +4145,21 @@ async function startGame() {
             const absoluteDisplayLevelIndex = (displayWorld - 1) * LEVELS_PER_WORLD + (displayLevelInWorld - 1);
 
             if (gameMode === 'levels') {
-                 if (absoluteDisplayLevelIndex >= 0 && absoluteDisplayLevelIndex < TARGET_SCORES_LEVELS.length) {
+                if (absoluteDisplayLevelIndex >= 0 && absoluteDisplayLevelIndex < TARGET_SCORES_LEVELS.length) {
                     displayTargetScore = TARGET_SCORES_LEVELS[absoluteDisplayLevelIndex];
                 } else { // Should only happen if all levels/worlds are completed
                     displayTargetScore = TARGET_SCORES_LEVELS[TARGET_SCORES_LEVELS.length -1];
-                     console.warn("Attempting to start a level beyond defined targets. Using last target score.");
+                    console.warn("Attempting to start a level beyond defined targets. Using last target score.");
                 }
+            } else if (gameMode === 'maze') {
+                displayTargetScore = MAZE_STAR_TARGETS[0];
+                mazeStarsEarned = 0;
             } else { // freeMode
                 displayTargetScore = 0; // No target score in free mode
             }
 
             updateTargetScoreDisplay(); // Update UI with the target of the level to be played
-            if (progressPanelLeftValue && gameMode === 'levels') { // Update progress panel UI
+            if (progressPanelLeftValue && (gameMode === 'levels' || gameMode === 'maze')) { // Update progress panel UI
                 progressPanelLeftValue.textContent = `${displayWorld}.${displayLevelInWorld}`;
             } else if (progressPanelLeftValue && gameMode === 'freeMode') {
                 // El panel de #high-score-display ahora se encarga de su propio label.
@@ -4491,7 +4528,8 @@ async function startGame() {
                     ctx.fillRect(0, 0, canvasEl.width, canvasEl.height);
                 }
             } else { // maze mode
-                displayTargetScore = 0;
+                displayTargetScore = MAZE_STAR_TARGETS[0];
+                mazeStarsEarned = 0;
 
                 screenState.showCoverForWorld = 0;
                 screenState.showLevelCompleteCover = 0;
@@ -4654,6 +4692,9 @@ async function startGame() {
                 } else { // Default if out of bounds (e.g., after completing all levels)
                     displayTargetScore = TARGET_SCORES_LEVELS[TARGET_SCORES_LEVELS.length -1];
                 }
+            } else if (gameMode === 'maze') {
+                displayTargetScore = MAZE_STAR_TARGETS[0];
+                mazeStarsEarned = 0;
             } else {
                 displayTargetScore = 0; // No target score for free mode
             }
