@@ -2849,10 +2849,10 @@
                 { x: 0, y: 0, img: mazeCornerImg, rotation: 0 },
                 { x: 1, y: 0, img: mazeEdgeImg, rotation: 0 },
                 { x: 0, y: 1, img: mazeEdgeImg, rotation: -Math.PI / 2 },
-                { x: tileCountX - 1, y: 0, img: mazeCornerImg, rotation: Math.PI / 2 },
+                { x: tileCountX - 1, y: 0, img: mazeCornerImg, rotation: -Math.PI / 2 },
                 { x: tileCountX - 2, y: 0, img: mazeEdgeImg, rotation: 0 },
                 { x: tileCountX - 1, y: 1, img: mazeEdgeImg, rotation: Math.PI / 2 },
-                { x: 0, y: tileCountY - 1, img: mazeCornerImg, rotation: -Math.PI / 2 },
+                { x: 0, y: tileCountY - 1, img: mazeCornerImg, rotation: Math.PI / 2 },
                 { x: 1, y: tileCountY - 1, img: mazeEdgeImg, rotation: Math.PI },
                 { x: 0, y: tileCountY - 2, img: mazeEdgeImg, rotation: -Math.PI / 2 },
                 { x: tileCountX - 1, y: tileCountY - 1, img: mazeCornerImg, rotation: Math.PI },
@@ -4829,8 +4829,9 @@ async function startGame(isRestart = false) {
                  ctx = canvasEl.getContext("2d");
                  if (!ctx) {
                     console.error("Fallo al obtener el contexto 2D del canvas en initializeGameLogic.");
-                    return; 
+                    return;
                  }
+                 ctx.imageSmoothingEnabled = false;
             }
             
             // HTML5 Audio objects are now created in window.onload
