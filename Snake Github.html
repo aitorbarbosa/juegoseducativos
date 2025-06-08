@@ -1789,39 +1789,22 @@
                 topInfoBar.offsetHeight -
                 setupControls.offsetHeight;
 
-            const isDesktop = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+            GRID_SIZE = 20;
 
-            if (isDesktop) {
-                let newGridSize = Math.floor(
-                    Math.min(availableWidth, availableHeight) / TILE_COUNT
-                );
-                const minGridSize = 10;
-                if (newGridSize < minGridSize) {
-                    newGridSize = minGridSize;
-                }
+            let tileCount = Math.floor(
+                Math.min(availableWidth, availableHeight) / GRID_SIZE
+            );
 
-                GRID_SIZE = newGridSize;
-
-                canvasEl.width = GRID_SIZE * TILE_COUNT;
-                canvasEl.height = GRID_SIZE * TILE_COUNT;
-
-                tileCountX = TILE_COUNT;
-                tileCountY = TILE_COUNT;
-            } else {
-                GRID_SIZE = 20;
-
-                let newCanvasSize = Math.floor(availableWidth / GRID_SIZE) * GRID_SIZE;
-
-                const minTiles = 10;
-                const minCanvasSize = minTiles * GRID_SIZE;
-                newCanvasSize = Math.max(newCanvasSize, minCanvasSize);
-
-                canvasEl.width = newCanvasSize;
-                canvasEl.height = newCanvasSize;
-
-                tileCountX = canvasEl.width / GRID_SIZE;
-                tileCountY = canvasEl.height / GRID_SIZE;
+            const minTiles = 10;
+            if (tileCount < minTiles) {
+                tileCount = minTiles;
             }
+
+            canvasEl.width = tileCount * GRID_SIZE;
+            canvasEl.height = tileCount * GRID_SIZE;
+
+            tileCountX = tileCount;
+            tileCountY = tileCount;
 
             // If a panel is open, re-calculate its position after resize
             if (!settingsPanel.classList.contains("settings-panel-hidden")) {
