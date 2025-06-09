@@ -4155,7 +4155,11 @@ async function startGame(isRestart = false) {
 
     if (gameMode === 'maze') {
         if (isRestart && (screenState.mazeResultType === 'partial' || screenState.mazeResultType === 'perfect')) {
-            displayMazeLevel = currentMazeLevel - 1;
+            if (currentMazeLevel > 1) {
+                currentMazeLevel--;
+                saveGameSettings();
+            }
+            displayMazeLevel = currentMazeLevel;
         } else {
             displayMazeLevel = currentMazeLevel;
         }
