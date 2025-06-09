@@ -2834,20 +2834,117 @@
         }
 
         function generateMazeLevel(levelIndex) {
-            obstacles = [
-                { x: 0, y: 0, img: obstacleImg },
-                { x: 1, y: 0, img: obstacleImg },
-                { x: 0, y: 1, img: obstacleImg },
-                { x: tileCountX - 1, y: 0, img: obstacleImg },
-                { x: tileCountX - 2, y: 0, img: obstacleImg },
-                { x: tileCountX - 1, y: 1, img: obstacleImg },
-                { x: 0, y: tileCountY - 1, img: obstacleImg },
-                { x: 1, y: tileCountY - 1, img: obstacleImg },
-                { x: 0, y: tileCountY - 2, img: obstacleImg },
-                { x: tileCountX - 1, y: tileCountY - 1, img: obstacleImg },
-                { x: tileCountX - 2, y: tileCountY - 1, img: obstacleImg },
-                { x: tileCountX - 1, y: tileCountY - 2, img: obstacleImg }
-            ];
+            obstacles = [];
+
+            const midX = Math.floor(tileCountX / 2);
+            const midY = Math.floor(tileCountY / 2);
+            const qX = Math.floor(tileCountX / 4);
+            const qY = Math.floor(tileCountY / 4);
+            const tX = tileCountX - qX - 1;
+            const tY = tileCountY - qY - 1;
+
+            const addHLine = (y, xStart, xEnd, gaps = []) => {
+                for (let x = xStart; x <= xEnd; x++) {
+                    if (!gaps.includes(x)) obstacles.push({ x, y, img: obstacleImg });
+                }
+            };
+
+            const addVLine = (x, yStart, yEnd, gaps = []) => {
+                for (let y = yStart; y <= yEnd; y++) {
+                    if (!gaps.includes(y)) obstacles.push({ x, y, img: obstacleImg });
+                }
+            };
+
+            const level1 = () => {
+                addHLine(0, 0, tileCountX - 1, [midX]);
+                addHLine(tileCountY - 1, 0, tileCountX - 1, [midX]);
+                addVLine(0, 0, tileCountY - 1, [midY]);
+                addVLine(tileCountX - 1, 0, tileCountY - 1, [midY]);
+            };
+
+            const level2 = () => {
+                level1();
+                addVLine(midX, 1, tileCountY - 2, [midY]);
+                addHLine(midY, 1, tileCountX - 2, [midX]);
+            };
+
+            const level3 = () => {
+                level2();
+                addHLine(qY, qX, tX, [midX]);
+                addHLine(tY, qX, tX, [midX]);
+                addVLine(qX, qY, tY, [midY]);
+                addVLine(tX, qY, tY, [midY]);
+            };
+
+            const level4 = () => {
+                level3();
+                const lMidX = Math.floor((qX + midX) / 2);
+                const rMidX = Math.floor((tX + midX) / 2);
+                addVLine(lMidX, 1, midY - 2);
+                addVLine(rMidX, midY + 2, tileCountY - 2);
+            };
+
+            const level5 = () => {
+                level4();
+                const tMidY = Math.floor((qY + midY) / 2);
+                const bMidY = Math.floor((tY + midY) / 2);
+                addHLine(tMidY, midX + 2, tileCountX - 2);
+                addHLine(bMidY, 1, midX - 2);
+            };
+
+            const level6 = () => {
+                level5();
+                addVLine(midX - 2, qY + 1, tY - 1, [midY]);
+                addVLine(midX + 2, qY + 1, tY - 1, [midY]);
+            };
+
+            const level7 = () => {
+                level6();
+                addHLine(midY - 2, qX + 1, tX - 1, [midX]);
+                addHLine(midY + 2, qX + 1, tX - 1, [midX]);
+            };
+
+            const level8 = () => {
+                level7();
+                for (let i = 0; i <= midX - qX - 1; i++) {
+                    obstacles.push({ x: qX + 1 + i, y: tY - 1 - i, img: obstacleImg });
+                    obstacles.push({ x: tX - 1 - i, y: qY + 1 + i, img: obstacleImg });
+                }
+            };
+
+            const level9 = () => {
+                level8();
+                for (let i = 0; i <= midX - qX - 1; i++) {
+                    obstacles.push({ x: qX + 1 + i, y: qY + 1 + i, img: obstacleImg });
+                    obstacles.push({ x: tX - 1 - i, y: tY - 1 - i, img: obstacleImg });
+                }
+            };
+
+            const level10 = () => {
+                level9();
+                let xMin = qX + 1, xMax = tX - 1, yMin = qY + 1, yMax = tY - 1;
+                while (xMin < xMax && yMin < yMax) {
+                    addHLine(yMin, xMin, xMax);
+                    addVLine(xMax, yMin, yMax);
+                    addHLine(yMax, xMin, xMax);
+                    addVLine(xMin, yMin, yMax);
+                    xMin += 2; xMax -= 2; yMin += 2; yMax -= 2;
+                }
+            };
+
+            switch (levelIndex) {
+                case 1: level1(); break;
+                case 2: level2(); break;
+                case 3: level3(); break;
+                case 4: level4(); break;
+                case 5: level5(); break;
+                case 6: level6(); break;
+                case 7: level7(); break;
+                case 8: level8(); break;
+                case 9: level9(); break;
+                case 10: level10(); break;
+                default: level1(); break;
+            }
         }
 
         function startMazeLevel() {
