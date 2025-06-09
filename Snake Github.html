@@ -1359,7 +1359,7 @@
         const MAZE_STAR_TARGETS = [25, 50, 100, 200, 300];
         let mazeStarsEarned = 0;
 
-        const MAZE_LEVEL_COUNT = 10;
+        const MAZE_LEVEL_COUNT = 30;
         let currentMazeLevel = 1;
         const LEVEL_SETTINGS = [
             // World 1 - Valle del Despertar
@@ -2831,20 +2831,56 @@
         }
 
         function generateMazeLevel(levelIndex) {
-            obstacles = [
-                { x: 0, y: 0, img: obstacleImg },
-                { x: 1, y: 0, img: obstacleImg },
-                { x: 0, y: 1, img: obstacleImg },
-                { x: tileCountX - 1, y: 0, img: obstacleImg },
-                { x: tileCountX - 2, y: 0, img: obstacleImg },
-                { x: tileCountX - 1, y: 1, img: obstacleImg },
-                { x: 0, y: tileCountY - 1, img: obstacleImg },
-                { x: 1, y: tileCountY - 1, img: obstacleImg },
-                { x: 0, y: tileCountY - 2, img: obstacleImg },
-                { x: tileCountX - 1, y: tileCountY - 1, img: obstacleImg },
-                { x: tileCountX - 2, y: tileCountY - 1, img: obstacleImg },
-                { x: tileCountX - 1, y: tileCountY - 2, img: obstacleImg }
-            ];
+            obstacles = [];
+
+            // --- Outer border ---
+            for (let x = 0; x < tileCountX; x++) {
+                obstacles.push({ x, y: 0, img: obstacleImg });
+                obstacles.push({ x, y: tileCountY - 1, img: obstacleImg });
+            }
+            for (let y = 1; y < tileCountY - 1; y++) {
+                obstacles.push({ x: 0, y, img: obstacleImg });
+                obstacles.push({ x: tileCountX - 1, y, img: obstacleImg });
+            }
+
+            // --- Additional inner rectangles based on stage ---
+            const stage = Math.floor((levelIndex - 1) / 10); // 0,1,2 for 30 levels
+            const offsets = [3, 6];
+            for (let s = 0; s < stage; s++) {
+                const offset = offsets[s];
+                if (offset >= 1 && tileCountX - 1 - offset > offset) {
+                    for (let x = offset; x < tileCountX - offset; x++) {
+                        obstacles.push({ x, y: offset, img: obstacleImg });
+                        obstacles.push({ x, y: tileCountY - 1 - offset, img: obstacleImg });
+                    }
+                    for (let y = offset; y < tileCountY - offset; y++) {
+                        obstacles.push({ x: offset, y, img: obstacleImg });
+                        obstacles.push({ x: tileCountX - 1 - offset, y, img: obstacleImg });
+                    }
+                }
+            }
+
+            // --- Central cross that grows with each level ---
+            const crossLevels = (levelIndex - 1) % 10; // 0..9 within stage
+            const crossCount = Math.floor(crossLevels / 2); // gradually 0..4
+            const midX = Math.floor(tileCountX / 2);
+            const midY = Math.floor(tileCountY / 2);
+            for (let i = 0; i < crossCount; i++) {
+                const off = i * 2 + 1;
+                for (let y = stage * 3; y < tileCountY - stage * 3; y++) {
+                    obstacles.push({ x: midX - off, y, img: obstacleImg });
+                    obstacles.push({ x: midX + off, y, img: obstacleImg });
+                }
+                for (let x = stage * 3; x < tileCountX - stage * 3; x++) {
+                    obstacles.push({ x, y: midY - off, img: obstacleImg });
+                    obstacles.push({ x, y: midY + off, img: obstacleImg });
+                }
+            }
+
+            // --- Adjust speed with level ---
+            const baseSpeed = DIFFICULTY_SETTINGS.easy.speed; // 200
+            const newSpeed = Math.max(80, baseSpeed - (levelIndex - 1) * 5);
+            snakeSpeed = newSpeed;
         }
 
         function startMazeLevel() {
