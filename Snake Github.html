@@ -1304,9 +1304,9 @@
 
         // Configuración del juego
         let GRID_SIZE = 20;
-        const TILE_COUNT = 24;
-        let tileCountX;
-        let tileCountY;
+        const TILE_COUNT = 20;
+        let tileCountX = TILE_COUNT;
+        let tileCountY = TILE_COUNT;
         const DEFAULT_INITIAL_SNAKE_LENGTH = 3; // Used for free mode
         let initialSnakeLength = DEFAULT_INITIAL_SNAKE_LENGTH;
         const MAX_STREAK = 5; 
@@ -1833,22 +1833,15 @@
                 topInfoBar.offsetHeight -
                 setupControls.offsetHeight;
 
-            GRID_SIZE = 20;
-
-            let tileCount = Math.floor(
-                Math.min(availableWidth, availableHeight) / GRID_SIZE
+            GRID_SIZE = Math.floor(
+                Math.min(availableWidth, availableHeight) / TILE_COUNT
             );
 
-            const minTiles = 10;
-            if (tileCount < minTiles) {
-                tileCount = minTiles;
-            }
+            canvasEl.width = TILE_COUNT * GRID_SIZE;
+            canvasEl.height = TILE_COUNT * GRID_SIZE;
 
-            canvasEl.width = tileCount * GRID_SIZE;
-            canvasEl.height = tileCount * GRID_SIZE;
-
-            tileCountX = tileCount;
-            tileCountY = tileCount;
+            tileCountX = TILE_COUNT;
+            tileCountY = TILE_COUNT;
 
             // If a panel is open, re-calculate its position after resize
             if (!settingsPanel.classList.contains("settings-panel-hidden")) {
