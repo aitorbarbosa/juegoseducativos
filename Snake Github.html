@@ -1400,10 +1400,14 @@
                 for (let i=0;i<8;i++) { const y = 6 + i; if (y !== 10) res.push({ x: 14, y }); }
                 return res;
             })(),
-            7: [
-                {x:3,y:3},{x:4,y:3},{x:5,y:3},{x:6,y:3},{x:7,y:3},{x:7,y:4},{x:7,y:5},
-                {x:6,y:5},{x:5,y:5},{x:5,y:4},{x:5,y:3},{x:5,y:2},{x:6,y:2},{x:7,y:2}
-            ],
+            7: (() => {
+                const res = [];
+                for (let y = 0; y <= 7; y++) res.push({ x: 5, y });
+                for (let y = 12; y <= 19; y++) res.push({ x: 15, y });
+                for (let x = 0; x <= 7; x++) res.push({ x, y: 12 });
+                for (let x = 12; x <= 19; x++) res.push({ x, y: 6 });
+                return res;
+            })(),
             8: (() => {
                 const res = [];
                 for (let i=0;i<6;i++) {
