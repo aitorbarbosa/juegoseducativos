@@ -4349,8 +4349,12 @@ async function startGame(isRestart = false) {
             }
 
             snake = [];
-            const startX = Math.floor(tileCountX / 2);
-            const startY = Math.floor(tileCountY / 2);
+            let startX = Math.floor(tileCountX / 2);
+            let startY = Math.floor(tileCountY / 2);
+            if (gameMode === 'maze' && displayMazeLevel === 3) {
+                startX = 1;
+                startY = 1;
+            }
             for (let i = 0; i < initialSnakeLength; i++) {
                 if (startX - i >= 0) { snake.push({ x: startX - i, y: startY }); }
                 else { snake.push({ x: 0, y: startY }); }
