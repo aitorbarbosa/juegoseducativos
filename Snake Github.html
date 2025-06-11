@@ -1360,6 +1360,77 @@
 
         const MAZE_LEVEL_COUNT = 10;
         let currentMazeLevel = 1;
+
+        const MAZE_LAYOUTS = {
+            1: [
+                {x:0,y:0},{x:1,y:0},{x:0,y:1},
+                {x:18,y:0},{x:19,y:0},{x:19,y:1},
+                {x:0,y:18},{x:0,y:19},{x:1,y:19},
+                {x:19,y:18},{x:19,y:19},{x:18,y:19}
+            ],
+            2: (() => {
+                const res = [];
+                for (let i=0;i<20;i++) { res.push({x:i,y:0}); res.push({x:i,y:19}); }
+                for (let i=1;i<19;i++) { res.push({x:0,y:i}); res.push({x:19,y:i}); }
+                return res;
+            })(),
+            3: (() => {
+                const res = [];
+                for (let i=0;i<12;i++) res.push({x:i+4,y:10});
+                for (let i=0;i<12;i++) res.push({x:10,y:i+4});
+                return res;
+            })(),
+            4: [
+                {x:5,y:5},{x:6,y:5},{x:5,y:6},{x:6,y:6},
+                {x:13,y:5},{x:14,y:5},{x:13,y:6},{x:14,y:6},
+                {x:5,y:13},{x:6,y:13},{x:5,y:14},{x:6,y:14},
+                {x:13,y:13},{x:14,y:13},{x:13,y:14},{x:14,y:14}
+            ],
+            5: (() => {
+                const res = [];
+                for (let y=0;y<20;y++) { if (y!==9 && y!==10) res.push({x:6,y}); }
+                for (let y=0;y<20;y++) { if (y!==9 && y!==10) res.push({x:13,y}); }
+                return res;
+            })(),
+            6: (() => {
+                const res = [];
+                for (let i=0;i<8;i++) res.push({x:6+i,y:6});
+                for (let i=0;i<8;i++) res.push({x:6+i,y:13});
+                for (let i=0;i<6;i++) res.push({x:6,y:7+i});
+                for (let i=0;i<6;i++) res.push({x:13,y:7+i});
+                return res;
+            })(),
+            7: [
+                {x:3,y:3},{x:4,y:3},{x:5,y:3},{x:6,y:3},{x:7,y:3},{x:7,y:4},{x:7,y:5},
+                {x:6,y:5},{x:5,y:5},{x:5,y:4},{x:5,y:3},{x:5,y:2},{x:6,y:2},{x:7,y:2}
+            ],
+            8: (() => {
+                const res = [];
+                for (let i=0;i<6;i++) {
+                    for (let j=0;j<6;j++) {
+                        const x=i+7, y=j+7;
+                        if ((x+y)%2===0) res.push({x,y});
+                    }
+                }
+                return res;
+            })(),
+            9: (() => {
+                const res=[];
+                for (let i=0;i<16;i++) res.push({x:i+2,y:4});
+                for (let i=0;i<16;i++) res.push({x:i+2,y:8});
+                for (let i=0;i<16;i++) res.push({x:i+2,y:12});
+                for (let i=0;i<16;i++) res.push({x:i+2,y:16});
+                return res;
+            })(),
+            10: (() => {
+                const res = [];
+                for (let i=0;i<20;i++) { res.push({x:i,y:0}); res.push({x:i,y:19}); }
+                for (let i=1;i<19;i++) { res.push({x:0,y:i}); res.push({x:19,y:i}); }
+                for (let i=0;i<12;i++) res.push({x:i+4,y:10});
+                for (let i=0;i<12;i++) res.push({x:10,y:i+4});
+                return res;
+            })()
+        };
         const LEVEL_SETTINGS = [
             // World 1 - Valle del Despertar
             [
@@ -2827,142 +2898,10 @@
         }
 
         function generateMazeLevel(levelIndex) {
-            const maxX = tileCountX - 1;
-            const maxY = tileCountY - 1;
             obstacles = [];
-
-            switch (levelIndex) {
-                case 1: // Esquinas simples (actual)
-                    obstacles = [
-                        { x: 0, y: 0, img: obstacleImg },
-                        { x: 1, y: 0, img: obstacleImg },
-                        { x: 0, y: 1, img: obstacleImg },
-                        { x: maxX, y: 0, img: obstacleImg },
-                        { x: maxX - 1, y: 0, img: obstacleImg },
-                        { x: maxX, y: 1, img: obstacleImg },
-                        { x: 0, y: maxY, img: obstacleImg },
-                        { x: 1, y: maxY, img: obstacleImg },
-                        { x: 0, y: maxY - 1, img: obstacleImg },
-                        { x: maxX, y: maxY, img: obstacleImg },
-                        { x: maxX - 1, y: maxY, img: obstacleImg },
-                        { x: maxX, y: maxY - 1, img: obstacleImg }
-                    ];
-                    break;
-
-                case 2: // Bordes completos menos esquinas
-                    for (let x = 3; x <= maxX - 2; x++) {
-                        obstacles.push({ x, y: 0, img: obstacleImg });
-                        obstacles.push({ x, y: maxY, img: obstacleImg });
-                    }
-                    for (let y = 3; y <= maxY - 2; y++) {
-                        obstacles.push({ x: 0, y, img: obstacleImg });
-                        obstacles.push({ x: maxX, y, img: obstacleImg });
-                    }
-                    break;
-
-                case 3: // Borde completo
-                    for (let x = 0; x <= maxX; x++) {
-                        obstacles.push({ x, y: 0, img: obstacleImg });
-                        obstacles.push({ x, y: maxY, img: obstacleImg });
-                    }
-                    for (let y = 1; y < maxY; y++) {
-                        obstacles.push({ x: 0, y, img: obstacleImg });
-                        obstacles.push({ x: maxX, y, img: obstacleImg });
-                    }
-                    break;
-
-                case 4: // Cruz central
-                    const midX = Math.floor(maxX / 2);
-                    const midY = Math.floor(maxY / 2);
-                    for (let y = 6; y <= maxY - 6; y++) {
-                        obstacles.push({ x: midX, y, img: obstacleImg });
-                    }
-                    for (let x = 6; x <= maxX - 6; x++) {
-                        obstacles.push({ x, y: midY, img: obstacleImg });
-                    }
-                    break;
-
-                case 5: // Cuatro bloques interiores 3x3
-                    for (let dx = 0; dx < 3; dx++) {
-                        for (let dy = 0; dy < 3; dy++) {
-                            obstacles.push({ x: 4 + dx, y: 4 + dy, img: obstacleImg });
-                            obstacles.push({ x: maxX - 6 + dx, y: 4 + dy, img: obstacleImg });
-                            obstacles.push({ x: 4 + dx, y: maxY - 6 + dy, img: obstacleImg });
-                            obstacles.push({ x: maxX - 6 + dx, y: maxY - 6 + dy, img: obstacleImg });
-                        }
-                    }
-                    break;
-
-                case 6: // Muros verticales con pasillo central
-                    const colA = 8;
-                    const colB = maxX - 8;
-                    for (let y = 0; y <= maxY; y++) {
-                        if (y === 11 || y === 12) continue;
-                        obstacles.push({ x: colA, y, img: obstacleImg });
-                        obstacles.push({ x: colB, y, img: obstacleImg });
-                    }
-                    break;
-
-                case 7: // Cuadrados concéntricos
-                    const outerMin = 6;
-                    const outerMax = maxX - 6;
-                    for (let x = outerMin; x <= outerMax; x++) {
-                        obstacles.push({ x, y: outerMin, img: obstacleImg });
-                        obstacles.push({ x, y: outerMax, img: obstacleImg });
-                    }
-                    for (let y = outerMin; y <= outerMax; y++) {
-                        obstacles.push({ x: outerMin, y, img: obstacleImg });
-                        obstacles.push({ x: outerMax, y, img: obstacleImg });
-                    }
-                    const innerMin = 8;
-                    const innerMax = maxX - 8;
-                    for (let x = innerMin; x <= innerMax; x++) {
-                        obstacles.push({ x, y: innerMin, img: obstacleImg });
-                        obstacles.push({ x, y: innerMax, img: obstacleImg });
-                    }
-                    for (let y = innerMin; y <= innerMax; y++) {
-                        obstacles.push({ x: innerMin, y, img: obstacleImg });
-                        obstacles.push({ x: innerMax, y, img: obstacleImg });
-                    }
-                    break;
-
-                case 8: // Espiral hacia el centro
-                    let left = 3, top = 3, right = maxX - 3, bottom = maxY - 3;
-                    while (left <= right && top <= bottom) {
-                        for (let x = left; x <= right; x++) obstacles.push({ x, y: top, img: obstacleImg });
-                        top++;
-                        for (let y = top; y <= bottom; y++) obstacles.push({ x: right, y, img: obstacleImg });
-                        right--;
-                        if (top > bottom) break;
-                        for (let x = right; x >= left; x--) obstacles.push({ x, y: bottom, img: obstacleImg });
-                        bottom--;
-                        if (left > right) break;
-                        for (let y = bottom; y >= top; y--) obstacles.push({ x: left, y, img: obstacleImg });
-                        left++;
-                    }
-                    // Abrir el centro eliminando las posiciones más internas
-                    obstacles = obstacles.filter(ob => !(ob.x >= 11 && ob.x <= 12 && ob.y >= 11 && ob.y <= 12));
-                    break;
-
-                case 9: // Patrón ajedrezado parcial
-                    for (let x = 8; x <= maxX - 8; x++) {
-                        for (let y = 8; y <= maxY - 8; y++) {
-                            if ((x + y) % 2 === 0) obstacles.push({ x, y, img: obstacleImg });
-                        }
-                    }
-                    break;
-
-                case 10: // Zigzag horizontal
-                    const rows = [4, 8, 12, 16];
-                    for (let r of rows) {
-                        for (let x = 2; x <= maxX - 2; x++) {
-                            obstacles.push({ x, y: r, img: obstacleImg });
-                        }
-                    }
-                    break;
-
-                default:
-                    break;
+            const layout = MAZE_LAYOUTS[levelIndex];
+            if (layout) {
+                obstacles = layout.map(pos => ({ x: pos.x, y: pos.y, img: obstacleImg }));
             }
         }
 
