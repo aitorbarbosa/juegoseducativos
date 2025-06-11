@@ -1394,10 +1394,10 @@
             })(),
             6: (() => {
                 const res = [];
-                for (let i=0;i<8;i++) res.push({x:6+i,y:6});
-                for (let i=0;i<8;i++) res.push({x:6+i,y:13});
-                for (let i=0;i<6;i++) res.push({x:6,y:7+i});
-                for (let i=0;i<6;i++) res.push({x:13,y:7+i});
+                for (let i=0;i<10;i++) { const x = 5 + i; if (x !== 10) res.push({ x, y: 5 }); }
+                for (let i=0;i<10;i++) { const x = 5 + i; if (x !== 10) res.push({ x, y: 14 }); }
+                for (let i=0;i<8;i++) { const y = 6 + i; if (y !== 10) res.push({ x: 5, y }); }
+                for (let i=0;i<8;i++) { const y = 6 + i; if (y !== 10) res.push({ x: 14, y }); }
                 return res;
             })(),
             7: [
