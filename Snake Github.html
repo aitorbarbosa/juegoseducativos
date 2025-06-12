@@ -4928,12 +4928,14 @@ async function startGame(isRestart = false) {
 
             // Set initial display state based on loaded gameMode (already done in loadGameSettings -> updateGameModeUI)
             // but ensure correct cover screen is shown
-            if (gameMode === 'levels') { 
+            if (gameMode === 'levels') {
                 screenState.showCoverForWorld = currentWorld; // currentWorld from loaded settings
             } else if (gameMode === 'freeMode') {
                 screenState.showFreeModeCover = true;
-                 // Ensure gameOver is false if free mode cover is shown before first game
-                if (snake.length === 0) gameOver = false; 
+                // Ensure gameOver is false if free mode cover is shown before first game
+                if (snake.length === 0) gameOver = false;
+            } else if (gameMode === 'maze') {
+                screenState.showMazeCover = true;
             }
             updateGameModeUI(); // Refresh UI based on potentially new screenState
 
