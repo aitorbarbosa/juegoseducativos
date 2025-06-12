@@ -1410,12 +1410,9 @@
             })(),
             8: (() => {
                 const res = [];
-                for (let i = 0; i < 20; i++) {
-                    if (Math.abs(i - 10) > 5) res.push({ x: 10, y: i });
-                }
-                for (let i = 0; i < 20; i++) {
-                    if (Math.abs(i - 10) > 5) res.push({ x: i, y: 10 });
-                }
+                for (let x = 0; x < 20; x++) res.push({ x, y: 19 });
+                for (let y = 0; y < 20; y++) res.push({ x: 0, y });
+                for (let y = 8; y <= 12; y++) res.push({ x: 10, y });
                 return res;
             })(),
             9: (() => {
@@ -1428,10 +1425,12 @@
             })(),
             10: (() => {
                 const res = [];
-                for (let i=0;i<20;i++) { res.push({x:i,y:0}); res.push({x:i,y:19}); }
-                for (let i=1;i<19;i++) { res.push({x:0,y:i}); res.push({x:19,y:i}); }
-                for (let i=0;i<12;i++) res.push({x:i+4,y:10});
-                for (let i=0;i<12;i++) res.push({x:10,y:i+4});
+                for (let i = 0; i < 16; i++) res.push({ x: i + 2, y: 4 });
+                for (let i = 0; i < 16; i++) res.push({ x: i + 2, y: 8 });
+                for (let i = 0; i < 16; i++) res.push({ x: i + 2, y: 12 });
+                for (let i = 0; i < 16; i++) res.push({ x: i + 2, y: 16 });
+                for (let y = 0; y < 20; y++) res.push({ x: 0, y });
+                for (let y = 0; y < 20; y++) res.push({ x: 19, y });
                 return res;
             })()
         };
