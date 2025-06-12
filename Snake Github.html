@@ -454,7 +454,7 @@
         }
 
 
-        #difficultySelector, #worldsSelector, #audioToggleSelector, #skinSelector, #foodSelector, #gameModeSelector {
+        #difficultySelector, #worldsSelector, #mazeLevelSelector, #audioToggleSelector, #skinSelector, #foodSelector, #gameModeSelector {
             padding: 4px 6px; 
             font-size: 0.8em; 
             border: none; 
@@ -473,14 +473,14 @@
             margin-bottom: 4px;
         }
         
-        #difficultySelector option, #worldsSelector option, #audioToggleSelector option, #skinSelector option, #foodSelector option, #gameModeSelector option {
+        #difficultySelector option, #worldsSelector option, #mazeLevelSelector option, #audioToggleSelector option, #skinSelector option, #foodSelector option, #gameModeSelector option {
             background-color: #374151;
             color: #f5f5f5;
             font-family: 'Press Start 2P', sans-serif;
             text-align: left; 
         }
         
-        #difficultySelector, #worldsSelector, #audioToggleSelector, #skinSelector, #foodSelector, #gameModeSelector {
+        #difficultySelector, #worldsSelector, #mazeLevelSelector, #audioToggleSelector, #skinSelector, #foodSelector, #gameModeSelector {
             text-align-last: left;
         }
         select option {
@@ -488,11 +488,11 @@
         }
 
 
-        #difficultySelector:focus, #worldsSelector:focus, #audioToggleSelector:focus, #skinSelector:focus, #foodSelector:focus, #gameModeSelector:focus {
+        #difficultySelector:focus, #worldsSelector:focus, #mazeLevelSelector:focus, #audioToggleSelector:focus, #skinSelector:focus, #foodSelector:focus, #gameModeSelector:focus {
             outline: 1px solid #6ee7b7; 
             box-shadow: none; 
         }
-        #difficultySelector:disabled, #worldsSelector:disabled, #audioToggleSelector:disabled, #skinSelector:disabled, #foodSelector:disabled, #gameModeSelector:disabled, #musicVolumeSlider:disabled {
+        #difficultySelector:disabled, #worldsSelector:disabled, #mazeLevelSelector:disabled, #audioToggleSelector:disabled, #skinSelector:disabled, #foodSelector:disabled, #gameModeSelector:disabled, #musicVolumeSlider:disabled {
             opacity: 0.7;
             cursor: not-allowed;
         }
@@ -506,6 +506,7 @@
         }
         .control-group.interactive-mode:hover #difficultySelector,
         .control-group.interactive-mode:hover #worldsSelector,
+        .control-group.interactive-mode:hover #mazeLevelSelector,
         .control-group.interactive-mode:hover #audioToggleSelector,
         .control-group.interactive-mode:hover #skinSelector,
         .control-group.interactive-mode:hover #foodSelector,
@@ -782,6 +783,7 @@
             }
              #settings-panel #difficultySelector,
              #settings-panel #worldsSelector,
+             #settings-panel #mazeLevelSelector,
              #settings-panel #audioToggleSelector,
              #settings-panel #skinSelector,
              #settings-panel #foodSelector,
@@ -858,6 +860,7 @@
         @media screen and (min-width: 600px) {
             #settings-panel #difficultySelector,
             #settings-panel #worldsSelector,
+            #settings-panel #mazeLevelSelector,
             #settings-panel #audioToggleSelector,
             #settings-panel #skinSelector,
             #settings-panel #foodSelector,
@@ -967,6 +970,8 @@
                         <option value="difficult">Difícil</option>
                     </select>
                     <select id="worldsSelector" class="hidden">
+                    </select>
+                    <select id="mazeLevelSelector" class="hidden">
                     </select>
                 </div>
                 <div class="control-group" id="skin-control-group">
@@ -1159,7 +1164,8 @@
         const restartMazeButton = document.getElementById("restartMazeButton");
         const startButtonWrapperEl = document.getElementById("start-button-wrapper");
         const difficultySelector = document.getElementById("difficultySelector");
-        const worldsSelector = document.getElementById("worldsSelector"); 
+        const worldsSelector = document.getElementById("worldsSelector");
+        const mazeLevelSelector = document.getElementById("mazeLevelSelector");
         const difficultyLabel = document.getElementById("difficulty-label"); 
         const audioToggleSelector = document.getElementById("audioToggleSelector");
         const skinSelector = document.getElementById("skinSelector");
@@ -4014,6 +4020,7 @@
                 difficultyLabel.textContent = "Mundo Actual:";
                 difficultySelector.classList.add('hidden');
                 worldsSelector.classList.remove('hidden');
+                mazeLevelSelector.classList.add('hidden');
                 populateWorldsSelector();
                 drawStarProgress(); 
 
@@ -4042,6 +4049,7 @@
                 difficultyLabel.textContent = "Dificultad:";
                 difficultySelector.classList.remove('hidden');
                 worldsSelector.classList.add('hidden');
+                mazeLevelSelector.classList.add('hidden');
                 
                 if (isSettingsPanelCurrentlyOpen && !isGameCurrentlyRunning) {
                     difficultySelector.disabled = false;
@@ -4059,23 +4067,27 @@
                 progressPanelLeftValue.textContent = displayMazeLevel;
                 drawStarProgress();
 
-                difficultyLabel.textContent = "Dificultad:";
+                difficultyLabel.textContent = "Nivel Actual:";
                 difficultySelector.classList.add('hidden');
                 worldsSelector.classList.add('hidden');
+                mazeLevelSelector.classList.remove('hidden');
+                populateMazeLevelSelector();
 
                 if (isSettingsPanelCurrentlyOpen && !isGameCurrentlyRunning) {
-                    difficultySelector.disabled = true;
-                    difficultyControlGroup.classList.remove("interactive-mode");
+                    mazeLevelSelector.disabled = false;
+                    difficultyControlGroup.classList.add("interactive-mode");
                 } else {
-                    difficultySelector.disabled = true;
-                    difficultyControlGroup.classList.remove("interactive-mode");
+                    mazeLevelSelector.disabled = true;
+                    if (!isGameCurrentlyRunning) difficultyControlGroup.classList.add("interactive-mode");
+                    else difficultyControlGroup.classList.remove("interactive-mode");
                 }
             } else {
                 progressPanel.classList.add('hidden');
                 difficultyLabel.textContent = "Dificultad:";
                 difficultySelector.classList.remove('hidden');
                 worldsSelector.classList.add('hidden');
-                 if (isSettingsPanelCurrentlyOpen && !isGameCurrentlyRunning) {
+                mazeLevelSelector.classList.add('hidden');
+                if (isSettingsPanelCurrentlyOpen && !isGameCurrentlyRunning) {
                     difficultySelector.disabled = false;
                     difficultyControlGroup.classList.add("interactive-mode");
                 } else {
@@ -4103,16 +4115,29 @@
         }
 
         function populateWorldsSelector() {
-            worldsSelector.innerHTML = ''; 
+            worldsSelector.innerHTML = '';
             for (let i = 1; i <= TOTAL_WORLDS; i++) {
                 const option = document.createElement('option');
                 option.value = i;
                 option.textContent = `Mundo ${i}`;
                 option.disabled = i > maxUnlockedWorld;
-                if (i === currentWorld) { 
+                if (i === currentWorld) {
                     option.selected = true;
                 }
                 worldsSelector.appendChild(option);
+            }
+        }
+
+        function populateMazeLevelSelector() {
+            mazeLevelSelector.innerHTML = '';
+            for (let i = 1; i <= currentMazeLevel; i++) {
+                const option = document.createElement('option');
+                option.value = i;
+                option.textContent = `Nivel ${i}`;
+                if (i === currentMazeLevel) {
+                    option.selected = true;
+                }
+                mazeLevelSelector.appendChild(option);
             }
         }
 
@@ -4632,7 +4657,39 @@ async function startGame(isRestart = false) {
                 
                 closeSettingsPanel(); 
 
-                requestAnimationFrame(draw); 
+                requestAnimationFrame(draw);
+            }
+        });
+
+        mazeLevelSelector.addEventListener('change', function() {
+            if (gameMode === 'maze') {
+                const newLevel = parseInt(this.value);
+                if (newLevel > currentMazeLevel) {
+                    this.value = currentMazeLevel.toString();
+                    return;
+                }
+
+                currentMazeLevel = newLevel;
+                displayMazeLevel = currentMazeLevel;
+                displayTargetScore = MAZE_STAR_TARGETS[0];
+                mazeStarsEarned = 0;
+                updateTargetScoreDisplay();
+                if (progressPanelLeftValue) {
+                    progressPanelLeftValue.textContent = displayMazeLevel;
+                }
+                drawStarProgress();
+
+                screenState.showMazeCover = true;
+                screenState.gameActuallyStarted = false;
+                screenState.mazeResultType = '';
+                restartMazeButton.classList.add('hidden');
+                startButtonWrapperEl.classList.remove('split');
+
+                saveGameSettings();
+
+                closeSettingsPanel();
+
+                requestAnimationFrame(draw);
             }
         });
         
@@ -4839,6 +4896,7 @@ async function startGame(isRestart = false) {
             const savedMazeLevel = parseInt(localStorage.getItem('snakeCurrentMazeLevel'), 10);
             currentMazeLevel = Number.isFinite(savedMazeLevel) && savedMazeLevel >= 1 ? savedMazeLevel : 1;
             displayMazeLevel = currentMazeLevel;
+            mazeLevelSelector.value = currentMazeLevel.toString();
 
             // Initialize display variables after loading game state
             displayWorld = currentWorld;
