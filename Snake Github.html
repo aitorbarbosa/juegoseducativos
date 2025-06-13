@@ -1253,6 +1253,7 @@
         const mazePartialImg = new Image();
         const mazePerfectImg = new Image();
         const mazeCompleteImg = new Image();
+        const mazeAllStarsImg = new Image();
 
         const worldCoverImages = {
             1: new Image(),
@@ -1296,7 +1297,7 @@
         };
         const freeModeCoverImg = new Image();
         let worldImagesLoaded = 0;
-        const totalWorldImagesToLoad = 38;
+        const totalWorldImagesToLoad = 39;
         // --- FIN: Declaración de Objetos Image ---
 
         // --- Música de fondo y SFX ---
@@ -1784,6 +1785,7 @@
             mazePartialImg.src = 'https://i.imgur.com/04vASxK.png';
             mazePerfectImg.src = 'https://i.imgur.com/YKVlhix.png';
             mazeCompleteImg.src = 'https://i.imgur.com/0s9b6JB.png';
+            mazeAllStarsImg.src = 'https://i.imgur.com/grMD2kr.png';
 
 
             const allWorldImages = [
@@ -1796,7 +1798,8 @@
                 defeatImages[1], defeatImages[2], defeatImages[3], defeatImages[4],
                 defeatImages[5], defeatImages[6], defeatImages[7], defeatImages[8],
                 freeModeCoverImg, mazeModeCoverImg,
-                mazeFailImg, mazePartialImg, mazePerfectImg, mazeCompleteImg
+                mazeFailImg, mazePartialImg, mazePerfectImg, mazeCompleteImg,
+                mazeAllStarsImg
             ];
 
             allWorldImages.forEach(img => {
@@ -3200,6 +3203,11 @@
 
             saveGameSettings();
 
+            const allStarsAchieved = mazeLevelStars.every(s => s >= MAZE_STAR_TARGETS.length);
+            if (levelWon && allStarsAchieved) {
+                resultType = 'allstars';
+            }
+
             screenState.mazeResultType = resultType;
             return levelWon;
         }
@@ -3476,6 +3484,7 @@
             else if (resultType === 'partial') img = mazePartialImg;
             else if (resultType === 'perfect') img = mazePerfectImg;
             else if (resultType === 'complete') img = mazeCompleteImg;
+            else if (resultType === 'allstars') img = mazeAllStarsImg;
             if (img && img.complete && img.naturalHeight !== 0) {
                 ctx.drawImage(img, 0, 0, canvasEl.width, canvasEl.height);
             } else {
@@ -3486,7 +3495,8 @@
                     fail: 'Reintentar',
                     partial: 'Continuar',
                     perfect: 'Perfecto',
-                    complete: '¡Completado!'
+                    complete: '¡Completado!',
+                    allstars: '¡Completado!'
                 };
                 ctx.fillText(textMap[resultType] || '', canvasEl.width / 2, canvasEl.height / 2);
             }
