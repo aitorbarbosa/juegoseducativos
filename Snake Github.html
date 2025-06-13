@@ -1473,8 +1473,14 @@
             Array(5).fill({ speed: 150, initialLength: 9, initialLifespan: 10250 }),
             // World 7 - Default Difficult difficulty
             Array(5).fill({ speed: 140, initialLength: 10, initialLifespan: 10000 }),
-            // World 8 - Default Difficult difficulty
-            Array(5).fill({ speed: 130, initialLength: 15, initialLifespan: 9750 })
+            // World 8 - Desafío Final
+            [
+                { speed: 130, initialLength: 15, initialLifespan: 9500 },
+                { speed: 125, initialLength: 15, initialLifespan: 9000 },
+                { speed: 120, initialLength: 15, initialLifespan: 8500 },
+                { speed: 115, initialLength: 15, initialLifespan: 7500 },
+                { speed: 110, initialLength: 15, initialLifespan: 7000 }
+            ]
         ];
         let currentWorld = 1;
         let currentLevelInWorld = 1; 
@@ -1645,6 +1651,14 @@
         const FALSE_FOOD_SPAWN_RANGE_WORLD5 = [7000, 12000];
         const OBSTACLE_COUNTS_WORLD5 = [3, 5, 8, 11, 15];
         const OBSTACLE_COUNT_WORLD6 = 5;
+        const FALSE_FOOD_SPAWN_RANGES_WORLD8 = [
+            [6000, 8000],
+            [5000, 7000],
+            [4000, 6000],
+            [3000, 5000],
+            [2000, 4000]
+        ];
+        const OBSTACLE_COUNTS_WORLD8 = [5, 8, 11, 14, 17];
         const LIGHTNING_SPAWN_RANGES_WORLD6 = [
             [5000, 7000],
             [4000, 6000],
@@ -1653,12 +1667,26 @@
             [1000, 3000]
         ];
         const LIGHTNING_SPAWN_RANGE_WORLD7 = [7000, 12000];
+        const LIGHTNING_SPAWN_RANGES_WORLD8 = [
+            [7000, 9000],
+            [6000, 8000],
+            [5000, 7000],
+            [4000, 6000],
+            [3000, 5000]
+        ];
         const MIRROR_SPAWN_RANGES_WORLD7 = [
             [5000, 7000],
             [4000, 6000],
             [3000, 5000],
             [2000, 4000],
             [1000, 3000]
+        ];
+        const MIRROR_SPAWN_RANGES_WORLD8 = [
+            [7000, 9000],
+            [6000, 8000],
+            [5000, 7000],
+            [4000, 6000],
+            [3000, 5000]
         ];
         const MIRROR_EFFECT_DURATION = 3000;
         const LIGHTNING_LIFESPAN = 5000;
@@ -2661,10 +2689,12 @@
         }
 
         function scheduleNextFalseFoodSpawn() {
-            if (gameMode !== "levels" || !(currentWorld === 4 || currentWorld === 5 || currentWorld === 6) || gameOver) return;
+            if (gameMode !== "levels" || !(currentWorld === 4 || currentWorld === 5 || currentWorld === 6 || currentWorld === 8) || gameOver) return;
             let range;
             if (currentWorld === 4) {
                 range = FALSE_FOOD_SPAWN_RANGES_WORLD4[currentLevelInWorld - 1] || [5000,8000];
+            } else if (currentWorld === 8) {
+                range = FALSE_FOOD_SPAWN_RANGES_WORLD8[currentLevelInWorld - 1] || [5000,7000];
             } else {
                 range = FALSE_FOOD_SPAWN_RANGE_WORLD5;
             }
@@ -2740,6 +2770,30 @@
             obstacles = [];
         }
 
+        function generateWorld8Obstacles() {
+            obstacles = [];
+            const count = OBSTACLE_COUNTS_WORLD8[currentLevelInWorld - 1] || 0;
+            for (let i = 0; i < count; i++) {
+                let pos; let attempts = 0;
+                do {
+                    pos = {
+                        x: Math.floor(Math.random() * (tileCountX - 2)) + 1,
+                        y: Math.floor(Math.random() * (tileCountY - 2)) + 1,
+                    };
+                    attempts++;
+                } while ((isFoodOnSnake(pos) || obstacles.some(o => o.x === pos.x && o.y === pos.y) || isAdjacentToAnyObstacle(pos)) && attempts < 100);
+                if (attempts < 100) obstacles.push(pos);
+            }
+        }
+
+        function startWorld8Obstacles() {
+            generateWorld8Obstacles();
+        }
+
+        function stopWorld8Obstacles() {
+            obstacles = [];
+        }
+
         function removeLightningItem(item) {
             clearTimeout(item.timeoutId);
             clearInterval(item.intervalId);
@@ -2766,10 +2820,12 @@
         }
 
         function scheduleNextLightningSpawn() {
-            if (gameMode !== "levels" || (currentWorld !== 6 && currentWorld !== 7) || gameOver) return;
+            if (gameMode !== "levels" || !(currentWorld === 6 || currentWorld === 7 || currentWorld === 8) || gameOver) return;
             let range;
             if (currentWorld === 6) {
                 range = LIGHTNING_SPAWN_RANGES_WORLD6[currentLevelInWorld - 1] || [5000, 7000];
+            } else if (currentWorld === 8) {
+                range = LIGHTNING_SPAWN_RANGES_WORLD8[currentLevelInWorld - 1] || [5000, 7000];
             } else {
                 range = LIGHTNING_SPAWN_RANGE_WORLD7;
             }
@@ -2878,8 +2934,10 @@
         }
 
         function scheduleNextMirrorSpawn() {
-            if (gameMode !== "levels" || currentWorld !== 7 || gameOver) return;
-            const range = MIRROR_SPAWN_RANGES_WORLD7[currentLevelInWorld - 1] || [5000, 7000];
+            if (gameMode !== "levels" || (currentWorld !== 7 && currentWorld !== 8) || gameOver) return;
+            const range = currentWorld === 7 ?
+                (MIRROR_SPAWN_RANGES_WORLD7[currentLevelInWorld - 1] || [5000, 7000]) :
+                (MIRROR_SPAWN_RANGES_WORLD8[currentLevelInWorld - 1] || [5000, 7000]);
             const delay = Math.random() * (range[1] - range[0]) + range[0];
             mirrorSpawnTimeoutId = setTimeout(() => {
                 generateMirror();
@@ -3023,6 +3081,7 @@
             stopWorld4FalseFoodMechanics();
             stopWorld5Obstacles();
             stopWorld6Obstacles();
+            stopWorld8Obstacles();
             stopWorld6LightningMechanics();
             stopWorld7MirrorMechanics();
 
@@ -4418,7 +4477,7 @@ async function startGame(isRestart = false) {
                 updateTimeLengthDisplay();
                 clearInterval(gameTimerIntervalId);
             }
-            if (gameMode === "levels" && (currentWorld === 4 || currentWorld === 5 || currentWorld === 6)) {
+            if (gameMode === "levels" && (currentWorld === 4 || currentWorld === 5 || currentWorld === 6 || currentWorld === 8)) {
                 startWorld4FalseFoodMechanics();
             } else {
                 stopWorld4FalseFoodMechanics();
@@ -4432,17 +4491,23 @@ async function startGame(isRestart = false) {
                 startWorld6Obstacles();
                 startWorld6LightningMechanics();
                 startWorld7MirrorMechanics();
+            } else if (gameMode === "levels" && currentWorld === 8) {
+                startWorld8Obstacles();
+                startWorld6LightningMechanics();
+                startWorld7MirrorMechanics();
             } else if (gameMode === 'maze') {
                 stopWorld5Obstacles();
                 stopWorld6Obstacles();
                 stopWorld6LightningMechanics();
                 stopWorld7MirrorMechanics();
+                stopWorld8Obstacles();
                 startMazeLevel();
             } else {
                 stopWorld5Obstacles();
                 stopWorld6Obstacles();
                 stopWorld6LightningMechanics();
                 stopWorld7MirrorMechanics();
+                stopWorld8Obstacles();
             }
             
             generateFood(); 
