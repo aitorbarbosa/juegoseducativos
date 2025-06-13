@@ -15,7 +15,8 @@ Open `Snake Github.html` directly in your favorite web browser. You can either d
 - **Levels and Worlds** – Progress through a series of worlds, each containing multiple levels.
 - **Skins** – Change the appearance of your snake with different skins.
 - **Audio** – Toggle music and sound effects, and adjust volume.
+- **Maze Stars** – Each maze level tracks the stars you've earned so you can work toward a perfect 5-star score over multiple attempts.
 
 ## Local Storage & Dependencies
 
-Game settings, progress, and high scores are saved using the browser's `localStorage` API. The HTML file loads external resources from CDNs, including Tailwind CSS for styles, Google Fonts for typography, and Tone.js for audio playback.
+Game settings, progress, high scores, and maze star achievements are saved using the browser's `localStorage` API. The HTML file loads external resources from CDNs, including Tailwind CSS for styles, Google Fonts for typography, and Tone.js for audio playback.
