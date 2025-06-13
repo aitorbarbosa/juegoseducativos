@@ -3916,9 +3916,11 @@
                 case "right": nextHeadX++; break;
             }
 
-            if (nextHeadX < 0 || nextHeadX >= tileCountX || nextHeadY < 0 || nextHeadY >= tileCountY) {
-                gameOver = true;
-            }
+            if (nextHeadX < 0) nextHeadX = tileCountX - 1;
+            else if (nextHeadX >= tileCountX) nextHeadX = 0;
+            if (nextHeadY < 0) nextHeadY = tileCountY - 1;
+            else if (nextHeadY >= tileCountY) nextHeadY = 0;
+
             if (!gameOver) {
                 for (let i = 1; i < snake.length; i++) {
                     if (nextHeadX === snake[i].x && nextHeadY === snake[i].y) {
