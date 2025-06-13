@@ -4201,10 +4201,11 @@
 
         function populateMazeLevelSelector() {
             mazeLevelSelector.innerHTML = '';
-            for (let i = 1; i <= currentMazeLevel; i++) {
+            for (let i = 1; i <= MAZE_LEVEL_COUNT; i++) {
                 const option = document.createElement('option');
                 option.value = i;
                 option.textContent = `Nivel ${i}`;
+                option.disabled = i > currentMazeLevel;
                 if (i === currentMazeLevel) {
                     option.selected = true;
                 }
