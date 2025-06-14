@@ -1316,7 +1316,8 @@
         let tileCountY = TILE_COUNT;
         const DEFAULT_INITIAL_SNAKE_LENGTH = 3; // Used for free mode
         let initialSnakeLength = DEFAULT_INITIAL_SNAKE_LENGTH;
-        const MAX_STREAK = 5; 
+        const MAX_STREAK = 5;
+        const STREAK_ANIMATION_DURATION = 800; // ms that streak value is shown above head
         
         // Mapping for difficulty display names
         const DIFFICULTY_DISPLAY_NAMES = {
@@ -1726,9 +1727,50 @@
             active: false,
             startTime: 0,
             rowIndex: -1,
-            duration: 2000, 
-            interval: 250   
+            duration: 2000,
+            interval: 250
         };
+
+        // Animation data for streak multiplier display
+        let streakAnimation = {
+            active: false,
+            value: '',
+            color: '',
+            startTime: 0
+        };
+
+        function startStreakAnimation(multiplier) {
+            const text = `x${Number.isInteger(multiplier) ? multiplier : multiplier.toFixed(1)}`;
+            let color = '#FF0000';
+            if (multiplier > 2 && multiplier <= 3.5) {
+                color = '#FFFF00';
+            } else if (multiplier > 3.5 && multiplier <= 4.5) {
+                color = '#00FF00';
+            } else if (multiplier > 4.5) {
+                color = '#EE82EE';
+            }
+            streakAnimation = { active: true, value: text, color, startTime: Date.now() };
+        }
+
+        function drawStreakAnimation(head) {
+            if (!streakAnimation.active) return;
+            const elapsed = Date.now() - streakAnimation.startTime;
+            if (elapsed >= STREAK_ANIMATION_DURATION) {
+                streakAnimation.active = false;
+                return;
+            }
+            const alpha = 1 - (elapsed / STREAK_ANIMATION_DURATION);
+            ctx.save();
+            ctx.globalAlpha = alpha;
+            ctx.fillStyle = streakAnimation.color;
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'bottom';
+            ctx.font = `${Math.floor(GRID_SIZE * 0.8)}px 'Press Start 2P'`;
+            const x = head.x * GRID_SIZE + GRID_SIZE / 2;
+            const y = head.y * GRID_SIZE - 2;
+            ctx.fillText(streakAnimation.value, x, y);
+            ctx.restore();
+        }
         
         // --- Funciones de Carga y Aplicación de Jugadores ---
         function loadWorldImages() {
@@ -2545,8 +2587,9 @@
             if (gameOver) return;
             console.log("¡Comida no recogida! Racha perdida."); 
             if (areSfxEnabled) playSound('timeout');
-            streakMultiplier = 1; 
-            foodTimeRemaining = 0; 
+            streakMultiplier = 1;
+            startStreakAnimation(streakMultiplier);
+            foodTimeRemaining = 0;
             generateFood(); 
             updateScoreDisplay();
             draw(); 
@@ -3700,6 +3743,7 @@
                         }
                     }
                 }
+                drawStreakAnimation(head);
             } else { // Game Over Screen (but not world/level complete or defeat screen)
                 if (!screenState.showWorldCompleteCover && !screenState.showLevelCompleteCover && !screenState.showDefeatCoverForWorld && !screenState.showFreeModeCover) { 
                     ctx.fillStyle = "rgba(0, 0, 0, 0.65)"; 
@@ -3958,6 +4002,7 @@
 
                 if (streakMultiplier < MAX_STREAK) { streakMultiplier += 0.5; }
                 if (streakMultiplier > MAX_STREAK) { streakMultiplier = MAX_STREAK; }
+                startStreakAnimation(streakMultiplier);
 
                 growth = 1;
                 clearTimeout(foodDisappearTimeoutId);
@@ -3994,6 +4039,7 @@
                 if (nextHead.x === ff.x && nextHead.y === ff.y) {
                     score = Math.max(0, score - 30);
                     streakMultiplier = 1;
+                    startStreakAnimation(streakMultiplier);
                     removeFalseFoodItem(ff);
                     if (areSfxEnabled) playSound('badEat');
                 }
