@@ -16,6 +16,7 @@ Open `Snake Github.html` directly in your favorite web browser. You can either d
 - **Skins** – Change the appearance of your snake with different skins.
 - **Audio** – Toggle music and sound effects, and adjust volume.
 - **Maze Stars** – Each maze level tracks the stars you've earned so you can work toward a perfect 5-star score over multiple attempts.
+- **Coins** – Earn coins at the end of every game. Your total coins accumulate across all game modes and sessions.
 
 ## Local Storage & Dependencies
 
