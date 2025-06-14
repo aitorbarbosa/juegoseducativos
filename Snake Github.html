@@ -919,6 +919,12 @@
 
         <div id="top-info-bar">
             <div class="info-group">
+                <span class="info-label">Monedas:</span>
+                <div class="flex items-center justify-center">
+                    <span id="coinValue" class="info-value">0</span>
+                </div>
+            </div>
+            <div class="info-group">
                 <span class="info-label">Puntos:</span>
                 <div class="flex items-center justify-center">
                     <span id="scoreValue" class="info-value">0</span>
@@ -927,10 +933,6 @@
                 </div>
             </div>
             <div class="info-group">
-                <span class="info-label">Racha:</span>
-                <span id="streakValue" class="info-value">x1</span>
-            </div>
-            <div class="info-group"> 
                 <span id="timeLengthLabel" class="info-label">Tiempo:</span>
                 <span id="timeLengthValue" class="info-value">60</span>
             </div>
@@ -1154,10 +1156,10 @@
         const canvasEl = document.getElementById("gameCanvas"); 
         let ctx; 
         const gameContainer = document.querySelector('.game-container'); 
-        const scoreValueDisplay = document.getElementById("scoreValue"); 
-        const targetScoreDivider = document.getElementById("target-score-divider"); 
-        const targetScoreValueDisplay = document.getElementById("targetScoreValue"); 
-        const streakValueDisplay = document.getElementById("streakValue"); 
+        const coinValueDisplay = document.getElementById("coinValue");
+        const scoreValueDisplay = document.getElementById("scoreValue");
+        const targetScoreDivider = document.getElementById("target-score-divider");
+        const targetScoreValueDisplay = document.getElementById("targetScoreValue");
         const timeLengthLabelEl = document.getElementById("timeLengthLabel");
         const timeLengthValueEl = document.getElementById("timeLengthValue");
         const startButton = document.getElementById("startButton");
@@ -1642,6 +1644,7 @@
         const MIN_FOOD_LIFESPAN = 4000; 
         const FOOD_WARNING_TIME = 3000; 
         const POINTS_PER_FOOD = 10;
+        const POINTS_PER_COIN = 10;
         const MAX_HIGH_SCORES = 10; 
         const FALSE_FOOD_LIFESPAN = 5000;
         const FALSE_FOOD_SPAWN_RANGES_WORLD4 = [
@@ -2018,8 +2021,8 @@
         }
 
         function resetGameUIDisplays() {
+            coinValueDisplay.textContent = "0";
             scoreValueDisplay.textContent = "0";
-            streakValueDisplay.textContent = "x1";
             if (gameMode === 'levels' || gameMode === 'maze') {
                 timeLengthValueEl.textContent = Math.ceil(LEVEL_TIME_LIMIT / 1000);
             } else { // freeMode
@@ -4083,8 +4086,9 @@
         }
         
         function updateScoreDisplay() {
+            const coins = Math.floor(score / POINTS_PER_COIN);
+            coinValueDisplay.textContent = coins;
             scoreValueDisplay.textContent = score;
-            streakValueDisplay.textContent = `x${Number.isInteger(streakMultiplier) ? streakMultiplier : streakMultiplier.toFixed(1)}`;
         }
 
         function updateTargetScoreDisplay() {
