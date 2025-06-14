@@ -448,9 +448,15 @@
             background-color: #4a5568; 
         }
         .setting-info-icon {
-            width: 24px; 
-            height: 24px; 
-            fill: #f5f5f5; 
+            width: 24px;
+            height: 24px;
+            fill: #f5f5f5;
+        }
+
+        .coin-icon {
+            width: 16px;
+            height: 16px;
+            margin-right: 4px;
         }
 
 
@@ -921,6 +927,9 @@
             <div class="info-group">
                 <span class="info-label">Monedas:</span>
                 <div class="flex items-center justify-center">
+                    <svg class="coin-icon" viewBox="0 0 24 24" fill="none">
+                        <circle cx="12" cy="12" r="9" fill="#FCD34D" stroke="#D97706" stroke-width="2" />
+                    </svg>
                     <span id="coinValue" class="info-value">0</span>
                 </div>
             </div>
@@ -1723,7 +1732,7 @@
         let isMusicEnabled = true; 
         let areSfxEnabled = true; 
         let synthsInitialized = false; // Flag to track synth initialization
-        let synthEat, synthEatNoise, synthBadEat, synthWarning, synthTimeout, synthGameOver, synthStartGame, synthWin;
+        let synthEat, synthEatNoise, synthBadEat, synthWarning, synthTimeout, synthGameOver, synthStartGame, synthWin, synthCoinNoise, synthCoinChime;
 
 
         // --- Configuración para la animación de parpadeo del high score ---
@@ -3381,8 +3390,9 @@
             managePostGameOverMusicAndAnimation();
 
             const earnedCoins = Math.floor(score / POINTS_PER_COIN);
+            const previousCoins = totalCoins;
             totalCoins += earnedCoins;
-            updateCoinDisplay();
+            animateCoinGain(previousCoins, totalCoins);
             localStorage.setItem('snakeGameCoins', totalCoins.toString());
 
             updateUIOnGameOver();
@@ -4100,6 +4110,24 @@
             coinValueDisplay.textContent = totalCoins;
         }
 
+        function animateCoinGain(oldTotal, newTotal) {
+            const diff = newTotal - oldTotal;
+            if (diff <= 0) {
+                coinValueDisplay.textContent = newTotal;
+                return;
+            }
+            const duration = Math.min(2000, diff * 60);
+            const start = performance.now();
+            if (areSfxEnabled) playSound('coinAdd', duration / 1000);
+            function step(now) {
+                const progress = Math.min(1, (now - start) / duration);
+                const value = Math.floor(oldTotal + diff * progress);
+                coinValueDisplay.textContent = value;
+                if (progress < 1) requestAnimationFrame(step);
+            }
+            requestAnimationFrame(step);
+        }
+
         function updateTargetScoreDisplay() {
             if (targetScoreValueDisplay && targetScoreDivider) {
                  if (gameMode === 'levels' || gameMode === 'maze') { 
@@ -4358,9 +4386,13 @@
             synthGameOver = new Tone.Synth({ oscillator: { type: 'triangle' }, envelope: { attack: 0.01, decay: 0.1, sustain: 0.2, release: 0.3 } }).toDestination();
             synthGameOver.volume.value = 0; 
             synthStartGame = new Tone.Synth({ oscillator: {type: 'triangle'}, envelope: { attack: 0.005, decay: 0.1, sustain: 0.05, release: 0.1 } }).toDestination();
-            synthStartGame.volume.value = 0; 
-            synthWin = new Tone.Synth({ oscillator: { type: 'square' }, envelope: { attack: 0.01, decay: 0.2, sustain: 0.1, release: 0.4 } }).toDestination(); 
-            synthWin.volume.value = 0; 
+            synthStartGame.volume.value = 0;
+            synthWin = new Tone.Synth({ oscillator: { type: 'square' }, envelope: { attack: 0.01, decay: 0.2, sustain: 0.1, release: 0.4 } }).toDestination();
+            synthWin.volume.value = 0;
+            synthCoinNoise = new Tone.NoiseSynth({ noise: { type: 'brown' }, envelope: { attack: 0.001, decay: 0.3, sustain: 0, release: 0.2 } }).toDestination();
+            synthCoinNoise.volume.value = -8;
+            synthCoinChime = new Tone.Synth({ oscillator: { type: 'triangle' }, envelope: { attack: 0.01, decay: 0.1, sustain: 0, release: 0.1 } }).toDestination();
+            synthCoinChime.volume.value = -2;
             // synthSplashStart is initialized in window.onload
 
             synthsInitialized = true; 
@@ -4638,7 +4670,7 @@ async function startGame(isRestart = false) {
             }
         }
 
-        async function playSound(type) {
+        async function playSound(type, param = null) {
             if (!areSfxEnabled) return; 
             
             const audioContextStarted = await ensureAudioContextRunning(); // Ensures context is running and synths are initialized
@@ -4668,14 +4700,18 @@ async function startGame(isRestart = false) {
                 } else if (type === 'timeout' && synthTimeout) { synthTimeout.triggerAttackRelease("F#3", "8n", now);
                 } else if (type === 'gameOver' && synthGameOver) { synthGameOver.triggerAttackRelease("G3", "8n", now); synthGameOver.triggerAttackRelease("E3", "8n", now + 0.15); synthGameOver.triggerAttackRelease("C3", "4n", now + 0.3);
                 } else if (type === 'startGame' && synthStartGame) { synthStartGame.triggerAttackRelease("C4", "16n", now); synthStartGame.triggerAttackRelease("E4", "16n", now + 0.1); synthStartGame.triggerAttackRelease("G4", "8n", now + 0.2); 
-                } else if (type === 'win' && synthWin) { 
-                    const tempo = 0.12; 
-                    synthWin.triggerAttackRelease("G4", "16n", now); 
-                    synthWin.triggerAttackRelease("G4", "16n", now + tempo * 1); 
-                    synthWin.triggerAttackRelease("C5", "16n", now + tempo * 2); 
-                    synthWin.triggerAttackRelease("E5", "8n", now + tempo * 3); 
-                    synthWin.triggerAttackRelease("C5", "16n", now + tempo * 5); 
+                } else if (type === 'win' && synthWin) {
+                    const tempo = 0.12;
+                    synthWin.triggerAttackRelease("G4", "16n", now);
+                    synthWin.triggerAttackRelease("G4", "16n", now + tempo * 1);
+                    synthWin.triggerAttackRelease("C5", "16n", now + tempo * 2);
+                    synthWin.triggerAttackRelease("E5", "8n", now + tempo * 3);
+                    synthWin.triggerAttackRelease("C5", "16n", now + tempo * 5);
                     synthWin.triggerAttackRelease("G5", "4n", now + tempo * 6);
+                } else if (type === 'coinAdd' && synthCoinNoise && synthCoinChime) {
+                    const duration = typeof param === 'number' ? param : 1;
+                    synthCoinNoise.triggerAttackRelease(duration, now);
+                    synthCoinChime.triggerAttackRelease("C6", "16n", now + Math.max(0, duration - 0.1));
                 }
             } catch (error) { console.error("Error al reproducir sonido con Tone.js:", error); }
         }
