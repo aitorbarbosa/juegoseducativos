@@ -1601,7 +1601,8 @@
         let snake = []; 
         let direction = "right"; 
         let nextDirection = "right"; // Buffer para la siguiente dirección (MANTENIDO DE LA VERSIÓN ANTERIOR)
-        let score = 0; 
+        let score = 0;
+        let totalCoins = 0;
         let gameOver = false; 
         let gameIntervalId; 
         let gameTimeRemaining; 
@@ -2021,7 +2022,7 @@
         }
 
         function resetGameUIDisplays() {
-            coinValueDisplay.textContent = "0";
+            updateCoinDisplay();
             scoreValueDisplay.textContent = "0";
             if (gameMode === 'levels' || gameMode === 'maze') {
                 timeLengthValueEl.textContent = Math.ceil(LEVEL_TIME_LIMIT / 1000);
@@ -3377,8 +3378,14 @@
 
             playSoundForGameOver(levelEffectivelyWon);
             draw(); 
-            managePostGameOverMusicAndAnimation(); 
-            updateUIOnGameOver(); 
+            managePostGameOverMusicAndAnimation();
+
+            const earnedCoins = Math.floor(score / POINTS_PER_COIN);
+            totalCoins += earnedCoins;
+            updateCoinDisplay();
+            localStorage.setItem('snakeGameCoins', totalCoins.toString());
+
+            updateUIOnGameOver();
 
             if (gameMode === 'levels' || gameMode === 'maze') {
                 saveGameSettings(); // Guardamos el estado actualizado (nivel/mundo avanzado)
@@ -4086,9 +4093,11 @@
         }
         
         function updateScoreDisplay() {
-            const coins = Math.floor(score / POINTS_PER_COIN);
-            coinValueDisplay.textContent = coins;
             scoreValueDisplay.textContent = score;
+        }
+
+        function updateCoinDisplay() {
+            coinValueDisplay.textContent = totalCoins;
         }
 
         function updateTargetScoreDisplay() {
@@ -5008,6 +5017,9 @@ async function startGame(isRestart = false) {
                 musicVolumeSlider.value = 50;
             }
             if (musicVolumeValue) musicVolumeValue.textContent = musicVolumeSlider.value;
+
+            const savedCoins = parseInt(localStorage.getItem('snakeGameCoins'), 10);
+            totalCoins = Number.isFinite(savedCoins) && savedCoins >= 0 ? savedCoins : 0;
             
             const savedGameMode = localStorage.getItem('snakeGameMode');
             if (savedGameMode && (savedGameMode === 'levels' || savedGameMode === 'freeMode' || savedGameMode === 'maze')) {
@@ -5099,6 +5111,7 @@ async function startGame(isRestart = false) {
 
             console.log("Configuraciones cargadas de localStorage y aplicadas a selectores.");
             updateGameModeUI(); // This will use the newly set display variables
+            updateCoinDisplay();
         }
 
 
