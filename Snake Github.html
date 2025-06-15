@@ -1498,7 +1498,7 @@
                 { speed: 190, initialLength: 20, initialLifespan: 0 }
             ],
             // World 3 - Templo de la Agilidad
-            Array(5).fill({ speed: 150, initialLength: 9, initialLifespan: 10250 }),
+            Array(5).fill({ speed: 150, initialLength: 9, initialLifespan: 0 }),
             // World 4 - Hambre Voraz
             [
                 { speed: 180, initialLength: 6, initialLifespan: 10750 },
@@ -2793,7 +2793,7 @@
         }
 
         function scheduleNextFalseFoodSpawn() {
-            if (gameMode !== "levels" || !(currentWorld === 3 || currentWorld === 7 || currentWorld === 8 || currentWorld === 10) || gameOver) return;
+            if (gameMode !== "levels" || !(currentWorld === 7 || currentWorld === 8 || currentWorld === 10) || gameOver) return;
             let range;
             if (currentWorld === 7) {
                 range = FALSE_FOOD_SPAWN_RANGES_WORLD4[currentLevelInWorld - 1] || [5000,8000];
@@ -4643,7 +4643,7 @@ async function startGame(isRestart = false) {
                 updateTimeLengthDisplay();
                 clearInterval(gameTimerIntervalId);
             }
-            if (gameMode === "levels" && (currentWorld === 3 || currentWorld === 7 || currentWorld === 8 || currentWorld === 10)) {
+            if (gameMode === "levels" && (currentWorld === 7 || currentWorld === 8 || currentWorld === 10)) {
                 startWorld4FalseFoodMechanics();
             } else {
                 stopWorld4FalseFoodMechanics();
@@ -4651,7 +4651,7 @@ async function startGame(isRestart = false) {
             if (gameMode === "levels" && currentWorld === 8) {
                 startWorld5Obstacles();
             } else if (gameMode === "levels" && currentWorld === 3) {
-                startWorld6Obstacles();
+                stopWorld6Obstacles();
                 startWorld6LightningMechanics();
             } else if (gameMode === "levels" && currentWorld === 9) {
                 startWorld6Obstacles();
