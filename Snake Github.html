@@ -1751,6 +1751,20 @@
             [4000, 6000],
             [3000, 5000]
         ];
+
+        const WORLD_CONFIG = [
+            {},
+            {},
+            { lightningSpawnRanges: LIGHTNING_SPAWN_RANGES_WORLD6 },
+            { lightningSpawnRange: LIGHTNING_SPAWN_RANGE_WORLD4 },
+            { goldenFoodLifespans: GOLDEN_FOOD_LIFESPANS_WORLD5, falseFoodSpawnRange: FALSE_FOOD_SPAWN_RANGE_WORLD5 },
+            { streakEnabled: true },
+            { streakEnabled: true, falseFoodSpawnRanges: FALSE_FOOD_SPAWN_RANGES_WORLD4 },
+            { streakEnabled: true, falseFoodSpawnRange: FALSE_FOOD_SPAWN_RANGE_WORLD5, obstacleCounts: OBSTACLE_COUNTS_WORLD5 },
+            { streakEnabled: true, obstacleCount: OBSTACLE_COUNT_WORLD6, lightningSpawnRange: LIGHTNING_SPAWN_RANGE_WORLD7, mirrorSpawnRanges: MIRROR_SPAWN_RANGES_WORLD7 },
+            { streakEnabled: true, obstacleCounts: OBSTACLE_COUNTS_WORLD8, lightningSpawnRanges: LIGHTNING_SPAWN_RANGES_WORLD8, mirrorSpawnRanges: MIRROR_SPAWN_RANGES_WORLD8, falseFoodSpawnRanges: FALSE_FOOD_SPAWN_RANGES_WORLD8 }
+        ];
+
         const MIRROR_EFFECT_DURATION = 3000;
         const LIGHTNING_LIFESPAN = 5000;
         const SPEED_BOOST_DURATION = 3000;
@@ -2573,10 +2587,11 @@
                 return;
             }
 
-            const isGolden = (currentWorld === 5 && Math.random() < GOLDEN_FOOD_CHANCE);
+            const cfg = WORLD_CONFIG[currentWorld - 1] || {};
+            const isGolden = (cfg.goldenFoodLifespans && Math.random() < GOLDEN_FOOD_CHANCE);
             let lifespan = calculateNextFoodLifespan();
-            if (isGolden) {
-                lifespan = GOLDEN_FOOD_LIFESPANS_WORLD5[currentLevelInWorld - 1] || lifespan;
+            if (isGolden && cfg.goldenFoodLifespans) {
+                lifespan = cfg.goldenFoodLifespans[currentLevelInWorld - 1] || lifespan;
             }
             currentFoodItem = {
                 x: newFoodPosition.x,
@@ -2615,7 +2630,7 @@
             console.log("¡Comida no recogida! Racha perdida."); 
             if (areSfxEnabled) playSound('timeout');
             streakMultiplier = 1;
-            if (currentWorld >= 6) startStreakAnimation(streakMultiplier);
+            if ((WORLD_CONFIG[currentWorld - 1] || {}).streakEnabled) startStreakAnimation(streakMultiplier);
             foodTimeRemaining = 0;
             generateFood(); 
             updateScoreDisplay();
@@ -2762,29 +2777,24 @@
             falseFoodItems.push(item);
         }
 
-        function scheduleNextFalseFoodSpawn() {
-            if (gameMode !== "levels" || !(currentWorld === 7 || currentWorld === 8 || currentWorld === 10) || gameOver) return;
-            let range;
-            if (currentWorld === 7) {
-                range = FALSE_FOOD_SPAWN_RANGES_WORLD4[currentLevelInWorld - 1] || [5000,8000];
-            } else if (currentWorld === 10) {
-                range = FALSE_FOOD_SPAWN_RANGES_WORLD8[currentLevelInWorld - 1] || [5000,7000];
-            } else {
-                range = FALSE_FOOD_SPAWN_RANGE_WORLD5;
-            }
+        function scheduleNextFalseFoodSpawn(rangeCfg) {
+            if (gameMode !== "levels" || !rangeCfg || gameOver) return;
+            const range = Array.isArray(rangeCfg[0])
+                ? (rangeCfg[currentLevelInWorld - 1] || rangeCfg[0])
+                : rangeCfg;
             const delay = Math.random() * (range[1] - range[0]) + range[0];
             falseFoodSpawnTimeoutId = setTimeout(() => {
                 generateFalseFood();
-                scheduleNextFalseFoodSpawn();
+                scheduleNextFalseFoodSpawn(rangeCfg);
             }, delay);
         }
 
-        function startWorld4FalseFoodMechanics() {
-            stopWorld4FalseFoodMechanics();
-            scheduleNextFalseFoodSpawn();
+        function startFalseFoodMechanics(rangeCfg) {
+            stopFalseFoodMechanics();
+            scheduleNextFalseFoodSpawn(rangeCfg);
         }
 
-        function stopWorld4FalseFoodMechanics() {
+        function stopFalseFoodMechanics() {
             if (falseFoodSpawnTimeoutId) {
                 clearTimeout(falseFoodSpawnTimeoutId);
                 falseFoodSpawnTimeoutId = null;
@@ -2796,9 +2806,11 @@
             falseFoodItems = [];
         }
 
-        function generateWorld5Obstacles() {
+        function generateObstacles(countCfg) {
             obstacles = [];
-            const count = OBSTACLE_COUNTS_WORLD5[currentLevelInWorld - 1] || 0;
+            const count = Array.isArray(countCfg)
+                ? (countCfg[currentLevelInWorld - 1] || 0)
+                : (countCfg || 0);
             for (let i = 0; i < count; i++) {
                 let pos; let attempts = 0;
                 do {
@@ -2812,59 +2824,11 @@
             }
         }
 
-        function startWorld5Obstacles() {
-            generateWorld5Obstacles();
+        function startObstacles(countCfg) {
+            generateObstacles(countCfg);
         }
 
-        function stopWorld5Obstacles() {
-            obstacles = [];
-        }
-
-        function generateWorld6Obstacles() {
-            obstacles = [];
-            const count = OBSTACLE_COUNT_WORLD6;
-            for (let i = 0; i < count; i++) {
-                let pos; let attempts = 0;
-                do {
-                    pos = {
-                        x: Math.floor(Math.random() * (tileCountX - 2)) + 1,
-                        y: Math.floor(Math.random() * (tileCountY - 2)) + 1,
-                    };
-                    attempts++;
-                } while ((isFoodOnSnake(pos) || obstacles.some(o => o.x === pos.x && o.y === pos.y) || isAdjacentToAnyObstacle(pos)) && attempts < 100);
-                if (attempts < 100) obstacles.push(pos);
-            }
-        }
-
-        function startWorld6Obstacles() {
-            generateWorld6Obstacles();
-        }
-
-        function stopWorld6Obstacles() {
-            obstacles = [];
-        }
-
-        function generateWorld8Obstacles() {
-            obstacles = [];
-            const count = OBSTACLE_COUNTS_WORLD8[currentLevelInWorld - 1] || 0;
-            for (let i = 0; i < count; i++) {
-                let pos; let attempts = 0;
-                do {
-                    pos = {
-                        x: Math.floor(Math.random() * (tileCountX - 2)) + 1,
-                        y: Math.floor(Math.random() * (tileCountY - 2)) + 1,
-                    };
-                    attempts++;
-                } while ((isFoodOnSnake(pos) || obstacles.some(o => o.x === pos.x && o.y === pos.y) || isAdjacentToAnyObstacle(pos)) && attempts < 100);
-                if (attempts < 100) obstacles.push(pos);
-            }
-        }
-
-        function startWorld8Obstacles() {
-            generateWorld8Obstacles();
-        }
-
-        function stopWorld8Obstacles() {
+        function stopObstacles() {
             obstacles = [];
         }
 
@@ -2893,31 +2857,24 @@
             lightningItems.push(item);
         }
 
-        function scheduleNextLightningSpawn() {
-            if (gameMode !== "levels" || !(currentWorld === 3 || currentWorld === 4 || currentWorld === 9 || currentWorld === 10) || gameOver) return;
-            let range;
-            if (currentWorld === 3) {
-                range = LIGHTNING_SPAWN_RANGES_WORLD6[currentLevelInWorld - 1] || [5000, 7000];
-            } else if (currentWorld === 4) {
-                range = LIGHTNING_SPAWN_RANGE_WORLD4;
-            } else if (currentWorld === 10) {
-                range = LIGHTNING_SPAWN_RANGES_WORLD8[currentLevelInWorld - 1] || [5000, 7000];
-            } else {
-                range = LIGHTNING_SPAWN_RANGE_WORLD7;
-            }
+        function scheduleNextLightningSpawn(rangeCfg) {
+            if (gameMode !== "levels" || !rangeCfg || gameOver) return;
+            const range = Array.isArray(rangeCfg[0])
+                ? (rangeCfg[currentLevelInWorld - 1] || rangeCfg[0])
+                : rangeCfg;
             const delay = Math.random() * (range[1] - range[0]) + range[0];
             lightningSpawnTimeoutId = setTimeout(() => {
                 generateLightning();
-                scheduleNextLightningSpawn();
+                scheduleNextLightningSpawn(rangeCfg);
             }, delay);
         }
 
-        function startWorld6LightningMechanics() {
-            stopWorld6LightningMechanics();
-            scheduleNextLightningSpawn();
+        function startLightningMechanics(rangeCfg) {
+            stopLightningMechanics();
+            scheduleNextLightningSpawn(rangeCfg);
         }
 
-        function stopWorld6LightningMechanics() {
+        function stopLightningMechanics() {
             if (lightningSpawnTimeoutId) {
                 clearTimeout(lightningSpawnTimeoutId);
                 lightningSpawnTimeoutId = null;
@@ -3009,24 +2966,22 @@
             mirrorItems.push(item);
         }
 
-        function scheduleNextMirrorSpawn() {
-            if (gameMode !== "levels" || (currentWorld !== 9 && currentWorld !== 10) || gameOver) return;
-            const range = currentWorld === 9 ?
-                (MIRROR_SPAWN_RANGES_WORLD7[currentLevelInWorld - 1] || [5000, 7000]) :
-                (MIRROR_SPAWN_RANGES_WORLD8[currentLevelInWorld - 1] || [5000, 7000]);
+        function scheduleNextMirrorSpawn(rangeCfg) {
+            if (gameMode !== "levels" || !rangeCfg || gameOver) return;
+            const range = rangeCfg[currentLevelInWorld - 1] || rangeCfg[0];
             const delay = Math.random() * (range[1] - range[0]) + range[0];
             mirrorSpawnTimeoutId = setTimeout(() => {
                 generateMirror();
-                scheduleNextMirrorSpawn();
+                scheduleNextMirrorSpawn(rangeCfg);
             }, delay);
         }
 
-        function startWorld7MirrorMechanics() {
-            stopWorld7MirrorMechanics();
-            scheduleNextMirrorSpawn();
+        function startMirrorMechanics(rangeCfg) {
+            stopMirrorMechanics();
+            scheduleNextMirrorSpawn(rangeCfg);
         }
 
-        function stopWorld7MirrorMechanics() {
+        function stopMirrorMechanics() {
             if (mirrorSpawnTimeoutId) {
                 clearTimeout(mirrorSpawnTimeoutId);
                 mirrorSpawnTimeoutId = null;
@@ -3038,6 +2993,21 @@
             mirrorItems = [];
             controlsInverted = false;
             mirrorEffect = { active: false, startTime: 0 };
+        }
+
+        function stopAllWorldMechanics() {
+            stopFalseFoodMechanics();
+            stopObstacles();
+            stopLightningMechanics();
+            stopMirrorMechanics();
+        }
+
+        function startWorldMechanics() {
+            const cfg = WORLD_CONFIG[currentWorld - 1] || {};
+            startFalseFoodMechanics(cfg.falseFoodSpawnRanges || cfg.falseFoodSpawnRange);
+            startObstacles(cfg.obstacleCounts || cfg.obstacleCount);
+            startLightningMechanics(cfg.lightningSpawnRanges || cfg.lightningSpawnRange);
+            startMirrorMechanics(cfg.mirrorSpawnRanges);
         }
 
         function generateMazeLevel(levelIndex) {
@@ -3154,12 +3124,7 @@
             clearTimeout(foodDisappearTimeoutId);
             clearInterval(foodVisualTimerIntervalId);
             clearInterval(gameTimerIntervalId);
-            stopWorld4FalseFoodMechanics();
-            stopWorld5Obstacles();
-            stopWorld6Obstacles();
-            stopWorld8Obstacles();
-            stopWorld6LightningMechanics();
-            stopWorld7MirrorMechanics();
+            stopAllWorldMechanics();
 
             if (inGameBackgroundMusic) {
                 inGameBackgroundMusic.pause();
@@ -4034,7 +3999,7 @@
             let growth = 0; 
             if (currentFoodItem.x !== undefined && nextHead.x === currentFoodItem.x && nextHead.y === currentFoodItem.y) {
                 let gained = POINTS_PER_FOOD;
-                if (currentWorld >= 6) {
+                if ((WORLD_CONFIG[currentWorld - 1] || {}).streakEnabled) {
                     gained *= streakMultiplier;
                     if (streakMultiplier < MAX_STREAK) { streakMultiplier += 0.5; }
                     if (streakMultiplier > MAX_STREAK) { streakMultiplier = MAX_STREAK; }
@@ -4079,7 +4044,7 @@
                 if (nextHead.x === ff.x && nextHead.y === ff.y) {
                     score = Math.max(0, score - 30);
                     streakMultiplier = 1;
-                    if (currentWorld >= 6) startStreakAnimation(streakMultiplier);
+                    if ((WORLD_CONFIG[currentWorld - 1] || {}).streakEnabled) startStreakAnimation(streakMultiplier);
                     removeFalseFoodItem(ff);
                     if (areSfxEnabled) playSound('badEat');
                 }
@@ -4615,40 +4580,13 @@ async function startGame(isRestart = false) {
                 updateTimeLengthDisplay();
                 clearInterval(gameTimerIntervalId);
             }
-            if (gameMode === "levels" && (currentWorld === 7 || currentWorld === 8 || currentWorld === 10)) {
-                startWorld4FalseFoodMechanics();
-            } else {
-                stopWorld4FalseFoodMechanics();
-            }
-            if (gameMode === "levels" && currentWorld === 8) {
-                startWorld5Obstacles();
-            } else if (gameMode === "levels" && currentWorld === 3) {
-                stopWorld6Obstacles();
-                startWorld6LightningMechanics();
-            } else if (gameMode === "levels" && currentWorld === 4) {
-                stopWorld6Obstacles();
-                startWorld6LightningMechanics();
-            } else if (gameMode === "levels" && currentWorld === 9) {
-                startWorld6Obstacles();
-                startWorld6LightningMechanics();
-                startWorld7MirrorMechanics();
-            } else if (gameMode === "levels" && currentWorld === 10) {
-                startWorld8Obstacles();
-                startWorld6LightningMechanics();
-                startWorld7MirrorMechanics();
+            if (gameMode === 'levels') {
+                startWorldMechanics();
             } else if (gameMode === 'maze') {
-                stopWorld5Obstacles();
-                stopWorld6Obstacles();
-                stopWorld6LightningMechanics();
-                stopWorld7MirrorMechanics();
-                stopWorld8Obstacles();
+                stopAllWorldMechanics();
                 startMazeLevel();
             } else {
-                stopWorld5Obstacles();
-                stopWorld6Obstacles();
-                stopWorld6LightningMechanics();
-                stopWorld7MirrorMechanics();
-                stopWorld8Obstacles();
+                stopAllWorldMechanics();
             }
             
             generateFood(); 
