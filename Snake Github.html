@@ -1315,8 +1315,22 @@
             10: new Image()
         };
         const freeModeCoverImg = new Image();
+
+        const worldImagesConfig = {
+            1: { cover: 'https://i.imgur.com/XuoZro6.png', complete: 'https://i.imgur.com/pw2ebzf.png', level: 'https://i.imgur.com/gijG9ec.png', defeat: 'https://i.imgur.com/FZTIteF.png' },
+            2: { cover: 'https://i.imgur.com/RUDshhv.png', complete: 'https://i.imgur.com/mkxGkJA.png', level: 'https://i.imgur.com/aXJoj0F.png', defeat: 'https://i.imgur.com/4DPMHU2.png' },
+            3: { cover: 'https://i.imgur.com/fMBXP4Z.png', complete: 'https://i.imgur.com/aYOQ8Gx.png', level: 'https://i.imgur.com/WUfSzpY.png', defeat: 'https://i.imgur.com/0OmpfWR.png' },
+            4: { cover: 'https://i.imgur.com/3bpQJ2c.png', complete: 'https://i.imgur.com/TRmh4s7.png', level: 'https://i.imgur.com/2ZlgclU.png', defeat: 'https://i.imgur.com/Y4kPsNM.png' },
+            5: { cover: 'https://i.imgur.com/EYXaoSC.png', complete: 'https://i.imgur.com/R79ud6T.png', level: 'https://i.imgur.com/YULiGZW.png', defeat: 'https://i.imgur.com/yiH7BqX.png' },
+            6: { cover: 'https://i.imgur.com/TUUOl01.png', complete: 'https://i.imgur.com/NXcBoXQ.png', level: 'https://i.imgur.com/bUUIGGt.png', defeat: 'https://i.imgur.com/iYpiKB7.png' },
+            7: { cover: 'https://i.imgur.com/vEqjfil.png', complete: 'https://i.imgur.com/paNousf.png', level: 'https://i.imgur.com/GniQn3h.png', defeat: 'https://i.imgur.com/3FilGNV.png' },
+            8: { cover: 'https://i.imgur.com/e1PtokJ.png', complete: 'https://i.imgur.com/TI5ptAd.png', level: 'https://i.imgur.com/YtiDSF1.png', defeat: 'https://i.imgur.com/ADe82lc.png' },
+            9: { cover: 'https://i.imgur.com/DNGzDhl.png', complete: 'https://i.imgur.com/PlPwmLh.png', level: 'https://i.imgur.com/IY7T8Jm.png', defeat: 'https://i.imgur.com/6Bc4w92.png' },
+            10: { cover: 'https://i.imgur.com/g3uQW4f.png', complete: 'https://i.imgur.com/rFUKAbD.png', level: 'https://i.imgur.com/7iK51vy.png', defeat: 'https://i.imgur.com/dd6Zkda.png' }
+        };
+
         let worldImagesLoaded = 0;
-        const totalWorldImagesToLoad = 47;
+        const totalWorldImagesToLoad = Object.keys(worldImagesConfig).length * 4 + 7;
         // --- FIN: Declaración de Objetos Image ---
 
         // --- Música de fondo y SFX ---
@@ -1820,49 +1834,12 @@
         
         // --- Funciones de Carga y Aplicación de Jugadores ---
         function loadWorldImages() {
-            worldCoverImages[1].src = 'https://i.imgur.com/XuoZro6.png';
-            worldCoverImages[2].src = 'https://i.imgur.com/RUDshhv.png';
-            worldCoverImages[3].src = 'https://i.imgur.com/fMBXP4Z.png';
-            worldCoverImages[4].src = 'https://i.imgur.com/3bpQJ2c.png';
-            worldCoverImages[5].src = 'https://i.imgur.com/EYXaoSC.png';
-            worldCoverImages[6].src = 'https://i.imgur.com/TUUOl01.png';
-            worldCoverImages[7].src = 'https://i.imgur.com/vEqjfil.png';
-            worldCoverImages[8].src = 'https://i.imgur.com/e1PtokJ.png';
-            worldCoverImages[9].src = 'https://i.imgur.com/DNGzDhl.png';
-            worldCoverImages[10].src = 'https://i.imgur.com/g3uQW4f.png';
-
-            worldCompleteImages[1].src = 'https://i.imgur.com/pw2ebzf.png';
-            worldCompleteImages[2].src = 'https://i.imgur.com/mkxGkJA.png';
-            worldCompleteImages[3].src = 'https://i.imgur.com/aYOQ8Gx.png';
-            worldCompleteImages[4].src = 'https://i.imgur.com/TRmh4s7.png';
-            worldCompleteImages[5].src = 'https://i.imgur.com/R79ud6T.png';
-            worldCompleteImages[6].src = 'https://i.imgur.com/NXcBoXQ.png';
-            worldCompleteImages[7].src = 'https://i.imgur.com/paNousf.png';
-            worldCompleteImages[8].src = 'https://i.imgur.com/TI5ptAd.png';
-            worldCompleteImages[9].src = 'https://i.imgur.com/PlPwmLh.png';
-            worldCompleteImages[10].src = 'https://i.imgur.com/rFUKAbD.png';
-
-            levelCompleteImages[1].src = 'https://i.imgur.com/gijG9ec.png';
-            levelCompleteImages[2].src = 'https://i.imgur.com/aXJoj0F.png';
-            levelCompleteImages[3].src = 'https://i.imgur.com/WUfSzpY.png';
-            levelCompleteImages[4].src = 'https://i.imgur.com/2ZlgclU.png';
-            levelCompleteImages[5].src = 'https://i.imgur.com/YULiGZW.png';
-            levelCompleteImages[6].src = 'https://i.imgur.com/bUUIGGt.png';
-            levelCompleteImages[7].src = 'https://i.imgur.com/GniQn3h.png';
-            levelCompleteImages[8].src = 'https://i.imgur.com/YtiDSF1.png';
-            levelCompleteImages[9].src = 'https://i.imgur.com/IY7T8Jm.png';
-            levelCompleteImages[10].src = 'https://i.imgur.com/7iK51vy.png';
-
-            defeatImages[1].src = 'https://i.imgur.com/FZTIteF.png';
-            defeatImages[2].src = 'https://i.imgur.com/4DPMHU2.png';
-            defeatImages[3].src = 'https://i.imgur.com/0OmpfWR.png';
-            defeatImages[4].src = 'https://i.imgur.com/Y4kPsNM.png';
-            defeatImages[5].src = 'https://i.imgur.com/yiH7BqX.png';
-            defeatImages[6].src = 'https://i.imgur.com/iYpiKB7.png';
-            defeatImages[7].src = 'https://i.imgur.com/3FilGNV.png';
-            defeatImages[8].src = 'https://i.imgur.com/ADe82lc.png';
-            defeatImages[9].src = 'https://i.imgur.com/6Bc4w92.png';
-            defeatImages[10].src = 'https://i.imgur.com/dd6Zkda.png';
+            Object.entries(worldImagesConfig).forEach(([id, cfg]) => {
+                worldCoverImages[id].src = cfg.cover;
+                worldCompleteImages[id].src = cfg.complete;
+                levelCompleteImages[id].src = cfg.level;
+                defeatImages[id].src = cfg.defeat;
+            });
 
             freeModeCoverImg.src = 'https://i.imgur.com/IIc2Xb7.png';
 
@@ -1875,18 +1852,10 @@
 
 
             const allWorldImages = [
-                worldCoverImages[1], worldCoverImages[2], worldCoverImages[3], worldCoverImages[4],
-                worldCoverImages[5], worldCoverImages[6], worldCoverImages[7], worldCoverImages[8],
-                worldCoverImages[9], worldCoverImages[10],
-                worldCompleteImages[1], worldCompleteImages[2], worldCompleteImages[3], worldCompleteImages[4],
-                worldCompleteImages[5], worldCompleteImages[6], worldCompleteImages[7], worldCompleteImages[8],
-                worldCompleteImages[9], worldCompleteImages[10],
-                levelCompleteImages[1], levelCompleteImages[2], levelCompleteImages[3], levelCompleteImages[4],
-                levelCompleteImages[5], levelCompleteImages[6], levelCompleteImages[7], levelCompleteImages[8],
-                levelCompleteImages[9], levelCompleteImages[10],
-                defeatImages[1], defeatImages[2], defeatImages[3], defeatImages[4],
-                defeatImages[5], defeatImages[6], defeatImages[7], defeatImages[8],
-                defeatImages[9], defeatImages[10],
+                ...Object.values(worldCoverImages),
+                ...Object.values(worldCompleteImages),
+                ...Object.values(levelCompleteImages),
+                ...Object.values(defeatImages),
                 freeModeCoverImg, mazeModeCoverImg,
                 mazeFailImg, mazePartialImg, mazePerfectImg, mazeCompleteImg,
                 mazeAllStarsImg
