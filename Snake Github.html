@@ -1274,7 +1274,9 @@
             5: new Image(),
             6: new Image(),
             7: new Image(),
-            8: new Image()
+            8: new Image(),
+            9: new Image(),
+            10: new Image()
         };
         const worldCompleteImages = {
             1: new Image(),
@@ -1284,7 +1286,9 @@
             5: new Image(),
             6: new Image(),
             7: new Image(),
-            8: new Image()
+            8: new Image(),
+            9: new Image(),
+            10: new Image()
         };
         const levelCompleteImages = {
             1: new Image(),
@@ -1294,7 +1298,9 @@
             5: new Image(),
             6: new Image(),
             7: new Image(),
-            8: new Image()
+            8: new Image(),
+            9: new Image(),
+            10: new Image()
         };
         const defeatImages = {
             1: new Image(),
@@ -1304,11 +1310,13 @@
             5: new Image(),
             6: new Image(),
             7: new Image(),
-            8: new Image()
+            8: new Image(),
+            9: new Image(),
+            10: new Image()
         };
         const freeModeCoverImg = new Image();
         let worldImagesLoaded = 0;
-        const totalWorldImagesToLoad = 39;
+        const totalWorldImagesToLoad = 47;
         // --- FIN: Declaración de Objetos Image ---
 
         // --- Música de fondo y SFX ---
@@ -1353,10 +1361,12 @@
         const WORLD_DISPLAY_NAMES = [
             "Valle del Despertar",
             "Cueva del Crecimiento",
+            "Templo de la Agilidad",
             "Hambre Voraz",
+            "Doble o nada",
+            "Racha demoledora",
             "Bosque de los Engaños",
             "Jardín de los Peligros",
-            "Templo de la Agilidad",
             "Lago del Reflejo",
             "Final Inesperado"
         ];
@@ -1364,7 +1374,7 @@
 
         // --- LEVELS MODE CONFIG ---
         const LEVELS_PER_WORLD = 5;
-        const TOTAL_WORLDS = 8;
+        const TOTAL_WORLDS = 10;
         const LEVEL_TIME_LIMIT = 60000;
         const TARGET_SCORES_LEVELS = [
             // World 1
@@ -1382,6 +1392,10 @@
             // World 7
             25, 50, 100, 200, 300,
             // World 8
+            25, 50, 100, 200, 300,
+            // World 9
+            25, 50, 100, 200, 300,
+            // World 10
             25, 50, 100, 200, 300,
         ];
 
@@ -1483,7 +1497,9 @@
                 { speed: 190, initialLength: 15, initialLifespan: 0 },
                 { speed: 190, initialLength: 20, initialLifespan: 0 }
             ],
-            // World 3 - Hambre Voraz
+            // World 3 - Templo de la Agilidad
+            Array(5).fill({ speed: 150, initialLength: 9, initialLifespan: 10250 }),
+            // World 4 - Hambre Voraz
             [
                 { speed: 180, initialLength: 6, initialLifespan: 10750 },
                 { speed: 180, initialLength: 6, initialLifespan: 10500 },
@@ -1491,15 +1507,17 @@
                 { speed: 180, initialLength: 6, initialLifespan: 10000 },
                 { speed: 180, initialLength: 6, initialLifespan: 9750 }
             ],
-            // World 4 - El Bosque de los Engaños
+            // World 5 - Doble o nada
             Array(5).fill({ speed: 170, initialLength: 7, initialLifespan: 10500 }),
-            // World 5 - Default Normal difficulty
+            // World 6 - Racha demoledora
             Array(5).fill({ speed: 160, initialLength: 8, initialLifespan: 10500 }),
-            // World 6 - Default Normal difficulty
-            Array(5).fill({ speed: 150, initialLength: 9, initialLifespan: 10250 }),
-            // World 7 - Default Difficult difficulty
+            // World 7 - Bosque de los Engaños
+            Array(5).fill({ speed: 170, initialLength: 7, initialLifespan: 10500 }),
+            // World 8 - Jardín de los Peligros
+            Array(5).fill({ speed: 160, initialLength: 8, initialLifespan: 10500 }),
+            // World 9 - Lago del Reflejo
             Array(5).fill({ speed: 140, initialLength: 10, initialLifespan: 10000 }),
-            // World 8 - Desafío Final
+            // World 10 - Desafío Final
             [
                 { speed: 130, initialLength: 15, initialLifespan: 9500 },
                 { speed: 125, initialLength: 15, initialLifespan: 9000 },
@@ -1679,6 +1697,8 @@
         const FALSE_FOOD_SPAWN_RANGE_WORLD5 = [7000, 12000];
         const OBSTACLE_COUNTS_WORLD5 = [3, 5, 8, 11, 15];
         const OBSTACLE_COUNT_WORLD6 = 5;
+        const GOLDEN_FOOD_CHANCE = 0.2;
+        const GOLDEN_FOOD_LIFESPANS_WORLD5 = [4000, 3500, 3000, 2500, 2000];
         const FALSE_FOOD_SPAWN_RANGES_WORLD8 = [
             [6000, 8000],
             [5000, 7000],
@@ -1801,49 +1821,47 @@
         function loadWorldImages() {
             worldCoverImages[1].src = 'https://i.imgur.com/XuoZro6.png';
             worldCoverImages[2].src = 'https://i.imgur.com/RUDshhv.png';
-            worldCoverImages[3].src = 'https://i.imgur.com/3bpQJ2c.png';
-            worldCoverImages[4].src = 'https://i.imgur.com/vEqjfil.png';
-            worldCoverImages[5].src = 'https://i.imgur.com/e1PtokJ.png';
-            worldCoverImages[6].src = 'https://i.imgur.com/fMBXP4Z.png';
-            worldCoverImages[2].src = 'https://i.imgur.com/RUDshhv.png';
-            worldCoverImages[3].src = 'https://i.imgur.com/3bpQJ2c.png';
-            worldCoverImages[4].src = 'https://i.imgur.com/vEqjfil.png';
-            worldCoverImages[5].src = 'https://i.imgur.com/e1PtokJ.png';
-            worldCoverImages[6].src = 'https://i.imgur.com/fMBXP4Z.png';
-            worldCoverImages[7].src = 'https://i.imgur.com/DNGzDhl.png';
-            worldCoverImages[8].src = 'https://i.imgur.com/g3uQW4f.png';
+            worldCoverImages[3].src = 'https://i.imgur.com/fMBXP4Z.png';
+            worldCoverImages[4].src = 'https://i.imgur.com/3bpQJ2c.png';
+            worldCoverImages[5].src = 'https://i.imgur.com/vEqjfil.png';
+            worldCoverImages[6].src = 'https://i.imgur.com/e1PtokJ.png';
+            worldCoverImages[7].src = 'https://i.imgur.com/vEqjfil.png';
+            worldCoverImages[8].src = 'https://i.imgur.com/e1PtokJ.png';
+            worldCoverImages[9].src = 'https://i.imgur.com/DNGzDhl.png';
+            worldCoverImages[10].src = 'https://i.imgur.com/g3uQW4f.png';
 
             worldCompleteImages[1].src = 'https://i.imgur.com/nkdJEmV.png';
             worldCompleteImages[2].src = 'https://i.imgur.com/RpIGI2q.png';
-            worldCompleteImages[3].src = 'https://i.imgur.com/tDOyHXc.png';
-            worldCompleteImages[4].src = 'https://i.imgur.com/uoSRiRo.png';
-            worldCompleteImages[5].src = 'https://i.imgur.com/PnP5i1q.png';
-            worldCompleteImages[6].src = 'https://i.imgur.com/Dpv1WBM.png';
-            worldCompleteImages[2].src = 'https://i.imgur.com/RpIGI2q.png';
-            worldCompleteImages[3].src = 'https://i.imgur.com/tDOyHXc.png';
-            worldCompleteImages[4].src = 'https://i.imgur.com/uoSRiRo.png';
-            worldCompleteImages[5].src = 'https://i.imgur.com/PnP5i1q.png';
-            worldCompleteImages[6].src = 'https://i.imgur.com/Dpv1WBM.png';
-            worldCompleteImages[7].src = 'https://i.imgur.com/bzZRnVl.png';
-            worldCompleteImages[8].src = 'https://i.imgur.com/4XIUM5E.png';
+            worldCompleteImages[3].src = 'https://i.imgur.com/Dpv1WBM.png';
+            worldCompleteImages[4].src = 'https://i.imgur.com/tDOyHXc.png';
+            worldCompleteImages[5].src = 'https://i.imgur.com/uoSRiRo.png';
+            worldCompleteImages[6].src = 'https://i.imgur.com/PnP5i1q.png';
+            worldCompleteImages[7].src = 'https://i.imgur.com/uoSRiRo.png';
+            worldCompleteImages[8].src = 'https://i.imgur.com/PnP5i1q.png';
+            worldCompleteImages[9].src = 'https://i.imgur.com/bzZRnVl.png';
+            worldCompleteImages[10].src = 'https://i.imgur.com/4XIUM5E.png';
 
             levelCompleteImages[1].src = 'https://i.imgur.com/gijG9ec.png';
             levelCompleteImages[2].src = 'https://i.imgur.com/aXJoj0F.png';
-            levelCompleteImages[3].src = 'https://i.imgur.com/2ZlgclU.png';
-            levelCompleteImages[4].src = 'https://i.imgur.com/GniQn3h.png';
-            levelCompleteImages[5].src = 'https://i.imgur.com/YtiDSF1.png';
-            levelCompleteImages[6].src = 'https://i.imgur.com/WUfSzpY.png';
-            levelCompleteImages[7].src = 'https://i.imgur.com/IY7T8Jm.png';
-            levelCompleteImages[8].src = 'https://i.imgur.com/7iK51vy.png';
+            levelCompleteImages[3].src = 'https://i.imgur.com/WUfSzpY.png';
+            levelCompleteImages[4].src = 'https://i.imgur.com/2ZlgclU.png';
+            levelCompleteImages[5].src = 'https://i.imgur.com/GniQn3h.png';
+            levelCompleteImages[6].src = 'https://i.imgur.com/YtiDSF1.png';
+            levelCompleteImages[7].src = 'https://i.imgur.com/GniQn3h.png';
+            levelCompleteImages[8].src = 'https://i.imgur.com/YtiDSF1.png';
+            levelCompleteImages[9].src = 'https://i.imgur.com/IY7T8Jm.png';
+            levelCompleteImages[10].src = 'https://i.imgur.com/7iK51vy.png';
 
             defeatImages[1].src = 'https://i.imgur.com/FZTIteF.png';
             defeatImages[2].src = 'https://i.imgur.com/4DPMHU2.png';
-            defeatImages[3].src = 'https://i.imgur.com/Y4kPsNM.png';
-            defeatImages[4].src = 'https://i.imgur.com/3FilGNV.png';
-            defeatImages[5].src = 'https://i.imgur.com/ADe82lc.png';
-            defeatImages[6].src = 'https://i.imgur.com/0OmpfWR.png';
-            defeatImages[7].src = 'https://i.imgur.com/6Bc4w92.png';
-            defeatImages[8].src = 'https://i.imgur.com/dd6Zkda.png';
+            defeatImages[3].src = 'https://i.imgur.com/0OmpfWR.png';
+            defeatImages[4].src = 'https://i.imgur.com/Y4kPsNM.png';
+            defeatImages[5].src = 'https://i.imgur.com/3FilGNV.png';
+            defeatImages[6].src = 'https://i.imgur.com/ADe82lc.png';
+            defeatImages[7].src = 'https://i.imgur.com/3FilGNV.png';
+            defeatImages[8].src = 'https://i.imgur.com/ADe82lc.png';
+            defeatImages[9].src = 'https://i.imgur.com/6Bc4w92.png';
+            defeatImages[10].src = 'https://i.imgur.com/dd6Zkda.png';
 
             freeModeCoverImg.src = 'https://i.imgur.com/IIc2Xb7.png';
 
@@ -1858,12 +1876,16 @@
             const allWorldImages = [
                 worldCoverImages[1], worldCoverImages[2], worldCoverImages[3], worldCoverImages[4],
                 worldCoverImages[5], worldCoverImages[6], worldCoverImages[7], worldCoverImages[8],
+                worldCoverImages[9], worldCoverImages[10],
                 worldCompleteImages[1], worldCompleteImages[2], worldCompleteImages[3], worldCompleteImages[4],
                 worldCompleteImages[5], worldCompleteImages[6], worldCompleteImages[7], worldCompleteImages[8],
+                worldCompleteImages[9], worldCompleteImages[10],
                 levelCompleteImages[1], levelCompleteImages[2], levelCompleteImages[3], levelCompleteImages[4],
                 levelCompleteImages[5], levelCompleteImages[6], levelCompleteImages[7], levelCompleteImages[8],
+                levelCompleteImages[9], levelCompleteImages[10],
                 defeatImages[1], defeatImages[2], defeatImages[3], defeatImages[4],
                 defeatImages[5], defeatImages[6], defeatImages[7], defeatImages[8],
+                defeatImages[9], defeatImages[10],
                 freeModeCoverImg, mazeModeCoverImg,
                 mazeFailImg, mazePartialImg, mazePerfectImg, mazeCompleteImg,
                 mazeAllStarsImg
@@ -2496,9 +2518,13 @@
                 if (foodImg && foodImg.complete && foodImg.naturalHeight !== 0) {
                     const drawSize = GRID_SIZE * foodData.scale;
                     const offset = (drawSize - GRID_SIZE) / 2;
+                    if (currentFoodItem.isGolden) {
+                        ctx.filter = 'hue-rotate(-50deg) brightness(1.4)';
+                    }
                     ctx.drawImage(foodImg, x * GRID_SIZE - offset, y * GRID_SIZE - offset, drawSize, drawSize);
+                    ctx.filter = 'none';
                 } else {
-                    ctx.fillStyle = FOOD_SHAPE_FALLBACK.color;
+                    ctx.fillStyle = currentFoodItem.isGolden ? 'gold' : FOOD_SHAPE_FALLBACK.color;
                     ctx.fillRect(x * GRID_SIZE + 2, y * GRID_SIZE + 2, GRID_SIZE - 4, GRID_SIZE - 4);
                     ctx.strokeStyle = FOOD_SHAPE_FALLBACK.borderColor;
                     ctx.lineWidth = 2;
@@ -2577,10 +2603,16 @@
                 return;
             }
 
+            const isGolden = (currentWorld === 5 && Math.random() < GOLDEN_FOOD_CHANCE);
+            let lifespan = calculateNextFoodLifespan();
+            if (isGolden) {
+                lifespan = GOLDEN_FOOD_LIFESPANS_WORLD5[currentLevelInWorld - 1] || lifespan;
+            }
             currentFoodItem = {
                 x: newFoodPosition.x,
                 y: newFoodPosition.y,
-                initialLifespanForThisFood: calculateNextFoodLifespan()
+                isGolden,
+                initialLifespanForThisFood: lifespan
             };
             foodTimeRemaining = currentFoodItem.initialLifespanForThisFood;
             if (foodTimeRemaining > 0) {
@@ -2613,7 +2645,7 @@
             console.log("¡Comida no recogida! Racha perdida."); 
             if (areSfxEnabled) playSound('timeout');
             streakMultiplier = 1;
-            startStreakAnimation(streakMultiplier);
+            if (currentWorld >= 6) startStreakAnimation(streakMultiplier);
             foodTimeRemaining = 0;
             generateFood(); 
             updateScoreDisplay();
@@ -2761,11 +2793,11 @@
         }
 
         function scheduleNextFalseFoodSpawn() {
-            if (gameMode !== "levels" || !(currentWorld === 4 || currentWorld === 5 || currentWorld === 6 || currentWorld === 8) || gameOver) return;
+            if (gameMode !== "levels" || !(currentWorld === 3 || currentWorld === 7 || currentWorld === 8 || currentWorld === 10) || gameOver) return;
             let range;
-            if (currentWorld === 4) {
+            if (currentWorld === 7) {
                 range = FALSE_FOOD_SPAWN_RANGES_WORLD4[currentLevelInWorld - 1] || [5000,8000];
-            } else if (currentWorld === 8) {
+            } else if (currentWorld === 10) {
                 range = FALSE_FOOD_SPAWN_RANGES_WORLD8[currentLevelInWorld - 1] || [5000,7000];
             } else {
                 range = FALSE_FOOD_SPAWN_RANGE_WORLD5;
@@ -2892,11 +2924,11 @@
         }
 
         function scheduleNextLightningSpawn() {
-            if (gameMode !== "levels" || !(currentWorld === 6 || currentWorld === 7 || currentWorld === 8) || gameOver) return;
+            if (gameMode !== "levels" || !(currentWorld === 3 || currentWorld === 9 || currentWorld === 10) || gameOver) return;
             let range;
-            if (currentWorld === 6) {
+            if (currentWorld === 3) {
                 range = LIGHTNING_SPAWN_RANGES_WORLD6[currentLevelInWorld - 1] || [5000, 7000];
-            } else if (currentWorld === 8) {
+            } else if (currentWorld === 10) {
                 range = LIGHTNING_SPAWN_RANGES_WORLD8[currentLevelInWorld - 1] || [5000, 7000];
             } else {
                 range = LIGHTNING_SPAWN_RANGE_WORLD7;
@@ -3006,8 +3038,8 @@
         }
 
         function scheduleNextMirrorSpawn() {
-            if (gameMode !== "levels" || (currentWorld !== 7 && currentWorld !== 8) || gameOver) return;
-            const range = currentWorld === 7 ?
+            if (gameMode !== "levels" || (currentWorld !== 9 && currentWorld !== 10) || gameOver) return;
+            const range = currentWorld === 9 ?
                 (MIRROR_SPAWN_RANGES_WORLD7[currentLevelInWorld - 1] || [5000, 7000]) :
                 (MIRROR_SPAWN_RANGES_WORLD8[currentLevelInWorld - 1] || [5000, 7000]);
             const delay = Math.random() * (range[1] - range[0]) + range[0];
@@ -4029,12 +4061,16 @@
             const nextHead = { x: nextHeadX, y: nextHeadY };
             let growth = 0; 
             if (currentFoodItem.x !== undefined && nextHead.x === currentFoodItem.x && nextHead.y === currentFoodItem.y) {
-                score += POINTS_PER_FOOD * streakMultiplier;
+                let gained = POINTS_PER_FOOD;
+                if (currentWorld >= 6) {
+                    gained *= streakMultiplier;
+                    if (streakMultiplier < MAX_STREAK) { streakMultiplier += 0.5; }
+                    if (streakMultiplier > MAX_STREAK) { streakMultiplier = MAX_STREAK; }
+                    startStreakAnimation(streakMultiplier);
+                }
+                if (currentFoodItem.isGolden) gained *= 2;
+                score += gained;
                 if(areSfxEnabled) playSound('eat');
-
-                if (streakMultiplier < MAX_STREAK) { streakMultiplier += 0.5; }
-                if (streakMultiplier > MAX_STREAK) { streakMultiplier = MAX_STREAK; }
-                startStreakAnimation(streakMultiplier);
 
                 growth = 1;
                 clearTimeout(foodDisappearTimeoutId);
@@ -4071,7 +4107,7 @@
                 if (nextHead.x === ff.x && nextHead.y === ff.y) {
                     score = Math.max(0, score - 30);
                     streakMultiplier = 1;
-                    startStreakAnimation(streakMultiplier);
+                    if (currentWorld >= 6) startStreakAnimation(streakMultiplier);
                     removeFalseFoodItem(ff);
                     if (areSfxEnabled) playSound('badEat');
                 }
@@ -4607,21 +4643,21 @@ async function startGame(isRestart = false) {
                 updateTimeLengthDisplay();
                 clearInterval(gameTimerIntervalId);
             }
-            if (gameMode === "levels" && (currentWorld === 4 || currentWorld === 5 || currentWorld === 6 || currentWorld === 8)) {
+            if (gameMode === "levels" && (currentWorld === 3 || currentWorld === 7 || currentWorld === 8 || currentWorld === 10)) {
                 startWorld4FalseFoodMechanics();
             } else {
                 stopWorld4FalseFoodMechanics();
             }
-            if (gameMode === "levels" && currentWorld === 5) {
+            if (gameMode === "levels" && currentWorld === 8) {
                 startWorld5Obstacles();
-            } else if (gameMode === "levels" && currentWorld === 6) {
+            } else if (gameMode === "levels" && currentWorld === 3) {
                 startWorld6Obstacles();
                 startWorld6LightningMechanics();
-            } else if (gameMode === "levels" && currentWorld === 7) {
+            } else if (gameMode === "levels" && currentWorld === 9) {
                 startWorld6Obstacles();
                 startWorld6LightningMechanics();
                 startWorld7MirrorMechanics();
-            } else if (gameMode === "levels" && currentWorld === 8) {
+            } else if (gameMode === "levels" && currentWorld === 10) {
                 startWorld8Obstacles();
                 startWorld6LightningMechanics();
                 startWorld7MirrorMechanics();
