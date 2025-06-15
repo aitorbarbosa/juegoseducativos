@@ -1349,6 +1349,18 @@
             mimiSnake: "MimiSnake"
         };
 
+        // Nombres descriptivos de cada mundo
+        const WORLD_DISPLAY_NAMES = [
+            "Valle del Despertar",
+            "Cueva del Crecimiento",
+            "Hambre Voraz",
+            "El Bosque de los Engaños",
+            "",
+            "",
+            "",
+            "Desafío Final"
+        ];
+
 
         // --- LEVELS MODE CONFIG ---
         const LEVELS_PER_WORLD = 5;
@@ -4287,7 +4299,8 @@
             for (let i = 1; i <= TOTAL_WORLDS; i++) {
                 const option = document.createElement('option');
                 option.value = i;
-                option.textContent = `Mundo ${i}`;
+                const name = WORLD_DISPLAY_NAMES[i - 1] || '';
+                option.textContent = `Mundo ${i}${name ? ': ' + name : ''}`;
                 option.disabled = i > maxUnlockedWorld;
                 if (i === currentWorld) {
                     option.selected = true;
