@@ -1714,6 +1714,7 @@
             [2000, 4000],
             [1000, 3000]
         ];
+        const LIGHTNING_SPAWN_RANGE_WORLD4 = [5000, 10000];
         const LIGHTNING_SPAWN_RANGE_WORLD7 = [7000, 12000];
         const LIGHTNING_SPAWN_RANGES_WORLD8 = [
             [7000, 9000],
@@ -2924,10 +2925,12 @@
         }
 
         function scheduleNextLightningSpawn() {
-            if (gameMode !== "levels" || !(currentWorld === 3 || currentWorld === 9 || currentWorld === 10) || gameOver) return;
+            if (gameMode !== "levels" || !(currentWorld === 3 || currentWorld === 4 || currentWorld === 9 || currentWorld === 10) || gameOver) return;
             let range;
             if (currentWorld === 3) {
                 range = LIGHTNING_SPAWN_RANGES_WORLD6[currentLevelInWorld - 1] || [5000, 7000];
+            } else if (currentWorld === 4) {
+                range = LIGHTNING_SPAWN_RANGE_WORLD4;
             } else if (currentWorld === 10) {
                 range = LIGHTNING_SPAWN_RANGES_WORLD8[currentLevelInWorld - 1] || [5000, 7000];
             } else {
@@ -4651,6 +4654,9 @@ async function startGame(isRestart = false) {
             if (gameMode === "levels" && currentWorld === 8) {
                 startWorld5Obstacles();
             } else if (gameMode === "levels" && currentWorld === 3) {
+                stopWorld6Obstacles();
+                startWorld6LightningMechanics();
+            } else if (gameMode === "levels" && currentWorld === 4) {
                 stopWorld6Obstacles();
                 startWorld6LightningMechanics();
             } else if (gameMode === "levels" && currentWorld === 9) {
