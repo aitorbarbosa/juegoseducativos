@@ -1462,17 +1462,18 @@
             })(),
             7: (() => {
                 const res = [];
-                for (let y = 0; y <= 7; y++) res.push({ x: 5, y });
-                for (let y = 12; y <= 19; y++) res.push({ x: 15, y });
-                for (let x = 0; x <= 7; x++) res.push({ x, y: 12 });
-                for (let x = 12; x <= 19; x++) res.push({ x, y: 6 });
+                for (let y = 0; y <= 9; y++) res.push({ x: 5, y });
+                for (let y = 11; y <= 19; y++) res.push({ x: 15, y });
+                for (let x = 0; x <= 10; x++) res.push({ x, y: 13 });
+                for (let x = 10; x <= 19; x++) res.push({ x, y: 7 });
                 return res;
             })(),
             8: (() => {
                 const res = [];
                 for (let x = 0; x < 20; x++) res.push({ x, y: 19 });
                 for (let y = 0; y < 20; y++) res.push({ x: 0, y });
-                for (let y = 8; y <= 12; y++) res.push({ x: 10, y });
+                for (let y = 5; y <= 9; y++) res.push({ x: 10, y });
+                for (let y = 11; y <= 15; y++) res.push({ x: 10, y });
                 return res;
             })(),
             9: (() => {
