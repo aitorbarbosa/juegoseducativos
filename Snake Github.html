@@ -1422,53 +1422,45 @@
         let mazeLevelStars = Array(MAZE_LEVEL_COUNT).fill(0);
 
         const MAZE_LAYOUTS = {
+            // Nivel 1 - bloques en las esquinas
             1: [
-                {x:0,y:0},{x:1,y:0},{x:0,y:1},
-                {x:18,y:0},{x:19,y:0},{x:19,y:1},
-                {x:0,y:18},{x:0,y:19},{x:1,y:19},
-                {x:19,y:18},{x:19,y:19},{x:18,y:19}
+                { x: 0, y: 0 }, { x: 1, y: 0 }, { x: 0, y: 1 },
+                { x: 18, y: 0 }, { x: 19, y: 0 }, { x: 19, y: 1 },
+                { x: 0, y: 18 }, { x: 0, y: 19 }, { x: 1, y: 19 },
+                { x: 19, y: 18 }, { x: 19, y: 19 }, { x: 18, y: 19 }
             ],
-            2: (() => {
-                const res = [];
-                for (let i=0;i<20;i++) { res.push({x:i,y:0}); res.push({x:i,y:19}); }
-                for (let i=1;i<19;i++) { res.push({x:0,y:i}); res.push({x:19,y:i}); }
-                return res;
-            })(),
+            // Nivel 2 - cuatro bloques centrales de 2x2
+            2: [
+                { x: 5, y: 5 }, { x: 6, y: 5 }, { x: 5, y: 6 }, { x: 6, y: 6 },
+                { x: 13, y: 5 }, { x: 14, y: 5 }, { x: 13, y: 6 }, { x: 14, y: 6 },
+                { x: 5, y: 13 }, { x: 6, y: 13 }, { x: 5, y: 14 }, { x: 6, y: 14 },
+                { x: 13, y: 13 }, { x: 14, y: 13 }, { x: 13, y: 14 }, { x: 14, y: 14 }
+            ],
+            // Nivel 3 - cruz que divide en cuadrantes
             3: (() => {
                 const res = [];
-                for (let i=0;i<12;i++) res.push({x:i+4,y:10});
-                for (let i=0;i<12;i++) res.push({x:10,y:i+4});
+                for (let i = 0; i < 12; i++) res.push({ x: i + 4, y: 10 });
+                for (let i = 0; i < 12; i++) res.push({ x: 10, y: i + 4 });
                 return res;
             })(),
-            4: [
-                {x:5,y:5},{x:6,y:5},{x:5,y:6},{x:6,y:6},
-                {x:13,y:5},{x:14,y:5},{x:13,y:6},{x:14,y:6},
-                {x:5,y:13},{x:6,y:13},{x:5,y:14},{x:6,y:14},
-                {x:13,y:13},{x:14,y:13},{x:13,y:14},{x:14,y:14}
-            ],
+            // Nivel 4 - dos muros verticales con hueco central
+            4: (() => {
+                const res = [];
+                for (let y = 0; y < 20; y++) { if (y !== 9 && y !== 10) res.push({ x: 6, y }); }
+                for (let y = 0; y < 20; y++) { if (y !== 9 && y !== 10) res.push({ x: 13, y }); }
+                return res;
+            })(),
+            // Nivel 5 - rectángulo interior con aperturas en cruz
             5: (() => {
                 const res = [];
-                for (let y=0;y<20;y++) { if (y!==9 && y!==10) res.push({x:6,y}); }
-                for (let y=0;y<20;y++) { if (y!==9 && y!==10) res.push({x:13,y}); }
+                for (let i = 0; i < 10; i++) { const x = 5 + i; if (x !== 10) res.push({ x, y: 5 }); }
+                for (let i = 0; i < 10; i++) { const x = 5 + i; if (x !== 10) res.push({ x, y: 14 }); }
+                for (let i = 0; i < 8; i++) { const y = 6 + i; if (y !== 10) res.push({ x: 5, y }); }
+                for (let i = 0; i < 8; i++) { const y = 6 + i; if (y !== 10) res.push({ x: 14, y }); }
                 return res;
             })(),
+            // Nivel 6 - muro vertical con bordes izquierdo e inferior
             6: (() => {
-                const res = [];
-                for (let i=0;i<10;i++) { const x = 5 + i; if (x !== 10) res.push({ x, y: 5 }); }
-                for (let i=0;i<10;i++) { const x = 5 + i; if (x !== 10) res.push({ x, y: 14 }); }
-                for (let i=0;i<8;i++) { const y = 6 + i; if (y !== 10) res.push({ x: 5, y }); }
-                for (let i=0;i<8;i++) { const y = 6 + i; if (y !== 10) res.push({ x: 14, y }); }
-                return res;
-            })(),
-            7: (() => {
-                const res = [];
-                for (let y = 0; y <= 9; y++) res.push({ x: 5, y });
-                for (let y = 11; y <= 19; y++) res.push({ x: 15, y });
-                for (let x = 0; x <= 10; x++) res.push({ x, y: 13 });
-                for (let x = 10; x <= 19; x++) res.push({ x, y: 7 });
-                return res;
-            })(),
-            8: (() => {
                 const res = [];
                 for (let x = 0; x < 20; x++) res.push({ x, y: 19 });
                 for (let y = 0; y < 20; y++) res.push({ x: 0, y });
@@ -1476,14 +1468,32 @@
                 for (let y = 11; y <= 15; y++) res.push({ x: 10, y });
                 return res;
             })(),
-            9: (() => {
-                const res=[];
-                for (let i=0;i<16;i++) res.push({x:i+2,y:4});
-                for (let i=0;i<16;i++) res.push({x:i+2,y:8});
-                for (let i=0;i<16;i++) res.push({x:i+2,y:12});
-                for (let i=0;i<16;i++) res.push({x:i+2,y:16});
+            // Nivel 7 - marco alrededor de los bordes
+            7: (() => {
+                const res = [];
+                for (let i = 0; i < 20; i++) { res.push({ x: i, y: 0 }); res.push({ x: i, y: 19 }); }
+                for (let i = 1; i < 19; i++) { res.push({ x: 0, y: i }); res.push({ x: 19, y: i }); }
                 return res;
             })(),
+            // Nivel 8 - líneas horizontales y verticales desplazadas
+            8: (() => {
+                const res = [];
+                for (let y = 0; y <= 9; y++) res.push({ x: 5, y });
+                for (let y = 11; y <= 19; y++) res.push({ x: 15, y });
+                for (let x = 0; x <= 10; x++) res.push({ x, y: 13 });
+                for (let x = 10; x <= 19; x++) res.push({ x, y: 7 });
+                return res;
+            })(),
+            // Nivel 9 - franjas horizontales
+            9: (() => {
+                const res = [];
+                for (let i = 0; i < 16; i++) res.push({ x: i + 2, y: 4 });
+                for (let i = 0; i < 16; i++) res.push({ x: i + 2, y: 8 });
+                for (let i = 0; i < 16; i++) res.push({ x: i + 2, y: 12 });
+                for (let i = 0; i < 16; i++) res.push({ x: i + 2, y: 16 });
+                return res;
+            })(),
+            // Nivel 10 - franjas horizontales con paredes laterales
             10: (() => {
                 const res = [];
                 for (let i = 0; i < 16; i++) res.push({ x: i + 2, y: 4 });
