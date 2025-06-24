@@ -1468,11 +1468,13 @@
                 for (let y = 11; y <= 15; y++) res.push({ x: 10, y });
                 return res;
             })(),
-            // Nivel 7 - marco alrededor de los bordes
+            // Nivel 7 - marco alrededor de los bordes con dos líneas horizontales
             7: (() => {
                 const res = [];
-                for (let i = 0; i < 20; i++) { res.push({ x: i, y: 0 }); res.push({ x: i, y: 19 }); }
-                for (let i = 1; i < 19; i++) { res.push({ x: 0, y: i }); res.push({ x: 19, y: i }); }
+                for (let i=0;i<20;i++) { res.push({x:i,y:0}); res.push({x:i,y:19}); }
+                for (let i=1;i<19;i++) { res.push({x:0,y:i}); res.push({x:19,y:i}); }
+                for (let i=0;i<12;i++) res.push({x:i+4,y:8});
+                for (let i=0;i<12;i++) res.push({x:i+4,y:12});
                 return res;
             })(),
             // Nivel 8 - líneas horizontales y verticales desplazadas
@@ -1487,10 +1489,10 @@
             // Nivel 9 - franjas horizontales
             9: (() => {
                 const res = [];
-                for (let i = 0; i < 16; i++) res.push({ x: i + 2, y: 4 });
-                for (let i = 0; i < 16; i++) res.push({ x: i + 2, y: 8 });
-                for (let i = 0; i < 16; i++) res.push({ x: i + 2, y: 12 });
-                for (let i = 0; i < 16; i++) res.push({ x: i + 2, y: 16 });
+                for (let i = 0; i < 14; i++) res.push({ x: i + 3, y: 4 });
+                for (let i = 0; i < 14; i++) res.push({ x: i + 3, y: 8 });
+                for (let i = 0; i < 14; i++) res.push({ x: i + 3, y: 12 });
+                for (let i = 0; i < 14; i++) res.push({ x: i + 3, y: 16 });
                 return res;
             })(),
             // Nivel 10 - franjas horizontales con paredes laterales
