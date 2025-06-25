@@ -281,14 +281,44 @@
 
 
         canvas {
-            background-color: #374151; 
-            border: 4px solid #4b5563; 
-            display: block; 
-            margin: 0 auto 5px auto; 
-            max-width: 100%; 
-            border-radius: 8px; 
-            aspect-ratio: 1 / 1; 
+            background-color: #374151;
+            border: 4px solid #4b5563;
+            display: block;
+            margin: 0 auto 5px auto;
+            max-width: 100%;
+            border-radius: 8px;
+            aspect-ratio: 1 / 1;
         }
+
+        #play-area {
+            position: relative;
+        }
+
+        #game-canvas-wrapper {
+            position: relative;
+            display: inline-block;
+            overflow: hidden;
+        }
+
+        #mode-selection-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+
+        .mode-nav-button {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            padding: 0;
+            pointer-events: auto;
+        }
+
+        #mode-left-button { left: 0; }
+        #mode-right-button { right: 0; }
 
         #mobile-controls {
             display: flex;
@@ -371,9 +401,15 @@
         .control-button:hover { background-color: #4a5568; }
         
         .arrow-svg {
-            width: 60%; 
+            width: 60%;
             height: 60%;
-            fill: currentColor; 
+            fill: currentColor;
+        }
+
+        #mode-left-button,
+        #mode-right-button {
+            width: 40px;
+            height: 100%;
         }
         
         #setup-controls {
@@ -947,9 +983,20 @@
             </div>
         </div>
         
-        <canvas id="gameCanvas"></canvas>
+        <div id="game-canvas-wrapper">
+            <canvas id="gameCanvas"></canvas>
 
-        <div id="setup-controls"> 
+            <div id="mode-selection-overlay" class="hidden">
+                <button id="mode-left-button" class="control-button mode-nav-button" aria-label="Anterior">
+                    <svg class="arrow-svg" viewBox="0 0 24 24"><path d="M15.41 7.41L10.83 12l4.58 4.59L14 18l-6-6 6-6z"/></svg>
+                </button>
+                <button id="mode-right-button" class="control-button mode-nav-button" aria-label="Siguiente">
+                    <svg class="arrow-svg" viewBox="0 0 24 24"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/></svg>
+                </button>
+            </div>
+        </div>
+
+        <div id="setup-controls">
             <div id="settings-panel" class="settings-panel-hidden">
                 <div class="settings-header">
                     <h2>Configuración</h2>
@@ -1222,6 +1269,53 @@
         const specificInfoTitle = document.getElementById("specific-info-title");
         const specificInfoContent = document.getElementById("specific-info-content");
         const closeSpecificInfoButton = document.getElementById("close-specific-info-button");
+
+        const modeOverlay = document.getElementById("mode-selection-overlay");
+        const modeLeftButton = document.getElementById("mode-left-button");
+        const modeRightButton = document.getElementById("mode-right-button");
+
+        const modeSelectionImageObjs = [
+            new Image(),
+            new Image(),
+            new Image(),
+            new Image()
+        ];
+        modeSelectionImageObjs[0].src = 'https://i.imgur.com/W34ctvU.png';
+        modeSelectionImageObjs[1].src = 'https://i.imgur.com/1Dp5GTu.png';
+        modeSelectionImageObjs[2].src = 'https://i.imgur.com/WY3lrHv.png';
+        modeSelectionImageObjs[3].src = 'https://i.imgur.com/6cMWnrC.png';
+        const modeSelectionImages = modeSelectionImageObjs;
+        const modeSelectionMap = [null, 'levels', 'maze', 'freeMode'];
+        let modeSelectionIndex = 0;
+        let isModeSelectionActive = false;
+
+        function updateModeSelectionDisplay() {
+            if (startButton) startButton.disabled = modeSelectionIndex === 0;
+            requestAnimationFrame(draw);
+        }
+
+        function openModeSelection() {
+            if (!modeOverlay) return;
+            isModeSelectionActive = true;
+            modeSelectionIndex = 0;
+            modeOverlay.classList.remove('hidden');
+            startButton.textContent = 'Seleccionar';
+            updateModeSelectionDisplay();
+            screenState.showModeSelection = true;
+            updateMainButtonStates();
+        }
+
+        if (modeLeftButton && modeRightButton) {
+            modeLeftButton.addEventListener('click', () => {
+                modeSelectionIndex = (modeSelectionIndex - 1 + modeSelectionImages.length) % modeSelectionImages.length;
+                updateModeSelectionDisplay();
+            });
+            modeRightButton.addEventListener('click', () => {
+                modeSelectionIndex = (modeSelectionIndex + 1) % modeSelectionImages.length;
+                updateModeSelectionDisplay();
+            });
+        }
+
 
 
         // --- INICIO: Declaración de Objetos Image ---
@@ -1699,6 +1793,7 @@
             showDefeatCoverForWorld: 0,
             showFreeModeCover: false,
             showMazeCover: false,
+            showModeSelection: false,
             mazeResultType: '',
             gameActuallyStarted: false
         };
@@ -2117,6 +2212,14 @@
                 configButton.disabled = true;
                 infoButton.disabled = true;
             } else {
+                if (isModeSelectionActive) {
+                    startButton.textContent = 'Seleccionar';
+                    startButton.disabled = (modeSelectionIndex === 0);
+                    restartMazeButton.disabled = true;
+                    configButton.disabled = true;
+                    infoButton.disabled = true;
+                    return;
+                }
                 const isWorldIntroCover = screenState.showCoverForWorld > 0 && !screenState.gameActuallyStarted;
                 const isWorldCompleteScreen = screenState.showWorldCompleteCover > 0; 
                 const isLevelCompleteScreen = screenState.showLevelCompleteCover > 0 && !screenState.gameActuallyStarted; 
@@ -3567,6 +3670,22 @@
             }
         }
 
+        function drawModeSelectionScreen() {
+            if (!ctx || !canvasEl) return;
+            ctx.fillStyle = "#374151";
+            ctx.fillRect(0, 0, canvasEl.width, canvasEl.height);
+
+            const img = modeSelectionImages[modeSelectionIndex];
+            if (img && img.complete && img.naturalHeight !== 0) {
+                ctx.drawImage(img, 0, 0, canvasEl.width, canvasEl.height);
+            } else {
+                ctx.fillStyle = "white";
+                ctx.textAlign = "center";
+                ctx.font = `${Math.floor(canvasEl.width / 15)}px 'Press Start 2P'`;
+                ctx.fillText('Cargando...', canvasEl.width / 2, canvasEl.height / 2);
+            }
+        }
+
         function drawMazeResultScreen(resultType) {
             if (!ctx || !canvasEl) return;
             ctx.fillStyle = "#374151";
@@ -3618,6 +3737,12 @@
                 } else {
                     mirrorEffect.active = false;
                 }
+            }
+
+            if (isModeSelectionActive) {
+                drawModeSelectionScreen();
+                updateMainButtonStates();
+                return;
             }
 
             if (screenState.showFreeModeCover && !screenState.gameActuallyStarted) {
@@ -5048,7 +5173,21 @@ async function startGame(isRestart = false) {
         rightButton.addEventListener("click", () => changeDirection("right"));
 
 
-        startButton.addEventListener("click", () => startGame(false));
+        startButton.addEventListener("click", () => {
+            if (isModeSelectionActive) {
+                if (modeSelectionIndex === 0) return;
+                gameModeSelector.value = modeSelectionMap[modeSelectionIndex];
+                updateGameModeUI();
+                saveGameSettings();
+                modeOverlay.classList.add('hidden');
+                isModeSelectionActive = false;
+                screenState.showModeSelection = false;
+                startButton.textContent = 'Empezar';
+                initializeGameLogic();
+                return;
+            }
+            startGame(false);
+        });
         restartMazeButton.addEventListener("click", () => startGame(true));
         
         window.addEventListener('resize', resizeGameElements); 
@@ -5344,7 +5483,7 @@ async function startGame(isRestart = false) {
 
                         if (splashScreen) splashScreen.classList.add('hidden');
                         if (gameContainer) gameContainer.classList.remove('hidden');
-                        initializeGameLogic(); // This will handle playing HTML5 audio if enabled
+                        openModeSelection();
                     } catch (error) {
                         console.error("Error within splash start button click handler:", error);
                     }
@@ -5353,7 +5492,7 @@ async function startGame(isRestart = false) {
                 console.error("Botón de inicio del splash no encontrado!");
                 if (splashScreen) splashScreen.classList.add('hidden');
                 if (gameContainer) gameContainer.classList.remove('hidden');
-                initializeGameLogic();
+                openModeSelection();
             }
         };
     </script>
