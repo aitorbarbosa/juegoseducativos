@@ -1835,7 +1835,6 @@
         let synthsInitialized = false; // Flag to track synth initialization
         let synthEat, synthEatNoise, synthBadEat, synthWarning, synthTimeout, synthGameOver, synthStartGame, synthWin, synthCoinNoise, synthCoinChime;
         let synthModeSwitch, synthModeSelect;
-        let modeSwitchFilter;
 
 
         // --- Configuración para la animación de parpadeo del high score ---
@@ -4666,11 +4665,10 @@
             synthCoinNoise.volume.value = -8;
             synthCoinChime = new Tone.Synth({ oscillator: { type: 'triangle' }, envelope: { attack: 0.01, decay: 0.1, sustain: 0, release: 0.1 } }).toDestination();
             synthCoinChime.volume.value = -2;
-            modeSwitchFilter = new Tone.Filter({ type: "highpass", frequency: 200 }).toDestination();
-            synthModeSwitch = new Tone.NoiseSynth({ noise: { type: "white" }, envelope: { attack: 0.01, decay: 0.3, sustain: 0, release: 0.2 } }).connect(modeSwitchFilter);
-            synthModeSwitch.volume.value = -5;
-            synthModeSelect = new Tone.NoiseSynth({ noise: { type: 'white' }, envelope: { attack: 0.005, decay: 0.2, sustain: 0, release: 0.2 } }).toDestination();
-            synthModeSelect.volume.value = -3;
+            synthModeSwitch = new Tone.Synth({ oscillator: { type: 'square' }, envelope: { attack: 0.005, decay: 0.1, sustain: 0, release: 0.05 } }).toDestination();
+            synthModeSwitch.volume.value = -2;
+            synthModeSelect = new Tone.Synth({ oscillator: { type: 'triangle' }, envelope: { attack: 0.005, decay: 0.15, sustain: 0, release: 0.05 } }).toDestination();
+            synthModeSelect.volume.value = -2;
             // synthSplashStart is initialized in window.onload
 
             synthsInitialized = true;
@@ -4997,11 +4995,10 @@ async function startGame(isRestart = false) {
                     synthCoinNoise.triggerAttackRelease(duration, now);
                     synthCoinChime.triggerAttackRelease("C6", "16n", now + Math.max(0, duration - 0.1));
                 } else if (type === 'modeSwitch' && synthModeSwitch) {
-                    modeSwitchFilter.frequency.setValueAtTime(200, now);
-                    modeSwitchFilter.frequency.linearRampToValueAtTime(1000, now + 0.15);
-                    synthModeSwitch.triggerAttackRelease(0.15, now);
+                    synthModeSwitch.triggerAttackRelease('C5', '16n', now);
                 } else if (type === 'modeSelect' && synthModeSelect) {
-                    synthModeSelect.triggerAttackRelease(0.25, now);
+                    synthModeSelect.triggerAttackRelease('G4', '16n', now);
+                    synthModeSelect.triggerAttackRelease('C5', '16n', now + 0.1);
                 }
             } catch (error) { console.error("Error al reproducir sonido con Tone.js:", error); }
         }
