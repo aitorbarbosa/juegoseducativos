@@ -1188,6 +1188,29 @@
             ctx.drawImage(tempCanvas, x, y);
         }
 
+        // Draws an image as one face of a rotating cube
+        function drawImageYRot(img, angle, dir) {
+            if (!img || !img.complete || img.naturalHeight === 0) return;
+            const w = canvasEl.width;
+            const h = canvasEl.height;
+            ctx.save();
+            // keep the cube edge fixed in the center while rotating
+            const edgeOffset = dir * Math.sin(angle) * w / 2;
+            ctx.translate(w / 2 - edgeOffset, h / 2);
+            const cos = Math.cos(angle);
+            const sin = Math.sin(angle);
+            ctx.transform(cos, 0, dir * sin, 1, 0, 0);
+            ctx.drawImage(img, -w / 2, -h / 2, w, h);
+            ctx.restore();
+        }
+
+        function drawBevel(progress) {
+            const alpha = Math.sin(progress * Math.PI) * 0.3;
+            ctx.fillStyle = `rgba(0,0,0,${alpha})`;
+            const lineWidth = 6;
+            ctx.fillRect(canvasEl.width / 2 - lineWidth / 2, 0, lineWidth, canvasEl.height);
+        }
+
         // Selección de elementos del DOM
         const splashScreen = document.getElementById("splash-screen"); 
         const canvasEl = document.getElementById("gameCanvas"); 
@@ -1743,6 +1766,11 @@
         let modeSelectIndex = 0;
         const MODE_SELECT_ORDER = ['intro', 'levels', 'freeMode', 'classification', 'maze'];
         let showModeSelect = false;
+        const MODE_TRANSITION_DURATION = 300; // ms
+        const MODE_TRANSITION_MAX_ANGLE = Math.PI / 2; // 90deg cube turn
+        let modeTransitionStart = null;
+        let modeTransitionDir = 0;
+        let modeTransitionFrom = 0;
 
         const DIFFICULTY_SETTINGS = {
             easy: { speed: 200, initialLifespan: 11000 }, 
@@ -3775,23 +3803,48 @@
             }
         }
 
+        function getModeImage(mode) {
+            if (mode === 'intro') return modeSelectIntroImg;
+            if (mode === 'levels') return modeSelectLevelsImg;
+            if (mode === 'freeMode') return modeSelectFreeImg;
+            if (mode === 'classification') return modeSelectClassificationImg;
+            return modeSelectMazeImg;
+        }
+
         function drawModeSelection() {
             modeLeftButton.classList.remove('hidden');
             modeRightButton.classList.remove('hidden');
-            let img;
-            const mode = MODE_SELECT_ORDER[modeSelectIndex];
-            if (mode === 'intro') img = modeSelectIntroImg;
-            else if (mode === 'levels') img = modeSelectLevelsImg;
-            else if (mode === 'freeMode') img = modeSelectFreeImg;
-            else if (mode === 'classification') img = modeSelectClassificationImg;
-            else img = modeSelectMazeImg;
-            if (img && img.complete && img.naturalHeight !== 0) {
-                ctx.drawImage(img, 0, 0, canvasEl.width, canvasEl.height);
+
+            const now = performance.now();
+            let progress = 1;
+            if (modeTransitionStart !== null) {
+                progress = Math.min((now - modeTransitionStart) / MODE_TRANSITION_DURATION, 1);
+            }
+
+            const fromImg = getModeImage(MODE_SELECT_ORDER[modeTransitionStart !== null ? modeTransitionFrom : modeSelectIndex]);
+            const toImg = getModeImage(MODE_SELECT_ORDER[modeSelectIndex]);
+
+            if (modeTransitionStart !== null && progress < 1) {
+                const dir = modeTransitionDir;
+                const angle = MODE_TRANSITION_MAX_ANGLE * progress;
+                if (fromImg && fromImg.complete && fromImg.naturalHeight !== 0) {
+                    drawImageYRot(fromImg, dir * angle, dir);
+                }
+                if (toImg && toImg.complete && toImg.naturalHeight !== 0) {
+                    drawImageYRot(toImg, dir * (angle - MODE_TRANSITION_MAX_ANGLE), dir);
+                }
+                drawBevel(progress);
+                requestAnimationFrame(draw);
             } else {
-                ctx.fillStyle = 'white';
-                ctx.textAlign = 'center';
-                ctx.font = `${Math.floor(canvasEl.width / 15)}px 'Press Start 2P'`;
-                ctx.fillText('Selecciona modo', canvasEl.width / 2, canvasEl.height / 2);
+                modeTransitionStart = null;
+                if (toImg && toImg.complete && toImg.naturalHeight !== 0) {
+                    ctx.drawImage(toImg, 0, 0, canvasEl.width, canvasEl.height);
+                } else {
+                    ctx.fillStyle = 'white';
+                    ctx.textAlign = 'center';
+                    ctx.font = `${Math.floor(canvasEl.width / 15)}px 'Press Start 2P'`;
+                    ctx.fillText('Selecciona modo', canvasEl.width / 2, canvasEl.height / 2);
+                }
             }
         }
 
@@ -5278,6 +5331,7 @@ async function startGame(isRestart = false) {
                 gameModeSelector.value = selectedMode;
                 gameMode = selectedMode;
                 showModeSelect = false;
+                modeTransitionStart = null;
 
                 screenState.showCoverForWorld = 0;
                 screenState.showLevelCompleteCover = 0;
@@ -5376,14 +5430,21 @@ async function startGame(isRestart = false) {
         leftButton.addEventListener("click", () => changeDirection("left"));
         rightButton.addEventListener("click", () => changeDirection("right"));
 
-        modeLeftButton.addEventListener("click", () => {
-            modeSelectIndex = (modeSelectIndex - 1 + MODE_SELECT_ORDER.length) % MODE_SELECT_ORDER.length;
+        function startModeTransition(dir) {
+            if (modeTransitionStart !== null) return;
+            modeTransitionDir = dir;
+            modeTransitionFrom = modeSelectIndex;
+            modeSelectIndex = (modeSelectIndex + dir + MODE_SELECT_ORDER.length) % MODE_SELECT_ORDER.length;
+            modeTransitionStart = performance.now();
             draw();
+        }
+
+        modeLeftButton.addEventListener("click", () => {
+            startModeTransition(-1);
             if (areSfxEnabled) playSound('modeSwitch');
         });
         modeRightButton.addEventListener("click", () => {
-            modeSelectIndex = (modeSelectIndex + 1) % MODE_SELECT_ORDER.length;
-            draw();
+            startModeTransition(1);
             if (areSfxEnabled) playSound('modeSwitch');
         });
 
@@ -5692,6 +5753,7 @@ async function startGame(isRestart = false) {
                         if (gameContainer) gameContainer.classList.remove('hidden');
                         modeSelectIndex = 0;
                         showModeSelect = true;
+                        modeTransitionStart = null;
                         screenState.showCoverForWorld = 0;
                         screenState.showLevelCompleteCover = 0;
                         screenState.showWorldCompleteCover = 0;
