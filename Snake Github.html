@@ -910,6 +910,54 @@
                 padding-bottom: 20px;
             }
         }
+
+        /* Efecto de rotación para la selección de juego */
+        #game-mode-control-group {
+            perspective: 600px;
+        }
+
+        #gameModeSelector.cube-rotate {
+            animation: cubeRotate 0.6s ease-in-out;
+            transform-style: preserve-3d;
+        }
+
+        @keyframes cubeRotate {
+            0% { transform: rotateY(0deg); }
+            50% { transform: rotateY(90deg); }
+            100% { transform: rotateY(0deg); }
+        }
+
+        /* Visual transition for mode selection images */
+        #mode-image-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            pointer-events: none;
+            perspective: 800px;
+        }
+
+        #mode-image-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            backface-visibility: hidden;
+        }
+
+        #mode-image-container.cube-rotate {
+            animation: modeCubeRotate 0.6s ease-in-out;
+        }
+
+        @keyframes modeCubeRotate {
+            0% { transform: rotateY(0deg); }
+            49% { transform: rotateY(90deg); }
+            50% { transform: rotateY(-90deg); }
+            100% { transform: rotateY(0deg); }
+        }
     </style>
 </head>
 <body>
@@ -969,6 +1017,9 @@
         </div>
         
         <canvas id="gameCanvas"></canvas>
+        <div id="mode-image-container" class="hidden">
+            <img id="mode-image" src="" alt="Imagen modo">
+        </div>
         <button id="mode-left-button" class="mode-nav-button hidden" aria-label="Modo anterior">
             <svg class="arrow-svg" viewBox="0 0 24 24"><path d="M15.41 7.41L10.83 12l4.58 4.59L14 18l-6-6 6-6z"/></svg>
         </button>
@@ -1247,6 +1298,8 @@
 
         const modeLeftButton = document.getElementById("mode-left-button");
         const modeRightButton = document.getElementById("mode-right-button");
+        const modeImageContainer = document.getElementById("mode-image-container");
+        const modeImage = document.getElementById("mode-image");
 
         // New DOM elements for specific info panel
         const specificInfoPanel = document.getElementById("specific-info-panel");
@@ -1961,6 +2014,14 @@
                 img.onload = () => { if (showModeSelect && ctx) requestAnimationFrame(draw); };
                 img.onerror = () => { console.error(`Error al cargar imagen: ${img.src}`); if (showModeSelect && ctx) requestAnimationFrame(draw); };
             });
+        }
+
+        function getModeSelectionImageSrc(mode) {
+            if (mode === 'intro') return modeSelectIntroImg.src;
+            if (mode === 'levels') return modeSelectLevelsImg.src;
+            if (mode === 'freeMode') return modeSelectFreeImg.src;
+            if (mode === 'classification') return modeSelectClassificationImg.src;
+            return modeSelectMazeImg.src;
         }
 
         function loadSkinImages() {
@@ -3778,6 +3839,7 @@
         function drawModeSelection() {
             modeLeftButton.classList.remove('hidden');
             modeRightButton.classList.remove('hidden');
+            modeImageContainer.classList.remove('hidden');
             let img;
             const mode = MODE_SELECT_ORDER[modeSelectIndex];
             if (mode === 'intro') img = modeSelectIntroImg;
@@ -3793,6 +3855,7 @@
                 ctx.font = `${Math.floor(canvasEl.width / 15)}px 'Press Start 2P'`;
                 ctx.fillText('Selecciona modo', canvasEl.width / 2, canvasEl.height / 2);
             }
+            modeImage.src = getModeSelectionImageSrc(mode);
         }
 
 
@@ -3808,6 +3871,7 @@
             } else {
                 modeLeftButton.classList.add('hidden');
                 modeRightButton.classList.add('hidden');
+                modeImageContainer.classList.add('hidden');
             }
 
             let speedBoostVisible = false;
@@ -5172,6 +5236,8 @@ async function startGame(isRestart = false) {
         });
         
         gameModeSelector.addEventListener('change', () => {
+            gameModeSelector.classList.add('cube-rotate');
+            setTimeout(() => { gameModeSelector.classList.remove('cube-rotate'); }, 600);
             const previousMode = gameMode;
             gameMode = gameModeSelector.value; // Update gameMode first
 
@@ -5278,6 +5344,7 @@ async function startGame(isRestart = false) {
                 gameModeSelector.value = selectedMode;
                 gameMode = selectedMode;
                 showModeSelect = false;
+                modeImageContainer.classList.add('hidden');
 
                 screenState.showCoverForWorld = 0;
                 screenState.showLevelCompleteCover = 0;
@@ -5376,16 +5443,23 @@ async function startGame(isRestart = false) {
         leftButton.addEventListener("click", () => changeDirection("left"));
         rightButton.addEventListener("click", () => changeDirection("right"));
 
-        modeLeftButton.addEventListener("click", () => {
-            modeSelectIndex = (modeSelectIndex - 1 + MODE_SELECT_ORDER.length) % MODE_SELECT_ORDER.length;
-            draw();
+        function triggerModeTransition(direction) {
+            const newIndex = (modeSelectIndex + direction + MODE_SELECT_ORDER.length) % MODE_SELECT_ORDER.length;
+            const newMode = MODE_SELECT_ORDER[newIndex];
+            modeImageContainer.classList.add('cube-rotate');
+            setTimeout(() => {
+                modeSelectIndex = newIndex;
+                modeImage.src = getModeSelectionImageSrc(newMode);
+                draw();
+            }, 300);
+            setTimeout(() => {
+                modeImageContainer.classList.remove('cube-rotate');
+            }, 600);
             if (areSfxEnabled) playSound('modeSwitch');
-        });
-        modeRightButton.addEventListener("click", () => {
-            modeSelectIndex = (modeSelectIndex + 1) % MODE_SELECT_ORDER.length;
-            draw();
-            if (areSfxEnabled) playSound('modeSwitch');
-        });
+        }
+
+        modeLeftButton.addEventListener("click", () => triggerModeTransition(-1));
+        modeRightButton.addEventListener("click", () => triggerModeTransition(1));
 
         startButton.addEventListener("click", handleStartClick);
         restartMazeButton.addEventListener("click", () => startGame(true));
@@ -5692,6 +5766,8 @@ async function startGame(isRestart = false) {
                         if (gameContainer) gameContainer.classList.remove('hidden');
                         modeSelectIndex = 0;
                         showModeSelect = true;
+                        modeImage.src = getModeSelectionImageSrc(MODE_SELECT_ORDER[modeSelectIndex]);
+                        modeImageContainer.classList.remove('hidden');
                         screenState.showCoverForWorld = 0;
                         screenState.showLevelCompleteCover = 0;
                         screenState.showWorldCompleteCover = 0;
