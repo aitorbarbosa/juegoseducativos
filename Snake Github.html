@@ -1295,6 +1295,7 @@
         const mazePartialImg = new Image();
         const mazePerfectImg = new Image();
         const mazeCompleteImg = new Image();
+        const mazeFinalImg = new Image();
         const mazeAllStarsImg = new Image();
         const timeoutImg = new Image();
 
@@ -1368,7 +1369,7 @@
         };
 
         let worldImagesLoaded = 0;
-        const totalWorldImagesToLoad = Object.keys(worldImagesConfig).length * 4 + 9;
+        const totalWorldImagesToLoad = Object.keys(worldImagesConfig).length * 4 + 10;
         // --- FIN: Declaración de Objetos Image ---
 
         // --- Música de fondo y SFX ---
@@ -1932,6 +1933,7 @@
             mazePartialImg.src = 'https://i.imgur.com/04vASxK.png';
             mazePerfectImg.src = 'https://i.imgur.com/YKVlhix.png';
             mazeCompleteImg.src = 'https://i.imgur.com/0s9b6JB.png';
+            mazeFinalImg.src = 'https://i.imgur.com/dga8Z3q.png';
             mazeAllStarsImg.src = 'https://i.imgur.com/grMD2kr.png';
             timeoutImg.src = 'https://i.imgur.com/uEjzFbY.png';
 
@@ -1943,7 +1945,7 @@
                 ...Object.values(defeatImages),
                 freeModeCoverImg, classificationModeCoverImg, mazeModeCoverImg,
                 mazeFailImg, mazePartialImg, mazePerfectImg, mazeCompleteImg,
-                mazeAllStarsImg, timeoutImg
+                mazeFinalImg, mazeAllStarsImg, timeoutImg
             ];
 
             allWorldImages.forEach(img => {
@@ -3426,10 +3428,16 @@
             const previousStars = mazePreviousStars;
             const improved = mazeStarsEarned > previousStars;
 
-            if (improved && mazeStarsEarned >= MAZE_STAR_TARGETS.length) {
+            if (isLastLevel && improved && mazeStarsEarned >= 3) {
+                levelWon = true;
+                resultType = 'final';
+                startButton.textContent = 'Ajustes';
+                restartMazeButton.classList.add('hidden');
+                startButtonWrapperEl.classList.remove('split');
+            } else if (improved && mazeStarsEarned >= MAZE_STAR_TARGETS.length) {
                 levelWon = true;
                 if (isLastLevel) {
-                    resultType = 'complete';
+                    resultType = 'final';
                     startButton.textContent = 'Ajustes';
                 } else {
                     resultType = 'perfect';
@@ -3826,6 +3834,7 @@
             else if (resultType === 'partial') img = mazePartialImg;
             else if (resultType === 'perfect') img = mazePerfectImg;
             else if (resultType === 'complete') img = mazeCompleteImg;
+            else if (resultType === 'final') img = mazeFinalImg;
             else if (resultType === 'allstars') img = mazeAllStarsImg;
             if (img && img.complete && img.naturalHeight !== 0) {
                 ctx.drawImage(img, 0, 0, canvasEl.width, canvasEl.height);
@@ -3838,6 +3847,7 @@
                     partial: 'Continuar',
                     perfect: 'Perfecto',
                     complete: '¡Completado!',
+                    final: '¡Completado!',
                     allstars: '¡Completado!'
                 };
                 ctx.fillText(textMap[resultType] || '', canvasEl.width / 2, canvasEl.height / 2);
