@@ -1374,7 +1374,26 @@
         let generalBackgroundMusic; 
         let inGameBackgroundMusic;  
         const generalBackgroundMusicURL = 'https://raw.githubusercontent.com/GamificAitor/JuegosEducativos/1ffc16f7db7280cf31d5e7209c5c23e7d533d1e3/Instrumental%20fondo%20-%20Recuerdos%20Pixelados%20(1).mp3';
-        const inGameBackgroundMusicURL = 'https://raw.githubusercontent.com/GamificAitor/JuegosEducativos/3aeda14c787b0f8775a3b655d2d4953d289ef883/Serpiente%20de%20Ne%C3%B3n.mp3';
+        const inGameBackgroundMusicURL = 'https://raw.githubusercontent.com/GamificAitor/JuegosEducativos/4d5668697896de0068c5e942daf03042543721b5/Valle%20del%20despertar%20-%20Serpiente%20de%20Ne%C3%B3n.mp3';
+
+        const WORLD_MUSIC_URLS = {
+            1: 'https://raw.githubusercontent.com/GamificAitor/JuegosEducativos/4d5668697896de0068c5e942daf03042543721b5/Valle%20del%20despertar%20-%20Serpiente%20de%20Ne%C3%B3n.mp3',
+            2: 'https://raw.githubusercontent.com/GamificAitor/JuegosEducativos/4d5668697896de0068c5e942daf03042543721b5/Cueva%20del%20crecimiento%20-%20La%20Serpiente%20de%20Ne%C3%B3n.mp3',
+            3: 'https://raw.githubusercontent.com/GamificAitor/JuegosEducativos/4d5668697896de0068c5e942daf03042543721b5/Templo%20de%20la%20Agilidad-%20Serpiente%20de%20Ne%C3%B3n.mp3',
+            4: 'https://raw.githubusercontent.com/GamificAitor/JuegosEducativos/4d5668697896de0068c5e942daf03042543721b5/Hambre%20Voraz%20-%20Serpiente%20de%20Ne%C3%B3n.mp3',
+            5: 'https://raw.githubusercontent.com/GamificAitor/JuegosEducativos/4d5668697896de0068c5e942daf03042543721b5/Doble%20o%20nada%2C%20comestibles%20dorados%20-%20Serpiente%20de%20Ne%C3%B3n.mp3',
+            6: 'https://raw.githubusercontent.com/GamificAitor/JuegosEducativos/4d5668697896de0068c5e942daf03042543721b5/Racha%20demoledora%20-%20La%20serpiente%20de%20ne%C3%B3n.mp3',
+            7: 'https://raw.githubusercontent.com/GamificAitor/JuegosEducativos/4d5668697896de0068c5e942daf03042543721b5/Bosque%20de%20los%20enga%C3%B1os%20-%20Serpiente%20de%20Ne%C3%B3n.mp3',
+            8: 'https://raw.githubusercontent.com/GamificAitor/JuegosEducativos/4d5668697896de0068c5e942daf03042543721b5/Jard%C3%ADn%20de%20los%20Peligros%20-%20Serpiente%20de%20Ne%C3%B3n.mp3',
+            9: 'https://raw.githubusercontent.com/GamificAitor/JuegosEducativos/4d5668697896de0068c5e942daf03042543721b5/Lago%20del%20Reflejo%20-%20Serpiente%20de%20Ne%C3%B3n.mp3',
+            10:'https://raw.githubusercontent.com/GamificAitor/JuegosEducativos/4d5668697896de0068c5e942daf03042543721b5/Final%20Inesperado%20-%20serpiente%20de%20ne%C3%B3n.mp3'
+        };
+
+        const MODE_MUSIC_URLS = {
+            maze: 'https://raw.githubusercontent.com/GamificAitor/JuegosEducativos/4d5668697896de0068c5e942daf03042543721b5/Serpiente%20de%20Ne%C3%B3n%20-%20Laberinto.mp3',
+            freeMode: 'https://raw.githubusercontent.com/GamificAitor/JuegosEducativos/bc07b0e83b7df448cb82a9a6b8a5ae4196d06758/Modo%20libre%20-%20Serpiente%20de%20Ne%C3%B3n.mp3',
+            classification: 'https://raw.githubusercontent.com/GamificAitor/JuegosEducativos/ecfea23c17b11d743d5bade6b5ef8e025ea1fff6/Modo%20clasificaci%C3%B3n%20-%20Serpiente%20de%20Ne%C3%B3n.mp3'
+        };
         let synthSplashStart; 
         const MAX_ACTUAL_SLIDER_MAPPED_VOLUME = 0.2; 
 
@@ -4822,16 +4841,33 @@ async function startGame(isRestart = false) {
                  playSound('startGame');
             }
 
+            let desiredMusic = inGameBackgroundMusicURL;
+            if (gameMode === 'levels') {
+                desiredMusic = WORLD_MUSIC_URLS[currentWorld] || inGameBackgroundMusicURL;
+            } else if (gameMode === 'maze') {
+                desiredMusic = MODE_MUSIC_URLS.maze;
+            } else if (gameMode === 'freeMode') {
+                desiredMusic = MODE_MUSIC_URLS.freeMode;
+            } else if (gameMode === 'classification') {
+                desiredMusic = MODE_MUSIC_URLS.classification;
+            }
+            let sourceChanged = false;
+            if (inGameBackgroundMusic && inGameBackgroundMusic.src !== desiredMusic) {
+                inGameBackgroundMusic.src = desiredMusic;
+                sourceChanged = true;
+            }
 
-            if (generalBackgroundMusic) { 
+            if (generalBackgroundMusic) {
                 generalBackgroundMusic.pause();
                 console.log("Música general pausada (startGame).");
             }
-            if (isMusicEnabled && inGameBackgroundMusic) { 
-                inGameBackgroundMusic.currentTime = 0; 
+            if (isMusicEnabled && inGameBackgroundMusic) {
+                if (sourceChanged) {
+                    inGameBackgroundMusic.currentTime = 0;
+                }
                 inGameBackgroundMusic.play().catch(e => console.error("Error al reproducir música de partida (startGame):", e));
                 console.log("Música de partida iniciada (startGame).");
-            } else if (inGameBackgroundMusic) { 
+            } else if (inGameBackgroundMusic) {
                 inGameBackgroundMusic.pause();
             }
 
@@ -5594,14 +5630,14 @@ async function startGame(isRestart = false) {
                 // Music playback logic based on current game state
                 const isSettingsOpen = settingsPanel && !settingsPanel.classList.contains("settings-panel-hidden");
                 const isInfoOpen = infoPanel && !infoPanel.classList.contains("info-panel-hidden");
-                if (isMusicEnabled && !gameIntervalId && !gameOver && !isSettingsOpen && !isInfoOpen && !screenState.showCoverForWorld && !screenState.showWorldCompleteCover && !screenState.showLevelCompleteCover && !screenState.showDefeatCoverForWorld && !screenState.showFreeModeCover && !screenState.showClassificationCover) {
+                if (isMusicEnabled && !gameIntervalId && !gameOver && !isSettingsOpen && !isInfoOpen && !screenState.showCoverForWorld && !screenState.showWorldCompleteCover && !screenState.showLevelCompleteCover && !screenState.showDefeatCoverForWorld && !screenState.showFreeModeCover && !screenState.showClassificationCover && !screenState.showMazeCover && !screenState.mazeResultType) {
                     if (inGameBackgroundMusic && !inGameBackgroundMusic.paused) {
                         inGameBackgroundMusic.pause();
                     }
                     if (generalBackgroundMusic && generalBackgroundMusic.paused) {
                         generalBackgroundMusic.play().catch(e => console.warn("Reproducción automática de música general (initializeGameLogic) fallida:", e));
                     }
-                } else if (!isMusicEnabled || screenState.showCoverForWorld || screenState.showWorldCompleteCover || screenState.showLevelCompleteCover || screenState.showDefeatCoverForWorld || screenState.showFreeModeCover || screenState.showClassificationCover) { // Pause if music disabled or any cover shown
+                } else if (!isMusicEnabled || screenState.showCoverForWorld || screenState.showWorldCompleteCover || screenState.showLevelCompleteCover || screenState.showDefeatCoverForWorld || screenState.showFreeModeCover || screenState.showClassificationCover || screenState.showMazeCover || screenState.mazeResultType) { // Pause if music disabled or any cover shown
                     if (generalBackgroundMusic) generalBackgroundMusic.pause();
                     if (inGameBackgroundMusic) inGameBackgroundMusic.pause();
                 }
