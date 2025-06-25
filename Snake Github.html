@@ -1476,6 +1476,7 @@
         const MAZE_LEVEL_COUNT = 10;
         let currentMazeLevel = 1;
         let mazeLevelStars = Array(MAZE_LEVEL_COUNT).fill(0);
+        let mazePreviousStars = 0; // Stars achieved before starting the current run
 
         const MAZE_LAYOUTS = {
             // Nivel 1 - bloques en las esquinas
@@ -3413,7 +3414,11 @@
             let levelWon = false;
             let resultType = 'fail';
 
-            if (mazeStarsEarned >= MAZE_STAR_TARGETS.length && timeRemaining > 0) {
+            const levelIndex = displayMazeLevel - 1;
+            const previousStars = mazePreviousStars;
+            const improved = mazeStarsEarned > previousStars && timeRemaining > 0;
+
+            if (improved && mazeStarsEarned >= MAZE_STAR_TARGETS.length) {
                 levelWon = true;
                 if (isLastLevel) {
                     resultType = 'complete';
@@ -3421,16 +3426,14 @@
                 } else {
                     resultType = 'perfect';
                     startButton.textContent = 'Continuar';
-                    // El avance de nivel ya se ha realizado automáticamente
                 }
                 restartMazeButton.classList.add('hidden');
                 startButtonWrapperEl.classList.remove('split');
-            } else if (mazeStarsEarned >= 3) {
+            } else if (improved && mazeStarsEarned >= 3) {
                 if (!isLastLevel) {
                     levelWon = true;
                     resultType = 'partial';
                     startButton.textContent = 'Continuar';
-                    // El avance de nivel ya se ha realizado automáticamente
                     restartMazeButton.classList.remove('hidden');
                     startButtonWrapperEl.classList.add('split');
                 } else {
@@ -3450,11 +3453,8 @@
             }
 
             const levelIndex = displayMazeLevel - 1;
-            if (levelIndex >= 0 && levelIndex < MAZE_LEVEL_COUNT) {
-                const previousStars = mazeLevelStars[levelIndex] || 0;
-                if (mazeStarsEarned > previousStars) {
-                    mazeLevelStars[levelIndex] = mazeStarsEarned;
-                }
+            if (levelIndex >= 0 && levelIndex < MAZE_LEVEL_COUNT && mazeStarsEarned > mazePreviousStars) {
+                mazeLevelStars[levelIndex] = mazeStarsEarned;
             }
 
             saveGameSettings();
@@ -4814,9 +4814,10 @@ async function startGame(isRestart = false) {
                     console.warn("Attempting to start a level beyond defined targets. Using last target score.");
                 }
             } else if (gameMode === 'maze') {
-                mazeStarsEarned = mazeLevelStars[displayMazeLevel - 1] || 0;
-                if (mazeStarsEarned < MAZE_STAR_TARGETS.length) {
-                    displayTargetScore = MAZE_STAR_TARGETS[mazeStarsEarned];
+                mazePreviousStars = mazeLevelStars[displayMazeLevel - 1] || 0;
+                mazeStarsEarned = mazePreviousStars;
+                if (mazePreviousStars < MAZE_STAR_TARGETS.length) {
+                    displayTargetScore = MAZE_STAR_TARGETS[mazePreviousStars];
                 } else {
                     displayTargetScore = MAZE_STAR_TARGETS[MAZE_STAR_TARGETS.length - 1];
                 }
@@ -5210,9 +5211,10 @@ async function startGame(isRestart = false) {
                 }
 
                 displayMazeLevel = newLevel;
-                mazeStarsEarned = mazeLevelStars[newLevel - 1] || 0;
-                if (mazeStarsEarned < MAZE_STAR_TARGETS.length) {
-                    displayTargetScore = MAZE_STAR_TARGETS[mazeStarsEarned];
+                mazePreviousStars = mazeLevelStars[newLevel - 1] || 0;
+                mazeStarsEarned = mazePreviousStars;
+                if (mazePreviousStars < MAZE_STAR_TARGETS.length) {
+                    displayTargetScore = MAZE_STAR_TARGETS[mazePreviousStars];
                 } else {
                     displayTargetScore = MAZE_STAR_TARGETS[MAZE_STAR_TARGETS.length - 1];
                 }
@@ -5306,9 +5308,10 @@ async function startGame(isRestart = false) {
             } else { // maze mode
                 // Sync displayed level with actual progress when entering maze mode
                 displayMazeLevel = currentMazeLevel;
-                mazeStarsEarned = mazeLevelStars[displayMazeLevel - 1] || 0;
-                if (mazeStarsEarned < MAZE_STAR_TARGETS.length) {
-                    displayTargetScore = MAZE_STAR_TARGETS[mazeStarsEarned];
+                mazePreviousStars = mazeLevelStars[displayMazeLevel - 1] || 0;
+                mazeStarsEarned = mazePreviousStars;
+                if (mazePreviousStars < MAZE_STAR_TARGETS.length) {
+                    displayTargetScore = MAZE_STAR_TARGETS[mazePreviousStars];
                 } else {
                     displayTargetScore = MAZE_STAR_TARGETS[MAZE_STAR_TARGETS.length - 1];
                 }
@@ -5582,9 +5585,10 @@ async function startGame(isRestart = false) {
                     displayTargetScore = TARGET_SCORES_LEVELS[TARGET_SCORES_LEVELS.length -1];
                 }
             } else if (gameMode === 'maze') {
-                mazeStarsEarned = mazeLevelStars[displayMazeLevel - 1] || 0;
-                if (mazeStarsEarned < MAZE_STAR_TARGETS.length) {
-                    displayTargetScore = MAZE_STAR_TARGETS[mazeStarsEarned];
+                mazePreviousStars = mazeLevelStars[displayMazeLevel - 1] || 0;
+                mazeStarsEarned = mazePreviousStars;
+                if (mazePreviousStars < MAZE_STAR_TARGETS.length) {
+                    displayTargetScore = MAZE_STAR_TARGETS[mazePreviousStars];
                 } else {
                     displayTargetScore = MAZE_STAR_TARGETS[MAZE_STAR_TARGETS.length - 1];
                 }
