@@ -3471,8 +3471,19 @@
                 resultType = 'allstars';
             }
 
-            screenState.mazeResultType = resultType;
-            return levelWon;
+        screenState.mazeResultType = resultType;
+        return levelWon;
+        }
+
+        function getNextIncompleteMazeLevel(currentLevel) {
+            let next = currentLevel + 1;
+            while (next <= currentMazeLevel && mazeLevelStars[next - 1] >= MAZE_STAR_TARGETS.length) {
+                next++;
+            }
+            if (next <= currentMazeLevel) {
+                return next;
+            }
+            return currentMazeLevel;
         }
 
 
@@ -4780,7 +4791,11 @@ async function startGame(isRestart = false) {
         if (isRestart && (screenState.mazeResultType === 'partial' || screenState.mazeResultType === 'perfect')) {
             displayMazeLevel = Math.max(1, currentMazeLevel - 1);
         } else if (screenState.mazeResultType === 'partial' || screenState.mazeResultType === 'perfect') {
-            displayMazeLevel = currentMazeLevel;
+            if (displayMazeLevel < currentMazeLevel) {
+                displayMazeLevel = getNextIncompleteMazeLevel(displayMazeLevel);
+            } else {
+                displayMazeLevel = currentMazeLevel;
+            }
         }
     }
             
