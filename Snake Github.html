@@ -3416,7 +3416,7 @@
 
             const levelIndex = displayMazeLevel - 1;
             const previousStars = mazePreviousStars;
-            const improved = mazeStarsEarned > previousStars && timeRemaining > 0;
+            const improved = mazeStarsEarned > previousStars;
 
             if (improved && mazeStarsEarned >= MAZE_STAR_TARGETS.length) {
                 levelWon = true;
