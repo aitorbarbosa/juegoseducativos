@@ -1296,6 +1296,7 @@
         const mazePerfectImg = new Image();
         const mazeCompleteImg = new Image();
         const mazeAllStarsImg = new Image();
+        const timeUpImg = new Image();
 
         const worldCoverImages = {
             1: new Image(),
@@ -1367,7 +1368,7 @@
         };
 
         let worldImagesLoaded = 0;
-        const totalWorldImagesToLoad = Object.keys(worldImagesConfig).length * 4 + 8;
+        const totalWorldImagesToLoad = Object.keys(worldImagesConfig).length * 4 + 9;
         // --- FIN: Declaración de Objetos Image ---
 
         // --- Música de fondo y SFX ---
@@ -1757,7 +1758,8 @@
             showClassificationCover: false,
             showMazeCover: false,
             mazeResultType: '',
-            gameActuallyStarted: false
+            gameActuallyStarted: false,
+            timeUp: false
         };
         let modeSelectIndex = 0;
         const MODE_SELECT_ORDER = ['intro', 'levels', 'freeMode', 'classification', 'maze'];
@@ -1929,6 +1931,7 @@
             mazePerfectImg.src = 'https://i.imgur.com/YKVlhix.png';
             mazeCompleteImg.src = 'https://i.imgur.com/0s9b6JB.png';
             mazeAllStarsImg.src = 'https://i.imgur.com/grMD2kr.png';
+            timeUpImg.src = 'https://i.imgur.com/uEjzFbY.png';
 
 
             const allWorldImages = [
@@ -1938,7 +1941,7 @@
                 ...Object.values(defeatImages),
                 freeModeCoverImg, classificationModeCoverImg, mazeModeCoverImg,
                 mazeFailImg, mazePartialImg, mazePerfectImg, mazeCompleteImg,
-                mazeAllStarsImg
+                mazeAllStarsImg, timeUpImg
             ];
 
             allWorldImages.forEach(img => {
@@ -2203,6 +2206,7 @@
                 const isWorldCompleteScreen = screenState.showWorldCompleteCover > 0;
                 const isLevelCompleteScreen = screenState.showLevelCompleteCover > 0 && !screenState.gameActuallyStarted;
                 const isDefeatScreen = screenState.showDefeatCoverForWorld > 0 && !screenState.gameActuallyStarted;
+                const isTimeUpScreen = screenState.timeUp && !screenState.gameActuallyStarted;
                 const isFreeModeCoverActive = screenState.showFreeModeCover && !screenState.gameActuallyStarted;
                 const isClassificationCoverActive = screenState.showClassificationCover && !screenState.gameActuallyStarted;
                 const isMazeCoverActive = screenState.showMazeCover && !screenState.gameActuallyStarted;
@@ -2221,6 +2225,8 @@
                     // Text is set by handleLevelsModeEnd
                 } else if (isWorldCompleteScreen) {
                     // Text is set by handleLevelsModeEnd
+                } else if (isTimeUpScreen) {
+                    startButton.textContent = "Reintentar";
                 } else if (isDefeatScreen) {
                     startButton.textContent = "Reintentar";
                 } else if (isMazeResultScreen) {
@@ -2239,7 +2245,7 @@
                     startButton.textContent = "Empezar";
                 }
                 
-                const isAnyCoverScreenActive = isWorldIntroCover || isWorldCompleteScreen || isLevelCompleteScreen || isDefeatScreen || isFreeModeCoverActive || isClassificationCoverActive || isMazeCoverActive || isMazeResultScreen || isModeSelectActive;
+                const isAnyCoverScreenActive = isWorldIntroCover || isWorldCompleteScreen || isLevelCompleteScreen || isDefeatScreen || isTimeUpScreen || isFreeModeCoverActive || isClassificationCoverActive || isMazeCoverActive || isMazeResultScreen || isModeSelectActive;
                 if (!isAnyCoverScreenActive && !gameOver) {
                      if (isMusicEnabled && generalBackgroundMusic && generalBackgroundMusic.paused) {
                         if (inGameBackgroundMusic && !inGameBackgroundMusic.paused) inGameBackgroundMusic.pause();
@@ -3688,7 +3694,7 @@
 
         function drawDefeatScreen(worldNumber) { // New function for defeat screen
             if (!ctx || !canvasEl) return;
-            ctx.fillStyle = "#374151"; 
+            ctx.fillStyle = "#374151";
             ctx.fillRect(0, 0, canvasEl.width, canvasEl.height);
 
             const img = defeatImages[worldNumber];
@@ -3706,6 +3712,26 @@
                     console.warn(`Imagen de derrota para Mundo ${worldNumber} aún no cargada.`);
                 } else if (img.naturalHeight === 0) {
                     console.warn(`Imagen de derrota para Mundo ${worldNumber} parece estar corrupta o no es una imagen válida.`);
+                }
+            }
+        }
+
+        function drawTimeUpScreen() {
+            if (!ctx || !canvasEl) return;
+            ctx.fillStyle = "#374151";
+            ctx.fillRect(0, 0, canvasEl.width, canvasEl.height);
+
+            if (timeUpImg && timeUpImg.complete && timeUpImg.naturalHeight !== 0) {
+                ctx.drawImage(timeUpImg, 0, 0, canvasEl.width, canvasEl.height);
+            } else {
+                ctx.fillStyle = "white";
+                ctx.textAlign = "center";
+                ctx.font = `${Math.floor(canvasEl.width / 15)}px 'Press Start 2P'`;
+                ctx.fillText(`\u00a1Tiempo agotado!`, canvasEl.width / 2, canvasEl.height / 2);
+                if (!timeUpImg.complete) {
+                    console.warn(`Imagen de tiempo agotado aún no cargada.`);
+                } else if (timeUpImg.naturalHeight === 0) {
+                    console.warn(`Imagen de tiempo agotado parece estar corrupta o no es una imagen válida.`);
                 }
             }
         }
@@ -3890,6 +3916,11 @@
             }
             if (screenState.showMazeCover && !screenState.gameActuallyStarted) {
                 drawMazeCover();
+                updateMainButtonStates();
+                return;
+            }
+            if (screenState.timeUp && !screenState.gameActuallyStarted) {
+                drawTimeUpScreen();
                 updateMainButtonStates();
                 return;
             }
@@ -4730,6 +4761,8 @@ async function startGame(isRestart = false) {
     blinkAnimation.rowIndex = -1;
     streakAnimation.active = false;
 
+    screenState.timeUp = false;
+
     // Reset any lingering speed boost or mirror effect from a previous game
     speedBoost = { active: false, color: '', change: 0, startTime: 0 };
     controlsInverted = false;
@@ -4754,6 +4787,7 @@ async function startGame(isRestart = false) {
             screenState.showFreeModeCover = false;
             screenState.showMazeCover = false;
             screenState.mazeResultType = '';
+            screenState.timeUp = false;
             restartMazeButton.classList.add('hidden');
             startButtonWrapperEl.classList.remove('split');
         
@@ -4929,7 +4963,11 @@ async function startGame(isRestart = false) {
                     gameTimeRemaining -= 1000;
                     updateTimeLengthDisplay();
                     if (gameTimeRemaining <= 0) {
-                        if (!gameOver) { gameOver = true; finalizeGameOver(); } 
+                        if (!gameOver) {
+                            screenState.timeUp = true;
+                            gameOver = true;
+                            finalizeGameOver();
+                        }
                         clearInterval(gameTimerIntervalId);
                     }
                 }, 1000);
