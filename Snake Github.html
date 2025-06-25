@@ -1834,6 +1834,7 @@
         let areSfxEnabled = true; 
         let synthsInitialized = false; // Flag to track synth initialization
         let synthEat, synthEatNoise, synthBadEat, synthWarning, synthTimeout, synthGameOver, synthStartGame, synthWin, synthCoinNoise, synthCoinChime;
+        let synthModeSwitch, synthModeSelect;
 
 
         // --- Configuración para la animación de parpadeo del high score ---
@@ -4664,9 +4665,13 @@
             synthCoinNoise.volume.value = -8;
             synthCoinChime = new Tone.Synth({ oscillator: { type: 'triangle' }, envelope: { attack: 0.01, decay: 0.1, sustain: 0, release: 0.1 } }).toDestination();
             synthCoinChime.volume.value = -2;
+            synthModeSwitch = new Tone.NoiseSynth({ noise: { type: 'white' }, envelope: { attack: 0.005, decay: 0.1, sustain: 0, release: 0.1 } }).toDestination();
+            synthModeSwitch.volume.value = -5;
+            synthModeSelect = new Tone.NoiseSynth({ noise: { type: 'white' }, envelope: { attack: 0.005, decay: 0.2, sustain: 0, release: 0.2 } }).toDestination();
+            synthModeSelect.volume.value = -3;
             // synthSplashStart is initialized in window.onload
 
-            synthsInitialized = true; 
+            synthsInitialized = true;
             console.log("Tone.js Synths initialized.");
         }
 
@@ -4989,6 +4994,10 @@ async function startGame(isRestart = false) {
                     const duration = typeof param === 'number' ? param : 1;
                     synthCoinNoise.triggerAttackRelease(duration, now);
                     synthCoinChime.triggerAttackRelease("C6", "16n", now + Math.max(0, duration - 0.1));
+                } else if (type === 'modeSwitch' && synthModeSwitch) {
+                    synthModeSwitch.triggerAttackRelease(0.15, now);
+                } else if (type === 'modeSelect' && synthModeSelect) {
+                    synthModeSelect.triggerAttackRelease(0.25, now);
                 }
             } catch (error) { console.error("Error al reproducir sonido con Tone.js:", error); }
         }
@@ -5260,6 +5269,7 @@ async function startGame(isRestart = false) {
         function handleStartClick() {
             if (showModeSelect) {
                 if (MODE_SELECT_ORDER[modeSelectIndex] === 'intro') return;
+                if (areSfxEnabled) playSound('modeSelect');
                 const selectedMode = MODE_SELECT_ORDER[modeSelectIndex];
                 gameModeSelector.value = selectedMode;
                 gameMode = selectedMode;
@@ -5364,10 +5374,12 @@ async function startGame(isRestart = false) {
         modeLeftButton.addEventListener("click", () => {
             modeSelectIndex = (modeSelectIndex - 1 + MODE_SELECT_ORDER.length) % MODE_SELECT_ORDER.length;
             draw();
+            if (areSfxEnabled) playSound('modeSwitch');
         });
         modeRightButton.addEventListener("click", () => {
             modeSelectIndex = (modeSelectIndex + 1) % MODE_SELECT_ORDER.length;
             draw();
+            if (areSfxEnabled) playSound('modeSwitch');
         });
 
         startButton.addEventListener("click", handleStartClick);
