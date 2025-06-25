@@ -910,6 +910,22 @@
                 padding-bottom: 20px;
             }
         }
+
+        /* Efecto de rotación para la selección de juego */
+        #game-mode-control-group {
+            perspective: 600px;
+        }
+
+        #gameModeSelector.cube-rotate {
+            animation: cubeRotate 0.6s ease-in-out;
+            transform-style: preserve-3d;
+        }
+
+        @keyframes cubeRotate {
+            0% { transform: rotateY(0deg); }
+            50% { transform: rotateY(90deg); }
+            100% { transform: rotateY(0deg); }
+        }
     </style>
 </head>
 <body>
@@ -5172,6 +5188,8 @@ async function startGame(isRestart = false) {
         });
         
         gameModeSelector.addEventListener('change', () => {
+            gameModeSelector.classList.add('cube-rotate');
+            setTimeout(() => { gameModeSelector.classList.remove('cube-rotate'); }, 600);
             const previousMode = gameMode;
             gameMode = gameModeSelector.value; // Update gameMode first
 
