@@ -163,6 +163,24 @@
             line-height: 1.3;
         }
 
+        #title-panel {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            margin: 0 auto 5px auto;
+            position: relative;
+            z-index: 10;
+        }
+        #title-panel h2 {
+            font-size: 1.4em;
+            margin: 0;
+            color: #6ee7b7;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
         #progress-panel {
             display: grid; 
             grid-template-columns: 1fr 1fr 1fr; 
@@ -922,6 +940,7 @@
     </div>
 
     <div class="game-container hidden">
+        <div id="title-panel" class="hidden"><h2>Snake Mobile</h2></div>
         <div id="progress-panel" class="hidden">
             <div id="current-world-info-group">
                 <span id="progress-panel-left-label" class="info-label">Nivel:</span> <span id="progress-panel-left-value" class="info-value">1</span> </div>
@@ -990,6 +1009,7 @@
                         </button>
                     </div>
                     <select id="gameModeSelector">
+                        <option value="" disabled hidden selected>Sin seleccionar</option>
                         <option value="levels">Modo Aventura</option>
                         <option value="freeMode">Modo Libre</option>
                         <option value="classification">Modo Clasificación</option>
@@ -1219,7 +1239,8 @@
         const musicVolumeValue = document.getElementById("musicVolumeValue");
         const musicVolumeControlGroup = document.getElementById("music-volume-control-group");
         
-        const progressPanel = document.getElementById("progress-panel"); 
+        const progressPanel = document.getElementById("progress-panel");
+        const titlePanel = document.getElementById("title-panel"); 
         const progressPanelLeftLabel = document.getElementById("progress-panel-left-label");
         const progressPanelLeftValue = document.getElementById("progress-panel-left-value");
         const starProgressContainer = document.getElementById("star-progress-container"); 
@@ -1733,7 +1754,7 @@
         let gameIntervalId;
         let gameTimeRemaining; 
         let gameTimerIntervalId; 
-        let gameMode = 'levels'; // Default to levels
+        let gameMode = ''; // No mode selected initially
         let isNewHighScore = false; // Flag for new high score
         
         let currentFoodItem = {}; 
@@ -2150,9 +2171,13 @@
         function positionPanel(panelElement) {
             let topReferenceElement = progressPanel;
             if (progressPanel.classList.contains('hidden') || !progressPanel.offsetParent) {
-                topReferenceElement = topInfoBar;
-                if (topInfoBar.classList.contains('hidden') || !topInfoBar.offsetParent) {
-                    topReferenceElement = gameContainer; 
+                if (!titlePanel.classList.contains('hidden') && titlePanel.offsetParent) {
+                    topReferenceElement = titlePanel;
+                } else {
+                    topReferenceElement = topInfoBar;
+                    if (topInfoBar.classList.contains('hidden') || !topInfoBar.offsetParent) {
+                        topReferenceElement = gameContainer;
+                    }
                 }
             }
             
@@ -4499,7 +4524,10 @@
         }
         
         function updateTimeLengthDisplay() {
-            if (gameMode === 'levels' || gameMode === 'maze') {
+            if (!gameMode) {
+                timeLengthLabelEl.textContent = "Tiempo:";
+                timeLengthValueEl.textContent = 0;
+            } else if (gameMode === 'levels' || gameMode === 'maze') {
                 timeLengthLabelEl.textContent = "Tiempo:";
                 timeLengthValueEl.textContent = Math.max(0, Math.ceil(gameTimeRemaining / 1000));
             } else { // freeMode or classification
@@ -4534,7 +4562,27 @@
             const isGameCurrentlyRunning = !!gameIntervalId;
             const isSettingsPanelCurrentlyOpen = !settingsPanel.classList.contains("settings-panel-hidden");
 
-            if (gameMode === 'levels') {
+            if (!gameMode) {
+                titlePanel.classList.remove('hidden');
+                progressPanel.classList.add('hidden');
+                starProgressContainer.classList.add('hidden');
+                highScoreDisplay.classList.add('hidden');
+                progressPanelLeftLabel.textContent = "Nivel:";
+                progressPanelLeftValue.textContent = "No disponible";
+
+                difficultyLabel.textContent = "Nivel:";
+                difficultySelector.classList.add('hidden');
+                worldsSelector.classList.add('hidden');
+                mazeLevelSelector.classList.add('hidden');
+
+                if (isSettingsPanelCurrentlyOpen) {
+                    difficultySelector.disabled = true;
+                    worldsSelector.disabled = true;
+                    mazeLevelSelector.disabled = true;
+                    difficultyControlGroup.classList.remove("interactive-mode");
+                }
+            } else if (gameMode === 'levels') {
+                titlePanel.classList.add('hidden');
                 progressPanel.classList.remove('hidden');
                 starProgressContainer.classList.remove('hidden');
                 highScoreDisplay.classList.add('hidden');
@@ -4557,6 +4605,7 @@
                      else difficultyControlGroup.classList.remove("interactive-mode");
                 }
             } else if (gameMode === 'freeMode') {
+                titlePanel.classList.add('hidden');
                 progressPanel.classList.remove('hidden');
                 starProgressContainer.classList.add('hidden'); // Ocultar estrellas
                 highScoreDisplay.classList.remove('hidden'); // Mostrar panel de high score
@@ -4584,6 +4633,7 @@
                     else difficultyControlGroup.classList.remove("interactive-mode");
                 }
             } else if (gameMode === 'classification') {
+                titlePanel.classList.add('hidden');
                 progressPanel.classList.remove('hidden');
                 starProgressContainer.classList.add('hidden');
                 highScoreDisplay.classList.remove('hidden');
@@ -4607,6 +4657,7 @@
                     else difficultyControlGroup.classList.remove("interactive-mode");
                 }
             } else if (gameMode === 'maze') {
+                titlePanel.classList.add('hidden');
                 progressPanel.classList.remove('hidden');
                 starProgressContainer.classList.remove('hidden');
                 highScoreDisplay.classList.add('hidden');
@@ -4629,6 +4680,7 @@
                     else difficultyControlGroup.classList.remove("interactive-mode");
                 }
             } else {
+                titlePanel.classList.add('hidden');
                 progressPanel.classList.add('hidden');
                 difficultyLabel.textContent = "Dificultad:";
                 difficultySelector.classList.remove('hidden');
@@ -4644,9 +4696,12 @@
                 }
             }
 
-            updateTargetScoreDisplay(); 
+            updateTargetScoreDisplay();
 
-            if (gameMode === 'levels' || gameMode === 'maze') {
+            if (!gameMode) {
+                timeLengthLabelEl.textContent = "Tiempo:";
+                timeLengthValueEl.textContent = 0;
+            } else if (gameMode === 'levels' || gameMode === 'maze') {
                 timeLengthLabelEl.textContent = "Tiempo:";
                 if (!screenState.gameActuallyStarted && !gameOver) {
                      timeLengthValueEl.textContent = Math.ceil(LEVEL_TIME_LIMIT / 1000);
@@ -4655,7 +4710,7 @@
                 } else {
                      timeLengthValueEl.textContent = Math.ceil(LEVEL_TIME_LIMIT / 1000);
                 }
-            } else { // freeMode
+            } else { // freeMode or classification
                 timeLengthLabelEl.textContent = "Longitud:";
                 timeLengthValueEl.textContent = snake.length > 0 ? snake.length : initialSnakeLength;
             }
@@ -5593,12 +5648,11 @@ async function startGame(isRestart = false) {
             const savedCoins = parseInt(localStorage.getItem('snakeGameCoins'), 10);
             totalCoins = Number.isFinite(savedCoins) && savedCoins >= 0 ? savedCoins : 0;
             
-            const savedGameMode = localStorage.getItem('snakeGameMode');
-            if (savedGameMode && (savedGameMode === 'levels' || savedGameMode === 'freeMode' || savedGameMode === 'classification' || savedGameMode === 'maze')) {
-                 gameModeSelector.value = savedGameMode;
-            } else {
-                gameModeSelector.value = 'levels';
-            }
+            // Always start with no mode selected, regardless of any previously
+            // saved preference. Users must actively choose their mode each time
+            // they open the game.
+            gameModeSelector.value = '';
+            gameMode = '';
             
             // Levels mode specific
             const savedCurrentWorld = parseInt(localStorage.getItem('snakeCurrentWorld'), 10);
@@ -5742,7 +5796,7 @@ async function startGame(isRestart = false) {
             screenState.showFreeModeCover = false;
             screenState.showClassificationCover = false;
 
-            // Set initial display state based on loaded gameMode (already done in loadGameSettings -> updateGameModeUI)
+            // Set initial display state based on current gameMode
             // but ensure correct cover screen is shown
             if (gameMode === 'levels') {
                 screenState.showCoverForWorld = currentWorld; // currentWorld from loaded settings
