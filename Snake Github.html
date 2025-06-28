@@ -4682,8 +4682,8 @@
                 const option = document.createElement('option');
                 option.value = i;
                 const starsEarned = mazeLevelStars[i - 1] || 0;
-                const starSymbols = '⭐'.repeat(starsEarned) + '☆'.repeat(MAZE_STAR_TARGETS.length - starsEarned);
-                option.textContent = `Nivel ${i} ${starSymbols}`;
+                const starSymbols = '⭐'.repeat(starsEarned) + '☆️'.repeat(MAZE_STAR_TARGETS.length - starsEarned);
+                option.textContent = `Nivel ${i}\u00A0\u00A0${starSymbols}`;
                 option.disabled = i > currentMazeLevel;
                 if (i === displayMazeLevel) {
                     option.selected = true;
