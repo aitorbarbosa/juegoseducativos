@@ -1028,9 +1028,10 @@
                         </button>
                     </div>
                     <select id="difficultySelector">
-                        <option value="easy" selected>Fácil</option> 
-                        <option value="normal">Normal</option> 
-                        <option value="difficult">Difícil</option>
+                        <option value="principiante" selected>Principiante</option>
+                        <option value="explorador">Explorador</option>
+                        <option value="veterano">Veterano</option>
+                        <option value="legendario">Legendario</option>
                     </select>
                     <select id="worldsSelector" class="hidden">
                     </select>
@@ -1437,9 +1438,10 @@
         
         // Mapping for difficulty display names
         const DIFFICULTY_DISPLAY_NAMES = {
-            easy: "Fácil",
-            normal: "Normal",
-            difficult: "Difícil"
+            principiante: "Principiante",
+            explorador: "Explorador",
+            veterano: "Veterano",
+            legendario: "Legendario"
         };
 
         // Mapping para nombres de jugadores en el ranking
@@ -1768,7 +1770,7 @@
             borderColor: '#E64A19', 
         };
 
-        let difficulty = 'easy'; 
+        let difficulty = 'principiante';
         let snakeSpeed = 150; 
         let foodTimeRemaining = 0; 
         let foodDisappearTimeoutId; 
@@ -1799,11 +1801,18 @@
         let modeTransitionFrom = 0;
 
         const DIFFICULTY_SETTINGS = {
-            easy: { speed: 200, initialLifespan: 11000 }, 
-            normal: { speed: 150, initialLifespan: 9000 }, 
-            difficult: { speed: 100, initialLifespan: 8000 } 
+            principiante: { speed: 200, initialLifespan: 0,    initialLength: 3 },
+            explorador:   { speed: 150, initialLifespan: 9000, initialLength: 4 },
+            veterano:     { speed: 120, initialLifespan: 7000, initialLength: 6 },
+            legendario:   { speed: 90,  initialLifespan: 5000, initialLength: 8 }
         };
-        const MIN_FOOD_LIFESPAN = 4000; 
+        const CLASSIFICATION_RANKS = {
+            principiante: 1,
+            explorador: 2,
+            veterano: 3,
+            legendario: 4
+        };
+        const MIN_FOOD_LIFESPAN = 4000;
         const FOOD_WARNING_TIME = 3000; 
         const POINTS_PER_FOOD = 10;
         const POINTS_PER_COIN = 10;
@@ -2515,12 +2524,12 @@
         const specificHelpTexts = {
             gameMode: {
                 title: "Tipo de Juego",
-                text: "<p>Define la estructura principal de tus partidas, eligiendo entre:</p><h4>Modo Aventura</h4><p>Embárcate en un viaje progresivo a través de diversos mundos. En este modo:</p><ul><li>Cada mundo presenta un diseño de escenario único y puede introducir nuevos obstáculos o mecánicas.</li><li>Deberás alcanzar una <strong>puntuación objetivo</strong> en cada nivel para superarlo.</li><li>Desbloquea <strong>nuevos mundos</strong> superando todos los niveles del mundo en el que te encuentras.</li><li>La dificultad de los niveles y mundos aumenta gradualmente, ¿Serás capaz de superarlos todos?</li></ul><h4>Modo Libre</h4><p>Disfruta de la experiencia clásica de Snake sin la presión de superar niveles específicos. En este modo:</p><ul><li>El objetivo principal es conseguir la <strong>máxima puntuación</strong> y la <strong>serpiente más larga</strong> posible en una única partida.</li><li>La dificultad que selecciones (Fácil, Normal, Difícil) afectará directamente la velocidad inicial de la serpiente y a la clasificación en la que se registran las puntuaciones.</li></ul><h4>Modo Clasificación</h4><p>Un modo similar al Modo Libre donde también competirás por lograr la mejor puntuación posible. Las puntuaciones se almacenan de forma independiente para este modo.</p>"
+                text: "<p>Define la estructura principal de tus partidas, eligiendo entre:</p><h4>Modo Aventura</h4><p>Embárcate en un viaje progresivo a través de diversos mundos. En este modo:</p><ul><li>Cada mundo presenta un diseño de escenario único y puede introducir nuevos obstáculos o mecánicas.</li><li>Deberás alcanzar una <strong>puntuación objetivo</strong> en cada nivel para superarlo.</li><li>Desbloquea <strong>nuevos mundos</strong> superando todos los niveles del mundo en el que te encuentras.</li><li>La dificultad de los niveles y mundos aumenta gradualmente, ¿Serás capaz de superarlos todos?</li></ul><h4>Modo Libre</h4><p>Disfruta de la experiencia clásica de Snake sin la presión de superar niveles específicos. En este modo:</p><ul><li>El objetivo principal es conseguir la <strong>máxima puntuación</strong> y la <strong>serpiente más larga</strong> posible en una única partida.</li><li>La dificultad que selecciones (Principiante, Explorador, Veterano o Legendario) afectará directamente la velocidad inicial de la serpiente y a la clasificación en la que se registran las puntuaciones.</li></ul><h4>Modo Clasificación</h4><p>Un modo similar al Modo Libre donde también competirás por lograr la mejor puntuación posible. Las puntuaciones se almacenan de forma independiente para este modo.</p>"
             },
             difficulty: { 
                 title: "Dificultad / Mundo", 
                 text_adventure: "<h4> (Solo en Modo Aventura)</h4><p>Cuando juegas en <strong>Modo Aventura</strong>, tendrás disponibles un total de 8 mundos. Cada uno de ellos dispone de 5 niveles de creciente dificultad. Tendrás que superarlos todos para poder avanzar al siguiente mundo. Complétalos todos para finalizar este modo de juego.</p><p>El selector de <strong>Mundos</strong> (que aparece al seleccionar \"Modo Aventura\") te permite elegir en qué mundo específico deseas comenzar tu aventura, siempre y cuando ya lo hayas desbloqueado previamente jugando y superando los anteriores en la dificultad seleccionada. ¡Supera los mundos para acceder a nuevos escenarios y desafíos más emocionantes o volver a jugar a los que ya hayas superado!</p><p>No olvides estar atento a las novedades del juego, ¡Puede que haya nuevos niveles muy pronto!</p>",
-                text_free: "<h4> (Solo en Modo Libre)</h4><p>Ajusta el nivel de desafío para que se adapte a tu habilidad y preferencias. La dificultad influye principalmente en la velocidad de la serpiente y el tiempo de desaparición de los comestibles.</p><h4>Fácil</h4><p>La opción perfecta si estás empezando o si prefieres una experiencia de juego más relajada. La serpiente se mueve a una velocidad considerablemente reducida y los comestibles tardan más tiempo en desaparecer, dándote más tiempo para reaccionar y planificar tus movimientos.</p><h4>Normal</h4><p>Un reto equilibrado, recomendado para la mayoría de los jugadores que ya conocen la mecánica básica de Snake. La velocidad de la serpiente es moderada al igual que el tiempo de desaparición de los comestibles, exigiendo buena anticipación y reflejos para conseguir puntuaciones altas.</p><h4>Difícil</h4><p>¡Prepárate para un desafío intenso! En esta dificultad, la serpiente se mueve muy rápido desde el inicio y los comestibles desaparecen mucho más rápido, poniendo a prueba tu concentración y destreza al máximo.</p>",
+                text_free: "<h4> (Solo en Modo Libre)</h4><p>Ajusta el nivel de desafío para que se adapte a tu habilidad y preferencias. La dificultad influye principalmente en la velocidad de la serpiente y el tiempo de desaparición de los comestibles.</p><h4>Principiante</h4><p>Un modo relajado pensado para quienes se inician. La serpiente avanza despacio y la comida nunca desaparece.</p><h4>Explorador</h4><p>Aumenta ligeramente la velocidad y se introduce la racha junto con la desaparición de la comida y la aparición de rayos.</p><h4>Veterano</h4><p>La velocidad sube un poco más y se añaden obstáculos, espejos y comida falsa que puede restar puntos.</p><h4>Legendario</h4><p>Solo para expertos: la serpiente es muy rápida, la comida dura muy poco y todas las mecánicas combinadas te pondrán a prueba.</p>",
                 text_classification: "<h4> (Solo en Modo Clasificación)</h4><p>Compite por la mejor puntuación al igual que en el Modo Libre, pero con una tabla de récords independiente.</p>"
             },
             skin: {
@@ -2742,7 +2751,8 @@
                 return;
             }
 
-            const isGolden = (currentWorld === 5 && Math.random() < GOLDEN_FOOD_CHANCE);
+            const classificationRank = CLASSIFICATION_RANKS[difficulty] || 0;
+            const isGolden = ((gameMode === 'levels' && currentWorld === 5) || (gameMode === 'classification' && classificationRank >= 1)) && Math.random() < GOLDEN_FOOD_CHANCE;
             let lifespan = calculateNextFoodLifespan();
             if (isGolden) {
                 lifespan = GOLDEN_FOOD_LIFESPANS_WORLD5[currentLevelInWorld - 1] || lifespan;
@@ -2784,7 +2794,10 @@
             console.log("¡Comida no recogida! Racha perdida."); 
             if (areSfxEnabled) playSound('timeout');
             streakMultiplier = 1;
-            if (currentWorld >= 6) startStreakAnimation(streakMultiplier);
+            const classRank = CLASSIFICATION_RANKS[difficulty] || 0;
+            if ((gameMode === 'levels' && currentWorld >= 6) || (gameMode === 'classification' && classRank >= 2)) {
+                startStreakAnimation(streakMultiplier);
+            }
             foodTimeRemaining = 0;
             generateFood(); 
             updateScoreDisplay();
@@ -4402,7 +4415,8 @@
             let growth = 0; 
             if (currentFoodItem.x !== undefined && nextHead.x === currentFoodItem.x && nextHead.y === currentFoodItem.y) {
                 let gained = POINTS_PER_FOOD;
-                if (currentWorld >= 6) {
+                const rank = CLASSIFICATION_RANKS[difficulty] || 0;
+                if ((gameMode === 'levels' && currentWorld >= 6) || (gameMode === 'classification' && rank >= 2)) {
                     gained *= streakMultiplier;
                     if (streakMultiplier < MAX_STREAK) { streakMultiplier += 0.5; }
                     if (streakMultiplier > MAX_STREAK) { streakMultiplier = MAX_STREAK; }
@@ -4447,7 +4461,8 @@
                 if (nextHead.x === ff.x && nextHead.y === ff.y) {
                     score = Math.max(0, score - 30);
                     streakMultiplier = 1;
-                    if (currentWorld >= 6) startStreakAnimation(streakMultiplier);
+                    const rank = CLASSIFICATION_RANKS[difficulty] || 0;
+                    if ((gameMode === 'levels' && currentWorld >= 6) || (gameMode === 'classification' && rank >= 2)) startStreakAnimation(streakMultiplier);
                     removeFalseFoodItem(ff);
                     if (areSfxEnabled) playSound('badEat');
                 }
@@ -5006,14 +5021,16 @@ async function startGame(isRestart = false) {
                 snakeSpeed = levelCfg.speed;
                 initialSnakeLength = levelCfg.initialLength;
             } else if (gameMode === 'freeMode') {
-                snakeSpeed = DIFFICULTY_SETTINGS[difficultySelector.value].speed;
-                initialSnakeLength = DEFAULT_INITIAL_SNAKE_LENGTH;
+                const cfg = DIFFICULTY_SETTINGS[difficultySelector.value];
+                snakeSpeed = cfg.speed;
+                initialSnakeLength = cfg.initialLength;
             } else if (gameMode === 'classification') {
-                snakeSpeed = DIFFICULTY_SETTINGS[difficultySelector.value].speed;
-                initialSnakeLength = DEFAULT_INITIAL_SNAKE_LENGTH;
+                const cfg = DIFFICULTY_SETTINGS[difficultySelector.value];
+                snakeSpeed = cfg.speed;
+                initialSnakeLength = cfg.initialLength;
             } else { // maze
-                snakeSpeed = DIFFICULTY_SETTINGS.easy.speed;
-                initialSnakeLength = DEFAULT_INITIAL_SNAKE_LENGTH;
+                snakeSpeed = DIFFICULTY_SETTINGS.principiante.speed;
+                initialSnakeLength = DIFFICULTY_SETTINGS.principiante.initialLength;
             }
 
             applySkin(skinSelector.value); 
@@ -5092,6 +5109,20 @@ async function startGame(isRestart = false) {
                 startWorld8Obstacles();
                 startWorld6LightningMechanics();
                 startWorld7MirrorMechanics();
+            } else if (gameMode === 'classification') {
+                stopWorld5Obstacles();
+                stopWorld6Obstacles();
+                stopWorld6LightningMechanics();
+                stopWorld7MirrorMechanics();
+                stopWorld8Obstacles();
+                stopWorld4FalseFoodMechanics();
+                const rank = CLASSIFICATION_RANKS[difficultySelector.value] || 0;
+                if (rank >= 2) startWorld6LightningMechanics();
+                if (rank >= 3) {
+                    startWorld4FalseFoodMechanics();
+                    startWorld6Obstacles();
+                    startWorld7MirrorMechanics();
+                }
             } else if (gameMode === 'maze') {
                 stopWorld5Obstacles();
                 stopWorld6Obstacles();
@@ -5272,8 +5303,10 @@ async function startGame(isRestart = false) {
 
         difficultySelector.addEventListener('change', function() {
             difficulty = this.value; 
-            if (!gameIntervalId) { 
-                snakeSpeed = DIFFICULTY_SETTINGS[difficulty].speed;
+            if (!gameIntervalId) {
+                const cfg = DIFFICULTY_SETTINGS[difficulty];
+                snakeSpeed = cfg.speed;
+                initialSnakeLength = cfg.initialLength;
             }
             // updateTargetScoreDisplay(); // No target score in free mode based on difficulty
             if (gameMode === 'freeMode') { // Update high score display if difficulty changes in free mode
@@ -5642,7 +5675,11 @@ async function startGame(isRestart = false) {
 
         function loadGameSettings() {
             const savedDifficulty = localStorage.getItem('snakeGameDifficulty');
-            if (savedDifficulty) difficultySelector.value = savedDifficulty;
+            if (savedDifficulty && DIFFICULTY_SETTINGS[savedDifficulty]) {
+                difficultySelector.value = savedDifficulty;
+            } else {
+                difficultySelector.value = 'principiante';
+            }
 
             const savedSkin = localStorage.getItem('snakeGameSkin');
             if (savedSkin) skinSelector.value = savedSkin;
@@ -5744,7 +5781,9 @@ async function startGame(isRestart = false) {
 
 
             difficulty = difficultySelector.value;
-            snakeSpeed = DIFFICULTY_SETTINGS[difficulty].speed;
+            const cfg = DIFFICULTY_SETTINGS[difficulty];
+            snakeSpeed = cfg.speed;
+            initialSnakeLength = cfg.initialLength;
             currentSkin = skinSelector.value;
             currentFood = foodSelector.value;
             
