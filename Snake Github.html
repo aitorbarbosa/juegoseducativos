@@ -4729,7 +4729,7 @@
                 const option = document.createElement('option');
                 option.value = i;
                 const name = WORLD_DISPLAY_NAMES[i - 1] || '';
-                option.textContent = name ? `${i}. ${name}` : `${i}`;
+                option.textContent = name ? `${i}.${name}` : `${i}`;
                 option.disabled = i > maxUnlockedWorld;
                 if (i === currentWorld) {
                     option.selected = true;
