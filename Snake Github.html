@@ -5678,7 +5678,21 @@ async function startGame(isRestart = false) {
 
         function loadGameSettings() {
             const savedDifficulty = localStorage.getItem('snakeGameDifficulty');
-            if (savedDifficulty) difficultySelector.value = savedDifficulty;
+            if (savedDifficulty) {
+                if (DIFFICULTY_SETTINGS[savedDifficulty]) {
+                    difficultySelector.value = savedDifficulty;
+                } else {
+                    const legacyMap = {
+                        easy: 'principiante',
+                        normal: 'explorador',
+                        difficult: 'maestro'
+                    };
+                    const mapped = legacyMap[savedDifficulty] || 'principiante';
+                    difficultySelector.value = mapped;
+                }
+            } else {
+                difficultySelector.value = 'principiante';
+            }
 
             const savedSkin = localStorage.getItem('snakeGameSkin');
             if (savedSkin) skinSelector.value = savedSkin;
