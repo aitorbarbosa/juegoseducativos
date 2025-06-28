@@ -482,12 +482,12 @@
 
 
         #difficultySelector, #worldsSelector, #mazeLevelSelector, #audioToggleSelector, #skinSelector, #foodSelector, #gameModeSelector {
-            padding: 4px 6px; 
-            font-size: 0.8em; 
-            border: none; 
-            border-radius: 4px; 
-            background-color: transparent; 
-            color: #f5f5f5; 
+            padding: 4px 6px;
+            font-size: 0.8em;
+            border: none;
+            border-radius: 4px;
+            background-color: transparent;
+            color: #f5f5f5;
             font-family: 'Press Start 2P', sans-serif;
             text-align: left; 
             width: 100%; 
@@ -504,10 +504,21 @@
             background-color: #374151;
             color: #f5f5f5;
             font-family: 'Press Start 2P', sans-serif;
-            text-align: left; 
+            text-align: left;
+        }
+
+        #mazeLevelSelector {
+            font-size: 1em;
+            text-align: center;
+            text-align-last: center;
+        }
+
+        #mazeLevelSelector option {
+            font-size: 1em;
+            text-align: center;
         }
         
-        #difficultySelector, #worldsSelector, #mazeLevelSelector, #audioToggleSelector, #skinSelector, #foodSelector, #gameModeSelector {
+        #difficultySelector, #worldsSelector, #audioToggleSelector, #skinSelector, #foodSelector, #gameModeSelector {
             text-align-last: left;
         }
         select option {
@@ -820,6 +831,9 @@
                 margin-top: 2px;
                 margin-bottom: 2px;
              }
+             #settings-panel #mazeLevelSelector {
+                font-size: 0.85em;
+             }
              #settings-panel .control-label-icon-row { margin-bottom: 0px; }
              .setting-info-button {
                 width: 36px;
@@ -895,6 +909,9 @@
                 height: 30px;
                 margin-top: 2px;
                 margin-bottom: 2px;
+            }
+            #settings-panel #mazeLevelSelector {
+                font-size: 0.95em;
             }
         }
 
@@ -4682,7 +4699,7 @@
                 const option = document.createElement('option');
                 option.value = i;
                 const starsEarned = mazeLevelStars[i - 1] || 0;
-                const starSymbols = '★'.repeat(starsEarned) + '☆'.repeat(MAZE_STAR_TARGETS.length - starsEarned);
+                const starSymbols = '⭐'.repeat(starsEarned) + '☆'.repeat(MAZE_STAR_TARGETS.length - starsEarned);
                 option.textContent = `Nivel ${i} ${starSymbols}`;
                 option.disabled = i > currentMazeLevel;
                 if (i === displayMazeLevel) {
