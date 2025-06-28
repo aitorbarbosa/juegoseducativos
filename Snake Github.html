@@ -990,6 +990,7 @@
                         </button>
                     </div>
                     <select id="gameModeSelector">
+                        <option value="" disabled hidden selected>Sin seleccionar</option>
                         <option value="levels">Modo Aventura</option>
                         <option value="freeMode">Modo Libre</option>
                         <option value="classification">Modo Clasificación</option>
@@ -1733,7 +1734,7 @@
         let gameIntervalId;
         let gameTimeRemaining; 
         let gameTimerIntervalId; 
-        let gameMode = 'levels'; // Default to levels
+        let gameMode = ''; // No mode selected initially
         let isNewHighScore = false; // Flag for new high score
         
         let currentFoodItem = {}; 
@@ -4534,7 +4535,25 @@
             const isGameCurrentlyRunning = !!gameIntervalId;
             const isSettingsPanelCurrentlyOpen = !settingsPanel.classList.contains("settings-panel-hidden");
 
-            if (gameMode === 'levels') {
+            if (!gameMode) {
+                progressPanel.classList.remove('hidden');
+                starProgressContainer.classList.add('hidden');
+                highScoreDisplay.classList.add('hidden');
+                progressPanelLeftLabel.textContent = "Nivel:";
+                progressPanelLeftValue.textContent = "No disponible";
+
+                difficultyLabel.textContent = "Dificultad:";
+                difficultySelector.classList.add('hidden');
+                worldsSelector.classList.add('hidden');
+                mazeLevelSelector.classList.add('hidden');
+
+                if (isSettingsPanelCurrentlyOpen) {
+                    difficultySelector.disabled = true;
+                    worldsSelector.disabled = true;
+                    mazeLevelSelector.disabled = true;
+                    difficultyControlGroup.classList.remove("interactive-mode");
+                }
+            } else if (gameMode === 'levels') {
                 progressPanel.classList.remove('hidden');
                 starProgressContainer.classList.remove('hidden');
                 highScoreDisplay.classList.add('hidden');
@@ -5596,8 +5615,10 @@ async function startGame(isRestart = false) {
             const savedGameMode = localStorage.getItem('snakeGameMode');
             if (savedGameMode && (savedGameMode === 'levels' || savedGameMode === 'freeMode' || savedGameMode === 'classification' || savedGameMode === 'maze')) {
                  gameModeSelector.value = savedGameMode;
+                 gameMode = savedGameMode;
             } else {
-                gameModeSelector.value = 'levels';
+                gameModeSelector.value = '';
+                gameMode = '';
             }
             
             // Levels mode specific
