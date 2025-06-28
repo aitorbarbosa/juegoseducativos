@@ -2360,10 +2360,10 @@
 
 
         function openSettingsPanel() {
-            togglePanel(settingsPanel, settingsPanel, true); 
+            togglePanel(settingsPanel, settingsPanel, true);
             if (gameOver && !gameIntervalId) { // Game is over and not running
-                if (ctx && canvasEl) { 
-                    ctx.fillStyle = "#374151"; 
+                if (ctx && canvasEl) {
+                    ctx.fillStyle = "#374151";
                     ctx.fillRect(0, 0, canvasEl.width, canvasEl.height);
                 }
                 
@@ -2391,8 +2391,9 @@
                 resetGameUIDisplays(); // Update UI for score, streak, AND length (if free mode and snake is empty)
                 updateGameModeUI(); // This will refresh panel values and target scores
                 requestAnimationFrame(draw); // Redraw canvas to show cover
+            } else {
+                updateGameModeUI(); // Ensure panel reflects current mode when opening during gameplay
             }
-            // updateGameModeUI(); // Called at the end of the if block or if game not over
         }
 
         function closeSettingsPanel() {
