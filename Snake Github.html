@@ -482,12 +482,12 @@
 
 
         #difficultySelector, #worldsSelector, #mazeLevelSelector, #audioToggleSelector, #skinSelector, #foodSelector, #gameModeSelector {
-            padding: 4px 6px; 
-            font-size: 0.8em; 
-            border: none; 
-            border-radius: 4px; 
-            background-color: transparent; 
-            color: #f5f5f5; 
+            padding: 4px 6px;
+            font-size: 0.8em;
+            border: none;
+            border-radius: 4px;
+            background-color: transparent;
+            color: #f5f5f5;
             font-family: 'Press Start 2P', sans-serif;
             text-align: left; 
             width: 100%; 
@@ -504,7 +504,16 @@
             background-color: #374151;
             color: #f5f5f5;
             font-family: 'Press Start 2P', sans-serif;
-            text-align: left; 
+            text-align: left;
+        }
+
+        #mazeLevelSelector {
+            font-size: 1em;
+            line-height: 1.2;
+        }
+
+        #mazeLevelSelector option {
+            font-size: 1em;
         }
         
         #difficultySelector, #worldsSelector, #mazeLevelSelector, #audioToggleSelector, #skinSelector, #foodSelector, #gameModeSelector {
@@ -820,6 +829,9 @@
                 margin-top: 2px;
                 margin-bottom: 2px;
              }
+             #settings-panel #mazeLevelSelector {
+                font-size: 0.85em;
+             }
              #settings-panel .control-label-icon-row { margin-bottom: 0px; }
              .setting-info-button {
                 width: 36px;
@@ -895,6 +907,9 @@
                 height: 30px;
                 margin-top: 2px;
                 margin-bottom: 2px;
+            }
+            #settings-panel #mazeLevelSelector {
+                font-size: 0.95em;
             }
         }
 
@@ -4706,7 +4721,13 @@
                     const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
                     path.setAttribute("d", "M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z");
                     starSvg.appendChild(path);
-                    starSvg.setAttribute("fill", isCompleted ? "#FACC15" : "#6B7280");
+                    if (isCompleted) {
+                        starSvg.setAttribute("fill", "#FACC15");
+                    } else {
+                        starSvg.setAttribute("fill", "none");
+                        starSvg.setAttribute("stroke", "#6B7280");
+                        starSvg.setAttribute("stroke-width", "2");
+                    }
                     starProgressContainer.appendChild(starSvg);
                 }
             } else if (gameMode === 'maze') {
@@ -4718,7 +4739,13 @@
                     const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
                     path.setAttribute("d", "M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z");
                     starSvg.appendChild(path);
-                    starSvg.setAttribute("fill", isEarned ? "#FACC15" : "#6B7280");
+                    if (isEarned) {
+                        starSvg.setAttribute("fill", "#FACC15");
+                    } else {
+                        starSvg.setAttribute("fill", "none");
+                        starSvg.setAttribute("stroke", "#6B7280");
+                        starSvg.setAttribute("stroke-width", "2");
+                    }
                     starProgressContainer.appendChild(starSvg);
                 }
             }
