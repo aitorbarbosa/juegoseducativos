@@ -18,6 +18,8 @@ Open `Snake Github.html` directly in your favorite web browser. You can either d
 - **Maze Stars** – Each maze level tracks the stars you've earned so you can work toward a perfect 5-star score over multiple attempts.
 - **Coins** – Earn coins at the end of every game. Your total coins accumulate across all game modes and sessions.
 
+For details on the upcoming Classification mode revamp, see [CLASIFICACION.md](CLASIFICACION.md).
+
 ## Local Storage & Dependencies
 
 Game settings, progress, high scores, and maze star achievements are saved using the browser's `localStorage` API. The HTML file loads external resources from CDNs, including Tailwind CSS for styles, Google Fonts for typography, and Tone.js for audio playback.
