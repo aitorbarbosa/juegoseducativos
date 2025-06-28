@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0, minimum-scale=1.0, viewport-fit=cover">
     <title>Snake Mobile</title>
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Pixelify+Sans&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
     <style>
@@ -511,7 +512,14 @@
             text-align-last: left;
         }
         select option {
-            direction: ltr; 
+            direction: ltr;
+        }
+
+        #mazeLevelSelector,
+        #mazeLevelSelector option {
+            font-family: 'Pixelify Sans', sans-serif;
+            font-size: 0.9em;
+            line-height: 36px;
         }
 
 
@@ -4682,8 +4690,8 @@
                 const option = document.createElement('option');
                 option.value = i;
                 const starsEarned = mazeLevelStars[i - 1] || 0;
-                const starSymbols = '⭐'.repeat(starsEarned) + '☆'.repeat(MAZE_STAR_TARGETS.length - starsEarned);
-                option.textContent = `Nivel ${i} ${starSymbols}`;
+                const starSymbols = '⭐'.repeat(starsEarned) + '☆️'.repeat(MAZE_STAR_TARGETS.length - starsEarned);
+                option.textContent = `Nivel ${i}\u00A0\u00A0${starSymbols}`;
                 option.disabled = i > currentMazeLevel;
                 if (i === displayMazeLevel) {
                     option.selected = true;
