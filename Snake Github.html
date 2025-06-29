@@ -1324,6 +1324,7 @@
         const lightningRedImg = new Image();
 
         const mazeModeCoverImg = new Image();
+        const mazeLevelCoverImg = new Image();
         const mazeFailImg = new Image();
         const mazePartialImg = new Image();
         const mazePerfectImg = new Image();
@@ -1408,7 +1409,7 @@
         };
 
         let worldImagesLoaded = 0;
-        const totalWorldImagesToLoad = Object.keys(worldImagesConfig).length * 4 + 14;
+        const totalWorldImagesToLoad = Object.keys(worldImagesConfig).length * 4 + 15;
         // --- FIN: Declaración de Objetos Image ---
 
         // --- Música de fondo y SFX ---
@@ -1823,6 +1824,9 @@
         let worldTransitionStart = null;
         let worldTransitionDir = 0;
         let worldTransitionFrom = 1;
+        let mazeTransitionStart = null;
+        let mazeTransitionDir = 0;
+        let mazeTransitionFrom = 1;
 
 
         const DIFFICULTY_SETTINGS = {
@@ -2050,6 +2054,7 @@
             classificationDifficultyImages.legendario.src = 'https://i.imgur.com/Mohv1u4.png';
 
             mazeModeCoverImg.src = 'https://i.imgur.com/WY3lrHv.png';
+            mazeLevelCoverImg.src = 'https://i.imgur.com/8asDGaZ.png';
             mazeFailImg.src = 'https://i.imgur.com/3snKeSJ.png';
             mazePartialImg.src = 'https://i.imgur.com/04vASxK.png';
             mazePerfectImg.src = 'https://i.imgur.com/YKVlhix.png';
@@ -2066,7 +2071,8 @@
                 ...Object.values(defeatImages),
                 freeModeCoverImg, classificationModeCoverImg,
                 ...Object.values(classificationDifficultyImages),
-                mazeModeCoverImg, mazeFailImg, mazePartialImg, mazePerfectImg,
+                mazeModeCoverImg, mazeLevelCoverImg,
+                mazeFailImg, mazePartialImg, mazePerfectImg,
                 mazeCompleteImg, mazeFinalImg, mazeAllStarsImg, timeoutImg
             ];
 
@@ -2074,14 +2080,15 @@
                 img.onload = () => {
                     worldImagesLoaded++;
                     if (worldImagesLoaded === totalWorldImagesToLoad) {
-                        console.log("Todas las imágenes de mundo, completado de mundo, completado de nivel, derrota, modo libre y modo clasificación cargadas.");
+                        console.log("Todas las imágenes de mundo, completado de mundo, completado de nivel, derrota, modo libre, modo clasificación y modo laberinto cargadas.");
                         if (ctx && (
                             (gameMode === 'levels' && (screenState.showCoverForWorld > 0 || screenState.showLevelCompleteCover > 0 || screenState.showDefeatCoverForWorld > 0) && !screenState.gameActuallyStarted) || 
                             screenState.showWorldCompleteCover > 0 ||
                             (gameMode === 'freeMode' && screenState.showFreeModeCover && !screenState.gameActuallyStarted) ||
-                            (gameMode === 'classification' && screenState.showClassificationCover && !screenState.gameActuallyStarted)
+                            (gameMode === 'classification' && screenState.showClassificationCover && !screenState.gameActuallyStarted) ||
+                            (gameMode === 'maze' && screenState.showMazeCover && !screenState.gameActuallyStarted)
                             )) {
-                           requestAnimationFrame(draw); 
+                           requestAnimationFrame(draw);
                         }
                     }
                 };
@@ -2089,14 +2096,15 @@
                     console.error(`Error al cargar imagen: ${img.src}`);
                     worldImagesLoaded++; 
                      if (worldImagesLoaded === totalWorldImagesToLoad) {
-                        console.log("Proceso de carga de imágenes de mundo/nivel/derrota/modo libre/modo clasificación finalizado (con errores).");
+                        console.log("Proceso de carga de imágenes de mundo/nivel/derrota/modo libre/modo clasificación/modo laberinto finalizado (con errores).");
                          if (ctx && (
                             (gameMode === 'levels' && (screenState.showCoverForWorld > 0 || screenState.showLevelCompleteCover > 0 || screenState.showDefeatCoverForWorld > 0) && !screenState.gameActuallyStarted) || 
                             screenState.showWorldCompleteCover > 0 ||
                             (gameMode === 'freeMode' && screenState.showFreeModeCover && !screenState.gameActuallyStarted) ||
-                            (gameMode === 'classification' && screenState.showClassificationCover && !screenState.gameActuallyStarted)
+                            (gameMode === 'classification' && screenState.showClassificationCover && !screenState.gameActuallyStarted) ||
+                            (gameMode === 'maze' && screenState.showMazeCover && !screenState.gameActuallyStarted)
                             )) {
-                            requestAnimationFrame(draw); 
+                            requestAnimationFrame(draw);
                         }
                     }
                 };
@@ -2346,8 +2354,9 @@
                 const isModeSelectActive = showModeSelect;
                 const isModeSelectIntro = isModeSelectActive && MODE_SELECT_ORDER[modeSelectIndex] === 'intro';
                 const isSelectedWorldLocked = isWorldIntroCover && displayWorld > maxUnlockedWorld;
+                const isSelectedMazeLocked = isMazeCoverActive && displayMazeLevel > currentMazeLevel;
 
-                startButton.disabled = isModeSelectIntro || isSelectedWorldLocked;
+                startButton.disabled = isModeSelectIntro || isSelectedWorldLocked || isSelectedMazeLocked;
                 restartMazeButton.disabled = restartMazeButton.classList.contains('hidden');
                 configButton.disabled = false;
                 infoButton.disabled = false;
@@ -4035,6 +4044,59 @@
             }
         }
 
+        function drawSingleMazeLevelCover(levelNumber) {
+            if (!ctx || !canvasEl) return;
+            ctx.fillStyle = "#374151";
+            ctx.fillRect(0, 0, canvasEl.width, canvasEl.height);
+
+            const img = mazeLevelCoverImg;
+            if (img && img.complete && img.naturalHeight !== 0) {
+                if (levelNumber > currentMazeLevel) {
+                    ctx.filter = 'grayscale(100%)';
+                }
+                ctx.drawImage(img, 0, 0, canvasEl.width, canvasEl.height);
+                ctx.filter = 'none';
+            } else {
+                ctx.fillStyle = "white";
+                ctx.textAlign = "center";
+                ctx.font = `${Math.floor(canvasEl.width / 15)}px 'Press Start 2P'`;
+                ctx.fillText(`Nivel ${levelNumber}`, canvasEl.width / 2, canvasEl.height / 2);
+                if (!img.complete) {
+                    console.warn(`Imagen de portada de nivel aún no cargada.`);
+                } else if (img.naturalHeight === 0) {
+                    console.warn(`Imagen de portada de nivel parece estar corrupta o no es válida.`);
+                }
+            }
+
+            const textColor = levelNumber > currentMazeLevel ? '#6B7280' : '#FFFFFF';
+            ctx.fillStyle = textColor;
+            ctx.textAlign = 'center';
+            ctx.font = `${Math.floor(canvasEl.width / 14)}px 'Press Start 2P'`;
+            ctx.fillText(`Nivel ${levelNumber}`, canvasEl.width / 2, canvasEl.height - canvasEl.height * 0.15);
+
+            const starsEarned = mazeLevelStars[levelNumber - 1] || 0;
+            const starSize = Math.floor(canvasEl.width / 18);
+            const spacing = starSize + 4;
+            const totalStars = MAZE_STAR_TARGETS.length;
+            const startX = canvasEl.width / 2 - ((totalStars - 1) * spacing) / 2;
+            const y = canvasEl.height - starSize - 10;
+            for (let i = 0; i < totalStars; i++) {
+                const color = levelNumber > currentMazeLevel ? '#6B7280' : (i < starsEarned ? '#FACC15' : '#6B7280');
+                drawStarShape(startX + i * spacing, y, starSize, color);
+            }
+        }
+
+        function drawStarShape(cx, cy, size, color) {
+            const path = new Path2D('M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z');
+            const scale = size / 24;
+            ctx.save();
+            ctx.translate(cx, cy);
+            ctx.scale(scale, scale);
+            ctx.fillStyle = color;
+            ctx.fill(path);
+            ctx.restore();
+        }
+
         function drawWorldCover() {
             if (!ctx || !canvasEl) return;
             const now = performance.now();
@@ -4064,24 +4126,32 @@
             }
         }
 
-        function drawMazeCover() {
+       function drawMazeCover() {
             if (!ctx || !canvasEl) return;
-            ctx.fillStyle = "#374151";
-            ctx.fillRect(0, 0, canvasEl.width, canvasEl.height);
+            const now = performance.now();
+            let progress = 1;
+            if (mazeTransitionStart !== null) {
+                progress = Math.min((now - mazeTransitionStart) / MODE_TRANSITION_DURATION, 1);
+            }
 
-            const img = mazeModeCoverImg;
-            if (img && img.complete && img.naturalHeight !== 0) {
-                ctx.drawImage(img, 0, 0, canvasEl.width, canvasEl.height);
+            const fromLevel = mazeTransitionStart !== null ? mazeTransitionFrom : displayMazeLevel;
+            const toLevel = displayMazeLevel;
+
+            if (mazeTransitionStart !== null && progress < 1) {
+                const offset = canvasEl.width * progress;
+                const dir = mazeTransitionDir;
+                ctx.save();
+                ctx.translate(-dir * offset, 0);
+                drawSingleMazeLevelCover(fromLevel);
+                ctx.restore();
+                ctx.save();
+                ctx.translate(canvasEl.width * dir - dir * offset, 0);
+                drawSingleMazeLevelCover(toLevel);
+                ctx.restore();
+                requestAnimationFrame(draw);
             } else {
-                ctx.fillStyle = "white";
-                ctx.textAlign = "center";
-                ctx.font = `${Math.floor(canvasEl.width / 15)}px 'Press Start 2P'`;
-                ctx.fillText(`Modo Laberinto`, canvasEl.width / 2, canvasEl.height / 2);
-                if (!img.complete) {
-                    console.warn(`Imagen de portada de Modo Laberinto aún no cargada.`);
-                } else if (img.naturalHeight === 0) {
-                    console.warn(`Imagen de portada de Modo Laberinto parece estar corrupta o no es una imagen válida.`);
-                }
+                mazeTransitionStart = null;
+                drawSingleMazeLevelCover(toLevel);
             }
         }
 
@@ -5894,6 +5964,10 @@ async function startGame(isRestart = false) {
                     if (key === 'arrowleft' || key === 'a') { startWorldTransition(-1); e.preventDefault(); return; }
                     if (key === 'arrowright' || key === 'd') { startWorldTransition(1); e.preventDefault(); return; }
                     if (key === 'enter') { if (displayWorld <= maxUnlockedWorld) startGame(false); e.preventDefault(); return; }
+                } else if (screenState.showMazeCover && gameMode === 'maze' && !screenState.gameActuallyStarted) {
+                    if (key === 'arrowleft' || key === 'a') { startMazeTransition(-1); e.preventDefault(); return; }
+                    if (key === 'arrowright' || key === 'd') { startMazeTransition(1); e.preventDefault(); return; }
+                    if (key === 'enter') { if (displayMazeLevel <= currentMazeLevel) startGame(false); e.preventDefault(); return; }
                 }
                 if (gameOver && e.key !== "Enter" && gameIntervalId === null) return;
                 let newDirectionCmd = null; // Use newDirectionCmd to align with function parameter
@@ -6005,6 +6079,34 @@ async function startGame(isRestart = false) {
             }
         }
 
+        function startMazeTransition(dir) {
+            if (mazeTransitionStart !== null) return;
+            mazeTransitionDir = dir;
+            mazeTransitionFrom = displayMazeLevel;
+            displayMazeLevel = ((displayMazeLevel - 1 + dir + MAZE_LEVEL_COUNT) % MAZE_LEVEL_COUNT) + 1;
+
+            mazePreviousStars = mazeLevelStars[displayMazeLevel - 1] || 0;
+            mazeStarsEarned = mazePreviousStars;
+            if (mazePreviousStars < MAZE_STAR_TARGETS.length) {
+                displayTargetScore = MAZE_STAR_TARGETS[mazePreviousStars];
+            } else {
+                displayTargetScore = MAZE_STAR_TARGETS[MAZE_STAR_TARGETS.length - 1];
+            }
+            if (progressPanelLeftValue) {
+                progressPanelLeftValue.textContent = displayMazeLevel;
+            }
+            drawStarProgress();
+
+            screenState.showMazeCover = true;
+            screenState.mazeResultType = '';
+            updateGameModeUI();
+            saveGameSettings();
+            mazeTransitionStart = performance.now();
+            if (!screenState.gameActuallyStarted) {
+                requestAnimationFrame(draw);
+            }
+        }
+
 
         modeLeftButton.addEventListener("click", () => {
             if (showModeSelect) {
@@ -6013,6 +6115,8 @@ async function startGame(isRestart = false) {
                 startClassificationTransition(-1);
             } else if (screenState.showCoverForWorld && gameMode === 'levels' && !screenState.gameActuallyStarted) {
                 startWorldTransition(-1);
+            } else if (screenState.showMazeCover && gameMode === 'maze' && !screenState.gameActuallyStarted) {
+                startMazeTransition(-1);
             }
             if (areSfxEnabled) playSound('modeSwitch');
         });
@@ -6023,6 +6127,8 @@ async function startGame(isRestart = false) {
                 startClassificationTransition(1);
             } else if (screenState.showCoverForWorld && gameMode === 'levels' && !screenState.gameActuallyStarted) {
                 startWorldTransition(1);
+            } else if (screenState.showMazeCover && gameMode === 'maze' && !screenState.gameActuallyStarted) {
+                startMazeTransition(1);
             }
             if (areSfxEnabled) playSound('modeSwitch');
         });
