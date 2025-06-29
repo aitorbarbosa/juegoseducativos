@@ -958,7 +958,7 @@
                         <span class="hs-label-unit">Puntos</span>
                         <span class="hs-separator hs-value">|</span>
                         <span id="hs-length-value" class="hs-value">-</span>
-                        <span id="hs-secondary-unit" class="hs-label-unit">Long</span>
+                        <span id="hs-secondary-unit" class="hs-label-unit">Seg</span>
                         <span class="hs-separator hs-value">|</span>
                         <span id="hs-skin-value" class="hs-value">-</span>
                     </div>
@@ -1112,7 +1112,7 @@
                         <li><strong>Puntos:</strong> Aumentan 10 puntos con cada comida.</li>
                         <li><strong>Racha:</strong> Consigue comida consecutivamente sin fallar para multiplicar tus puntos. La racha máxima es de x5</li>
                         <li><strong>Tiempo:</strong> En el Modo Aventura, dispones de un máximo de 60 segundos para completar cada nivel. En el Modo libre tienes tiempo ilimitado.</li>
-                        <li><strong>Longitud:</strong> Indica la longitud de tu serpiente, en el Modo libre servirá para desempatar puntuaciones idénticas.</li>
+                        <li><strong>Tiempo de partida:</strong> Tanto en Modo Libre como en Clasificación se registra el tiempo total jugado.</li>
                     </ul>
 
                     <h4>Más información</h4>
@@ -2592,7 +2592,7 @@
         const specificHelpTexts = {
             gameMode: {
                 title: "Tipo de Juego",
-                text: "<p>Define la estructura principal de tus partidas, eligiendo entre:</p><h4>Modo Aventura</h4><p>Embárcate en un viaje progresivo a través de diversos mundos. En este modo:</p><ul><li>Cada mundo presenta un diseño de escenario único y puede introducir nuevos obstáculos o mecánicas.</li><li>Deberás alcanzar una <strong>puntuación objetivo</strong> en cada nivel para superarlo.</li><li>Desbloquea <strong>nuevos mundos</strong> superando todos los niveles del mundo en el que te encuentras.</li><li>La dificultad de los niveles y mundos aumenta gradualmente, ¿Serás capaz de superarlos todos?</li></ul><h4>Modo Libre</h4><p>Disfruta de la experiencia clásica de Snake sin la presión de superar niveles específicos. En este modo:</p><ul><li>El objetivo principal es conseguir la <strong>máxima puntuación</strong> y la <strong>serpiente más larga</strong> posible en una única partida.</li><li>La dificultad que selecciones (Principiante, Explorador, Veterano o Legendario) afectará directamente la velocidad inicial de la serpiente y a la clasificación en la que se registran las puntuaciones.</li></ul><h4>Modo Clasificación</h4><p>Un modo similar al Modo Libre donde también competirás por lograr la mejor puntuación posible. Las puntuaciones se almacenan de forma independiente para este modo.</p>"
+                text: "<p>Define la estructura principal de tus partidas, eligiendo entre:</p><h4>Modo Aventura</h4><p>Embárcate en un viaje progresivo a través de diversos mundos. En este modo:</p><ul><li>Cada mundo presenta un diseño de escenario único y puede introducir nuevos obstáculos o mecánicas.</li><li>Deberás alcanzar una <strong>puntuación objetivo</strong> en cada nivel para superarlo.</li><li>Desbloquea <strong>nuevos mundos</strong> superando todos los niveles del mundo en el que te encuentras.</li><li>La dificultad de los niveles y mundos aumenta gradualmente, ¿Serás capaz de superarlos todos?</li></ul><h4>Modo Libre</h4><p>Disfruta de la experiencia clásica de Snake sin la presión de superar niveles específicos. En este modo:</p><ul><li>El objetivo principal es conseguir la <strong>máxima puntuación</strong> y marcar el mejor <strong>tiempo</strong> posible en una única partida.</li><li>La dificultad que selecciones (Principiante, Explorador, Veterano o Legendario) afectará directamente la velocidad inicial de la serpiente y a la clasificación en la que se registran las puntuaciones.</li></ul><h4>Modo Clasificación</h4><p>Un modo similar al Modo Libre donde también competirás por lograr la mejor puntuación posible. Las puntuaciones se almacenan de forma independiente para este modo.</p>"
             },
             difficulty: { 
                 title: "Dificultad / Mundo", 
@@ -3475,12 +3475,12 @@
             return { isNewRecord: isActuallyNewHighScoreThisGame, rowIndex: newRecordIndex };
         }
 
-        function saveHighScore(currentScore, snakeLengthValue, difficultyLevel) {
+        function saveHighScore(currentScore, timeValue, difficultyLevel) {
             const key = getHighScoreKey(difficultyLevel);
             let highScores = loadHighScores(difficultyLevel);
             const newEntry = {
                 score: currentScore,
-                length: snakeLengthValue,
+                time: timeValue,
                 difficulty: DIFFICULTY_DISPLAY_NAMES[difficultyLevel],
                 skin: currentSkin, // Guardamos el 'value' del skin actual
             };
@@ -3488,8 +3488,8 @@
             let insertIndex = highScores.findIndex(entry => {
                 if (currentScore > entry.score) return true;
                 if (currentScore === entry.score) {
-                    if (snakeLengthValue > entry.length) return true;
-                    if (snakeLengthValue === entry.length) return true; // Nuevo registro se coloca antes de los empates
+                    if (timeValue < entry.time) return true;
+                    if (timeValue === entry.time) return true; // Nuevo registro se coloca antes de los empates
                 }
                 return false;
             });
@@ -3530,10 +3530,10 @@
             }
         }
 
-        function handleFreeModeEnd(currentScore, snakeLengthValue, difficultyValue) {
-            const highScoreData = saveHighScore(currentScore, snakeLengthValue, difficultyValue);
-            
-            console.log("FinalizeGameOver - Modo Libre - isNewRecord:", highScoreData.isNewRecord, "Score:", currentScore, "Length:", snakeLengthValue, "Difficulty:", difficultyValue, "Blink Row Index:", highScoreData.rowIndex);
+        function handleFreeModeEnd(currentScore, timeElapsedValue, difficultyValue) {
+            const highScoreData = saveHighScore(currentScore, timeElapsedValue, difficultyValue);
+
+            console.log("FinalizeGameOver - Modo Libre - isNewRecord:", highScoreData.isNewRecord, "Score:", currentScore, "Time:", timeElapsedValue, "Difficulty:", difficultyValue, "Blink Row Index:", highScoreData.rowIndex);
             
             if (highScoreData.isNewRecord) {
                 blinkAnimation.startTime = Date.now();
@@ -3788,7 +3788,7 @@
             isNewHighScore = false; 
 
             if (gameMode === 'freeMode') {
-                const freeModeResult = handleFreeModeEnd(score, snake.length, difficulty);
+                const freeModeResult = handleFreeModeEnd(score, Math.floor(gameTimeElapsed / 1000), difficulty);
                 isNewHighScore = freeModeResult.isNewRecord;
                 levelEffectivelyWon = freeModeResult.isEffectivelyWon;
                 if (isNewHighScore) {
@@ -4454,7 +4454,7 @@
 
                         ctx.fillText("Nº", rankX, headerTextY);
                         ctx.fillText("PUNTOS", scoreX, headerTextY);
-                        const secondaryHeader = gameMode === 'classification' ? 'TIEM.' : 'LONG.';
+                        const secondaryHeader = (gameMode === 'classification' || gameMode === 'freeMode') ? 'TIEM.' : 'LONG.';
                         ctx.fillText(secondaryHeader, lengthX, headerTextY);
                         ctx.fillText("JUGADOR", skinX, headerTextY); // Usar el texto "JUGADOR"
                         currentDrawingYForTable = headerRowActualY + headerRowHeight;
@@ -4488,8 +4488,9 @@
                                 
                                 let isThisTheNewRecordFromThisGame = isNewHighScore &&
                                                                 entry.score === score &&
-                                                                ((gameMode === 'classification' && entry.time === Math.floor(gameTimeElapsed / 1000)) ||
-                                                                 (gameMode !== 'classification' && entry.length === snake.length)) &&
+                                                                ((gameMode === 'classification' || gameMode === 'freeMode')
+                                                                     ? entry.time === Math.floor(gameTimeElapsed / 1000)
+                                                                     : entry.length === snake.length) &&
                                                                 i === blinkAnimation.rowIndex &&
                                                                 !newHighScoreEntryProcessedForVisuals;
 
@@ -4508,7 +4509,7 @@
                                 // textAlign y textBaseline ya están en "center" y "middle"
                                 ctx.fillText(`${i + 1}.`, rankX, rowTextY);
                                 ctx.fillText(`${entry.score}`, scoreX, rowTextY);
-                                const secondaryValue = gameMode === 'classification' ? formatTime(entry.time) : entry.length;
+                                const secondaryValue = (gameMode === 'classification' || gameMode === 'freeMode') ? formatTime(entry.time) : entry.length;
                                 ctx.fillText(`${secondaryValue}`, lengthX, rowTextY);
                                 // USAR SKIN_DISPLAY_NAMES para mostrar el nombre del jugador
                                 const skinDisplayName = SKIN_DISPLAY_NAMES[entry.skin] || entry.skin || '-';
@@ -4711,12 +4712,12 @@
             } else if (gameMode === 'levels' || gameMode === 'maze') {
                 timeLengthLabelEl.textContent = "Tiempo:";
                 timeLengthValueEl.textContent = Math.max(0, Math.ceil(gameTimeRemaining / 1000));
-            } else if (gameMode === 'classification') {
+            } else if (gameMode === 'classification' || gameMode === 'freeMode') {
                 timeLengthLabelEl.textContent = "Tiempo:";
                 timeLengthValueEl.textContent = formatTime(Math.floor(gameTimeElapsed / 1000));
-            } else { // freeMode
-                timeLengthLabelEl.textContent = "Longitud:";
-                timeLengthValueEl.textContent = snake.length > 0 ? snake.length : initialSnakeLength;
+            } else { // other modes (currently none)
+                timeLengthLabelEl.textContent = "Tiempo:";
+                timeLengthValueEl.textContent = 0;
             }
         }
 
@@ -4727,7 +4728,8 @@
 
             if (highScores.length > 0) {
                 hsScoreValue.textContent = highScores[0].score;
-                hsLengthValue.textContent = highScores[0].length;
+                const timeVal = highScores[0].time !== undefined ? highScores[0].time : highScores[0].length || 0;
+                hsLengthValue.textContent = formatTime(timeVal);
                 if (hsSkinValueDisplay) {
                     hsSkinValueDisplay.textContent = SKIN_DISPLAY_NAMES[highScores[0].skin] || highScores[0].skin || '-';
                 }
@@ -4801,8 +4803,8 @@
                 progressPanelLeftLabel.textContent = "Dificultad:"; 
                 progressPanelLeftValue.textContent = DIFFICULTY_DISPLAY_NAMES[difficultySelector.value] || difficultySelector.value;
                 
-                displayHighScoreInPanel(); 
-                if (hsSecondaryUnit) hsSecondaryUnit.textContent = "Long";
+                displayHighScoreInPanel();
+                if (hsSecondaryUnit) hsSecondaryUnit.textContent = "Seg";
 
                 difficultyLabel.textContent = "Dificultad:";
                 difficultySelector.classList.remove('hidden');
@@ -4904,8 +4906,12 @@
                     timeLengthValueEl.textContent = formatTime(Math.floor(gameTimeElapsed / 1000));
                 }
             } else { // freeMode
-                timeLengthLabelEl.textContent = "Longitud:";
-                timeLengthValueEl.textContent = snake.length > 0 ? snake.length : initialSnakeLength;
+                timeLengthLabelEl.textContent = "Tiempo:";
+                if (!screenState.gameActuallyStarted && !gameOver) {
+                    timeLengthValueEl.textContent = formatTime(0);
+                } else {
+                    timeLengthValueEl.textContent = formatTime(Math.floor(gameTimeElapsed / 1000));
+                }
             }
         }
 
@@ -5259,8 +5265,11 @@ async function startGame(isRestart = false) {
                         clearInterval(gameTimerIntervalId);
                     }
                 }, 1000);
-            } else if (gameMode === 'classification') {
+            } else if (gameMode === 'classification' || gameMode === 'freeMode') {
                 gameTimeElapsed = 0;
+                if (gameMode === 'freeMode') {
+                    gameTimeRemaining = Infinity;
+                }
                 updateTimeLengthDisplay();
                 clearInterval(gameTimerIntervalId);
                 gameTimerIntervalId = setInterval(() => {
@@ -5268,9 +5277,8 @@ async function startGame(isRestart = false) {
                     gameTimeElapsed += 1000;
                     updateTimeLengthDisplay();
                 }, 1000);
-            } else { // freeMode
+            } else {
                 gameTimeElapsed = 0;
-                gameTimeRemaining = Infinity;
                 updateTimeLengthDisplay();
                 clearInterval(gameTimerIntervalId);
             }
@@ -5503,9 +5511,7 @@ async function startGame(isRestart = false) {
             // updateTargetScoreDisplay(); // No target score in free mode based on difficulty
             if (gameMode === 'freeMode') { // Update high score display if difficulty changes in free mode
                 displayHighScoreInPanel();
-                if (hsSecondaryUnit) hsSecondaryUnit.textContent = "Long";
-                if (hsSecondaryUnit) hsSecondaryUnit.textContent = 'Long';
-                if (hsSecondaryUnit) hsSecondaryUnit.textContent = 'Long';
+                if (hsSecondaryUnit) hsSecondaryUnit.textContent = "Seg";
             } else if (gameMode === 'classification') {
                 displayClassificationHighScoreInPanel();
                 if (hsSecondaryUnit) hsSecondaryUnit.textContent = 'Seg';
