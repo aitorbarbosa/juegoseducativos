@@ -4328,7 +4328,7 @@
                     }
                     endMessageFontSize = optimalSizeForEndMessage;
 
-                    let currentY = canvasEl.height * 0.08; 
+                    let currentY = canvasEl.height * 0.08;
 
                     ctx.fillStyle = titleColor;
                     ctx.font = `${endMessageFontSize}px 'Press Start 2P'`;
@@ -4344,7 +4344,7 @@
                     ctx.fillText(mainTitle, canvasEl.width / 2, mainTitleBaseline);
 
                     ctx.shadowBlur = 0;
-                    currentY += endMessageFontSize * 1.2;
+                    currentY = mainTitleBaseline + mainTitleMetrics.actualBoundingBoxDescent + endMessageFontSize * 0.7;
 
                     if (subTitle) {
                         const subTitleFontSize = Math.max(10, Math.floor(endMessageFontSize * 0.7));
@@ -4358,10 +4358,10 @@
                         ctx.textBaseline = "alphabetic";
                         ctx.fillText(subTitle, canvasEl.width / 2, subTitleBaseline);
 
-                        currentY += subTitleFontSize * 1.5;
+                        currentY = subTitleBaseline + subTitleMetrics.actualBoundingBoxDescent + subTitleFontSize * 0.7;
                     }
-                    
-                    currentY += 10; 
+
+                    currentY += 10;
 
                     if (gameMode === 'freeMode' || gameMode === 'classification') {
                         const tableOuterTopPadding = 30; 
