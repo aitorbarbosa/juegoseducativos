@@ -1801,8 +1801,23 @@
         let modeTransitionFrom = 0;
 
         const DIFFICULTY_SETTINGS = {
-            principiante: { speed: 180, initialLifespan: 0,    initialLength: 4 },
-            explorador:   { speed: 150, initialLifespan: 9000, initialLength: 6 },
+            principiante: {
+                speed: 180,
+                initialLifespan: 0,
+                initialLength: 4,
+                goldenFoodChance: 0.15,
+                goldenFoodLifespan: 4000
+            },
+            explorador:   {
+                speed: 150,
+                initialLifespan: 9000,
+                initialLength: 6,
+                goldenFoodChance: 0.15,
+                goldenFoodLifespan: 4000,
+                lightningSpawnRange: [5000, 7000],
+                streakReduction: 1000,
+                yellowLightningChance: 0.75
+            },
             veterano:     { speed: 120, initialLifespan: 7000, initialLength: 10 },
             legendario:   { speed: 90,  initialLifespan: 5000, initialLength: 15 }
         };
@@ -2728,7 +2743,8 @@
             const effectiveStreak = Math.min(streakMultiplier, MAX_STREAK);
             if (effectiveStreak > 1) {
                 // Reduce food lifespan by 0.5 s per 0.5 streak increase
-                streakReduction = (effectiveStreak - 1) * 1000;
+                const reductionPerStep = DIFFICULTY_SETTINGS[difficulty].streakReduction || 1000;
+                streakReduction = (effectiveStreak - 1) * reductionPerStep;
             }
             const calculatedLifespan = baseLifespan - streakReduction;
             return Math.max(MIN_FOOD_LIFESPAN, calculatedLifespan);
@@ -2753,13 +2769,17 @@
             }
 
             const classificationRank = CLASSIFICATION_RANKS[difficulty] || 0;
-            const isGolden = ((gameMode === 'levels' && currentWorld === 5) || (gameMode === 'classification' && classificationRank >= 1)) && Math.random() < GOLDEN_FOOD_CHANCE;
+            const diffCfg = DIFFICULTY_SETTINGS[difficulty] || {};
+            const goldenChance = diffCfg.goldenFoodChance !== undefined ? diffCfg.goldenFoodChance : GOLDEN_FOOD_CHANCE;
+            const isGolden = ((gameMode === 'levels' && currentWorld === 5) || (gameMode === 'classification' && classificationRank >= 1)) && Math.random() < goldenChance;
             let lifespan = calculateNextFoodLifespan();
             if (isGolden) {
-                if (gameMode === 'classification' && classificationRank === 1) {
+                if (gameMode === 'classification' && classificationRank === 1 && diffCfg.goldenFoodLifespan === undefined) {
                     lifespan = GOLDEN_FOOD_LIFESPAN_CLASSIF_RANK1;
-                } else {
+                } else if (gameMode === 'levels') {
                     lifespan = GOLDEN_FOOD_LIFESPANS_WORLD5[currentLevelInWorld - 1] || lifespan;
+                } else if (diffCfg.goldenFoodLifespan !== undefined) {
+                    lifespan = diffCfg.goldenFoodLifespan;
                 }
             }
             currentFoodItem = {
@@ -3073,7 +3093,14 @@
                     lightningItems.some(l => l.x === pos.x && l.y === pos.y) ||
                     isAdjacentToAnyFood(pos)) && attempts < 100);
             if (attempts >= 100) return;
-            const color = Math.random() < 0.75 ? 'yellow' : 'red';
+            let yellowChance = 0.75;
+            if (gameMode === 'classification') {
+                const cfg = DIFFICULTY_SETTINGS[difficultySelector.value] || {};
+                if (typeof cfg.yellowLightningChance === 'number') {
+                    yellowChance = cfg.yellowLightningChance;
+                }
+            }
+            const color = Math.random() < yellowChance ? 'yellow' : 'red';
             const item = { x: pos.x, y: pos.y, color, remaining: LIGHTNING_LIFESPAN, lifespan: LIGHTNING_LIFESPAN };
             item.timeoutId = setTimeout(() => removeLightningItem(item), LIGHTNING_LIFESPAN);
             item.intervalId = setInterval(() => { item.remaining -= 100; if (item.remaining <= 0) removeLightningItem(item); }, 100);
@@ -3081,16 +3108,23 @@
         }
 
         function scheduleNextLightningSpawn() {
-            if (gameMode !== "levels" || !(currentWorld === 3 || currentWorld === 4 || currentWorld === 9 || currentWorld === 10) || gameOver) return;
+            if (gameOver) return;
             let range;
-            if (currentWorld === 3) {
-                range = LIGHTNING_SPAWN_RANGES_WORLD6[currentLevelInWorld - 1] || [5000, 7000];
-            } else if (currentWorld === 4) {
-                range = LIGHTNING_SPAWN_RANGE_WORLD4;
-            } else if (currentWorld === 10) {
-                range = LIGHTNING_SPAWN_RANGES_WORLD8[currentLevelInWorld - 1] || [5000, 7000];
+            if (gameMode === "classification") {
+                const cfg = DIFFICULTY_SETTINGS[difficultySelector.value] || {};
+                range = cfg.lightningSpawnRange || [5000, 7000];
+            } else if (gameMode === "levels" && (currentWorld === 3 || currentWorld === 4 || currentWorld === 9 || currentWorld === 10)) {
+                if (currentWorld === 3) {
+                    range = LIGHTNING_SPAWN_RANGES_WORLD6[currentLevelInWorld - 1] || [5000, 7000];
+                } else if (currentWorld === 4) {
+                    range = LIGHTNING_SPAWN_RANGE_WORLD4;
+                } else if (currentWorld === 10) {
+                    range = LIGHTNING_SPAWN_RANGES_WORLD8[currentLevelInWorld - 1] || [5000, 7000];
+                } else {
+                    range = LIGHTNING_SPAWN_RANGE_WORLD7;
+                }
             } else {
-                range = LIGHTNING_SPAWN_RANGE_WORLD7;
+                return;
             }
             const delay = Math.random() * (range[1] - range[0]) + range[0];
             lightningSpawnTimeoutId = setTimeout(() => {
