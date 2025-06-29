@@ -5459,7 +5459,7 @@ async function startGame(isRestart = false) {
         });
 
         difficultySelector.addEventListener('change', function() {
-            difficulty = this.value; 
+            difficulty = this.value;
             if (!gameIntervalId) {
                 const cfg = DIFFICULTY_SETTINGS[difficulty];
                 snakeSpeed = cfg.speed;
@@ -5470,8 +5470,10 @@ async function startGame(isRestart = false) {
                 displayHighScoreInPanel();
             } else if (gameMode === 'classification') {
                 displayClassificationHighScoreInPanel();
-                // Ya no actualizamos progressPanelLeftValue aquí, #high-score-display es independiente
-                // progressPanelLeftValue.textContent = DIFFICULTY_DISPLAY_NAMES[difficulty] || difficulty;
+                // También actualizamos la dificultad mostrada en pantalla
+                if (progressPanelLeftValue) {
+                    progressPanelLeftValue.textContent = DIFFICULTY_DISPLAY_NAMES[difficulty] || difficulty;
+                }
             }
             saveGameSettings();
         });
