@@ -1382,6 +1382,12 @@
         };
         const freeModeCoverImg = new Image();
         const classificationModeCoverImg = new Image();
+        const classificationDifficultyImages = {
+            principiante: new Image(),
+            explorador: new Image(),
+            veterano: new Image(),
+            legendario: new Image()
+        };
         const modeSelectIntroImg = new Image();
         const modeSelectLevelsImg = new Image();
         const modeSelectFreeImg = new Image();
@@ -1402,7 +1408,7 @@
         };
 
         let worldImagesLoaded = 0;
-        const totalWorldImagesToLoad = Object.keys(worldImagesConfig).length * 4 + 10;
+        const totalWorldImagesToLoad = Object.keys(worldImagesConfig).length * 4 + 14;
         // --- FIN: Declaración de Objetos Image ---
 
         // --- Música de fondo y SFX ---
@@ -1808,6 +1814,9 @@
         let modeTransitionDir = 0;
         let modeTransitionFrom = 0;
 
+        const CLASSIFICATION_DIFFICULTY_ORDER = ['principiante', 'explorador', 'veterano', 'legendario'];
+        let classificationDifficultyIndex = 0;
+
         const DIFFICULTY_SETTINGS = {
             principiante: {
                 speed: 180,
@@ -2027,6 +2036,10 @@
 
             freeModeCoverImg.src = 'https://i.imgur.com/6cMWnrC.png';
             classificationModeCoverImg.src = 'https://i.imgur.com/t5n37Mw.png';
+            classificationDifficultyImages.principiante.src = 'https://i.imgur.com/z4SlhGV.png';
+            classificationDifficultyImages.explorador.src = 'https://i.imgur.com/QCxdQQh.png';
+            classificationDifficultyImages.veterano.src = 'https://i.imgur.com/kEDCBEZ.png';
+            classificationDifficultyImages.legendario.src = 'https://i.imgur.com/Mohv1u4.png';
 
             mazeModeCoverImg.src = 'https://i.imgur.com/WY3lrHv.png';
             mazeFailImg.src = 'https://i.imgur.com/3snKeSJ.png';
@@ -2043,9 +2056,10 @@
                 ...Object.values(worldCompleteImages),
                 ...Object.values(levelCompleteImages),
                 ...Object.values(defeatImages),
-                freeModeCoverImg, classificationModeCoverImg, mazeModeCoverImg,
-                mazeFailImg, mazePartialImg, mazePerfectImg, mazeCompleteImg,
-                mazeFinalImg, mazeAllStarsImg, timeoutImg
+                freeModeCoverImg, classificationModeCoverImg,
+                ...Object.values(classificationDifficultyImages),
+                mazeModeCoverImg, mazeFailImg, mazePartialImg, mazePerfectImg,
+                mazeCompleteImg, mazeFinalImg, mazeAllStarsImg, timeoutImg
             ];
 
             allWorldImages.forEach(img => {
@@ -3969,18 +3983,18 @@
             ctx.fillStyle = "#374151";
             ctx.fillRect(0, 0, canvasEl.width, canvasEl.height);
 
-            const img = classificationModeCoverImg;
+            const img = classificationDifficultyImages[difficultySelector.value];
             if (img && img.complete && img.naturalHeight !== 0) {
                 ctx.drawImage(img, 0, 0, canvasEl.width, canvasEl.height);
             } else {
                 ctx.fillStyle = "white";
                 ctx.textAlign = "center";
                 ctx.font = `${Math.floor(canvasEl.width / 15)}px 'Press Start 2P'`;
-                ctx.fillText(`Modo Clasificación`, canvasEl.width / 2, canvasEl.height / 2);
+                ctx.fillText(DIFFICULTY_DISPLAY_NAMES[difficultySelector.value] || 'Clasificación', canvasEl.width / 2, canvasEl.height / 2);
                 if (!img.complete) {
-                    console.warn(`Imagen de portada de Modo Clasificación aún no cargada.`);
+                    console.warn(`Imagen de portada de dificultad aún no cargada.`);
                 } else if (img.naturalHeight === 0) {
-                    console.warn(`Imagen de portada de Modo Clasificación parece estar corrupta o no es una imagen válida.`);
+                    console.warn(`Imagen de portada de dificultad parece estar corrupta o no es una imagen válida.`);
                 }
             }
         }
@@ -4090,8 +4104,13 @@
                 updateMainButtonStates();
                 return;
             } else {
-                modeLeftButton.classList.add('hidden');
-                modeRightButton.classList.add('hidden');
+                if (screenState.showClassificationCover && !screenState.gameActuallyStarted) {
+                    modeLeftButton.classList.remove('hidden');
+                    modeRightButton.classList.remove('hidden');
+                } else {
+                    modeLeftButton.classList.add('hidden');
+                    modeRightButton.classList.add('hidden');
+                }
             }
 
             let speedBoostVisible = false;
@@ -5499,6 +5518,7 @@ async function startGame(isRestart = false) {
 
         difficultySelector.addEventListener('change', function() {
             difficulty = this.value;
+            classificationDifficultyIndex = CLASSIFICATION_DIFFICULTY_ORDER.indexOf(this.value);
             if (!gameIntervalId) {
                 const cfg = DIFFICULTY_SETTINGS[difficulty];
                 snakeSpeed = cfg.speed;
@@ -5745,6 +5765,10 @@ async function startGame(isRestart = false) {
                     screenState.showFreeModeCover = true;
                 } else if (selectedMode === 'classification') {
                     screenState.showClassificationCover = true;
+                    classificationDifficultyIndex = 0;
+                    const initDiff = CLASSIFICATION_DIFFICULTY_ORDER[classificationDifficultyIndex];
+                    difficultySelector.value = initDiff;
+                    difficultySelector.dispatchEvent(new Event('change'));
                 } else {
                     screenState.showMazeCover = true;
                 }
@@ -5842,12 +5866,32 @@ async function startGame(isRestart = false) {
             draw();
         }
 
+        function changeClassificationDifficulty(dir) {
+            classificationDifficultyIndex = (classificationDifficultyIndex + dir + CLASSIFICATION_DIFFICULTY_ORDER.length) % CLASSIFICATION_DIFFICULTY_ORDER.length;
+            const newDiff = CLASSIFICATION_DIFFICULTY_ORDER[classificationDifficultyIndex];
+            difficultySelector.value = newDiff;
+            difficultySelector.dispatchEvent(new Event('change'));
+            updateGameModeUI();
+            saveGameSettings();
+            if (screenState.showClassificationCover && !screenState.gameActuallyStarted) {
+                requestAnimationFrame(draw);
+            }
+        }
+
         modeLeftButton.addEventListener("click", () => {
-            startModeTransition(-1);
+            if (showModeSelect) {
+                startModeTransition(-1);
+            } else if (screenState.showClassificationCover && !screenState.gameActuallyStarted) {
+                changeClassificationDifficulty(-1);
+            }
             if (areSfxEnabled) playSound('modeSwitch');
         });
         modeRightButton.addEventListener("click", () => {
-            startModeTransition(1);
+            if (showModeSelect) {
+                startModeTransition(1);
+            } else if (screenState.showClassificationCover && !screenState.gameActuallyStarted) {
+                changeClassificationDifficulty(1);
+            }
             if (areSfxEnabled) playSound('modeSwitch');
         });
 
@@ -5880,6 +5924,7 @@ async function startGame(isRestart = false) {
             } else {
                 difficultySelector.value = 'principiante';
             }
+            classificationDifficultyIndex = CLASSIFICATION_DIFFICULTY_ORDER.indexOf(difficultySelector.value);
 
             const savedSkin = localStorage.getItem('snakeGameSkin');
             if (savedSkin) skinSelector.value = savedSkin;
