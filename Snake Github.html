@@ -1922,6 +1922,7 @@
         const LIGHTNING_LIFESPAN = 5000;
         const SPEED_BOOST_DURATION = 3000;
         let obstacles = [];
+        let snakeSpawnRow = 0;
         let falseFoodItems = [];
         let falseFoodSpawnTimeoutId;
         let lightningItems = [];
@@ -3069,7 +3070,10 @@
                         y: Math.floor(Math.random() * (tileCountY - 2)) + 1,
                     };
                     attempts++;
-                } while ((isFoodOnSnake(pos) || obstacles.some(o => o.x === pos.x && o.y === pos.y) || isAdjacentToAnyObstacle(pos)) && attempts < 100);
+                } while ((pos.y === snakeSpawnRow ||
+                          isFoodOnSnake(pos) ||
+                          obstacles.some(o => o.x === pos.x && o.y === pos.y) ||
+                          isAdjacentToAnyObstacle(pos)) && attempts < 100);
                 if (attempts < 100) obstacles.push(pos);
             }
         }
@@ -3093,7 +3097,10 @@
                         y: Math.floor(Math.random() * (tileCountY - 2)) + 1,
                     };
                     attempts++;
-                } while ((isFoodOnSnake(pos) || obstacles.some(o => o.x === pos.x && o.y === pos.y) || isAdjacentToAnyObstacle(pos)) && attempts < 100);
+                } while ((pos.y === snakeSpawnRow ||
+                          isFoodOnSnake(pos) ||
+                          obstacles.some(o => o.x === pos.x && o.y === pos.y) ||
+                          isAdjacentToAnyObstacle(pos)) && attempts < 100);
                 if (attempts < 100) obstacles.push(pos);
             }
         }
@@ -3117,7 +3124,10 @@
                         y: Math.floor(Math.random() * (tileCountY - 2)) + 1,
                     };
                     attempts++;
-                } while ((isFoodOnSnake(pos) || obstacles.some(o => o.x === pos.x && o.y === pos.y) || isAdjacentToAnyObstacle(pos)) && attempts < 100);
+                } while ((pos.y === snakeSpawnRow ||
+                          isFoodOnSnake(pos) ||
+                          obstacles.some(o => o.x === pos.x && o.y === pos.y) ||
+                          isAdjacentToAnyObstacle(pos)) && attempts < 100);
                 if (attempts < 100) obstacles.push(pos);
             }
         }
@@ -5176,6 +5186,7 @@ async function startGame(isRestart = false) {
                 startX = 1;
                 startY = 1;
             }
+            snakeSpawnRow = startY;
             for (let i = 0; i < initialSnakeLength; i++) {
                 if (startX - i >= 0) { snake.push({ x: startX - i, y: startY }); }
                 else { snake.push({ x: 0, y: startY }); }
