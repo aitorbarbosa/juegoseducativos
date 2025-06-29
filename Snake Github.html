@@ -1830,6 +1830,7 @@
         const OBSTACLE_COUNT_WORLD6 = 5;
         const GOLDEN_FOOD_CHANCE = 0.2;
         const GOLDEN_FOOD_LIFESPANS_WORLD5 = [4000, 3500, 3000, 2500, 2000];
+        const GOLDEN_FOOD_LIFESPAN_CLASSIF_RANK1 = 6000; // Increased time for rank 1
         const FALSE_FOOD_SPAWN_RANGES_WORLD8 = [
             [6000, 8000],
             [5000, 7000],
@@ -2755,7 +2756,11 @@
             const isGolden = ((gameMode === 'levels' && currentWorld === 5) || (gameMode === 'classification' && classificationRank >= 1)) && Math.random() < GOLDEN_FOOD_CHANCE;
             let lifespan = calculateNextFoodLifespan();
             if (isGolden) {
-                lifespan = GOLDEN_FOOD_LIFESPANS_WORLD5[currentLevelInWorld - 1] || lifespan;
+                if (gameMode === 'classification' && classificationRank === 1) {
+                    lifespan = GOLDEN_FOOD_LIFESPAN_CLASSIF_RANK1;
+                } else {
+                    lifespan = GOLDEN_FOOD_LIFESPANS_WORLD5[currentLevelInWorld - 1] || lifespan;
+                }
             }
             currentFoodItem = {
                 x: newFoodPosition.x,
@@ -5120,7 +5125,11 @@ async function startGame(isRestart = false) {
                 if (rank >= 2) startWorld6LightningMechanics();
                 if (rank >= 3) {
                     startWorld4FalseFoodMechanics();
-                    startWorld6Obstacles();
+                    if (rank >= 4) {
+                        startWorld8Obstacles();
+                    } else {
+                        startWorld6Obstacles();
+                    }
                     startWorld7MirrorMechanics();
                 }
             } else if (gameMode === 'maze') {
