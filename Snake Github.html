@@ -4328,27 +4328,40 @@
                     }
                     endMessageFontSize = optimalSizeForEndMessage;
 
-                    let currentY = canvasEl.height * 0.08; 
+                    let currentY = canvasEl.height * 0.08;
 
                     ctx.fillStyle = titleColor;
                     ctx.font = `${endMessageFontSize}px 'Press Start 2P'`;
                     ctx.textAlign = "center";
-                    ctx.textBaseline = "middle"; 
                     ctx.shadowColor = "rgba(0,0,0,0.8)";
                     ctx.shadowBlur = 10;
-                    ctx.fillText(mainTitle, canvasEl.width / 2, currentY);
-                    ctx.shadowBlur = 0; 
-                    currentY += endMessageFontSize * 1.2;
+
+                    const mainTitleMetrics = ctx.measureText(mainTitle);
+                    const mainTitleHeight = mainTitleMetrics.actualBoundingBoxAscent + mainTitleMetrics.actualBoundingBoxDescent;
+                    const mainTitleBaseline = currentY + mainTitleMetrics.actualBoundingBoxAscent - mainTitleHeight / 2;
+
+                    ctx.textBaseline = "alphabetic";
+                    ctx.fillText(mainTitle, canvasEl.width / 2, mainTitleBaseline);
+
+                    ctx.shadowBlur = 0;
+                    currentY = mainTitleBaseline + mainTitleMetrics.actualBoundingBoxDescent + endMessageFontSize * 0.7;
 
                     if (subTitle) {
                         const subTitleFontSize = Math.max(10, Math.floor(endMessageFontSize * 0.7));
                         ctx.font = `${subTitleFontSize}px 'Press Start 2P'`;
-                        ctx.fillStyle = titleColor; 
-                        ctx.fillText(subTitle, canvasEl.width / 2, currentY);
-                        currentY += subTitleFontSize * 1.5;
+                        ctx.fillStyle = titleColor;
+
+                        const subTitleMetrics = ctx.measureText(subTitle);
+                        const subTitleHeight = subTitleMetrics.actualBoundingBoxAscent + subTitleMetrics.actualBoundingBoxDescent;
+                        const subTitleBaseline = currentY + subTitleMetrics.actualBoundingBoxAscent - subTitleHeight / 2;
+
+                        ctx.textBaseline = "alphabetic";
+                        ctx.fillText(subTitle, canvasEl.width / 2, subTitleBaseline);
+
+                        currentY = subTitleBaseline + subTitleMetrics.actualBoundingBoxDescent + subTitleFontSize * 0.7;
                     }
-                    
-                    currentY += 10; 
+
+                    currentY += 10;
 
                     if (gameMode === 'freeMode' || gameMode === 'classification') {
                         const tableOuterTopPadding = 30; 
