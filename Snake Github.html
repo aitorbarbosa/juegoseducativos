@@ -5985,6 +5985,12 @@ async function startGame(isRestart = false) {
                     initialSnakeLength = cfg.initialLength;
                 }
                 saveGameSettings();
+            } else {
+                // Al mostrar la portada de un mundo bloqueado, aseguramos que el
+                // nivel visualizado sea siempre 1 y se muestre su puntuación objetivo
+                displayLevelInWorld = 1;
+                const absoluteIndex = (displayWorld - 1) * LEVELS_PER_WORLD;
+                displayTargetScore = TARGET_SCORES_LEVELS[absoluteIndex] || 0;
             }
             screenState.showCoverForWorld = displayWorld;
             screenState.showWorldCompleteCover = 0;
