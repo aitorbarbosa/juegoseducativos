@@ -5,15 +5,16 @@ Este documento describe la nueva estructura propuesta para el **Modo Clasificaci
 ## Niveles de dificultad
 
 1. **Principiante**
-   - Única mecánica adicional: aparición de comida dorada.
+   - Aparece la **manzana dorada** de doble puntuación.
+   - Permanece más tiempo en pantalla para facilitar su captura.
    - Velocidad base y longitud inicial de la serpiente bajas.
-   - El alimento no desaparece.
+   - El alimento normal no desaparece.
 
 2. **Explorador**
    - Aumenta ligeramente la velocidad y la longitud inicial.
    - Se introduce la mecánica de racha (multiplicador por comer consecutivamente).
    - Los comestibles ahora desaparecen tras un tiempo limitado.
-   - Aparecen rayos que otorgan un impulso de velocidad temporal.
+   - Se añade la mecánica de **rayo**, otorgando un impulso de velocidad temporal.
 
 3. **Veterano**
    - Mayor velocidad y longitud de inicio.
@@ -25,6 +26,7 @@ Este documento describe la nueva estructura propuesta para el **Modo Clasificaci
    - La experiencia se endurece considerablemente frente al nivel Veterano.
    - Velocidad de la serpiente muy elevada y longitud inicial larga.
    - El tiempo antes de que desaparezca la comida es mínimo.
+   - Mayor cantidad de bloques y obstáculos en el tablero.
    - Se mantienen todas las mecánicas anteriores combinadas para ofrecer el reto definitivo.
 
 ## Progresión de valores
