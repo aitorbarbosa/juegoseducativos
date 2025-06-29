@@ -958,7 +958,7 @@
                         <span class="hs-label-unit">Puntos</span>
                         <span class="hs-separator hs-value">|</span>
                         <span id="hs-length-value" class="hs-value">-</span>
-                        <span class="hs-label-unit">Long</span>
+                        <span id="hs-secondary-unit" class="hs-label-unit">Long</span>
                         <span class="hs-separator hs-value">|</span>
                         <span id="hs-skin-value" class="hs-value">-</span>
                     </div>
@@ -1252,6 +1252,7 @@
         const highScoreDisplay = document.getElementById("high-score-display");
         const hsScoreValue = document.getElementById("hs-score-value");
         const hsLengthValue = document.getElementById("hs-length-value");
+        const hsSecondaryUnit = document.getElementById("hs-secondary-unit");
         // Se obtendrá hsSkinValue dentro de la función displayHighScoreInPanel
 
 
@@ -1758,8 +1759,9 @@
         let gameOver = false;
         let gameOverByTimeout = false;
         let gameIntervalId;
-        let gameTimeRemaining; 
-        let gameTimerIntervalId; 
+        let gameTimeRemaining;
+        let gameTimeElapsed;
+        let gameTimerIntervalId;
         let gameMode = ''; // No mode selected initially
         let isNewHighScore = false; // Flag for new high score
         
@@ -3430,12 +3432,12 @@
             return scoresJSON ? JSON.parse(scoresJSON) : [];
         }
 
-        function saveClassificationHighScore(currentScore, snakeLengthValue, difficultyLevel) {
+        function saveClassificationHighScore(currentScore, timeValue, difficultyLevel) {
             const key = getClassificationHighScoreKey(difficultyLevel);
             let highScores = loadClassificationHighScores(difficultyLevel);
             const newEntry = {
                 score: currentScore,
-                length: snakeLengthValue,
+                time: timeValue,
                 difficulty: DIFFICULTY_DISPLAY_NAMES[difficultyLevel],
                 skin: currentSkin,
             };
@@ -3443,8 +3445,8 @@
             let insertIndex = highScores.findIndex(entry => {
                 if (currentScore > entry.score) return true;
                 if (currentScore === entry.score) {
-                    if (snakeLengthValue > entry.length) return true;
-                    if (snakeLengthValue === entry.length) return true;
+                    if (timeValue < entry.time) return true;
+                    if (timeValue === entry.time) return true;
                 }
                 return false;
             });
@@ -3533,10 +3535,10 @@
             return { isNewRecord: highScoreData.isNewRecord, isEffectivelyWon: highScoreData.isNewRecord, rowIndex: highScoreData.rowIndex };
         }
 
-        function handleClassificationModeEnd(currentScore, snakeLengthValue, difficultyValue) {
-            const highScoreData = saveClassificationHighScore(currentScore, snakeLengthValue, difficultyValue);
+        function handleClassificationModeEnd(currentScore, timeElapsedValue, difficultyValue) {
+            const highScoreData = saveClassificationHighScore(currentScore, timeElapsedValue, difficultyValue);
 
-            console.log("FinalizeGameOver - Modo Clasificación - isNewRecord:", highScoreData.isNewRecord, "Score:", currentScore, "Length:", snakeLengthValue, "Difficulty:", difficultyValue, "Blink Row Index:", highScoreData.rowIndex);
+            console.log("FinalizeGameOver - Modo Clasificación - isNewRecord:", highScoreData.isNewRecord, "Score:", currentScore, "Time:", timeElapsedValue, "Difficulty:", difficultyValue, "Blink Row Index:", highScoreData.rowIndex);
 
             if (highScoreData.isNewRecord) {
                 blinkAnimation.startTime = Date.now();
@@ -3785,7 +3787,7 @@
                     blinkAnimation.rowIndex = freeModeResult.rowIndex;
                 }
             } else if (gameMode === 'classification') {
-                const classificationResult = handleClassificationModeEnd(score, snake.length, difficulty);
+                const classificationResult = handleClassificationModeEnd(score, Math.floor(gameTimeElapsed / 1000), difficulty);
                 isNewHighScore = classificationResult.isNewRecord;
                 levelEffectivelyWon = classificationResult.isEffectivelyWon;
                 if (isNewHighScore) {
@@ -4432,7 +4434,7 @@
                         // AJUSTE DE POSICIONES X PARA LA TABLA DE PUNTUACIONES
                         const rankX = tableRectX + tableRectWidth * 0.08;    // Para "Nº"
                         const scoreX = tableRectX + tableRectWidth * 0.27;   // Para "PUNTOS"
-                        const lengthX = tableRectX + tableRectWidth * 0.50;  // Para "LONG." (ajustado)
+                        const lengthX = tableRectX + tableRectWidth * 0.50;  // Para valor secundario
                         const skinX = tableRectX + tableRectWidth * 0.79;   // Para "JUGADOR" (más espacio)
 
                         const headerFont = `${tableHeaderFontSize}px 'Press Start 2P'`;
@@ -4444,7 +4446,8 @@
 
                         ctx.fillText("Nº", rankX, headerTextY);
                         ctx.fillText("PUNTOS", scoreX, headerTextY);
-                        ctx.fillText("LONG.", lengthX, headerTextY);
+                        const secondaryHeader = gameMode === 'classification' ? 'TIEM.' : 'LONG.';
+                        ctx.fillText(secondaryHeader, lengthX, headerTextY);
                         ctx.fillText("JUGADOR", skinX, headerTextY); // Usar el texto "JUGADOR"
                         currentDrawingYForTable = headerRowActualY + headerRowHeight;
 
@@ -4475,10 +4478,11 @@
                                 const entry = highScores[i];
                                 let currentEntryColor = defaultEntryColor;
                                 
-                                let isThisTheNewRecordFromThisGame = isNewHighScore && 
-                                                                entry.score === score && 
-                                                                entry.length === snake.length &&
-                                                                i === blinkAnimation.rowIndex && 
+                                let isThisTheNewRecordFromThisGame = isNewHighScore &&
+                                                                entry.score === score &&
+                                                                ((gameMode === 'classification' && entry.time === Math.floor(gameTimeElapsed / 1000)) ||
+                                                                 (gameMode !== 'classification' && entry.length === snake.length)) &&
+                                                                i === blinkAnimation.rowIndex &&
                                                                 !newHighScoreEntryProcessedForVisuals;
 
 
@@ -4496,7 +4500,8 @@
                                 // textAlign y textBaseline ya están en "center" y "middle"
                                 ctx.fillText(`${i + 1}.`, rankX, rowTextY);
                                 ctx.fillText(`${entry.score}`, scoreX, rowTextY);
-                                ctx.fillText(`${entry.length}`, lengthX, rowTextY);
+                                const secondaryValue = gameMode === 'classification' ? entry.time : entry.length;
+                                ctx.fillText(`${secondaryValue}`, lengthX, rowTextY);
                                 // USAR SKIN_DISPLAY_NAMES para mostrar el nombre del jugador
                                 const skinDisplayName = SKIN_DISPLAY_NAMES[entry.skin] || entry.skin || '-';
                                 ctx.fillText(skinDisplayName, skinX, rowTextY);
@@ -4698,7 +4703,10 @@
             } else if (gameMode === 'levels' || gameMode === 'maze') {
                 timeLengthLabelEl.textContent = "Tiempo:";
                 timeLengthValueEl.textContent = Math.max(0, Math.ceil(gameTimeRemaining / 1000));
-            } else { // freeMode or classification
+            } else if (gameMode === 'classification') {
+                timeLengthLabelEl.textContent = "Tiempo:";
+                timeLengthValueEl.textContent = Math.floor(gameTimeElapsed / 1000);
+            } else { // freeMode
                 timeLengthLabelEl.textContent = "Longitud:";
                 timeLengthValueEl.textContent = snake.length > 0 ? snake.length : initialSnakeLength;
             }
@@ -4711,13 +4719,13 @@
 
             if (highScores.length > 0) {
                 hsScoreValue.textContent = highScores[0].score;
-                hsLengthValue.textContent = highScores[0].length;
-                if (hsSkinValueDisplay) { 
+                hsLengthValue.textContent = highScores[0].time;
+                if (hsSkinValueDisplay) {
                     hsSkinValueDisplay.textContent = SKIN_DISPLAY_NAMES[highScores[0].skin] || highScores[0].skin || '-';
                 }
             } else {
-                hsScoreValue.textContent = "-"; 
-                hsLengthValue.textContent = "-"; 
+                hsScoreValue.textContent = "-";
+                hsLengthValue.textContent = "-";
                 if (hsSkinValueDisplay) { 
                     hsSkinValueDisplay.textContent = "-"; 
                 }
@@ -4786,6 +4794,7 @@
                 progressPanelLeftValue.textContent = DIFFICULTY_DISPLAY_NAMES[difficultySelector.value] || difficultySelector.value;
                 
                 displayHighScoreInPanel(); 
+                if (hsSecondaryUnit) hsSecondaryUnit.textContent = "Long";
 
                 difficultyLabel.textContent = "Dificultad:";
                 difficultySelector.classList.remove('hidden');
@@ -4810,6 +4819,7 @@
                 progressPanelLeftValue.textContent = DIFFICULTY_DISPLAY_NAMES[difficultySelector.value] || difficultySelector.value;
 
                 displayClassificationHighScoreInPanel();
+                if (hsSecondaryUnit) hsSecondaryUnit.textContent = "Seg";
 
                 difficultyLabel.textContent = "Dificultad:";
                 difficultySelector.classList.remove('hidden');
@@ -5234,7 +5244,17 @@ async function startGame(isRestart = false) {
                         clearInterval(gameTimerIntervalId);
                     }
                 }, 1000);
+            } else if (gameMode === 'classification') {
+                gameTimeElapsed = 0;
+                updateTimeLengthDisplay();
+                clearInterval(gameTimerIntervalId);
+                gameTimerIntervalId = setInterval(() => {
+                    if (gameOver) { clearInterval(gameTimerIntervalId); return; }
+                    gameTimeElapsed += 1000;
+                    updateTimeLengthDisplay();
+                }, 1000);
             } else { // freeMode
+                gameTimeElapsed = 0;
                 gameTimeRemaining = Infinity;
                 updateTimeLengthDisplay();
                 clearInterval(gameTimerIntervalId);
@@ -5468,8 +5488,12 @@ async function startGame(isRestart = false) {
             // updateTargetScoreDisplay(); // No target score in free mode based on difficulty
             if (gameMode === 'freeMode') { // Update high score display if difficulty changes in free mode
                 displayHighScoreInPanel();
+                if (hsSecondaryUnit) hsSecondaryUnit.textContent = "Long";
+                if (hsSecondaryUnit) hsSecondaryUnit.textContent = 'Long';
+                if (hsSecondaryUnit) hsSecondaryUnit.textContent = 'Long';
             } else if (gameMode === 'classification') {
                 displayClassificationHighScoreInPanel();
+                if (hsSecondaryUnit) hsSecondaryUnit.textContent = 'Seg';
                 // También actualizamos la dificultad mostrada en pantalla
                 if (progressPanelLeftValue) {
                     progressPanelLeftValue.textContent = DIFFICULTY_DISPLAY_NAMES[difficulty] || difficulty;
@@ -5722,7 +5746,7 @@ async function startGame(isRestart = false) {
 
             if (highScores.length > 0) {
                 hsScoreValue.textContent = highScores[0].score;
-                hsLengthValue.textContent = highScores[0].length;
+                hsLengthValue.textContent = highScores[0].time;
                 if (hsSkinValueDisplay) {
                     hsSkinValueDisplay.textContent = SKIN_DISPLAY_NAMES[highScores[0].skin] || highScores[0].skin || '-';
                 }
