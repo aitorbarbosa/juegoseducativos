@@ -214,10 +214,14 @@
             display: block; 
             line-height: 1.1;
         }
-        #current-world-info-group .info-value { 
-            font-size: 0.85em; 
+        #current-world-info-group .info-value {
+            font-size: 0.85em;
             color: #f5f5f5;
             font-family: 'Press Start 2P', sans-serif;
+        }
+        #progress-panel.classification-mode #current-world-info-group .info-value {
+            margin-top: 4px;  
+            font-size: 0.7em;
         }
 
         #star-progress-wrapper { 
@@ -798,9 +802,10 @@
             #current-world-info-group { min-height: 50px; padding: 6px; min-width: 70px;}
             #current-world-info-group .info-label { font-size: 0.6em; }
             #current-world-info-group .info-value { font-size: 0.8em; }
+            #progress-panel.classification-mode #current-world-info-group .info-value { font-size: 0.7em; }
             #star-progress-wrapper { min-height: 50px; padding: 6px;}
-            .star-svg { width: 30px; height: 30px; } 
-            #star-progress-container { max-width: 200px; gap: 10px;} 
+            .star-svg { width: 30px; height: 30px; }
+            #star-progress-container { max-width: 200px; gap: 10px;}
 
 
             #d-pad-container {
@@ -876,9 +881,10 @@
 
             #current-world-info-group .info-label { font-size: 0.55em; }
             #current-world-info-group .info-value { font-size: 0.7em; }
+            #progress-panel.classification-mode #current-world-info-group .info-value { font-size: 0.6em; }
             #current-world-info-group { min-width: 60px;}
-            .star-svg { width: 24px; height: 24px; } 
-            #star-progress-container { max-width: 170px; gap: 8px;} 
+            .star-svg { width: 24px; height: 24px; }
+            #star-progress-container { max-width: 170px; gap: 8px;}
 
 
             #d-pad-container {
@@ -4901,9 +4907,10 @@
         
         function updateGameModeUI() {
             gameMode = gameModeSelector.value;
-            
+
             const isGameCurrentlyRunning = !!gameIntervalId;
             const isSettingsPanelCurrentlyOpen = !settingsPanel.classList.contains("settings-panel-hidden");
+            progressPanel.classList.remove('classification-mode');
 
             if (!gameMode) {
                 titlePanel.classList.remove('hidden');
@@ -4977,6 +4984,7 @@
                 progressPanel.classList.remove('hidden');
                 starProgressContainer.classList.add('hidden');
                 highScoreDisplay.classList.remove('hidden');
+                progressPanel.classList.add('classification-mode');
 
                 progressPanelLeftLabel.textContent = "Dificultad:";
                 progressPanelLeftValue.textContent = DIFFICULTY_DISPLAY_NAMES[difficultySelector.value] || difficultySelector.value;
