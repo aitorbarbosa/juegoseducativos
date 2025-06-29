@@ -919,12 +919,60 @@
             #settings-panel #audioToggleSelector,
             #settings-panel #skinSelector,
             #settings-panel #foodSelector,
-            #settings-panel #gameModeSelector {
-                height: 30px;
-                margin-top: 2px;
-                margin-bottom: 2px;
-            }
+        #settings-panel #gameModeSelector {
+            height: 30px;
+            margin-top: 2px;
+            margin-bottom: 2px;
         }
+        }
+
+        #resetDataButton {
+            background-color: #b91c1c;
+            color: #f5f5f5;
+            border-radius: 8px;
+            padding: 10px 15px;
+            font-family: 'Press Start 2P', sans-serif;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            width: 100%;
+            text-align: center;
+            font-size: 0.65em;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #resetDataButton:hover { background-color: #dc2626; }
+
+        #reset-confirmation-panel {
+            position: fixed;
+            left: 50%;
+            transform: translateX(-50%) scale(0.95);
+            background-color: #1F2937;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+            z-index: 1003;
+            width: 100%;
+            max-width: var(--game-max-width);
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            border: 2px solid #4b5563;
+            opacity: 0;
+            transition: opacity 0.3s ease-out, transform 0.3s ease-out;
+        }
+
+        #reset-confirmation-panel.panel-visible {
+            opacity: 1;
+            transform: translateX(-50%) scale(1);
+        }
+
+        .reset-panel-hidden { display: none !important; }
+
+        #reset-confirmation-panel p { text-align: center; margin: 0 0 10px 0; }
+        #reset-confirmation-panel .reset-buttons { display: flex; gap: 15px; }
+        #reset-confirmation-panel .reset-buttons button { flex: 1; }
 
         @media screen and (min-width: 800px) {
             #splash-content { padding: 0px 0; }
@@ -1003,7 +1051,7 @@
         </button>
 
         <div id="setup-controls"> 
-            <div id="settings-panel" class="settings-panel-hidden">
+        <div id="settings-panel" class="settings-panel-hidden">
                 <div class="settings-header">
                     <h2>Configuración</h2>
                     <button id="close-settings-button" aria-label="Cerrar configuración">&times;</button>
@@ -1089,7 +1137,7 @@
                         <option value="off">Desactivado</option> 
                     </select>
                 </div>
-                <div class="control-group" id="music-volume-control-group"> 
+                <div class="control-group" id="music-volume-control-group">
                     <div class="control-label-icon-row">
                         <label class="control-label" for="musicVolumeSlider">Volumen Música: <span id="musicVolumeValue">50</span>%</label>
                          <button class="setting-info-button" data-setting="musicVolume" aria-label="Información sobre volumen de música">
@@ -1098,8 +1146,9 @@
                     </div>
                     <input type="range" id="musicVolumeSlider" min="0" max="100" value="50">
                 </div>
+                <div class="control-group" id="resetDataButton">Reiniciar datos del juego</div>
             </div>
-            
+
             <div id="info-panel" class="info-panel-hidden">
                 <div class="info-header">
                     <h2>Información</h2> 
@@ -1132,7 +1181,14 @@
                 <div id="specific-info-content">
                  </div>
             </div>
-            
+            <div id="reset-confirmation-panel" class="reset-panel-hidden">
+                <p>¿Estás seguro de que deseas eliminar todos los datos del juego? Esta decisión eliminará todos tus progresos y puntuaciones.</p>
+                <div class="reset-buttons">
+                    <button id="confirmResetYes">Sí</button>
+                    <button id="confirmResetNo">No</button>
+                </div>
+            </div>
+
             <div class="control-row" id="action-buttons-row">
                 <div class="action-button-wrapper" id="info-button-wrapper">
                     <button id="infoButton" aria-label="Información">
@@ -1278,6 +1334,11 @@
         const topInfoBar = document.getElementById('top-info-bar');
         const setupControls = document.getElementById('setup-controls');
         const actionButtonsRow = document.getElementById('action-buttons-row');
+
+        const resetDataButton = document.getElementById("resetDataButton");
+        const resetConfirmPanel = document.getElementById("reset-confirmation-panel");
+        const confirmResetYesButton = document.getElementById("confirmResetYes");
+        const confirmResetNoButton = document.getElementById("confirmResetNo");
 
         const modeLeftButton = document.getElementById("mode-left-button");
         const modeRightButton = document.getElementById("mode-right-button");
@@ -2409,6 +2470,7 @@
             if (panelId === "settings-panel") hiddenClassName = "settings-panel-hidden";
             else if (panelId === "info-panel") hiddenClassName = "info-panel-hidden";
             else if (panelId === "specific-info-panel") hiddenClassName = "specific-info-panel-hidden";
+            else if (panelId === "reset-confirmation-panel") hiddenClassName = "reset-panel-hidden";
             else {
                 console.error("togglePanel: Clase oculta no definida para el panel:", panelId);
                 return;
@@ -2618,8 +2680,27 @@
         
         configButton.addEventListener('click', openSettingsPanel);
         closeSettingsButton.addEventListener('click', closeSettingsPanel);
-        infoButton.addEventListener('click', openInfoPanel); 
-        closeInfoButton.addEventListener('click', closeInfoPanel); 
+        infoButton.addEventListener('click', openInfoPanel);
+        closeInfoButton.addEventListener('click', closeInfoPanel);
+
+        if (resetDataButton) {
+            resetDataButton.addEventListener('click', () => {
+                togglePanel(settingsPanel, settingsPanel, false);
+                togglePanel(resetConfirmPanel, resetConfirmPanel, true);
+            });
+        }
+        if (confirmResetNoButton) {
+            confirmResetNoButton.addEventListener('click', () => {
+                togglePanel(resetConfirmPanel, resetConfirmPanel, false);
+                togglePanel(settingsPanel, settingsPanel, true);
+            });
+        }
+        if (confirmResetYesButton) {
+            confirmResetYesButton.addEventListener('click', () => {
+                localStorage.clear();
+                window.location.reload();
+            });
+        }
 
         // --- Specific Info Panel Logic ---
         const specificHelpTexts = {
