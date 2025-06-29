@@ -4243,7 +4243,10 @@
                 updateMainButtonStates();
                 return;
             } else {
-                if ((screenState.showClassificationCover || (screenState.showCoverForWorld > 0 && gameMode === 'levels')) && !screenState.gameActuallyStarted) {
+                if ((screenState.showClassificationCover ||
+                     (screenState.showCoverForWorld > 0 && gameMode === 'levels') ||
+                     (screenState.showMazeCover && gameMode === 'maze')) &&
+                    !screenState.gameActuallyStarted) {
                     modeLeftButton.classList.remove('hidden');
                     modeRightButton.classList.remove('hidden');
                 } else {
@@ -4290,6 +4293,8 @@
                 return;
             }
             if (screenState.showMazeCover && !screenState.gameActuallyStarted) {
+                modeLeftButton.classList.remove('hidden');
+                modeRightButton.classList.remove('hidden');
                 drawMazeCover();
                 updateMainButtonStates();
                 return;
