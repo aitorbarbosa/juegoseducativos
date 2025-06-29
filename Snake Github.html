@@ -4825,7 +4825,7 @@
                 progressPanelLeftValue.textContent = DIFFICULTY_DISPLAY_NAMES[difficultySelector.value] || difficultySelector.value;
 
                 displayClassificationHighScoreInPanel();
-                if (hsSecondaryUnit) hsSecondaryUnit.textContent = "Seg";
+                if (hsSecondaryUnit) hsSecondaryUnit.textContent = "Min";
 
                 difficultyLabel.textContent = "Dificultad:";
                 difficultySelector.classList.remove('hidden');
@@ -5510,7 +5510,7 @@ async function startGame(isRestart = false) {
                 if (hsSecondaryUnit) hsSecondaryUnit.textContent = "Seg";
             } else if (gameMode === 'classification') {
                 displayClassificationHighScoreInPanel();
-                if (hsSecondaryUnit) hsSecondaryUnit.textContent = 'Seg';
+                if (hsSecondaryUnit) hsSecondaryUnit.textContent = 'Min';
                 // También actualizamos la dificultad mostrada en pantalla
                 if (progressPanelLeftValue) {
                     progressPanelLeftValue.textContent = DIFFICULTY_DISPLAY_NAMES[difficulty] || difficulty;
