@@ -4791,26 +4791,22 @@
                      else difficultyControlGroup.classList.remove("interactive-mode");
                 }
             } else if (gameMode === 'freeMode') {
-                titlePanel.classList.add('hidden');
-                progressPanel.classList.remove('hidden');
-                starProgressContainer.classList.add('hidden'); // Ocultar estrellas
-                highScoreDisplay.classList.remove('hidden'); // Mostrar panel de high score
-                
-                // Ya no se usa progressPanelLeftLabel/Value para el high score.
-                // El label "Máxima puntuación" está dentro de #high-score-display.
-                // Y progressPanelLeftLabel/Value se ocultan o se dejan como están si se quiere mostrar la dificultad actual del juego.
-                // Por ahora, mantendremos la lógica de que #current-world-info-group muestre la dificultad actual del juego.
-                progressPanelLeftLabel.textContent = "Dificultad:"; 
+                // En el modo libre mantendremos visible el título del juego y ocultaremos
+                // el panel de progreso con la dificultad y la máxima puntuación.
+                titlePanel.classList.remove('hidden');
+                progressPanel.classList.add('hidden');
+                starProgressContainer.classList.add('hidden');
+                highScoreDisplay.classList.add('hidden');
+
+                // Actualizamos la dificultad aunque no se muestre actualmente
+                progressPanelLeftLabel.textContent = "Dificultad:";
                 progressPanelLeftValue.textContent = DIFFICULTY_DISPLAY_NAMES[difficultySelector.value] || difficultySelector.value;
-                
-                displayHighScoreInPanel();
-                if (hsSecondaryUnit) hsSecondaryUnit.textContent = "Seg";
 
                 difficultyLabel.textContent = "Dificultad:";
                 difficultySelector.classList.remove('hidden');
                 worldsSelector.classList.add('hidden');
                 mazeLevelSelector.classList.add('hidden');
-                
+
                 if (isSettingsPanelCurrentlyOpen && !isGameCurrentlyRunning) {
                     difficultySelector.disabled = false;
                     difficultyControlGroup.classList.add("interactive-mode");
