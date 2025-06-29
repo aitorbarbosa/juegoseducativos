@@ -1819,6 +1819,10 @@
         let classificationTransitionStart = null;
         let classificationTransitionDir = 0;
         let classificationTransitionFrom = 0;
+        let worldTransitionStart = null;
+        let worldTransitionDir = 0;
+        let worldTransitionFrom = 1;
+
 
         const DIFFICULTY_SETTINGS = {
             principiante: {
@@ -2340,8 +2344,9 @@
                 const isMazeResultScreen = screenState.mazeResultType && !screenState.gameActuallyStarted;
                 const isModeSelectActive = showModeSelect;
                 const isModeSelectIntro = isModeSelectActive && MODE_SELECT_ORDER[modeSelectIndex] === 'intro';
+                const isSelectedWorldLocked = isWorldIntroCover && displayWorld > maxUnlockedWorld;
 
-                startButton.disabled = isModeSelectIntro;
+                startButton.disabled = isModeSelectIntro || isSelectedWorldLocked;
                 restartMazeButton.disabled = restartMazeButton.classList.contains('hidden');
                 configButton.disabled = false;
                 infoButton.disabled = false;
@@ -3850,14 +3855,18 @@
             }
         }
         
-        function drawWorldCoverImage(worldNumber) {
+        function drawSingleWorldCover(worldNumber) {
             if (!ctx || !canvasEl) return;
-            ctx.fillStyle = "#374151"; 
+            ctx.fillStyle = "#374151";
             ctx.fillRect(0, 0, canvasEl.width, canvasEl.height);
 
             const img = worldCoverImages[worldNumber];
             if (img && img.complete && img.naturalHeight !== 0) {
+                if (worldNumber > maxUnlockedWorld) {
+                    ctx.filter = 'grayscale(100%)';
+                }
                 ctx.drawImage(img, 0, 0, canvasEl.width, canvasEl.height);
+                ctx.filter = 'none';
             } else {
                 ctx.fillStyle = "white";
                 ctx.textAlign = "center";
@@ -4023,6 +4032,35 @@
             }
         }
 
+        function drawWorldCover() {
+            if (!ctx || !canvasEl) return;
+            const now = performance.now();
+            let progress = 1;
+            if (worldTransitionStart !== null) {
+                progress = Math.min((now - worldTransitionStart) / MODE_TRANSITION_DURATION, 1);
+            }
+
+            const fromWorld = worldTransitionStart !== null ? worldTransitionFrom : displayWorld;
+            const toWorld = displayWorld;
+
+            if (worldTransitionStart !== null && progress < 1) {
+                const offset = canvasEl.width * progress;
+                const dir = worldTransitionDir;
+                ctx.save();
+                ctx.translate(-dir * offset, 0);
+                drawSingleWorldCover(fromWorld);
+                ctx.restore();
+                ctx.save();
+                ctx.translate(canvasEl.width * dir - dir * offset, 0);
+                drawSingleWorldCover(toWorld);
+                ctx.restore();
+                requestAnimationFrame(draw);
+            } else {
+                worldTransitionStart = null;
+                drawSingleWorldCover(toWorld);
+            }
+        }
+
         function drawMazeCover() {
             if (!ctx || !canvasEl) return;
             ctx.fillStyle = "#374151";
@@ -4128,7 +4166,7 @@
                 updateMainButtonStates();
                 return;
             } else {
-                if (screenState.showClassificationCover && !screenState.gameActuallyStarted) {
+                if ((screenState.showClassificationCover || (screenState.showCoverForWorld > 0 && gameMode === 'levels')) && !screenState.gameActuallyStarted) {
                     modeLeftButton.classList.remove('hidden');
                     modeRightButton.classList.remove('hidden');
                 } else {
@@ -4205,9 +4243,11 @@
                 return;
             }
             if (screenState.showCoverForWorld > 0 && gameMode === 'levels' && !screenState.gameActuallyStarted) {
-                drawWorldCoverImage(screenState.showCoverForWorld);
-                updateMainButtonStates(); 
-                return; 
+                modeLeftButton.classList.remove('hidden');
+                modeRightButton.classList.remove('hidden');
+                drawWorldCover();
+                updateMainButtonStates();
+                return;
             }
 
 
@@ -4988,7 +5028,9 @@
         function drawStarProgress() {
             starProgressContainer.innerHTML = '';
             if (gameMode === 'levels') {
-                const worldToDisplayStarsFor = gameOver ? displayWorld : currentWorld;
+                const worldToDisplayStarsFor = (screenState.showCoverForWorld > 0 && !screenState.gameActuallyStarted)
+                    ? displayWorld
+                    : (gameOver ? displayWorld : currentWorld);
                 const worldLevelStartIndex = (worldToDisplayStarsFor - 1) * LEVELS_PER_WORLD;
                 for (let i = 0; i < LEVELS_PER_WORLD; i++) {
                     const levelIndexInTotal = worldLevelStartIndex + i;
@@ -5844,9 +5886,14 @@ async function startGame(isRestart = false) {
             const isSpecificInfoOpen = specificInfoPanel && !specificInfoPanel.classList.contains("specific-info-panel-hidden");
 
             if (!isSettingsOpen && !isInfoOpen && !isSpecificInfoOpen) {
+                const key = e.key.toLowerCase();
+                if (screenState.showCoverForWorld && gameMode === 'levels' && !screenState.gameActuallyStarted) {
+                    if (key === 'arrowleft' || key === 'a') { startWorldTransition(-1); e.preventDefault(); return; }
+                    if (key === 'arrowright' || key === 'd') { startWorldTransition(1); e.preventDefault(); return; }
+                    if (key === 'enter') { if (displayWorld <= maxUnlockedWorld) startGame(false); e.preventDefault(); return; }
+                }
                 if (gameOver && e.key !== "Enter" && gameIntervalId === null) return;
                 let newDirectionCmd = null; // Use newDirectionCmd to align with function parameter
-                const key = e.key.toLowerCase();
                 switch (key) {
                     case "arrowup": case "w": newDirectionCmd = "up"; break;
                     case "arrowdown": case "s": newDirectionCmd = "down"; break;
@@ -5854,7 +5901,7 @@ async function startGame(isRestart = false) {
                     case "arrowright": case "d": newDirectionCmd = "right"; break;
                     case "enter": if (gameOver || !gameIntervalId) { startGame(false); } break;
                 }
-                if (newDirectionCmd) { changeDirection(newDirectionCmd); } // Call with newDirectionCmd
+                if (newDirectionCmd) { changeDirection(newDirectionCmd); }
                 if (["arrowup", "arrowdown", "arrowleft", "arrowright", "w", "a", "s", "d"].includes(key)) { e.preventDefault(); }
             } else if (isSpecificInfoOpen) {
                  if (e.key === "Escape") { closeSpecificInfoPanel(); }
@@ -5918,12 +5965,45 @@ async function startGame(isRestart = false) {
                 requestAnimationFrame(draw);
             }
         }
+        function startWorldTransition(dir) {
+            if (worldTransitionStart !== null) return;
+            worldTransitionDir = dir;
+            worldTransitionFrom = displayWorld;
+            displayWorld = ((displayWorld - 1 + dir + TOTAL_WORLDS) % TOTAL_WORLDS) + 1;
+            if (displayWorld <= maxUnlockedWorld) {
+                currentWorld = displayWorld;
+                currentLevelInWorld = 1;
+                const absoluteIndex = (currentWorld - 1) * LEVELS_PER_WORLD;
+                displayLevelInWorld = 1;
+                displayTargetScore = TARGET_SCORES_LEVELS[absoluteIndex] || 0;
+                if (!gameIntervalId) {
+                    const cfg = LEVEL_SETTINGS[currentWorld - 1][0];
+                    snakeSpeed = cfg.speed;
+                    initialSnakeLength = cfg.initialLength;
+                }
+                saveGameSettings();
+            }
+            screenState.showCoverForWorld = displayWorld;
+            screenState.showWorldCompleteCover = 0;
+            screenState.showLevelCompleteCover = 0;
+            screenState.showDefeatCoverForWorld = 0;
+            screenState.showTimeoutCover = false;
+            screenState.showFreeModeCover = false;
+            updateGameModeUI();
+            worldTransitionStart = performance.now();
+            if (!screenState.gameActuallyStarted) {
+                requestAnimationFrame(draw);
+            }
+        }
+
 
         modeLeftButton.addEventListener("click", () => {
             if (showModeSelect) {
                 startModeTransition(-1);
             } else if (screenState.showClassificationCover && !screenState.gameActuallyStarted) {
                 startClassificationTransition(-1);
+            } else if (screenState.showCoverForWorld && gameMode === 'levels' && !screenState.gameActuallyStarted) {
+                startWorldTransition(-1);
             }
             if (areSfxEnabled) playSound('modeSwitch');
         });
@@ -5932,6 +6012,8 @@ async function startGame(isRestart = false) {
                 startModeTransition(1);
             } else if (screenState.showClassificationCover && !screenState.gameActuallyStarted) {
                 startClassificationTransition(1);
+            } else if (screenState.showCoverForWorld && gameMode === 'levels' && !screenState.gameActuallyStarted) {
+                startWorldTransition(1);
             }
             if (areSfxEnabled) playSound('modeSwitch');
         });
