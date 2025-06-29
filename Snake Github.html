@@ -1028,7 +1028,7 @@
                         </button>
                     </div>
                     <select id="difficultySelector">
-                        <option value="principiante" selected>Principiante</option>
+                        <option value="principiante" selected>Novato</option>
                         <option value="explorador">Explorador</option>
                         <option value="veterano">Veterano</option>
                         <option value="legendario">Legendario</option>
@@ -1445,7 +1445,7 @@
         
         // Mapping for difficulty display names
         const DIFFICULTY_DISPLAY_NAMES = {
-            principiante: "Principiante",
+            principiante: "Novato",
             explorador: "Explorador",
             veterano: "Veterano",
             legendario: "Legendario"
@@ -2592,12 +2592,12 @@
         const specificHelpTexts = {
             gameMode: {
                 title: "Tipo de Juego",
-                text: "<p>Define la estructura principal de tus partidas, eligiendo entre:</p><h4>Modo Aventura</h4><p>Embárcate en un viaje progresivo a través de diversos mundos. En este modo:</p><ul><li>Cada mundo presenta un diseño de escenario único y puede introducir nuevos obstáculos o mecánicas.</li><li>Deberás alcanzar una <strong>puntuación objetivo</strong> en cada nivel para superarlo.</li><li>Desbloquea <strong>nuevos mundos</strong> superando todos los niveles del mundo en el que te encuentras.</li><li>La dificultad de los niveles y mundos aumenta gradualmente, ¿Serás capaz de superarlos todos?</li></ul><h4>Modo Libre</h4><p>Disfruta de la experiencia clásica de Snake sin la presión de superar niveles específicos. En este modo:</p><ul><li>El objetivo principal es conseguir la <strong>máxima puntuación</strong> y marcar el mejor <strong>tiempo</strong> posible en una única partida.</li><li>La dificultad que selecciones (Principiante, Explorador, Veterano o Legendario) afectará directamente la velocidad inicial de la serpiente y a la clasificación en la que se registran las puntuaciones.</li></ul><h4>Modo Clasificación</h4><p>Un modo similar al Modo Libre donde también competirás por lograr la mejor puntuación posible. Las puntuaciones se almacenan de forma independiente para este modo.</p>"
+                text: "<p>Define la estructura principal de tus partidas, eligiendo entre:</p><h4>Modo Aventura</h4><p>Embárcate en un viaje progresivo a través de diversos mundos. En este modo:</p><ul><li>Cada mundo presenta un diseño de escenario único y puede introducir nuevos obstáculos o mecánicas.</li><li>Deberás alcanzar una <strong>puntuación objetivo</strong> en cada nivel para superarlo.</li><li>Desbloquea <strong>nuevos mundos</strong> superando todos los niveles del mundo en el que te encuentras.</li><li>La dificultad de los niveles y mundos aumenta gradualmente, ¿Serás capaz de superarlos todos?</li></ul><h4>Modo Libre</h4><p>Disfruta de la experiencia clásica de Snake sin la presión de superar niveles específicos. En este modo:</p><ul><li>El objetivo principal es conseguir la <strong>máxima puntuación</strong> y marcar el mejor <strong>tiempo</strong> posible en una única partida.</li><li>La dificultad que selecciones (Novato, Explorador, Veterano o Legendario) afectará directamente la velocidad inicial de la serpiente y a la clasificación en la que se registran las puntuaciones.</li></ul><h4>Modo Clasificación</h4><p>Un modo similar al Modo Libre donde también competirás por lograr la mejor puntuación posible. Las puntuaciones se almacenan de forma independiente para este modo.</p>"
             },
             difficulty: { 
                 title: "Dificultad / Mundo", 
                 text_adventure: "<h4> (Solo en Modo Aventura)</h4><p>Cuando juegas en <strong>Modo Aventura</strong>, tendrás disponibles un total de 8 mundos. Cada uno de ellos dispone de 5 niveles de creciente dificultad. Tendrás que superarlos todos para poder avanzar al siguiente mundo. Complétalos todos para finalizar este modo de juego.</p><p>El selector de <strong>Mundos</strong> (que aparece al seleccionar \"Modo Aventura\") te permite elegir en qué mundo específico deseas comenzar tu aventura, siempre y cuando ya lo hayas desbloqueado previamente jugando y superando los anteriores en la dificultad seleccionada. ¡Supera los mundos para acceder a nuevos escenarios y desafíos más emocionantes o volver a jugar a los que ya hayas superado!</p><p>No olvides estar atento a las novedades del juego, ¡Puede que haya nuevos niveles muy pronto!</p>",
-                text_free: "<h4> (Solo en Modo Libre)</h4><p>Ajusta el nivel de desafío para que se adapte a tu habilidad y preferencias. La dificultad influye principalmente en la velocidad de la serpiente y el tiempo de desaparición de los comestibles.</p><h4>Principiante</h4><p>Un modo relajado pensado para quienes se inician. La serpiente avanza despacio y la comida nunca desaparece.</p><h4>Explorador</h4><p>Aumenta ligeramente la velocidad y se introduce la racha junto con la desaparición de la comida y la aparición de rayos.</p><h4>Veterano</h4><p>La velocidad sube un poco más y se añaden obstáculos, espejos y comida falsa que puede restar puntos.</p><h4>Legendario</h4><p>Solo para expertos: la serpiente es muy rápida, la comida dura muy poco y todas las mecánicas combinadas te pondrán a prueba.</p>",
+                text_free: "<h4> (Solo en Modo Libre)</h4><p>Ajusta el nivel de desafío para que se adapte a tu habilidad y preferencias. La dificultad influye principalmente en la velocidad de la serpiente y el tiempo de desaparición de los comestibles.</p><h4>Novato</h4><p>Un modo relajado pensado para quienes se inician. La serpiente avanza despacio y la comida nunca desaparece.</p><h4>Explorador</h4><p>Aumenta ligeramente la velocidad y se introduce la racha junto con la desaparición de la comida y la aparición de rayos.</p><h4>Veterano</h4><p>La velocidad sube un poco más y se añaden obstáculos, espejos y comida falsa que puede restar puntos.</p><h4>Legendario</h4><p>Solo para expertos: la serpiente es muy rápida, la comida dura muy poco y todas las mecánicas combinadas te pondrán a prueba.</p>",
                 text_classification: "<h4> (Solo en Modo Clasificación)</h4><p>Compite por la mejor puntuación al igual que en el Modo Libre, pero con una tabla de récords independiente.</p>"
             },
             skin: {

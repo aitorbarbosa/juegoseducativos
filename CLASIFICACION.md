@@ -4,7 +4,7 @@ Este documento describe la nueva estructura propuesta para el **Modo Clasificaci
 
 ## Niveles de dificultad
 
-1. **Principiante**
+1. **Novato**
    - Aparece la **manzana dorada** de doble puntuación.
    - Permanece más tiempo en pantalla para facilitar su captura.
    - Velocidad base y longitud inicial de la serpiente bajas.
