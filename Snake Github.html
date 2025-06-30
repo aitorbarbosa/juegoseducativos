@@ -1305,8 +1305,8 @@
                         <label class="control-label">Desaparición comida</label>
                         <label class="switch"><input type="checkbox" id="free-lifespan-toggle" checked><span class="slider round"></span></label>
                     </div>
-                    <label class="control-label" for="free-lifespan-input">Tiempo en desaparecer (ms): <span id="free-lifespan-value">7500</span></label>
-                    <input type="range" class="settings-range" id="free-lifespan-input" min="4000" max="8000" value="7500">
+                    <label class="control-label" for="free-lifespan-input">Tiempo en desaparecer (s): <span id="free-lifespan-value">7.5</span></label>
+                    <input type="range" class="settings-range" id="free-lifespan-input" min="4" max="8" step="0.5" value="7.5">
                 </div>
                 <div class="control-group" id="streak-control-group">
                     <div class="control-label-icon-row">
@@ -1321,8 +1321,8 @@
                     </div>
                     <label class="control-label" for="free-golden-chance-input">Probabilidad: <span id="free-golden-chance-value">0.1</span></label>
                     <input type="range" class="settings-range" id="free-golden-chance-input" min="0.1" max="1" step="0.05" value="0.1">
-                    <label class="control-label" for="free-golden-lifespan-input">Duración (ms): <span id="free-golden-lifespan-value">4000</span></label>
-                    <input type="range" class="settings-range" id="free-golden-lifespan-input" min="4000" max="8000" value="4000">
+                    <label class="control-label" for="free-golden-lifespan-input">Duración (s): <span id="free-golden-lifespan-value">4</span></label>
+                    <input type="range" class="settings-range" id="free-golden-lifespan-input" min="4" max="8" step="0.5" value="4">
                 </div>
                 <div class="control-group">
                     <div class="control-label-icon-row">
@@ -1330,9 +1330,9 @@
                         <label class="switch"><input type="checkbox" id="free-lightning-toggle" checked><span class="slider round"></span></label>
                     </div>
                     <label class="control-label" for="free-lightning-range">Intervalo (s): <span id="free-lightning-range-display">4 - 8</span></label>
-                    <input type="range" class="settings-range" id="free-lightning-range" min="0" max="16000" step="1000" value="4000">
-                    <label class="control-label" for="free-lightning-lifespan">Duración del rayo (ms): <span id="free-lightning-lifespan-value">5000</span></label>
-                    <input type="range" class="settings-range" id="free-lightning-lifespan" min="4000" max="10000" value="5000">
+                    <input type="range" class="settings-range" id="free-lightning-range" min="0" max="16" step="0.5" value="4">
+                    <label class="control-label" for="free-lightning-lifespan">Duración del rayo (s): <span id="free-lightning-lifespan-value">5</span></label>
+                    <input type="range" class="settings-range" id="free-lightning-lifespan" min="4" max="10" step="0.5" value="5">
                     <label class="control-label" for="free-yellow-chance">Probabilidad rayo amarillo: <span id="free-yellow-chance-value">0.75</span></label>
                     <input type="range" class="settings-range" id="free-yellow-chance" min="0" max="1" step="0.05" value="0.75">
                 </div>
@@ -1342,9 +1342,9 @@
                         <label class="switch"><input type="checkbox" id="free-false-toggle" checked><span class="slider round"></span></label>
                     </div>
                     <label class="control-label" for="free-false-range">Intervalo (s): <span id="free-false-range-display">4 - 8</span></label>
-                    <input type="range" class="settings-range" id="free-false-range" min="0" max="16000" step="1000" value="4000">
-                    <label class="control-label" for="free-false-lifespan">Duración comida falsa (ms): <span id="free-false-lifespan-value">5000</span></label>
-                    <input type="range" class="settings-range" id="free-false-lifespan" min="4000" max="10000" value="5000">
+                    <input type="range" class="settings-range" id="free-false-range" min="0" max="16" step="0.5" value="4">
+                    <label class="control-label" for="free-false-lifespan">Duración comida falsa (s): <span id="free-false-lifespan-value">5</span></label>
+                    <input type="range" class="settings-range" id="free-false-lifespan" min="4" max="10" step="0.5" value="5">
                 </div>
                 <div class="control-group">
                     <div class="control-label-icon-row">
@@ -1352,11 +1352,11 @@
                         <label class="switch"><input type="checkbox" id="free-mirror-toggle" checked><span class="slider round"></span></label>
                     </div>
                     <label class="control-label" for="free-mirror-range">Intervalo (s): <span id="free-mirror-range-display">4 - 8</span></label>
-                    <input type="range" class="settings-range" id="free-mirror-range" min="0" max="16000" step="1000" value="4000">
-                    <label class="control-label" for="free-mirror-lifespan">Duración del espejo (ms): <span id="free-mirror-lifespan-value">5000</span></label>
-                    <input type="range" class="settings-range" id="free-mirror-lifespan" min="4000" max="10000" value="5000">
-                    <label class="control-label" for="free-mirror-effect">Duración efecto espejo (ms): <span id="free-mirror-effect-value">3000</span></label>
-                    <input type="range" class="settings-range" id="free-mirror-effect" min="3000" max="10000" value="3000">
+                    <input type="range" class="settings-range" id="free-mirror-range" min="0" max="16" step="0.5" value="4">
+                    <label class="control-label" for="free-mirror-lifespan">Duración del espejo (s): <span id="free-mirror-lifespan-value">5</span></label>
+                    <input type="range" class="settings-range" id="free-mirror-lifespan" min="4" max="10" step="0.5" value="5">
+                    <label class="control-label" for="free-mirror-effect">Duración efecto espejo (s): <span id="free-mirror-effect-value">3</span></label>
+                    <input type="range" class="settings-range" id="free-mirror-effect" min="3" max="10" step="0.5" value="3">
                 </div>
                 <div class="control-group">
                     <label class="control-label" for="free-obstacle-count">Número de obstáculos</label>
@@ -1617,8 +1617,8 @@ function setupSlider(slider, display) {
         function setupRangeSlider(slider, display) {
             if (slider && display) {
                 const update = () => {
-                    const val = parseInt(slider.value, 10);
-                    display.textContent = `${val / 1000} - ${(val + 4000) / 1000}`;
+                    const val = parseFloat(slider.value);
+                    display.textContent = `${val} - ${val + 4}`;
                 };
                 slider.addEventListener('input', update);
                 update();
@@ -2961,7 +2961,7 @@ function setupSlider(slider, display) {
             if (freeSpeedValue) freeSpeedValue.textContent = freeSpeedInput.value;
 
             freeLifespanToggle.checked = freeModeSettings.initialLifespan > 0;
-            freeLifespanInput.value = freeModeSettings.initialLifespan > 0 ? freeModeSettings.initialLifespan : 4000;
+            freeLifespanInput.value = freeModeSettings.initialLifespan > 0 ? freeModeSettings.initialLifespan / 1000 : 4;
             if (freeLifespanValue) freeLifespanValue.textContent = freeLifespanInput.value;
             freeLifespanInput.disabled = !freeLifespanToggle.checked;
 
@@ -2971,21 +2971,21 @@ function setupSlider(slider, display) {
             freeGoldenToggle.checked = freeModeSettings.goldenFoodChance > 0;
             freeGoldenChanceInput.value = freeModeSettings.goldenFoodChance > 0 ? freeModeSettings.goldenFoodChance : 0.1;
             if (freeGoldenChanceValue) freeGoldenChanceValue.textContent = freeGoldenChanceInput.value;
-            freeGoldenLifespanInput.value = freeModeSettings.goldenFoodLifespan;
+            freeGoldenLifespanInput.value = freeModeSettings.goldenFoodLifespan / 1000;
             if (freeGoldenLifespanValue) freeGoldenLifespanValue.textContent = freeGoldenLifespanInput.value;
             freeGoldenChanceInput.disabled = freeGoldenLifespanInput.disabled = !freeGoldenToggle.checked;
 
             freeLightningToggle.checked = !!freeModeSettings.lightningSpawnRange;
             if (freeModeSettings.lightningSpawnRange) {
-                freeLightningRange.value = freeModeSettings.lightningSpawnRange[0];
+                freeLightningRange.value = freeModeSettings.lightningSpawnRange[0] / 1000;
             } else {
                 freeLightningRange.value = 0;
             }
             if (freeLightningRangeDisplay) {
-                freeLightningRangeDisplay.textContent = `${freeLightningRange.value / 1000} - ${(parseInt(freeLightningRange.value,10) + 4000) / 1000}`;
+                freeLightningRangeDisplay.textContent = `${freeLightningRange.value} - ${parseFloat(freeLightningRange.value) + 4}`;
             }
             freeLightningRange.disabled = !freeLightningToggle.checked;
-            freeLightningLifespan.value = freeModeSettings.lightningLifespan;
+            freeLightningLifespan.value = freeModeSettings.lightningLifespan / 1000;
             if (freeLightningLifespanValue) freeLightningLifespanValue.textContent = freeLightningLifespan.value;
             freeLightningLifespan.disabled = !freeLightningToggle.checked;
             freeYellowChance.value = freeModeSettings.yellowLightningChance;
@@ -2996,31 +2996,31 @@ function setupSlider(slider, display) {
 
             freeFalseToggle.checked = !!freeModeSettings.falseFoodSpawnRange;
             if (freeModeSettings.falseFoodSpawnRange) {
-                freeFalseRange.value = freeModeSettings.falseFoodSpawnRange[0];
+                freeFalseRange.value = freeModeSettings.falseFoodSpawnRange[0] / 1000;
             } else {
                 freeFalseRange.value = 0;
             }
             if (freeFalseRangeDisplay) {
-                freeFalseRangeDisplay.textContent = `${freeFalseRange.value / 1000} - ${(parseInt(freeFalseRange.value,10) + 4000) / 1000}`;
+                freeFalseRangeDisplay.textContent = `${freeFalseRange.value} - ${parseFloat(freeFalseRange.value) + 4}`;
             }
             freeFalseRange.disabled = !freeFalseToggle.checked;
-            freeFalseLifespan.value = freeModeSettings.falseFoodLifespan;
+            freeFalseLifespan.value = freeModeSettings.falseFoodLifespan / 1000;
             if (freeFalseLifespanValue) freeFalseLifespanValue.textContent = freeFalseLifespan.value;
             freeFalseLifespan.disabled = !freeFalseToggle.checked;
 
             freeMirrorToggle.checked = !!freeModeSettings.mirrorSpawnRange;
             if (freeModeSettings.mirrorSpawnRange) {
-                freeMirrorRange.value = freeModeSettings.mirrorSpawnRange[0];
+                freeMirrorRange.value = freeModeSettings.mirrorSpawnRange[0] / 1000;
             } else {
                 freeMirrorRange.value = 0;
             }
             if (freeMirrorRangeDisplay) {
-                freeMirrorRangeDisplay.textContent = `${freeMirrorRange.value / 1000} - ${(parseInt(freeMirrorRange.value,10) + 4000) / 1000}`;
+                freeMirrorRangeDisplay.textContent = `${freeMirrorRange.value} - ${parseFloat(freeMirrorRange.value) + 4}`;
             }
             freeMirrorRange.disabled = !freeMirrorToggle.checked;
-            freeMirrorLifespan.value = freeModeSettings.mirrorLifespan;
+            freeMirrorLifespan.value = freeModeSettings.mirrorLifespan / 1000;
             if (freeMirrorLifespanValue) freeMirrorLifespanValue.textContent = freeMirrorLifespan.value;
-            freeMirrorEffect.value = freeModeSettings.mirrorEffectDuration;
+            freeMirrorEffect.value = freeModeSettings.mirrorEffectDuration / 1000;
             if (freeMirrorEffectValue) freeMirrorEffectValue.textContent = freeMirrorEffect.value;
             freeMirrorLifespan.disabled = freeMirrorEffect.disabled = !freeMirrorToggle.checked;
 
@@ -3030,19 +3030,19 @@ function setupSlider(slider, display) {
         function applyFreeSettings() {
             freeModeSettings = {
                 speed: parseInt(freeSpeedInput.value, 10),
-                initialLifespan: freeLifespanToggle.checked ? parseInt(freeLifespanInput.value, 10) : 0,
+                initialLifespan: freeLifespanToggle.checked ? parseFloat(freeLifespanInput.value) * 1000 : 0,
                 initialLength: parseInt(freeLengthInput.value, 10),
                 goldenFoodChance: freeGoldenToggle.checked ? parseFloat(freeGoldenChanceInput.value) : 0,
-                goldenFoodLifespan: parseInt(freeGoldenLifespanInput.value, 10),
-                lightningSpawnRange: freeLightningToggle.checked ? [parseInt(freeLightningRange.value, 10), parseInt(freeLightningRange.value, 10) + 4000] : null,
-                lightningLifespan: parseInt(freeLightningLifespan.value, 10),
+                goldenFoodLifespan: parseFloat(freeGoldenLifespanInput.value) * 1000,
+                lightningSpawnRange: freeLightningToggle.checked ? [parseFloat(freeLightningRange.value) * 1000, (parseFloat(freeLightningRange.value) + 4) * 1000] : null,
+                lightningLifespan: parseFloat(freeLightningLifespan.value) * 1000,
                 yellowLightningChance: parseFloat(freeYellowChance.value),
                 streakReduction: freeStreakToggle.checked ? FREE_MODE_DEFAULTS.streakReduction : 0,
-                falseFoodSpawnRange: freeFalseToggle.checked ? [parseInt(freeFalseRange.value, 10), parseInt(freeFalseRange.value, 10) + 4000] : null,
-                falseFoodLifespan: parseInt(freeFalseLifespan.value, 10),
-                mirrorSpawnRange: freeMirrorToggle.checked ? [parseInt(freeMirrorRange.value, 10), parseInt(freeMirrorRange.value, 10) + 4000] : null,
-                mirrorLifespan: parseInt(freeMirrorLifespan.value, 10),
-                mirrorEffectDuration: parseInt(freeMirrorEffect.value, 10),
+                falseFoodSpawnRange: freeFalseToggle.checked ? [parseFloat(freeFalseRange.value) * 1000, (parseFloat(freeFalseRange.value) + 4) * 1000] : null,
+                falseFoodLifespan: parseFloat(freeFalseLifespan.value) * 1000,
+                mirrorSpawnRange: freeMirrorToggle.checked ? [parseFloat(freeMirrorRange.value) * 1000, (parseFloat(freeMirrorRange.value) + 4) * 1000] : null,
+                mirrorLifespan: parseFloat(freeMirrorLifespan.value) * 1000,
+                mirrorEffectDuration: parseFloat(freeMirrorEffect.value) * 1000,
                 obstacleCount: parseInt(freeObstacleCount.value, 10)
             };
             closeFreeSettingsPanel();
