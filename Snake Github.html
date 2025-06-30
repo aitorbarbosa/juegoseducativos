@@ -510,7 +510,7 @@
         }
 
 
-        #difficultySelector, #worldsSelector, #mazeLevelSelector, #audioToggleSelector, #skinSelector, #foodSelector, #gameModeSelector {
+        #difficultySelector, #worldsSelector, #mazeLevelSelector, #audioToggleSelector, #skinSelector, #foodSelector, #gameModeSelector, #musicVolumeSelector {
             padding: 4px 6px;
             width: calc(100% - 50px);
             font-size: 0.75em;
@@ -529,14 +529,14 @@
             margin-bottom: 0;
         }
         
-        #difficultySelector option, #worldsSelector option, #mazeLevelSelector option, #audioToggleSelector option, #skinSelector option, #foodSelector option, #gameModeSelector option {
+        #difficultySelector option, #worldsSelector option, #mazeLevelSelector option, #audioToggleSelector option, #skinSelector option, #foodSelector option, #gameModeSelector option, #musicVolumeSelector option {
             background-color: #374151;
             color: #f5f5f5;
             font-family: 'Press Start 2P', sans-serif;
             text-align: left; 
         }
         
-        #difficultySelector, #worldsSelector, #mazeLevelSelector, #audioToggleSelector, #skinSelector, #foodSelector, #gameModeSelector {
+        #difficultySelector, #worldsSelector, #mazeLevelSelector, #audioToggleSelector, #skinSelector, #foodSelector, #gameModeSelector, #musicVolumeSelector {
             text-align-last: left;
         }
         select option {
@@ -544,11 +544,11 @@
         }
 
 
-        #difficultySelector:focus, #worldsSelector:focus, #mazeLevelSelector:focus, #audioToggleSelector:focus, #skinSelector:focus, #foodSelector:focus, #gameModeSelector:focus {
+        #difficultySelector:focus, #worldsSelector:focus, #mazeLevelSelector:focus, #audioToggleSelector:focus, #skinSelector:focus, #foodSelector:focus, #gameModeSelector:focus, #musicVolumeSelector:focus {
             outline: 1px solid #6ee7b7; 
             box-shadow: none; 
         }
-        #difficultySelector:disabled, #worldsSelector:disabled, #mazeLevelSelector:disabled, #audioToggleSelector:disabled, #skinSelector:disabled, #foodSelector:disabled, #gameModeSelector:disabled, #musicVolumeSlider:disabled {
+        #difficultySelector:disabled, #worldsSelector:disabled, #mazeLevelSelector:disabled, #audioToggleSelector:disabled, #skinSelector:disabled, #foodSelector:disabled, #gameModeSelector:disabled, #musicVolumeSelector:disabled {
             opacity: 0.7;
             cursor: not-allowed;
         }
@@ -567,39 +567,10 @@
         .control-group.interactive-mode:hover #skinSelector,
         .control-group.interactive-mode:hover #foodSelector,
         .control-group.interactive-mode:hover #gameModeSelector,
-        .control-group.interactive-mode:hover #musicVolumeSlider {
+        .control-group.interactive-mode:hover #musicVolumeSelector {
             cursor: pointer;
         }
         
-        #musicVolumeSlider {
-            -webkit-appearance: none;
-            appearance: none;
-            width: calc(100% - 50px);
-            height: 8px; 
-            background: #4B5563; 
-            border-radius: 5px;
-            outline: none;
-            transition: opacity .2s;
-            margin-top: 4px;
-            margin-bottom: 0;
-        }
-        #musicVolumeSlider::-webkit-slider-thumb {
-            -webkit-appearance: none;
-            appearance: none;
-            width: 20px;
-            height: 20px;
-            background: #6ee7b7; 
-            cursor: pointer;
-            border-radius: 50%;
-        }
-        #musicVolumeSlider::-moz-range-thumb {
-            width: 20px;
-            height: 20px;
-            background: #6ee7b7; 
-            cursor: pointer;
-            border-radius: 50%;
-            border: none; 
-        }
 
         #action-buttons-row {
             justify-content: center; 
@@ -848,7 +819,7 @@
              #settings-panel #skinSelector,
              #settings-panel #foodSelector,
              #settings-panel #gameModeSelector,
-             #settings-panel #musicVolumeSlider {
+             #settings-panel #musicVolumeSelector {
                 font-size: 0.65em;
                 margin-top: 2px;
                 margin-bottom: 0;
@@ -1150,12 +1121,17 @@
                 </div>
                 <div class="control-group" id="music-volume-control-group">
                     <div class="control-label-icon-row">
-                        <label class="control-label" for="musicVolumeSlider">Volumen Música: <span id="musicVolumeValue">50</span>%</label>
-                         <button class="setting-info-button" data-setting="musicVolume" aria-label="Información sobre volumen de música">
+                        <label class="control-label" for="musicVolumeSelector">Volumen Música: <span id="musicVolumeValue">50</span>%</label>
+                        <button class="setting-info-button" data-setting="musicVolume" aria-label="Información sobre volumen de música">
                             <svg class="setting-info-icon" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" /></svg>
                         </button>
                     </div>
-                    <input type="range" id="musicVolumeSlider" min="0" max="100" value="50">
+                    <select id="musicVolumeSelector">
+                        <option value="100">Máximo (100%)</option>
+                        <option value="75">Alto (75%)</option>
+                        <option value="50" selected>Medio (50%)</option>
+                        <option value="25">Bajo (25%)</option>
+                    </select>
                 </div>
                 <div class="control-group" id="resetDataButton">Reiniciar datos del juego</div>
             </div>
@@ -1320,7 +1296,7 @@
         const skinControlGroup = document.getElementById("skin-control-group");
         const foodControlGroup = document.getElementById("food-control-group");
         const gameModeControlGroup = document.getElementById("game-mode-control-group");
-        const musicVolumeSlider = document.getElementById("musicVolumeSlider");
+        const musicVolumeSelector = document.getElementById("musicVolumeSelector");
         const musicVolumeValue = document.getElementById("musicVolumeValue");
         const musicVolumeControlGroup = document.getElementById("music-volume-control-group");
         
@@ -2527,8 +2503,8 @@
                     if (typeof Tone !== 'undefined') {
                         audioToggleSelector.disabled = false;
                         audioControlGroup.classList.add("interactive-mode");
-                        musicVolumeSlider.disabled = (audioToggleSelector.value === 'off' || audioToggleSelector.value === 'sfx_only');
-                        if (!musicVolumeSlider.disabled) musicVolumeControlGroup.classList.add("interactive-mode");
+                        musicVolumeSelector.disabled = (audioToggleSelector.value === 'off' || audioToggleSelector.value === 'sfx_only');
+                        if (!musicVolumeSelector.disabled) musicVolumeControlGroup.classList.add("interactive-mode");
                         else musicVolumeControlGroup.classList.remove("interactive-mode");
                     }
                      settingsPanel.querySelectorAll('.setting-info-button').forEach(btn => btn.disabled = false);
@@ -2743,7 +2719,7 @@
             },
             musicVolume: {
                 title: "Volumen Música",
-                text: "<p>Ajusta con precisión qué tan fuerte o suave quieres que suene la música de fondo del juego, siempre que la tengas activada.</p><h4>Control de Volumen</h4><p>Utiliza el deslizador (slider) para regular el nivel del volumen de la música. Moviéndolo hacia la derecha aumentarás el volumen, y hacia la izquierda lo disminuirás.</p><p>Encuentra el punto perfecto que te permita disfrutar de la banda sonora del juego sin que resulte abrumadora o tape otros sonidos importantes, especialmente si también tienes los efectos de sonido (SFX) activados.</p><h4>Condiciones de Uso</h4><p>Es fundamental recordar que para que este ajuste de volumen de música tenga algún efecto, la opción de <strong>\"Audio General\"</strong> debe estar configurada en <strong>\"Activado (Música y FX)\"</strong>.</p><p>Si el \"Audio General\" está seleccionado como \"Sólo SFX\" o \"Desactivado\", no escucharás la música independientemente del nivel que establezcas en este control de volumen, ya que la fuente principal de música estará deshabilitada.</p>"
+                text: "<p>Ajusta con precisión qué tan fuerte o suave quieres que suene la música de fondo del juego, siempre que la tengas activada.</p><h4>Control de Volumen</h4><p>Utiliza el selector de volumen para elegir entre los niveles <strong>Máximo (100%)</strong>, <strong>Alto (75%)</strong>, <strong>Medio (50%)</strong> y <strong>Bajo (25%)</strong>.</p><p>Encuentra el punto perfecto que te permita disfrutar de la banda sonora del juego sin que resulte abrumadora o tape otros sonidos importantes, especialmente si también tienes los efectos de sonido (SFX) activados.</p><h4>Condiciones de Uso</h4><p>Es fundamental recordar que para que este ajuste de volumen de música tenga algún efecto, la opción de <strong>\"Audio General\"</strong> debe estar configurada en <strong>\"Activado (Música y FX)\"</strong>.</p><p>Si el \"Audio General\" está seleccionado como \"Sólo SFX\" o \"Desactivado\", no escucharás la música independientemente del nivel que establezcas en este control de volumen, ya que la fuente principal de música estará deshabilitada.</p>"
             }
         };
 
@@ -2805,8 +2781,8 @@
                 if (typeof Tone !== 'undefined') {
                     audioToggleSelector.disabled = false;
                     audioControlGroup.classList.add("interactive-mode");
-                    musicVolumeSlider.disabled = (audioToggleSelector.value === 'off' || audioToggleSelector.value === 'sfx_only');
-                    if (!musicVolumeSlider.disabled) musicVolumeControlGroup.classList.add("interactive-mode");
+                    musicVolumeSelector.disabled = (audioToggleSelector.value === 'off' || audioToggleSelector.value === 'sfx_only');
+                    if (!musicVolumeSelector.disabled) musicVolumeControlGroup.classList.add("interactive-mode");
                     else musicVolumeControlGroup.classList.remove("interactive-mode");
                 }
                 settingsPanel.querySelectorAll('.setting-info-button').forEach(btn => btn.disabled = false);
@@ -3866,13 +3842,13 @@
             if (typeof Tone !== 'undefined') { 
                  audioToggleSelector.disabled = false;
                  audioControlGroup.classList.add("interactive-mode");
-                 musicVolumeSlider.disabled = (audioToggleSelector.value === 'off' || audioToggleSelector.value === 'sfx_only');
-                 if (!musicVolumeSlider.disabled) musicVolumeControlGroup.classList.add("interactive-mode");
+                 musicVolumeSelector.disabled = (audioToggleSelector.value === 'off' || audioToggleSelector.value === 'sfx_only');
+                 if (!musicVolumeSelector.disabled) musicVolumeControlGroup.classList.add("interactive-mode");
                  else musicVolumeControlGroup.classList.remove("interactive-mode");
             } else {
                  audioToggleSelector.disabled = true;
                  audioControlGroup.classList.remove("interactive-mode");
-                 musicVolumeSlider.disabled = true;
+                 musicVolumeSelector.disabled = true;
                  musicVolumeControlGroup.classList.remove("interactive-mode");
             }
             
@@ -5609,7 +5585,7 @@ async function startGame(isRestart = false) {
             audioToggleSelector.disabled = true;
             skinSelector.disabled = true;
             foodSelector.disabled = true;
-            musicVolumeSlider.disabled = true;
+            musicVolumeSelector.disabled = true;
             gameModeControlGroup.classList.remove("interactive-mode");
             difficultyControlGroup.classList.remove("interactive-mode");
             audioControlGroup.classList.remove("interactive-mode");
@@ -5691,12 +5667,12 @@ async function startGame(isRestart = false) {
         }
         
         function updateMusicVolume() {
-            const sliderValue = parseInt(musicVolumeSlider.value);
+            const selectedValue = parseInt(musicVolumeSelector.value);
             if (musicVolumeValue) {
-                musicVolumeValue.textContent = sliderValue;
+                musicVolumeValue.textContent = selectedValue;
             }
             // For HTML5 Audio, volume is 0.0 to 1.0
-            const actualVolume = (sliderValue / 100) * MAX_ACTUAL_SLIDER_MAPPED_VOLUME; 
+            const actualVolume = (selectedValue / 100) * MAX_ACTUAL_SLIDER_MAPPED_VOLUME;
             if (generalBackgroundMusic) {
                 generalBackgroundMusic.volume = actualVolume;
             }
@@ -5706,14 +5682,14 @@ async function startGame(isRestart = false) {
             saveGameSettings(); 
         }
 
-        musicVolumeSlider.addEventListener('input', updateMusicVolume);
+        musicVolumeSelector.addEventListener('change', updateMusicVolume);
 
         audioToggleSelector.addEventListener('change', async function() { 
             const audioSetting = this.value;
             isMusicEnabled = (audioSetting === 'all');
             areSfxEnabled = (audioSetting === 'all' || audioSetting === 'sfx_only');
 
-            musicVolumeSlider.disabled = !isMusicEnabled;
+            musicVolumeSelector.disabled = !isMusicEnabled;
             if (isMusicEnabled && !gameIntervalId) { 
                 musicVolumeControlGroup.classList.add("interactive-mode");
             } else {
@@ -6243,7 +6219,7 @@ async function startGame(isRestart = false) {
             localStorage.setItem('snakeGameSkin', skinSelector.value);
             localStorage.setItem('snakeGameFood', foodSelector.value);
             localStorage.setItem('snakeGameAudioGeneral', audioToggleSelector.value);
-            localStorage.setItem('snakeGameMusicVolume', musicVolumeSlider.value);
+            localStorage.setItem('snakeGameMusicVolume', musicVolumeSelector.value);
             localStorage.setItem('snakeGameMode', gameModeSelector.value);
             // Levels mode specific
             localStorage.setItem('snakeCurrentWorld', currentWorld.toString());
@@ -6276,11 +6252,11 @@ async function startGame(isRestart = false) {
 
             const savedMusicVolume = parseInt(localStorage.getItem('snakeGameMusicVolume'), 10);
             if (Number.isFinite(savedMusicVolume) && savedMusicVolume >= 0 && savedMusicVolume <= 100) {
-                musicVolumeSlider.value = savedMusicVolume;
+                musicVolumeSelector.value = savedMusicVolume;
             } else {
-                musicVolumeSlider.value = 50;
+                musicVolumeSelector.value = 50;
             }
-            if (musicVolumeValue) musicVolumeValue.textContent = musicVolumeSlider.value;
+            if (musicVolumeValue) musicVolumeValue.textContent = musicVolumeSelector.value;
 
             const savedCoins = parseInt(localStorage.getItem('snakeGameCoins'), 10);
             totalCoins = Number.isFinite(savedCoins) && savedCoins >= 0 ? savedCoins : 0;
@@ -6405,7 +6381,7 @@ async function startGame(isRestart = false) {
             isMusicEnabled = (audioToggleSelector.value === 'all');
             areSfxEnabled = (audioToggleSelector.value === 'all' || audioToggleSelector.value === 'sfx_only');
             
-            if(musicVolumeValue) musicVolumeValue.textContent = musicVolumeSlider.value; 
+            if(musicVolumeValue) musicVolumeValue.textContent = musicVolumeSelector.value;
 
             console.log("Configuraciones cargadas de localStorage y aplicadas a selectores.");
             updateGameModeUI(); // This will use the newly set display variables
@@ -6504,7 +6480,7 @@ async function startGame(isRestart = false) {
                     console.log("Reproductor de música de partida (HTML5 Audio) creado en window.onload.");
                 }
                 // Apply loaded volume settings. updateMusicVolume is safe to call.
-                // It reads from musicVolumeSlider.value which is set by loadGameSettings.
+                // It reads from musicVolumeSelector.value which is set by loadGameSettings.
                 updateMusicVolume(); 
             } else {
                 console.warn("HTML5 Audio no soportado, música de fondo desactivada (chequeo en window.onload).");
@@ -6516,7 +6492,7 @@ async function startGame(isRestart = false) {
                 Array.from(audioToggleSelector.options).forEach(option => {
                    if (option.value === 'all') option.disabled = true;
                 });
-                musicVolumeSlider.disabled = true;
+                musicVolumeSelector.disabled = true;
                 if (musicVolumeControlGroup) musicVolumeControlGroup.classList.remove("interactive-mode");
             }
 
