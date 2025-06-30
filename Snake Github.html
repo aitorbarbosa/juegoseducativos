@@ -751,7 +751,10 @@
             font-size: 1.4em;
             margin: 0;
         }
-        #close-settings-button, #close-info-button, #close-specific-info-button { 
+        #free-settings-panel .settings-header h2 {
+            font-size: 1.1em;
+        }
+        #close-settings-button, #close-info-button, #close-specific-info-button, #close-free-settings-button {
             background: none;
             border: none;
             color: #f5f5f5;
@@ -760,7 +763,7 @@
             padding: 0;
             line-height: 1;
         }
-        #close-settings-button:hover, #close-info-button:hover, #close-specific-info-button:hover { 
+        #close-settings-button:hover, #close-info-button:hover, #close-specific-info-button:hover, #close-free-settings-button:hover {
             color: #6ee7b7;
         }
         #settings-panel .control-group { 
@@ -1196,7 +1199,7 @@
 
             <div id="free-settings-panel" class="free-settings-panel-hidden">
                 <div class="settings-header">
-                    <h2>Ajustes Modo Libre</h2>
+                    <h2>Personaliza tu juego</h2>
                     <button id="close-free-settings-button" aria-label="Cerrar ajustes">&times;</button>
                 </div>
                 <div class="control-group">
@@ -1269,7 +1272,7 @@
                     <input type="number" id="free-obstacle-count" value="5">
                 </div>
                 <div class="control-group">
-                    <button id="apply-free-settings">Guardar</button>
+                    <button id="apply-free-settings">Jugar</button>
                 </div>
             </div>
 
