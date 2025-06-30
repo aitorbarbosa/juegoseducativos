@@ -193,19 +193,20 @@
             z-index: 10; 
         }
 
-        #current-world-info-group { 
+        #current-world-info-group {
             display: flex;
-            flex-direction: column; 
+            flex-direction: column;
             align-items: center;
-            justify-content: center; 
-            background-color: #374151; 
+            justify-content: center;
+            background-color: #374151;
             border-radius: 8px;
-            padding: 8px 10px; 
-            grid-column: 1 / 2; 
-            min-width: 80px; 
-            min-height: 55px; 
+            padding: 8px 10px;
+            grid-column: 1 / 2;
+            min-width: 80px;
+            min-height: 55px;
             box-sizing: border-box;
             text-align: center;
+            cursor: pointer;
         }
          #current-world-info-group .info-label { 
             font-size: 0.65em; 
@@ -810,7 +811,7 @@
 
             #title-panel { min-height: 50px; padding: 6px; }
 
-            #current-world-info-group { min-height: 50px; padding: 6px; min-width: 70px;}
+            #current-world-info-group { min-height: 50px; padding: 6px; min-width: 70px; cursor: pointer;}
             #current-world-info-group .info-label { font-size: 0.6em; }
             #current-world-info-group .info-value { font-size: 0.8em; }
             #progress-panel.classification-mode #current-world-info-group .info-value { font-size: 0.7em; }
@@ -896,7 +897,7 @@
             #current-world-info-group .info-label { font-size: 0.55em; }
             #current-world-info-group .info-value { font-size: 0.7em; }
             #progress-panel.classification-mode #current-world-info-group .info-value { font-size: 0.6em; }
-            #current-world-info-group { min-width: 60px;}
+            #current-world-info-group { min-width: 60px; cursor: pointer;}
             .star-svg { width: 24px; height: 24px; }
             #star-progress-container { max-width: 170px; gap: 8px;}
 
@@ -1333,10 +1334,12 @@
         const titlePanel = document.getElementById("title-panel"); 
         const progressPanelLeftLabel = document.getElementById("progress-panel-left-label");
         const progressPanelLeftValue = document.getElementById("progress-panel-left-value");
-        const starProgressContainer = document.getElementById("star-progress-container"); 
+        const starProgressContainer = document.getElementById("star-progress-container");
         const highScoreDisplay = document.getElementById("high-score-display");
         const hsScoreValue = document.getElementById("hs-score-value");
         // Se obtendrá hsSkinValue dentro de la función displayHighScoreInPanel
+
+        const currentWorldInfoGroup = document.getElementById("current-world-info-group");
 
 
         const upButton = document.getElementById("up-button");
@@ -2831,12 +2834,63 @@
             closeSpecificInfoButton.addEventListener('click', closeSpecificInfoPanel);
         }
 
-        document.querySelectorAll('.setting-info-button').forEach(button => { 
+        document.querySelectorAll('.setting-info-button').forEach(button => {
             button.addEventListener('click', function() {
                 const settingKey = this.dataset.setting;
                 openSpecificInfoPanel(settingKey);
             });
         });
+
+        if (currentWorldInfoGroup) {
+            currentWorldInfoGroup.addEventListener('click', () => {
+                const isSettingsOpen = !settingsPanel.classList.contains('settings-panel-hidden');
+                const isInfoOpen = !infoPanel.classList.contains('info-panel-hidden');
+                const isSpecificInfoOpen = specificInfoPanel && !specificInfoPanel.classList.contains('specific-info-panel-hidden');
+                if (isSettingsOpen || isInfoOpen || isSpecificInfoOpen || gameIntervalId || showModeSelect) return;
+
+                if (gameMode === 'levels') {
+                    displayWorld = currentWorld;
+                    displayLevelInWorld = currentLevelInWorld;
+                    const absoluteIndex = (displayWorld - 1) * LEVELS_PER_WORLD + (displayLevelInWorld - 1);
+                    displayTargetScore = TARGET_SCORES_LEVELS[absoluteIndex] || 0;
+                    screenState.showCoverForWorld = currentWorld;
+                    screenState.showFreeModeCover = false;
+                    screenState.showClassificationCover = false;
+                    screenState.showMazeCover = false;
+                } else if (gameMode === 'freeMode') {
+                    screenState.showFreeModeCover = true;
+                    screenState.showCoverForWorld = 0;
+                    screenState.showClassificationCover = false;
+                    screenState.showMazeCover = false;
+                } else if (gameMode === 'classification') {
+                    screenState.showClassificationCover = true;
+                    screenState.showCoverForWorld = 0;
+                    screenState.showFreeModeCover = false;
+                    screenState.showMazeCover = false;
+                } else if (gameMode === 'maze') {
+                    displayMazeLevel = currentMazeLevel;
+                    mazePreviousStars = mazeLevelStars[displayMazeLevel - 1] || 0;
+                    mazeStarsEarned = mazePreviousStars;
+                    if (mazePreviousStars < MAZE_STAR_TARGETS.length) {
+                        displayTargetScore = MAZE_STAR_TARGETS[mazePreviousStars];
+                    } else {
+                        displayTargetScore = MAZE_STAR_TARGETS[MAZE_STAR_TARGETS.length - 1];
+                    }
+                    screenState.showMazeCover = true;
+                    screenState.showCoverForWorld = 0;
+                    screenState.showFreeModeCover = false;
+                    screenState.showClassificationCover = false;
+                    screenState.mazeResultType = '';
+                } else {
+                    return;
+                }
+
+                screenState.gameActuallyStarted = false;
+                updateGameModeUI();
+                updateMainButtonStates();
+                requestAnimationFrame(draw);
+            });
+        }
 
 
         function drawFoodItem(x, y) {
