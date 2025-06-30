@@ -1297,10 +1297,15 @@
                     <input type="range" class="settings-range" id="free-speed-input" min="50" max="250" value="140">
                 </div>
                 <div class="control-group">
+                    <label class="control-label" for="free-length-input">Tamaño inicial: <span id="free-length-value">10</span></label>
+                    <input type="range" class="settings-range" id="free-length-input" min="3" max="50" value="10">
+                </div>
+                <div class="control-group">
                     <div class="control-label-icon-row">
-                        <label class="control-label" for="free-lifespan-input">Desaparición comida (ms): <span id="free-lifespan-value">7500</span></label>
+                        <label class="control-label">Desaparición comida</label>
                         <label class="switch"><input type="checkbox" id="free-lifespan-toggle" checked><span class="slider round"></span></label>
                     </div>
+                    <label class="control-label" for="free-lifespan-input">Tiempo en desaparecer (ms): <span id="free-lifespan-value">7500</span></label>
                     <input type="range" class="settings-range" id="free-lifespan-input" min="4000" max="8000" value="7500">
                 </div>
                 <div class="control-group" id="streak-control-group">
@@ -1308,12 +1313,6 @@
                         <label class="control-label">Racha (x1-x5)</label>
                         <label class="switch"><input type="checkbox" id="free-streak-toggle" checked><span class="slider round"></span></label>
                     </div>
-                    <label class="control-label" for="free-streak-reduction">Reducción desaparición comida (ms): <span id="free-streak-reduction-value">800</span></label>
-                    <input type="range" class="settings-range" id="free-streak-reduction" min="0" max="1000" value="800">
-                </div>
-                <div class="control-group">
-                    <label class="control-label" for="free-length-input">Tamaño inicial: <span id="free-length-value">10</span></label>
-                    <input type="range" class="settings-range" id="free-length-input" min="3" max="50" value="10">
                 </div>
                 <div class="control-group">
                     <div class="control-label-icon-row">
@@ -1602,8 +1601,6 @@
         const freeYellowChanceValue = document.getElementById("free-yellow-chance-value");
         const freeLightningToggle = document.getElementById("free-lightning-toggle");
         const freeStreakToggle = document.getElementById("free-streak-toggle");
-        const freeStreakReduction = document.getElementById("free-streak-reduction");
-        const freeStreakReductionValue = document.getElementById("free-streak-reduction-value");
         const freeFalseRangeMin = document.getElementById("free-false-range-min");
         const freeFalseRangeMinValue = document.getElementById("free-false-range-min-value");
         const freeFalseRangeMax = document.getElementById("free-false-range-max");
@@ -1647,7 +1644,6 @@
         setupSlider(freeLightningRangeMax, freeLightningRangeMaxValue);
         setupSlider(freeLightningLifespan, freeLightningLifespanValue);
         setupSlider(freeYellowChance, freeYellowChanceValue);
-        setupSlider(freeStreakReduction, freeStreakReductionValue);
         setupSlider(freeFalseRangeMin, freeFalseRangeMinValue);
         setupSlider(freeFalseRangeMax, freeFalseRangeMaxValue);
         setupSlider(freeFalseLifespan, freeFalseLifespanValue);
@@ -1659,7 +1655,7 @@
         setupToggle(freeLifespanToggle, freeLifespanInput);
         setupToggle(freeGoldenToggle, [freeGoldenChanceInput, freeGoldenLifespanInput]);
         setupToggle(freeLightningToggle, [freeLightningRangeMin, freeLightningRangeMax, freeLightningLifespan, freeYellowChance]);
-        setupToggle(freeStreakToggle, freeStreakReduction);
+        setupToggle(freeStreakToggle);
         setupToggle(freeFalseToggle, [freeFalseRangeMin, freeFalseRangeMax, freeFalseLifespan]);
         setupToggle(freeMirrorToggle, [freeMirrorRangeMin, freeMirrorRangeMax, freeMirrorLifespan, freeMirrorEffect]);
 
@@ -3002,9 +2998,6 @@
             freeYellowChance.disabled = !freeLightningToggle.checked;
 
             freeStreakToggle.checked = freeModeSettings.streakReduction > 0;
-            freeStreakReduction.value = freeModeSettings.streakReduction;
-            if (freeStreakReductionValue) freeStreakReductionValue.textContent = freeStreakReduction.value;
-            freeStreakReduction.disabled = !freeStreakToggle.checked;
 
             freeFalseToggle.checked = !!freeModeSettings.falseFoodSpawnRange;
             if (freeModeSettings.falseFoodSpawnRange) {
@@ -3051,7 +3044,7 @@
                 lightningSpawnRange: freeLightningToggle.checked ? [parseInt(freeLightningRangeMin.value, 10), parseInt(freeLightningRangeMax.value, 10)] : null,
                 lightningLifespan: parseInt(freeLightningLifespan.value, 10),
                 yellowLightningChance: parseFloat(freeYellowChance.value),
-                streakReduction: freeStreakToggle.checked ? parseInt(freeStreakReduction.value, 10) : 0,
+                streakReduction: freeStreakToggle.checked ? FREE_MODE_DEFAULTS.streakReduction : 0,
                 falseFoodSpawnRange: freeFalseToggle.checked ? [parseInt(freeFalseRangeMin.value, 10), parseInt(freeFalseRangeMax.value, 10)] : null,
                 falseFoodLifespan: parseInt(freeFalseLifespan.value, 10),
                 mirrorSpawnRange: freeMirrorToggle.checked ? [parseInt(freeMirrorRangeMin.value, 10), parseInt(freeMirrorRangeMax.value, 10)] : null,
