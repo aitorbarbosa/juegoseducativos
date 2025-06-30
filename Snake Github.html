@@ -558,6 +558,33 @@
             opacity: 0.7;
             cursor: not-allowed;
         }
+
+        #free-settings-panel input[type="number"] {
+            padding: 4px 6px;
+            width: 100%;
+            font-size: 0.75em;
+            border: none;
+            border-radius: 4px;
+            background-color: transparent;
+            color: #f5f5f5;
+            font-family: 'Press Start 2P', sans-serif;
+            box-sizing: border-box;
+            margin-top: 4px;
+            margin-bottom: 0;
+        }
+
+        #free-settings-panel input[type="number"]:focus {
+            outline: 1px solid #6ee7b7;
+            box-shadow: none;
+        }
+
+        .range-inputs {
+            display: flex;
+            gap: 8px;
+        }
+        .range-inputs input[type="number"] {
+            flex: 1;
+        }
         
         .control-group.interactive-mode { 
             background-color: #4A5568; 
@@ -679,10 +706,10 @@
             fill: currentColor;
         }
 
-        .settings-panel-hidden, .info-panel-hidden, .specific-info-panel-hidden, .reset-panel-hidden {
+        .settings-panel-hidden, .info-panel-hidden, .specific-info-panel-hidden, .free-settings-panel-hidden, .reset-panel-hidden {
             display: none !important;
         }
-        #settings-panel, #info-panel, #specific-info-panel, #reset-confirmation-panel {
+        #settings-panel, #info-panel, #specific-info-panel, #free-settings-panel, #reset-confirmation-panel {
             position: fixed;
             left: 50%;
             transform: translateX(-50%) scale(0.95);
@@ -704,6 +731,7 @@
         #settings-panel.panel-visible,
         #info-panel.panel-visible,
         #specific-info-panel.panel-visible,
+        #free-settings-panel.panel-visible,
         #reset-confirmation-panel.panel-visible {
             opacity: 1;
             transform: translateX(-50%) scale(1);
@@ -834,9 +862,9 @@
                 min-width: 55px;
             }
 
-            #settings-panel, #info-panel, #specific-info-panel { 
-                width: calc(100% - 20px); 
-                padding: 20px; 
+            #settings-panel, #info-panel, #specific-info-panel, #free-settings-panel {
+                width: calc(100% - 20px);
+                padding: 20px;
             }
             .settings-header h2, .info-header h2, .specific-info-header h2 { 
                 font-size: 1.1em;
@@ -919,7 +947,7 @@
                 width: 20px;
                 height: 20px;
             }
-             #settings-panel, #info-panel, #specific-info-panel {
+             #settings-panel, #info-panel, #specific-info-panel, #free-settings-panel {
                 padding: 15px;
             }
             #info-panel-content h3#main-info-title, #specific-info-content h3 { font-size: 0.9em; } 
@@ -1166,6 +1194,85 @@
                 <div class="control-group" id="resetDataButton">Reiniciar datos del juego</div>
             </div>
 
+            <div id="free-settings-panel" class="free-settings-panel-hidden">
+                <div class="settings-header">
+                    <h2>Ajustes Modo Libre</h2>
+                    <button id="close-free-settings-button" aria-label="Cerrar ajustes">&times;</button>
+                </div>
+                <div class="control-group">
+                    <label class="control-label" for="free-speed-input">Velocidad (ms por paso)</label>
+                    <input type="number" id="free-speed-input" value="140">
+                </div>
+                <div class="control-group">
+                    <label class="control-label" for="free-lifespan-input">Duración inicial comida (ms)</label>
+                    <input type="number" id="free-lifespan-input" value="7500">
+                </div>
+                <div class="control-group">
+                    <label class="control-label" for="free-length-input">Longitud inicial</label>
+                    <input type="number" id="free-length-input" value="10">
+                </div>
+                <div class="control-group">
+                    <label class="control-label" for="free-golden-chance-input">Probabilidad comida dorada</label>
+                    <input type="number" step="0.01" id="free-golden-chance-input" value="0.1">
+                </div>
+                <div class="control-group">
+                    <label class="control-label" for="free-golden-lifespan-input">Duración comida dorada (ms)</label>
+                    <input type="number" id="free-golden-lifespan-input" value="4000">
+                </div>
+                <div class="control-group range-group">
+                    <label class="control-label" for="free-lightning-range-min">Intervalo rayos (ms)</label>
+                    <div class="range-inputs">
+                        <input type="number" id="free-lightning-range-min" value="6000">
+                        <input type="number" id="free-lightning-range-max" value="10000">
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="control-label" for="free-lightning-lifespan">Duración del rayo (ms)</label>
+                    <input type="number" id="free-lightning-lifespan" value="5000">
+                </div>
+                <div class="control-group">
+                    <label class="control-label" for="free-yellow-chance">Probabilidad rayo amarillo</label>
+                    <input type="number" step="0.01" id="free-yellow-chance" value="0.75">
+                </div>
+                <div class="control-group">
+                    <label class="control-label" for="free-streak-reduction">Reducción de racha (ms)</label>
+                    <input type="number" id="free-streak-reduction" value="800">
+                </div>
+                <div class="control-group range-group">
+                    <label class="control-label" for="free-false-range-min">Intervalo comida falsa (ms)</label>
+                    <div class="range-inputs">
+                        <input type="number" id="free-false-range-min" value="6000">
+                        <input type="number" id="free-false-range-max" value="10000">
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="control-label" for="free-false-lifespan">Duración comida falsa (ms)</label>
+                    <input type="number" id="free-false-lifespan" value="5000">
+                </div>
+                <div class="control-group range-group">
+                    <label class="control-label" for="free-mirror-range-min">Intervalo espejos (ms)</label>
+                    <div class="range-inputs">
+                        <input type="number" id="free-mirror-range-min" value="6000">
+                        <input type="number" id="free-mirror-range-max" value="10000">
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="control-label" for="free-mirror-lifespan">Duración del espejo (ms)</label>
+                    <input type="number" id="free-mirror-lifespan" value="5000">
+                </div>
+                <div class="control-group">
+                    <label class="control-label" for="free-mirror-effect">Duración efecto espejo (ms)</label>
+                    <input type="number" id="free-mirror-effect" value="3000">
+                </div>
+                <div class="control-group">
+                    <label class="control-label" for="free-obstacle-count">Número de obstáculos</label>
+                    <input type="number" id="free-obstacle-count" value="5">
+                </div>
+                <div class="control-group">
+                    <button id="apply-free-settings">Guardar</button>
+                </div>
+            </div>
+
             <div id="info-panel" class="info-panel-hidden">
                 <div class="info-header">
                     <h2>Información</h2> 
@@ -1347,8 +1454,11 @@
         const downButton = document.getElementById("down-button");
         const rightButton = document.getElementById("right-button");
         const settingsPanel = document.getElementById("settings-panel");
+        const freeSettingsPanel = document.getElementById("free-settings-panel");
         const configButton = document.getElementById("configButton");
         const closeSettingsButton = document.getElementById("close-settings-button");
+        const closeFreeSettingsButton = document.getElementById("close-free-settings-button");
+        const applyFreeSettingsButton = document.getElementById("apply-free-settings");
 
         const infoButton = document.getElementById("infoButton");
         const infoPanel = document.getElementById("info-panel");
@@ -1371,6 +1481,25 @@
         const specificInfoTitle = document.getElementById("specific-info-title");
         const specificInfoContent = document.getElementById("specific-info-content");
         const closeSpecificInfoButton = document.getElementById("close-specific-info-button");
+
+        const freeSpeedInput = document.getElementById("free-speed-input");
+        const freeLifespanInput = document.getElementById("free-lifespan-input");
+        const freeLengthInput = document.getElementById("free-length-input");
+        const freeGoldenChanceInput = document.getElementById("free-golden-chance-input");
+        const freeGoldenLifespanInput = document.getElementById("free-golden-lifespan-input");
+        const freeLightningRangeMin = document.getElementById("free-lightning-range-min");
+        const freeLightningRangeMax = document.getElementById("free-lightning-range-max");
+        const freeLightningLifespan = document.getElementById("free-lightning-lifespan");
+        const freeYellowChance = document.getElementById("free-yellow-chance");
+        const freeStreakReduction = document.getElementById("free-streak-reduction");
+        const freeFalseRangeMin = document.getElementById("free-false-range-min");
+        const freeFalseRangeMax = document.getElementById("free-false-range-max");
+        const freeFalseLifespan = document.getElementById("free-false-lifespan");
+        const freeMirrorRangeMin = document.getElementById("free-mirror-range-min");
+        const freeMirrorRangeMax = document.getElementById("free-mirror-range-max");
+        const freeMirrorLifespan = document.getElementById("free-mirror-lifespan");
+        const freeMirrorEffect = document.getElementById("free-mirror-effect");
+        const freeObstacleCount = document.getElementById("free-obstacle-count");
 
 
         // --- INICIO: Declaración de Objetos Image ---
@@ -1914,6 +2043,26 @@
         let mazeTransitionFrom = 1;
 
 
+        const FREE_MODE_DEFAULTS = {
+            speed: 140,
+            initialLifespan: 7500,
+            initialLength: 10,
+            goldenFoodChance: 0.1,
+            goldenFoodLifespan: 4000,
+            lightningSpawnRange: [6000, 10000],
+            lightningLifespan: 5000,
+            yellowLightningChance: 0.75,
+            streakReduction: 800,
+            falseFoodSpawnRange: [6000, 10000],
+            falseFoodLifespan: 5000,
+            mirrorSpawnRange: [6000, 10000],
+            mirrorLifespan: 5000,
+            mirrorEffectDuration: 3000,
+            obstacleCount: 5
+        };
+        let freeModeSettings = { ...FREE_MODE_DEFAULTS };
+
+
         const DIFFICULTY_SETTINGS = {
             principiante: {
                 speed: 180,
@@ -2049,8 +2198,8 @@
         function updateMirrorEffect() {
             if (!mirrorEffect.active) return;
             let duration = MIRROR_EFFECT_DURATION;
-            if (gameMode === 'classification') {
-                const cfg = DIFFICULTY_SETTINGS[difficultySelector.value] || {};
+            if (gameMode === 'classification' || gameMode === 'freeMode') {
+                const cfg = (gameMode === 'classification') ? DIFFICULTY_SETTINGS[difficultySelector.value] : freeModeSettings;
                 if (typeof cfg.mirrorEffectDuration === 'number') {
                     duration = cfg.mirrorEffectDuration;
                 }
@@ -2411,7 +2560,8 @@
         function updateMainButtonStates() {
             const isSettingsVisible = !settingsPanel.classList.contains("settings-panel-hidden") && settingsPanel.classList.contains("panel-visible");
             const isInfoVisible = !infoPanel.classList.contains("info-panel-hidden") && infoPanel.classList.contains("panel-visible");
-            const isAnyMainPanelEffectivelyOpen = isSettingsVisible || isInfoVisible;
+            const isFreeSettingsVisible = freeSettingsPanel && !freeSettingsPanel.classList.contains("free-settings-panel-hidden") && freeSettingsPanel.classList.contains("panel-visible");
+            const isAnyMainPanelEffectivelyOpen = isSettingsVisible || isInfoVisible || isFreeSettingsVisible;
 
             if (isAnyMainPanelEffectivelyOpen) {
                 startButton.disabled = true;
@@ -2493,6 +2643,7 @@
             if (panelId === "settings-panel") hiddenClassName = "settings-panel-hidden";
             else if (panelId === "info-panel") hiddenClassName = "info-panel-hidden";
             else if (panelId === "specific-info-panel") hiddenClassName = "specific-info-panel-hidden";
+            else if (panelId === "free-settings-panel") hiddenClassName = "free-settings-panel-hidden";
             else if (panelId === "reset-confirmation-panel") hiddenClassName = "reset-panel-hidden";
             else {
                 console.error("togglePanel: Clase oculta no definida para el panel:", panelId);
@@ -2503,7 +2654,13 @@
                 if (panelElement === settingsPanel && !infoPanel.classList.contains("info-panel-hidden")) {
                     togglePanel(infoPanel, infoPanelContent, false);
                 }
+                if (panelElement === settingsPanel && freeSettingsPanel && !freeSettingsPanel.classList.contains("free-settings-panel-hidden")) {
+                    togglePanel(freeSettingsPanel, freeSettingsPanel, false);
+                }
                 if (panelElement === infoPanel && !settingsPanel.classList.contains("settings-panel-hidden")) {
+                    togglePanel(settingsPanel, settingsPanel, false);
+                }
+                if (panelElement === freeSettingsPanel && !settingsPanel.classList.contains("settings-panel-hidden")) {
                     togglePanel(settingsPanel, settingsPanel, false);
                 }
                 if (panelElement !== specificInfoPanel && specificInfoPanel && !specificInfoPanel.classList.contains("specific-info-panel-hidden")) {
@@ -2632,7 +2789,59 @@
             
             setTimeout(() => { // Ensure buttons are updated after panel animation
                 updateMainButtonStates();
-            }, 0); 
+            }, 0);
+        }
+
+        function openFreeSettingsPanel() {
+            togglePanel(freeSettingsPanel, freeSettingsPanel, true);
+            populateFreeSettingsInputs();
+        }
+
+        function closeFreeSettingsPanel() {
+            togglePanel(freeSettingsPanel, freeSettingsPanel, false);
+            setTimeout(updateMainButtonStates, 0);
+        }
+
+        function populateFreeSettingsInputs() {
+            freeSpeedInput.value = freeModeSettings.speed;
+            freeLifespanInput.value = freeModeSettings.initialLifespan;
+            freeLengthInput.value = freeModeSettings.initialLength;
+            freeGoldenChanceInput.value = freeModeSettings.goldenFoodChance;
+            freeGoldenLifespanInput.value = freeModeSettings.goldenFoodLifespan;
+            freeLightningRangeMin.value = freeModeSettings.lightningSpawnRange[0];
+            freeLightningRangeMax.value = freeModeSettings.lightningSpawnRange[1];
+            freeLightningLifespan.value = freeModeSettings.lightningLifespan;
+            freeYellowChance.value = freeModeSettings.yellowLightningChance;
+            freeStreakReduction.value = freeModeSettings.streakReduction;
+            freeFalseRangeMin.value = freeModeSettings.falseFoodSpawnRange[0];
+            freeFalseRangeMax.value = freeModeSettings.falseFoodSpawnRange[1];
+            freeFalseLifespan.value = freeModeSettings.falseFoodLifespan;
+            freeMirrorRangeMin.value = freeModeSettings.mirrorSpawnRange[0];
+            freeMirrorRangeMax.value = freeModeSettings.mirrorSpawnRange[1];
+            freeMirrorLifespan.value = freeModeSettings.mirrorLifespan;
+            freeMirrorEffect.value = freeModeSettings.mirrorEffectDuration;
+            freeObstacleCount.value = freeModeSettings.obstacleCount;
+        }
+
+        function applyFreeSettings() {
+            freeModeSettings = {
+                speed: parseInt(freeSpeedInput.value, 10),
+                initialLifespan: parseInt(freeLifespanInput.value, 10),
+                initialLength: parseInt(freeLengthInput.value, 10),
+                goldenFoodChance: parseFloat(freeGoldenChanceInput.value),
+                goldenFoodLifespan: parseInt(freeGoldenLifespanInput.value, 10),
+                lightningSpawnRange: [parseInt(freeLightningRangeMin.value, 10), parseInt(freeLightningRangeMax.value, 10)],
+                lightningLifespan: parseInt(freeLightningLifespan.value, 10),
+                yellowLightningChance: parseFloat(freeYellowChance.value),
+                streakReduction: parseInt(freeStreakReduction.value, 10),
+                falseFoodSpawnRange: [parseInt(freeFalseRangeMin.value, 10), parseInt(freeFalseRangeMax.value, 10)],
+                falseFoodLifespan: parseInt(freeFalseLifespan.value, 10),
+                mirrorSpawnRange: [parseInt(freeMirrorRangeMin.value, 10), parseInt(freeMirrorRangeMax.value, 10)],
+                mirrorLifespan: parseInt(freeMirrorLifespan.value, 10),
+                mirrorEffectDuration: parseInt(freeMirrorEffect.value, 10),
+                obstacleCount: parseInt(freeObstacleCount.value, 10)
+            };
+            closeFreeSettingsPanel();
         }
 
         function openInfoPanel() {
@@ -2701,7 +2910,12 @@
             }, 0);
         }
         
-        configButton.addEventListener('click', openSettingsPanel);
+        configButton.addEventListener('click', () => {
+            if (gameMode === 'freeMode') openFreeSettingsPanel();
+            else openSettingsPanel();
+        });
+        applyFreeSettingsButton.addEventListener('click', applyFreeSettings);
+        closeFreeSettingsButton.addEventListener('click', closeFreeSettingsPanel);
         closeSettingsButton.addEventListener('click', closeSettingsPanel);
         infoButton.addEventListener('click', openInfoPanel);
         closeInfoButton.addEventListener('click', closeInfoPanel);
@@ -2981,15 +3195,17 @@
             if (gameMode === 'levels') {
                 const levelCfg = LEVEL_SETTINGS[currentWorld - 1][currentLevelInWorld - 1];
                 baseLifespan = levelCfg.initialLifespan || 0;
-            } else {
+            } else if (gameMode === 'classification') {
                 baseLifespan = DIFFICULTY_SETTINGS[difficulty].initialLifespan;
+            } else {
+                baseLifespan = freeModeSettings.initialLifespan;
             }
             if (baseLifespan <= 0) return 0;
             let streakReduction = 0;
             const effectiveStreak = Math.min(streakMultiplier, MAX_STREAK);
             if (effectiveStreak > 1) {
                 // Reduce food lifespan by 0.5 s per 0.5 streak increase
-                const reductionPerStep = DIFFICULTY_SETTINGS[difficulty].streakReduction || 1000;
+                const reductionPerStep = (gameMode === 'classification' ? DIFFICULTY_SETTINGS[difficulty].streakReduction : freeModeSettings.streakReduction) || 1000;
                 streakReduction = (effectiveStreak - 1) * reductionPerStep;
             }
             const calculatedLifespan = baseLifespan - streakReduction;
@@ -3015,15 +3231,17 @@
             }
 
             const classificationRank = CLASSIFICATION_RANKS[difficulty] || 0;
-            const diffCfg = DIFFICULTY_SETTINGS[difficulty] || {};
+            const diffCfg = (gameMode === 'classification') ? (DIFFICULTY_SETTINGS[difficulty] || {}) : freeModeSettings;
             const goldenChance = diffCfg.goldenFoodChance !== undefined ? diffCfg.goldenFoodChance : GOLDEN_FOOD_CHANCE;
-            const isGolden = ((gameMode === 'levels' && currentWorld === 5) || (gameMode === 'classification' && classificationRank >= 1)) && Math.random() < goldenChance;
+            const isGolden = ((gameMode === 'levels' && currentWorld === 5) || (gameMode === 'classification' && classificationRank >= 1) || gameMode === 'freeMode') && Math.random() < goldenChance;
             let lifespan = calculateNextFoodLifespan();
             if (isGolden) {
                 if (gameMode === 'classification' && classificationRank === 1 && diffCfg.goldenFoodLifespan === undefined) {
                     lifespan = GOLDEN_FOOD_LIFESPAN_CLASSIF_RANK1;
                 } else if (gameMode === 'levels') {
                     lifespan = GOLDEN_FOOD_LIFESPANS_WORLD5[currentLevelInWorld - 1] || lifespan;
+                } else if (gameMode === 'freeMode' && diffCfg.goldenFoodLifespan !== undefined) {
+                    lifespan = diffCfg.goldenFoodLifespan;
                 } else if (diffCfg.goldenFoodLifespan !== undefined) {
                     lifespan = diffCfg.goldenFoodLifespan;
                 }
@@ -3210,8 +3428,8 @@
                     isAdjacentToAnyFood(pos)) && attempts < 100);
             if (attempts >= 100) return;
             let lifespan = FALSE_FOOD_LIFESPAN;
-            if (gameMode === 'classification') {
-                const cfg = DIFFICULTY_SETTINGS[difficultySelector.value] || {};
+            if (gameMode === 'classification' || gameMode === 'freeMode') {
+                const cfg = (gameMode === 'classification') ? (DIFFICULTY_SETTINGS[difficultySelector.value] || {}) : freeModeSettings;
                 if (typeof cfg.falseFoodLifespan === 'number') {
                     lifespan = cfg.falseFoodLifespan;
                 }
@@ -3225,8 +3443,8 @@
         function scheduleNextFalseFoodSpawn() {
             if (gameOver) return;
             let range;
-            if (gameMode === 'classification') {
-                const cfg = DIFFICULTY_SETTINGS[difficultySelector.value] || {};
+            if (gameMode === 'classification' || gameMode === 'freeMode') {
+                const cfg = (gameMode === 'classification') ? (DIFFICULTY_SETTINGS[difficultySelector.value] || {}) : freeModeSettings;
                 range = cfg.falseFoodSpawnRange || [5000, 7000];
             } else if (gameMode === "levels" && (currentWorld === 7 || currentWorld === 8 || currentWorld === 10)) {
                 if (currentWorld === 7) {
@@ -3363,16 +3581,16 @@
                     isAdjacentToAnyFood(pos)) && attempts < 100);
             if (attempts >= 100) return;
             let yellowChance = 0.75;
-            if (gameMode === 'classification') {
-                const cfg = DIFFICULTY_SETTINGS[difficultySelector.value] || {};
+            if (gameMode === 'classification' || gameMode === 'freeMode') {
+                const cfg = (gameMode === 'classification') ? (DIFFICULTY_SETTINGS[difficultySelector.value] || {}) : freeModeSettings;
                 if (typeof cfg.yellowLightningChance === 'number') {
                     yellowChance = cfg.yellowLightningChance;
                 }
             }
             const color = Math.random() < yellowChance ? 'yellow' : 'red';
             let lifespan = LIGHTNING_LIFESPAN;
-            if (gameMode === 'classification') {
-                const cfg = DIFFICULTY_SETTINGS[difficultySelector.value] || {};
+            if (gameMode === 'classification' || gameMode === 'freeMode') {
+                const cfg = (gameMode === 'classification') ? (DIFFICULTY_SETTINGS[difficultySelector.value] || {}) : freeModeSettings;
                 if (typeof cfg.lightningLifespan === 'number') {
                     lifespan = cfg.lightningLifespan;
                 }
@@ -3386,8 +3604,8 @@
         function scheduleNextLightningSpawn() {
             if (gameOver) return;
             let range;
-            if (gameMode === "classification") {
-                const cfg = DIFFICULTY_SETTINGS[difficultySelector.value] || {};
+            if (gameMode === "classification" || gameMode === 'freeMode') {
+                const cfg = (gameMode === 'classification') ? (DIFFICULTY_SETTINGS[difficultySelector.value] || {}) : freeModeSettings;
                 range = cfg.lightningSpawnRange || [5000, 7000];
             } else if (gameMode === "levels" && (currentWorld === 3 || currentWorld === 4 || currentWorld === 9 || currentWorld === 10)) {
                 if (currentWorld === 3) {
@@ -3501,8 +3719,8 @@
                     isAdjacentToAnyFood(pos)) && attempts < 100);
             if (attempts >= 100) return;
             let lifespan = FALSE_FOOD_LIFESPAN;
-            if (gameMode === 'classification') {
-                const cfg = DIFFICULTY_SETTINGS[difficultySelector.value] || {};
+            if (gameMode === 'classification' || gameMode === 'freeMode') {
+                const cfg = (gameMode === 'classification') ? (DIFFICULTY_SETTINGS[difficultySelector.value] || {}) : freeModeSettings;
                 if (typeof cfg.mirrorLifespan === 'number') {
                     lifespan = cfg.mirrorLifespan;
                 }
@@ -3516,8 +3734,8 @@
         function scheduleNextMirrorSpawn() {
             if (gameOver) return;
             let range;
-            if (gameMode === 'classification') {
-                const cfg = DIFFICULTY_SETTINGS[difficultySelector.value] || {};
+            if (gameMode === 'classification' || gameMode === 'freeMode') {
+                const cfg = (gameMode === 'classification') ? (DIFFICULTY_SETTINGS[difficultySelector.value] || {}) : freeModeSettings;
                 range = cfg.mirrorSpawnRange || [5000, 7000];
             } else if (gameMode === "levels" && (currentWorld === 9 || currentWorld === 10)) {
                 range = currentWorld === 9 ?
@@ -5522,10 +5740,10 @@ async function startGame(isRestart = false) {
                 initialSnakeLength = levelCfg.initialLength;
                 MIRROR_EFFECT_DURATION = DEFAULT_MIRROR_EFFECT_DURATION;
             } else if (gameMode === 'freeMode') {
-                const cfg = DIFFICULTY_SETTINGS[difficultySelector.value];
+                const cfg = freeModeSettings;
                 snakeSpeed = cfg.speed;
                 initialSnakeLength = cfg.initialLength;
-                MIRROR_EFFECT_DURATION = DEFAULT_MIRROR_EFFECT_DURATION;
+                MIRROR_EFFECT_DURATION = cfg.mirrorEffectDuration || DEFAULT_MIRROR_EFFECT_DURATION;
             } else if (gameMode === 'classification') {
                 const cfg = DIFFICULTY_SETTINGS[difficultySelector.value];
                 snakeSpeed = cfg.speed;
@@ -5659,6 +5877,11 @@ async function startGame(isRestart = false) {
                 stopWorld6LightningMechanics();
                 stopWorld7MirrorMechanics();
                 stopWorld8Obstacles();
+                stopWorld4FalseFoodMechanics();
+                if (freeModeSettings.obstacleCount > 0) startWorld6Obstacles(freeModeSettings.obstacleCount);
+                if (freeModeSettings.lightningSpawnRange) startWorld6LightningMechanics();
+                if (freeModeSettings.falseFoodSpawnRange) startWorld4FalseFoodMechanics();
+                if (freeModeSettings.mirrorSpawnRange) startWorld7MirrorMechanics();
             }
             
             generateFood(); 
@@ -5829,7 +6052,7 @@ async function startGame(isRestart = false) {
             difficulty = this.value;
             classificationDifficultyIndex = CLASSIFICATION_DIFFICULTY_ORDER.indexOf(this.value);
             if (!gameIntervalId) {
-                const cfg = DIFFICULTY_SETTINGS[difficulty];
+                const cfg = (gameMode === 'freeMode') ? freeModeSettings : DIFFICULTY_SETTINGS[difficulty];
                 snakeSpeed = cfg.speed;
                 initialSnakeLength = cfg.initialLength;
             }
@@ -6003,6 +6226,7 @@ async function startGame(isRestart = false) {
                     ctx.fillStyle = "#374151";
                     ctx.fillRect(0, 0, canvasEl.width, canvasEl.height);
                 }
+                openFreeSettingsPanel();
             } else if (gameMode === 'classification') {
                 displayTargetScore = 0;
 
@@ -6082,6 +6306,7 @@ async function startGame(isRestart = false) {
                     screenState.showCoverForWorld = currentWorld;
                 } else if (selectedMode === 'freeMode') {
                     screenState.showFreeModeCover = true;
+                    openFreeSettingsPanel();
                 } else if (selectedMode === 'classification') {
                     screenState.showClassificationCover = true;
                     classificationDifficultyIndex = 0;
