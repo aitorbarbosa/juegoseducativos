@@ -5285,7 +5285,7 @@
             synthStartGame = new Tone.Synth({ oscillator: {type: 'triangle'}, envelope: { attack: 0.005, decay: 0.1, sustain: 0.05, release: 0.1 } }).toDestination();
             synthStartGame.volume.value = 0;
             synthWin = new Tone.Synth({ oscillator: { type: 'square' }, envelope: { attack: 0.01, decay: 0.2, sustain: 0.1, release: 0.4 } }).toDestination();
-            synthWin.volume.value = 0;
+            synthWin.volume.value = -4; // lower victory sound volume
             synthCoinNoise = new Tone.NoiseSynth({ noise: { type: 'brown' }, envelope: { attack: 0.001, decay: 0.3, sustain: 0, release: 0.2 } }).toDestination();
             synthCoinNoise.volume.value = -8;
             synthCoinChime = new Tone.Synth({ oscillator: { type: 'triangle' }, envelope: { attack: 0.01, decay: 0.1, sustain: 0, release: 0.1 } }).toDestination();
