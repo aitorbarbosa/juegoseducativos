@@ -829,6 +829,20 @@
             transform: translateX(-50%) scale(1);
         }
 
+        .splash-menu-panel {
+            background-image: url('https://raw.githubusercontent.com/GamificAitor/JuegosEducativos/601be8d8f7e10e4bbc65627265b990f216ade749/Men%C3%BA.svg');
+            background-size: 100% 100%;
+            background-repeat: no-repeat;
+            background-position: center;
+            background-color: transparent !important;
+            top: 50%;
+            bottom: auto;
+            transform: translate(-50%, -50%) scale(0.95);
+        }
+        .splash-menu-panel.panel-visible {
+            transform: translate(-50%, -50%) scale(1);
+        }
+
          #specific-info-panel {
             z-index: 1002; 
         }
@@ -1629,6 +1643,9 @@
 
         const modeLeftButton = document.getElementById("mode-left-button");
         const modeRightButton = document.getElementById("mode-right-button");
+
+        let isSplashInfoPanelOpen = false;
+        let isSplashSettingsPanelOpen = false;
 
         // New DOM elements for specific info panel
         const specificInfoPanel = document.getElementById("specific-info-panel");
@@ -3193,6 +3210,48 @@ function setupSlider(slider, display) {
             setTimeout(() => {
                 updateMainButtonStates();
             }, 0);
+        }
+
+        function openSplashInfoPanel() {
+            if (!splashScreen || !infoPanel) return;
+            isSplashInfoPanelOpen = true;
+            splashScreen.appendChild(infoPanel);
+            infoPanel.classList.add('splash-menu-panel');
+            closeInfoButton.removeEventListener('click', closeInfoPanel);
+            closeInfoButton.addEventListener('click', closeSplashInfoPanel);
+            openInfoPanel();
+        }
+
+        function closeSplashInfoPanel() {
+            closeInfoButton.removeEventListener('click', closeSplashInfoPanel);
+            closeInfoButton.addEventListener('click', closeInfoPanel);
+            closeInfoPanel();
+            setTimeout(() => {
+                infoPanel.classList.remove('splash-menu-panel');
+                if (setupControls) setupControls.appendChild(infoPanel);
+                isSplashInfoPanelOpen = false;
+            }, 300);
+        }
+
+        function openSplashSettingsPanel() {
+            if (!splashScreen || !settingsPanel) return;
+            isSplashSettingsPanelOpen = true;
+            splashScreen.appendChild(settingsPanel);
+            settingsPanel.classList.add('splash-menu-panel');
+            closeSettingsButton.removeEventListener('click', closeSettingsPanel);
+            closeSettingsButton.addEventListener('click', closeSplashSettingsPanel);
+            openSettingsPanel();
+        }
+
+        function closeSplashSettingsPanel() {
+            closeSettingsButton.removeEventListener('click', closeSplashSettingsPanel);
+            closeSettingsButton.addEventListener('click', closeSettingsPanel);
+            closeSettingsPanel();
+            setTimeout(() => {
+                settingsPanel.classList.remove('splash-menu-panel');
+                if (setupControls) setupControls.prepend(settingsPanel);
+                isSplashSettingsPanelOpen = false;
+            }, 300);
         }
         
         configButton.addEventListener('click', () => {
@@ -7129,15 +7188,11 @@ async function startGame(isRestart = false) {
             }
 
             attachSplashButtonEvents(splashInfoButtonEl, () => {
-                if (splashScreen) splashScreen.classList.add('hidden');
-                if (gameContainer) gameContainer.classList.remove('hidden');
-                openInfoPanel();
+                openSplashInfoPanel();
             });
 
             attachSplashButtonEvents(splashSettingsButtonEl, () => {
-                if (splashScreen) splashScreen.classList.add('hidden');
-                if (gameContainer) gameContainer.classList.remove('hidden');
-                openSettingsPanel();
+                openSplashSettingsPanel();
             });
 
 
