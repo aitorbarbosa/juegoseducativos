@@ -90,9 +90,30 @@
             transition: transform 0.05s ease-out, filter 0.05s ease-out;
         }
 
-        #splash-start-button.splash-button-pressed {
+        #splash-start-button.splash-button-pressed,
+        #splash-info-button.splash-button-pressed,
+        #splash-settings-button.splash-button-pressed {
             transform: scale(0.90) translateY(2px);
             filter: brightness(0.7);
+        }
+
+        #splash-button-row {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            padding-top: 10px;
+        }
+
+        #splash-info-button,
+        #splash-settings-button {
+            cursor: pointer;
+            width: auto;
+            height: auto;
+            max-width: min(20vw, 80px);
+            object-fit: contain;
+            z-index: 2001;
+            transition: transform 0.05s ease-out, filter 0.05s ease-out;
         }
 
         #splash-bottom-image {
@@ -1150,6 +1171,9 @@
             #splash-start-button {
                 max-height: 20vh;
             }
+            #splash-info-button, #splash-settings-button {
+                max-height: 12vh;
+            }
             #splash-bottom-image {
                 max-height: 100vh;
                 padding-top: 30px;
@@ -1159,13 +1183,17 @@
     </style>
 </head>
 <body>
-    <div id="splash-screen">
-        <div id="splash-content">
-            <img id="splash-top-image" src="https://i.imgur.com/tWVwXbv.png" alt="Logotipo superior del splash" onerror="this.src='https://placehold.co/600x200/02030D/FFFFFF?text=Splash+Top+Error'; console.error('Error loading splash-top-image');">
-            <img id="splash-start-button" src="https://i.imgur.com/HqNpn3w.png" alt="Botón de iniciar juego" onerror="this.src='https://placehold.co/300x100/02030D/FFFFFF?text=Start+Error'; console.error('Error loading splash-start-button');">
-            <img id="splash-bottom-image" src="https://i.imgur.com/YJ1xHZO.png" alt="Imagen inferior del splash" onerror="this.src='https://placehold.co/600x150/02030D/FFFFFF?text=Splash+Bottom+Error'; console.error('Error loading splash-bottom-image');">
+        <div id="splash-screen">
+            <div id="splash-content">
+                <img id="splash-top-image" src="https://i.imgur.com/tWVwXbv.png" alt="Logotipo superior del splash" onerror="this.src='https://placehold.co/600x200/02030D/FFFFFF?text=Splash+Top+Error'; console.error('Error loading splash-top-image');">
+                <div id="splash-button-row">
+                    <img id="splash-info-button" src="https://i.imgur.com/y3fPiZU.png" alt="Información inicial" onerror="this.src='https://placehold.co/80x80/02030D/FFFFFF?text=Info+Error'; console.error('Error loading splash-info-button');">
+                    <img id="splash-start-button" src="https://i.imgur.com/HqNpn3w.png" alt="Botón de iniciar juego" onerror="this.src='https://placehold.co/300x100/02030D/FFFFFF?text=Start+Error'; console.error('Error loading splash-start-button');">
+                    <img id="splash-settings-button" src="https://i.imgur.com/YIBroBG.png" alt="Ajustes generales" onerror="this.src='https://placehold.co/80x80/02030D/FFFFFF?text=Settings+Error'; console.error('Error loading splash-settings-button');">
+                </div>
+                <img id="splash-bottom-image" src="https://i.imgur.com/YJ1xHZO.png" alt="Imagen inferior del splash" onerror="this.src='https://placehold.co/600x150/02030D/FFFFFF?text=Splash+Bottom+Error'; console.error('Error loading splash-bottom-image');">
+            </div>
         </div>
-    </div>
 
     <div class="game-container hidden">
         <div id="title-panel" class="hidden"><h2>Snake Mobile</h2></div>
@@ -7074,8 +7102,21 @@ async function startGame(isRestart = false) {
             const splashStartButtonEl = document.getElementById('splash-start-button');
             const splashTopImageEl = document.getElementById('splash-top-image');
             const splashBottomImageEl = document.getElementById('splash-bottom-image');
+            const splashInfoButtonEl = document.getElementById('splash-info-button');
+            const splashSettingsButtonEl = document.getElementById('splash-settings-button');
 
-            // Initialize synthSplashStart (Tone.Player) here
+            function attachSplashButtonEvents(btnEl, onClick) {
+                if (!btnEl) return;
+                btnEl.addEventListener('mousedown', () => btnEl.classList.add('splash-button-pressed'));
+                btnEl.addEventListener('mouseup', () => btnEl.classList.remove('splash-button-pressed'));
+                btnEl.addEventListener('mouseleave', () => btnEl.classList.remove('splash-button-pressed'));
+                btnEl.addEventListener('touchstart', () => btnEl.classList.add('splash-button-pressed'));
+                btnEl.addEventListener('touchend', () => btnEl.classList.remove('splash-button-pressed'));
+                btnEl.addEventListener('touchcancel', () => btnEl.classList.remove('splash-button-pressed'));
+                btnEl.addEventListener('click', onClick);
+            }
+
+// Initialize synthSplashStart (Tone.Player) here
             if (typeof Tone !== 'undefined') {
                 synthSplashStart = new Tone.Player({
                     url: "https://raw.githubusercontent.com/GamificAitor/JuegosEducativos/f8cf11c2f8447c929e260b8ad8b417d1edc6048c/start-game-v2.mp3",
@@ -7086,6 +7127,18 @@ async function startGame(isRestart = false) {
                 // We no longer call initializeToneSynths() directly here.
                 // ensureAudioContextRunning (on first click) will handle it.
             }
+
+            attachSplashButtonEvents(splashInfoButtonEl, () => {
+                if (splashScreen) splashScreen.classList.add('hidden');
+                if (gameContainer) gameContainer.classList.remove('hidden');
+                openInfoPanel();
+            });
+
+            attachSplashButtonEvents(splashSettingsButtonEl, () => {
+                if (splashScreen) splashScreen.classList.add('hidden');
+                if (gameContainer) gameContainer.classList.remove('hidden');
+                openSettingsPanel();
+            });
 
 
 
