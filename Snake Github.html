@@ -823,9 +823,19 @@
 
         .centered-panel {
             top: 50%;
+        }
+        #settings-panel.centered-panel,
+        #info-panel.centered-panel,
+        #specific-info-panel.centered-panel,
+        #free-settings-panel.centered-panel,
+        #reset-confirmation-panel.centered-panel {
             transform: translate(-50%, -50%) scale(0.95);
         }
-        .centered-panel.panel-visible {
+        #settings-panel.centered-panel.panel-visible,
+        #info-panel.centered-panel.panel-visible,
+        #specific-info-panel.centered-panel.panel-visible,
+        #free-settings-panel.centered-panel.panel-visible,
+        #reset-confirmation-panel.centered-panel.panel-visible {
             transform: translate(-50%, -50%) scale(1);
         }
         #settings-panel.panel-visible,
