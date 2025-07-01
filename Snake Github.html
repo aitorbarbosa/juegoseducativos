@@ -1091,6 +1091,23 @@
             height: 40px;
         }
         #free-settings-panel #apply-free-settings:hover { background-color: #45a049; }
+        #free-settings-panel #apply-free-settings-bottom {
+            background-color: #4CAF50;
+            color: #f5f5f5;
+            border-radius: 8px;
+            padding: 10px 15px;
+            font-family: 'Press Start 2P', sans-serif;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            width: 100%;
+            text-align: center;
+            font-size: 0.75em;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 40px;
+        }
+        #free-settings-panel #apply-free-settings-bottom:hover { background-color: #45a049; }
 
         #reset-confirmation-panel { z-index: 1003; }
 
@@ -1313,20 +1330,6 @@
                 </div>
                 <div class="control-group">
                     <div class="control-label-icon-row">
-                        <label class="control-label">Desaparición comida</label>
-                        <label class="switch"><input type="checkbox" id="free-lifespan-toggle" checked><span class="slider round"></span></label>
-                    </div>
-                    <label class="control-label" for="free-lifespan-input">Tiempo(s): <span id="free-lifespan-value">7.5</span></label>
-                    <input type="range" class="settings-range" id="free-lifespan-input" min="4" max="8" step="0.5" value="7.5">
-                </div>
-                <div class="control-group" id="streak-control-group">
-                    <div class="control-label-icon-row">
-                        <label class="control-label">Racha (x1 - x5)</label>
-                        <label class="switch"><input type="checkbox" id="free-streak-toggle" checked><span class="slider round"></span></label>
-                    </div>
-                </div>
-                <div class="control-group">
-                    <div class="control-label-icon-row">
                         <label class="control-label">Comida dorada (x2)</label>
                         <label class="switch"><input type="checkbox" id="free-golden-toggle" checked><span class="slider round"></span></label>
                     </div>
@@ -1346,6 +1349,20 @@
                     <input type="range" class="settings-range" id="free-lightning-lifespan" min="4" max="10" step="0.5" value="5">
                     <label class="control-label" for="free-red-chance">Probabilidad Súper Rayo: <span id="free-red-chance-value">25</span>%</label>
                     <input type="range" class="settings-range" id="free-red-chance" min="0" max="100" step="5" value="25">
+                </div>
+                <div class="control-group">
+                    <div class="control-label-icon-row">
+                        <label class="control-label">Desaparición comida</label>
+                        <label class="switch"><input type="checkbox" id="free-lifespan-toggle" checked><span class="slider round"></span></label>
+                    </div>
+                    <label class="control-label" for="free-lifespan-input">Tiempo(s): <span id="free-lifespan-value">7.5</span></label>
+                    <input type="range" class="settings-range" id="free-lifespan-input" min="4" max="8" step="0.5" value="7.5">
+                </div>
+                <div class="control-group" id="streak-control-group">
+                    <div class="control-label-icon-row">
+                        <label class="control-label">Racha (x1 - x5)</label>
+                        <label class="switch"><input type="checkbox" id="free-streak-toggle" checked><span class="slider round"></span></label>
+                    </div>
                 </div>
                 <div class="control-group">
                     <div class="control-label-icon-row">
@@ -1373,6 +1390,7 @@
                     <label class="control-label" for="free-obstacle-count">Número de obstáculos: <span id="free-obstacle-count-value">5</span></label>
                     <input type="range" class="settings-range" id="free-obstacle-count" min="0" max="50" value="5">
                 </div>
+                <div class="control-group" id="apply-free-settings-bottom">Jugar</div>
             </div>
 
             <div id="info-panel" class="info-panel-hidden">
@@ -1561,6 +1579,7 @@
         const closeSettingsButton = document.getElementById("close-settings-button");
         const closeFreeSettingsButton = document.getElementById("close-free-settings-button");
         const applyFreeSettingsButton = document.getElementById("apply-free-settings");
+        const applyFreeSettingsBottomButton = document.getElementById("apply-free-settings-bottom");
 
         const infoButton = document.getElementById("infoButton");
         const infoPanel = document.getElementById("info-panel");
@@ -3148,6 +3167,7 @@ function setupSlider(slider, display) {
             else openSettingsPanel();
         });
         applyFreeSettingsButton.addEventListener('click', applyFreeSettings);
+        if (applyFreeSettingsBottomButton) applyFreeSettingsBottomButton.addEventListener('click', applyFreeSettings);
         closeFreeSettingsButton.addEventListener('click', closeFreeSettingsPanel);
         closeSettingsButton.addEventListener('click', closeSettingsPanel);
         infoButton.addEventListener('click', openInfoPanel);
