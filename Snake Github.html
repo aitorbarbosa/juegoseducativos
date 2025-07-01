@@ -580,6 +580,24 @@
             cursor: not-allowed;
         }
 
+        #newPlayerNameInput {
+            padding: 4px 6px;
+            width: calc(100% - 50px);
+            font-size: 0.75em;
+            border: 1px solid #6ee7b7;
+            border-radius: 4px;
+            background-color: transparent;
+            color: #f5f5f5;
+            font-family: 'Press Start 2P', sans-serif;
+            box-sizing: border-box;
+            margin-top: 4px;
+            margin-bottom: 0;
+        }
+        #newPlayerNameInput:focus {
+            outline: 1px solid #6ee7b7;
+            box-shadow: none;
+        }
+
         #free-settings-panel input[type="number"] {
             padding: 4px 6px;
             width: 100%;
@@ -1279,19 +1297,32 @@
                     <h2>Configuración</h2>
                     <button id="close-settings-button" aria-label="Cerrar configuración">&times;</button>
                 </div>
-                <div id="player-name-control-group" class="control-group hidden">
-                    <div class="control-label-icon-row">
-                        <label class="control-label" for="playerNameSelector">Jugador:</label>
-                        <button id="add-player-name-button" class="setting-info-button" aria-label="Añadir nuevo nombre">
-                            <svg class="setting-info-icon" viewBox="0 0 20 20" fill="currentColor">
-                                <path stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M10 5v10M5 10h10" />
-                            </svg>
-                        </button>
+                <div class="control-row" id="player-row">
+                    <div id="player-select-control-group" class="control-group hidden">
+                        <div class="control-label-icon-row">
+                            <label class="control-label" for="playerNameSelector">Jugador:</label>
+                            <button id="delete-player-name-button" class="setting-info-button" aria-label="Eliminar jugador">
+                                <svg class="setting-info-icon" viewBox="0 0 20 20" fill="currentColor">
+                                    <path stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M6 7h8M7 7v9a1 1 0 001 1h4a1 1 0 001-1V7m-5-4h2" />
+                                </svg>
+                            </button>
+                        </div>
+                        <select id="playerNameSelector">
+                            <option value="Snake" selected>Snake</option>
+                            <option value="GamiSnake">GamiSnake</option>
+                        </select>
                     </div>
-                    <select id="playerNameSelector">
-                        <option value="Snake" selected>Snake</option>
-                        <option value="GamiSnake">GamiSnake</option>
-                    </select>
+                    <div id="add-player-control-group" class="control-group hidden">
+                        <div class="control-label-icon-row">
+                            <label class="control-label" for="newPlayerNameInput">Añadir</label>
+                            <button id="confirm-add-player-button" class="setting-info-button" aria-label="Confirmar nuevo nombre">
+                                <svg class="setting-info-icon" viewBox="0 0 20 20" fill="currentColor">
+                                    <path stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M10 5v10M5 10h10" />
+                                </svg>
+                            </button>
+                        </div>
+                        <input id="newPlayerNameInput" type="text">
+                    </div>
                 </div>
                 <div class="control-group" id="game-mode-control-group">
                     <div class="control-label-icon-row">
@@ -1621,8 +1652,11 @@
         const foodSelector = document.getElementById("foodSelector");
         const gameModeSelector = document.getElementById("gameModeSelector");
         const playerNameSelector = document.getElementById("playerNameSelector");
-        const addPlayerNameButton = document.getElementById("add-player-name-button");
-        const playerNameControlGroup = document.getElementById("player-name-control-group");
+        const confirmAddPlayerButton = document.getElementById("confirm-add-player-button");
+        const deletePlayerNameButton = document.getElementById("delete-player-name-button");
+        const newPlayerNameInput = document.getElementById("newPlayerNameInput");
+        const playerSelectControlGroup = document.getElementById("player-select-control-group");
+        const addPlayerControlGroup = document.getElementById("add-player-control-group");
         const difficultyControlGroup = document.getElementById("difficulty-control-group");
         const audioControlGroup = document.getElementById("audio-control-group");
         const skinControlGroup = document.getElementById("skin-control-group");
@@ -2995,10 +3029,12 @@ function setupSlider(slider, display) {
             difficultyControlGroup.classList.remove('hidden');
             skinControlGroup.classList.remove('hidden');
             foodControlGroup.classList.remove('hidden');
-            playerNameControlGroup.classList.add('hidden');
+            playerSelectControlGroup.classList.add('hidden');
+            addPlayerControlGroup.classList.add('hidden');
 
             if (panelOpenedFromSplash) {
-                playerNameControlGroup.classList.remove('hidden');
+                playerSelectControlGroup.classList.remove('hidden');
+                addPlayerControlGroup.classList.remove('hidden');
                 gameModeControlGroup.classList.add('hidden');
                 difficultyControlGroup.classList.add('hidden');
                 skinControlGroup.classList.add('hidden');
@@ -6422,17 +6458,42 @@ async function startGame(isRestart = false) {
             saveGameSettings();
         });
 
-        if (addPlayerNameButton) {
-            addPlayerNameButton.addEventListener('click', function() {
-                const newName = prompt('Introduce un nuevo nombre de jugador:');
-                if (newName) {
+        function addNewPlayerFromInput() {
+            const newName = newPlayerNameInput.value.trim();
+            if (newName) {
+                if (!playerNames.includes(newName)) {
                     playerNames.push(newName);
                     const opt = document.createElement('option');
                     opt.value = newName;
                     opt.textContent = newName;
                     playerNameSelector.appendChild(opt);
-                    playerNameSelector.value = newName;
-                    currentPlayerName = newName;
+                }
+                playerNameSelector.value = newName;
+                currentPlayerName = newName;
+                newPlayerNameInput.value = '';
+                saveGameSettings();
+            }
+        }
+
+        if (confirmAddPlayerButton) {
+            confirmAddPlayerButton.addEventListener('click', addNewPlayerFromInput);
+        }
+        if (newPlayerNameInput) {
+            newPlayerNameInput.addEventListener('keyup', function(e) { if (e.key === 'Enter') addNewPlayerFromInput(); });
+            newPlayerNameInput.addEventListener('blur', addNewPlayerFromInput);
+        }
+        if (deletePlayerNameButton) {
+            deletePlayerNameButton.addEventListener('click', function() {
+                if (playerNames.length <= 1) return;
+                const nameToDelete = playerNameSelector.value;
+                if (nameToDelete === 'Snake') return;
+                const index = playerNames.indexOf(nameToDelete);
+                if (index > -1) {
+                    playerNames.splice(index, 1);
+                    playerNameSelector.removeChild(playerNameSelector.options[index]);
+                    const newSelection = playerNames[0];
+                    playerNameSelector.value = newSelection;
+                    currentPlayerName = newSelection;
                     saveGameSettings();
                 }
             });
