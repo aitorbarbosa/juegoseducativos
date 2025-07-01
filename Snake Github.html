@@ -756,19 +756,15 @@
             min-width: auto; 
             display: flex; 
         }
-        #back-button-wrapper {
-            flex-grow: 1;
-        }
+        #back-button-wrapper { display: none; }
         #start-button-wrapper {
-            flex-grow: 3;
+            flex-grow: 1;
             display: flex;
             gap: 4px;
         }
         #start-button-wrapper.split #startButton { flex-grow: 2; }
         #start-button-wrapper.split #restartMazeButton { flex-grow: 1; }
-        #config-button-wrapper {
-            flex-grow: 1;
-        }
+        #config-button-wrapper { display: none; }
 
 
         #startButton, #restartMazeButton, #configButton, #backButton {
@@ -800,21 +796,33 @@
         }
 
         #startButton:hover, #restartMazeButton:hover { background-color: #45a049; }
-        #configButton:hover, #backButton:hover { background-color: #4a5568; }
 
-        #startButton:disabled, #restartMazeButton:disabled, #configButton:disabled, #backButton:disabled {
+        #startButton:disabled, #restartMazeButton:disabled {
             background-color: #94a3b8;
             cursor: not-allowed;
         }
-        .restart-svg {
-            width: 24px;
-            height: 24px;
-            fill: currentColor;
+        #configButton:disabled, #backButton:disabled {
+            cursor: not-allowed;
         }
-        .config-svg, .info-svg { 
-            width: 24px;
-            height: 24px;
+        #configButton:disabled #configButtonIcon,
+        #backButton:disabled #backButtonIcon {
+            filter: brightness(0.7);
+        }
+        #backButton { padding: 0; background-color: transparent; flex: 0 0 auto; width: auto; min-width: 0; }
+        #backButtonIcon { height: 100%; width: auto; display: block; transition: transform 0.05s ease-out, filter 0.05s ease-out; }
+        #configButton { padding: 0; background-color: transparent; flex: 0 0 auto; width: auto; min-width: 0; }
+        #configButtonIcon { height: 100%; width: auto; display: block; transition: transform 0.05s ease-out, filter 0.05s ease-out; }
+        .icon-button-pressed {
+            transform: scale(0.90) translateY(2px);
+            filter: brightness(0.7);
+        }
+        .restart-svg,
+        .config-svg,
+        .info-svg {
+            height: 100%;
+            width: auto;
             fill: currentColor;
+            display: block;
         }
 
         .settings-panel-hidden, .info-panel-hidden, .specific-info-panel-hidden, .free-settings-panel-hidden, .reset-panel-hidden {
@@ -1098,9 +1106,10 @@
             #restartMazeButton, #configButton, #backButton {
                 min-width: 50px;
             }
-            .config-svg, .info-svg {  
-                width: 20px;
-                height: 20px;
+            .config-svg,
+            .info-svg {
+                height: 100%;
+                width: auto;
             }
              #settings-panel, #info-panel, #specific-info-panel, #free-settings-panel {
                 padding: 15px;
@@ -1542,11 +1551,9 @@
             </div>
 
             <div class="control-row" id="action-buttons-row">
-                <div class="action-button-wrapper" id="back-button-wrapper">
                     <button id="backButton" aria-label="Volver">
-                        <img id="backButtonIcon" src="https://i.imgur.com/1WrBpTQ.png" alt="Volver" style="width:24px;height:24px;" onerror="this.src='https://placehold.co/24x24/02030D/FFFFFF?text=Err';">
+                        <img id="backButtonIcon" src="https://i.imgur.com/1WrBpTQ.png" alt="Volver" onerror="this.src='https://placehold.co/24x24/02030D/FFFFFF?text=Err';">
                     </button>
-                </div>
                 <div class="action-button-wrapper" id="start-button-wrapper">
                     <button id="startButton">Empezar</button>
                     <button id="restartMazeButton" class="hidden" aria-label="Reiniciar">
@@ -1555,12 +1562,9 @@
                         </svg>
                     </button>
                 </div>
-                <div class="action-button-wrapper" id="config-button-wrapper">
-                    <button id="configButton" aria-label="Configuración">
-                        <svg class="config-svg" viewBox="0 0 24 24" fill="currentColor"> <path d="M19.14,12.94c0.04-0.3,0.06-0.61,0.06-0.94c0-0.32-0.02-0.64-0.07-0.94l2.03-1.58c0.18-0.14,0.23-0.41,0.12-0.61 l-1.92-3.32c-0.12-0.22-0.37-0.29-0.59-0.22l-2.39,0.96c-0.5-0.38-1.03-0.7-1.62-0.94L14.4,2.25 C14.34,2.09,14.19,2,14,2h-4C9.81,2,9.66,2.09,9.6,2.25L9.22,4.65C8.63,4.89,8.1,5.21,7.6,5.59L5.22,4.63 C4.99,4.56,4.74,4.62,4.62,4.83L2.71,8.15c-0.11,0.2-0.06,0.47,0.12,0.61l2.03,1.58C4.8,10.69,4.78,11,4.78,11.31 c0,0.32,0.02,0.64,0.07,0.95l-2.03,1.58c-0.18,0.14-0.23-0.41-0.12,0.61l1.92,3.32c0.12,0.22,0.37,0.29,0.59,0.22 l2.39-0.96c0.5,0.38,1.03,0.7,1.62,0.94l0.38,2.41c0.05,0.16,0.2,0.25,0.39,0.25h4c0.19,0,0.34-0.09,0.39-0.25l0.38-2.41 c0.59-0.24,1.12-0.56,1.62-0.94l2.39,0.96c0.22,0.08,0.47,0.02,0.59-0.22l1.92-3.32c0.12-0.2,0.07-0.47-0.12-0.61 L19.14,12.94z M12,15.6c-1.98,0-3.6-1.62-3.6-3.6s1.62-3.6,3.6-3.6s3.6,1.62,3.6,3.6S13.98,15.6,12,15.6z"/>
-                        </svg>
-                    </button>
-                </div>
+                <button id="configButton" aria-label="Configuración">
+                    <img id="configButtonIcon" src="https://i.imgur.com/9HHOgFe.png" alt="Configuración" onerror="this.src='https://placehold.co/24x24/02030D/FFFFFF?text=Err';">
+                </button>
             </div>
         </div>
         </div>
@@ -1684,6 +1688,7 @@
         const settingsPanel = document.getElementById("settings-panel");
         const freeSettingsPanel = document.getElementById("free-settings-panel");
         const configButton = document.getElementById("configButton");
+        const configButtonIcon = document.getElementById("configButtonIcon");
         const closeSettingsButton = document.getElementById("close-settings-button");
         const closeFreeSettingsButton = document.getElementById("close-free-settings-button");
         const applyFreeSettingsButton = document.getElementById("apply-free-settings");
@@ -2878,6 +2883,7 @@ function setupSlider(slider, display) {
                 configButton.disabled = true;
                 backButton.disabled = true;
                 backButtonIcon.src = showModeSelect ? 'https://i.imgur.com/1WrBpTQ.png' : 'https://i.imgur.com/Wvl87cV.png';
+                configButtonIcon.src = showModeSelect ? 'https://i.imgur.com/9HHOgFe.png' : 'https://i.imgur.com/jekDmyV.png';
                 return;
             }
 
@@ -2887,6 +2893,7 @@ function setupSlider(slider, display) {
                 configButton.disabled = true;
                 backButton.disabled = true;
                 backButtonIcon.src = showModeSelect ? 'https://i.imgur.com/1WrBpTQ.png' : 'https://i.imgur.com/Wvl87cV.png';
+                configButtonIcon.src = showModeSelect ? 'https://i.imgur.com/9HHOgFe.png' : 'https://i.imgur.com/jekDmyV.png';
             } else {
                 const isWorldIntroCover = screenState.showCoverForWorld > 0 && !screenState.gameActuallyStarted;
                 const isWorldCompleteScreen = screenState.showWorldCompleteCover > 0;
@@ -2909,8 +2916,10 @@ function setupSlider(slider, display) {
 
                 if (isModeSelectActive) {
                     backButtonIcon.src = 'https://i.imgur.com/1WrBpTQ.png';
+                    configButtonIcon.src = 'https://i.imgur.com/9HHOgFe.png';
                 } else {
                     backButtonIcon.src = 'https://i.imgur.com/Wvl87cV.png';
+                    configButtonIcon.src = 'https://i.imgur.com/jekDmyV.png';
                 }
 
                 if (isModeSelectActive) {
@@ -6895,15 +6904,29 @@ async function startGame(isRestart = false) {
                 if (gameIntervalId) button.classList.add("d-pad-button-pressed");
             });
             button.addEventListener("mouseup", () => button.classList.remove("d-pad-button-pressed"));
-            button.addEventListener("mouseleave", () => button.classList.remove("d-pad-button-pressed")); 
+            button.addEventListener("mouseleave", () => button.classList.remove("d-pad-button-pressed"));
             button.addEventListener("touchstart", (e) => {
-                e.preventDefault(); 
+                e.preventDefault();
                 if (gameIntervalId) button.classList.add("d-pad-button-pressed");
-                changeDirection(button.id.replace('-button', '')); 
+                changeDirection(button.id.replace('-button', ''));
             });
             button.addEventListener("touchend", () => button.classList.remove("d-pad-button-pressed"));
             button.addEventListener("touchcancel", () => button.classList.remove("d-pad-button-pressed"));
         });
+
+        // Icon Button Press Feedback
+        function addIconPressEvents(btn, icon) {
+            if (!btn || !icon) return;
+            btn.addEventListener('mousedown', () => icon.classList.add('icon-button-pressed'));
+            btn.addEventListener('mouseup', () => icon.classList.remove('icon-button-pressed'));
+            btn.addEventListener('mouseleave', () => icon.classList.remove('icon-button-pressed'));
+            btn.addEventListener('touchstart', () => icon.classList.add('icon-button-pressed'));
+            btn.addEventListener('touchend', () => icon.classList.remove('icon-button-pressed'));
+            btn.addEventListener('touchcancel', () => icon.classList.remove('icon-button-pressed'));
+        }
+
+        addIconPressEvents(configButton, configButtonIcon);
+        addIconPressEvents(backButton, backButtonIcon);
 
         // Original click listeners for D-Pad 
         upButton.addEventListener("click", () => changeDirection("up"));
