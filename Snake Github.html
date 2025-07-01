@@ -756,11 +756,9 @@
             min-width: auto; 
             display: flex; 
         }
-        #back-button-wrapper {
-            flex-grow: 1;
-        }
+        #back-button-wrapper { display: none; }
         #start-button-wrapper {
-            flex-grow: 3;
+            flex-grow: 1;
             display: flex;
             gap: 4px;
         }
@@ -806,15 +804,15 @@
             background-color: #94a3b8;
             cursor: not-allowed;
         }
-        .restart-svg {
-            width: 24px;
-            height: 24px;
+        #backButton { padding: 0; background-color: transparent; flex: 0 0 auto; width: auto; min-width: 0; }
+        #backButtonIcon { height: 100%; width: auto; display: block; }
+        .restart-svg,
+        .config-svg,
+        .info-svg {
+            height: 100%;
+            width: auto;
             fill: currentColor;
-        }
-        .config-svg, .info-svg { 
-            width: 24px;
-            height: 24px;
-            fill: currentColor;
+            display: block;
         }
 
         .settings-panel-hidden, .info-panel-hidden, .specific-info-panel-hidden, .free-settings-panel-hidden, .reset-panel-hidden {
@@ -1098,9 +1096,10 @@
             #restartMazeButton, #configButton, #backButton {
                 min-width: 50px;
             }
-            .config-svg, .info-svg {  
-                width: 20px;
-                height: 20px;
+            .config-svg,
+            .info-svg {
+                height: 100%;
+                width: auto;
             }
              #settings-panel, #info-panel, #specific-info-panel, #free-settings-panel {
                 padding: 15px;
@@ -1542,11 +1541,9 @@
             </div>
 
             <div class="control-row" id="action-buttons-row">
-                <div class="action-button-wrapper" id="back-button-wrapper">
                     <button id="backButton" aria-label="Volver">
-                        <img id="backButtonIcon" src="https://i.imgur.com/1WrBpTQ.png" alt="Volver" style="width:24px;height:24px;" onerror="this.src='https://placehold.co/24x24/02030D/FFFFFF?text=Err';">
+                        <img id="backButtonIcon" src="https://i.imgur.com/1WrBpTQ.png" alt="Volver" onerror="this.src='https://placehold.co/24x24/02030D/FFFFFF?text=Err';">
                     </button>
-                </div>
                 <div class="action-button-wrapper" id="start-button-wrapper">
                     <button id="startButton">Empezar</button>
                     <button id="restartMazeButton" class="hidden" aria-label="Reiniciar">
