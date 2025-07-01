@@ -756,11 +756,9 @@
             min-width: auto; 
             display: flex; 
         }
-        #back-button-wrapper {
-            flex-grow: 1;
-        }
+        #back-button-wrapper { display: none; }
         #start-button-wrapper {
-            flex-grow: 3;
+            flex-grow: 1;
             display: flex;
             gap: 4px;
         }
@@ -806,6 +804,8 @@
             background-color: #94a3b8;
             cursor: not-allowed;
         }
+        #backButton { padding: 0; background-color: transparent; flex: 0 0 auto; width: auto; min-width: 0; }
+        #backButtonIcon { height: 100%; width: auto; display: block; }
         .restart-svg {
             width: 24px;
             height: 24px;
@@ -1542,11 +1542,9 @@
             </div>
 
             <div class="control-row" id="action-buttons-row">
-                <div class="action-button-wrapper" id="back-button-wrapper">
                     <button id="backButton" aria-label="Volver">
                         <img id="backButtonIcon" src="https://i.imgur.com/1WrBpTQ.png" alt="Volver" style="width:24px;height:24px;" onerror="this.src='https://placehold.co/24x24/02030D/FFFFFF?text=Err';">
                     </button>
-                </div>
                 <div class="action-button-wrapper" id="start-button-wrapper">
                     <button id="startButton">Empezar</button>
                     <button id="restartMazeButton" class="hidden" aria-label="Reiniciar">
