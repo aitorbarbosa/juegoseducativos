@@ -3323,15 +3323,24 @@ function setupSlider(slider, display) {
         infoButton.addEventListener('click', openInfoPanel);
         closeInfoButton.addEventListener('click', closeInfoPanel);
 
+        function openResetConfirmPanel() {
+            if (panelOpenedFromSplash) resetConfirmPanel.classList.add('centered-panel');
+            else resetConfirmPanel.classList.remove('centered-panel');
+            togglePanel(settingsPanel, settingsPanel, false);
+            togglePanel(resetConfirmPanel, resetConfirmPanel, true);
+        }
+
+        function closeResetConfirmPanel() {
+            togglePanel(resetConfirmPanel, resetConfirmPanel, false);
+            resetConfirmPanel.classList.remove('centered-panel');
+        }
+
         if (resetDataButton) {
-            resetDataButton.addEventListener('click', () => {
-                togglePanel(settingsPanel, settingsPanel, false);
-                togglePanel(resetConfirmPanel, resetConfirmPanel, true);
-            });
+            resetDataButton.addEventListener('click', openResetConfirmPanel);
         }
         if (confirmResetNoButton) {
             confirmResetNoButton.addEventListener('click', () => {
-                togglePanel(resetConfirmPanel, resetConfirmPanel, false);
+                closeResetConfirmPanel();
                 togglePanel(settingsPanel, settingsPanel, true);
             });
         }
@@ -3403,11 +3412,15 @@ function setupSlider(slider, display) {
             Array.from(settingsPanel.querySelectorAll('select, input[type="range"], .setting-info-button')).forEach(el => el.disabled = true);
             Array.from(settingsPanel.querySelectorAll('.control-group.interactive-mode')).forEach(el => el.classList.remove("interactive-mode")); // Visually indicate disabled state
 
+            if (panelOpenedFromSplash) specificInfoPanel.classList.add('centered-panel');
+            else specificInfoPanel.classList.remove('centered-panel');
+
             togglePanel(specificInfoPanel, specificInfoContent, true);
         }
 
         function closeSpecificInfoPanel() {
             togglePanel(specificInfoPanel, specificInfoContent, false); // Hide specific info panel
+            specificInfoPanel.classList.remove('centered-panel');
 
             // Re-enable controls in the settings panel if it's still meant to be open
             if (!settingsPanel.classList.contains("settings-panel-hidden") && !gameIntervalId) {
