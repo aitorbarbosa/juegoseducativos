@@ -809,7 +809,7 @@
             padding: 25px;
             border-radius: 12px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.6);
-            z-index: 1001;
+            z-index: 2100;
             width: 100%;
             max-width: var(--game-max-width);
             display: flex;
@@ -830,7 +830,7 @@
         }
 
          #specific-info-panel {
-            z-index: 1002; 
+            z-index: 2101;
         }
         .settings-header, .info-header, .specific-info-header, .reset-header {
             display: flex;
@@ -1135,7 +1135,7 @@
         }
         #free-settings-panel #apply-free-settings-bottom:hover { background-color: #45a049; }
 
-        #reset-confirmation-panel { z-index: 1003; }
+        #reset-confirmation-panel { z-index: 2102; }
 
         .reset-panel-hidden { display: none !important; }
 
@@ -2248,6 +2248,7 @@ function setupSlider(slider, display) {
         let modeSelectIndex = 0;
         const MODE_SELECT_ORDER = ['intro', 'levels', 'freeMode', 'classification', 'maze'];
         let showModeSelect = false;
+        let panelOpenedFromSplash = false;
         let introOptionAvailable = true; // controls visibility of the intro slide
         const MODE_TRANSITION_DURATION = 300; // ms
         let modeTransitionStart = null;
@@ -2937,6 +2938,18 @@ function setupSlider(slider, display) {
 
         function openSettingsPanel() {
             togglePanel(settingsPanel, settingsPanel, true);
+            // Show or hide certain settings when accessed from the splash screen
+            gameModeControlGroup.classList.remove('hidden');
+            difficultyControlGroup.classList.remove('hidden');
+            skinControlGroup.classList.remove('hidden');
+            foodControlGroup.classList.remove('hidden');
+
+            if (panelOpenedFromSplash) {
+                gameModeControlGroup.classList.add('hidden');
+                difficultyControlGroup.classList.add('hidden');
+                skinControlGroup.classList.add('hidden');
+                foodControlGroup.classList.add('hidden');
+            }
             if (gameOver && !gameIntervalId) { // Game is over and not running
                 if (ctx && canvasEl) {
                     ctx.fillStyle = "#374151";
@@ -3014,6 +3027,11 @@ function setupSlider(slider, display) {
             setTimeout(() => { // Ensure buttons are updated after panel animation
                 updateMainButtonStates();
             }, 0);
+
+            if (panelOpenedFromSplash && splashScreen && !splashScreen.classList.contains('hidden')) {
+                if (gameContainer) gameContainer.classList.add('hidden');
+                panelOpenedFromSplash = false;
+            }
         }
 
         function openFreeSettingsPanel() {
@@ -3193,6 +3211,11 @@ function setupSlider(slider, display) {
             setTimeout(() => {
                 updateMainButtonStates();
             }, 0);
+
+            if (panelOpenedFromSplash && splashScreen && !splashScreen.classList.contains('hidden')) {
+                if (gameContainer) gameContainer.classList.add('hidden');
+                panelOpenedFromSplash = false;
+            }
         }
         
         configButton.addEventListener('click', () => {
@@ -7129,13 +7152,13 @@ async function startGame(isRestart = false) {
             }
 
             attachSplashButtonEvents(splashInfoButtonEl, () => {
-                if (splashScreen) splashScreen.classList.add('hidden');
+                panelOpenedFromSplash = true;
                 if (gameContainer) gameContainer.classList.remove('hidden');
                 openInfoPanel();
             });
 
             attachSplashButtonEvents(splashSettingsButtonEl, () => {
-                if (splashScreen) splashScreen.classList.add('hidden');
+                panelOpenedFromSplash = true;
                 if (gameContainer) gameContainer.classList.remove('hidden');
                 openSettingsPanel();
             });
