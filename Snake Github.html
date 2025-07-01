@@ -1950,6 +1950,7 @@ function setupSlider(slider, display) {
             10: new Image()
         };
         const freeModeCoverImg = new Image();
+        const freeModeEndImg = new Image();
         const classificationModeCoverImg = new Image();
         const classificationDifficultyImages = {
             principiante: new Image(),
@@ -2374,6 +2375,7 @@ function setupSlider(slider, display) {
             showDefeatCoverForWorld: 0,
             showTimeoutCover: false,
             showFreeModeCover: false,
+            showFreeModeEnd: false,
             showClassificationCover: false,
             showMazeCover: false,
             mazeResultType: '',
@@ -2644,6 +2646,7 @@ function setupSlider(slider, display) {
             });
 
             freeModeCoverImg.src = 'https://i.imgur.com/6cMWnrC.png';
+            freeModeEndImg.src = 'https://i.imgur.com/dWseJe2.png';
             classificationModeCoverImg.src = 'https://i.imgur.com/t5n37Mw.png';
             classificationDifficultyImages.principiante.src = 'https://i.imgur.com/z4SlhGV.png';
             classificationDifficultyImages.explorador.src = 'https://i.imgur.com/QCxdQQh.png';
@@ -2666,7 +2669,7 @@ function setupSlider(slider, display) {
                 ...Object.values(worldCompleteImages),
                 ...Object.values(levelCompleteImages),
                 ...Object.values(defeatImages),
-                freeModeCoverImg, classificationModeCoverImg,
+                freeModeCoverImg, freeModeEndImg, classificationModeCoverImg,
                 ...Object.values(classificationDifficultyImages),
                 mazeModeCoverImg, mazeLevelCoverImg,
                 mazeFailImg, mazePartialImg, mazePerfectImg,
@@ -2955,6 +2958,7 @@ function setupSlider(slider, display) {
                 const isLevelCompleteScreen = screenState.showLevelCompleteCover > 0 && !screenState.gameActuallyStarted;
                 const isDefeatScreen = screenState.showDefeatCoverForWorld > 0 && !screenState.gameActuallyStarted;
                 const isTimeoutScreen = screenState.showTimeoutCover && !screenState.gameActuallyStarted;
+                const isFreeModeEndScreen = screenState.showFreeModeEnd && !screenState.gameActuallyStarted;
                 const isFreeModeCoverActive = screenState.showFreeModeCover && !screenState.gameActuallyStarted;
                 const isClassificationCoverActive = screenState.showClassificationCover && !screenState.gameActuallyStarted;
                 const isMazeCoverActive = screenState.showMazeCover && !screenState.gameActuallyStarted;
@@ -2983,7 +2987,7 @@ function setupSlider(slider, display) {
                     // Text is set by handleLevelsModeEnd
                 } else if (isWorldCompleteScreen) {
                     // Text is set by handleLevelsModeEnd
-                } else if (isDefeatScreen || isTimeoutScreen) {
+                } else if (isDefeatScreen || isTimeoutScreen || isFreeModeEndScreen) {
                     startButton.textContent = "Reintentar";
                 } else if (isMazeResultScreen) {
                     // Text already set by handleMazeModeEnd
@@ -3001,7 +3005,7 @@ function setupSlider(slider, display) {
                     startButton.textContent = "Empezar";
                 }
                 
-                const isAnyCoverScreenActive = isWorldIntroCover || isWorldCompleteScreen || isLevelCompleteScreen || isDefeatScreen || isTimeoutScreen || isFreeModeCoverActive || isClassificationCoverActive || isMazeCoverActive || isMazeResultScreen || isModeSelectActive;
+                const isAnyCoverScreenActive = isWorldIntroCover || isWorldCompleteScreen || isLevelCompleteScreen || isDefeatScreen || isTimeoutScreen || isFreeModeEndScreen || isFreeModeCoverActive || isClassificationCoverActive || isMazeCoverActive || isMazeResultScreen || isModeSelectActive;
                 if (!isAnyCoverScreenActive && !gameOver) {
                      if (isMusicEnabled && generalBackgroundMusic && generalBackgroundMusic.paused) {
                         if (inGameBackgroundMusic && !inGameBackgroundMusic.paused) inGameBackgroundMusic.pause();
@@ -3129,9 +3133,11 @@ function setupSlider(slider, display) {
                     screenState.showDefeatCoverForWorld = 0;
                     screenState.showTimeoutCover = false;
                     screenState.showFreeModeCover = false;
+                    screenState.showFreeModeEnd = false;
                     screenState.showClassificationCover = false;
                 } else if (gameMode === 'freeMode') {
                     screenState.showFreeModeCover = true;
+                    screenState.showFreeModeEnd = false;
                     screenState.gameActuallyStarted = false;
                     snake = []; // Vaciar la serpiente para que updateTimeLengthDisplay use initialSnakeLength
                 } else if (gameMode === 'classification') {
@@ -3172,6 +3178,7 @@ function setupSlider(slider, display) {
                     updateTargetScoreDisplay(); // Ensure correct target is displayed
                 } else if (gameMode === 'freeMode') {
                     screenState.showFreeModeCover = true; // Ensure cover is shown when returning from settings
+                    screenState.showFreeModeEnd = false;
                     screenState.gameActuallyStarted = false;
                     // Score, streak and snake length (via snake=[]) reset when settings opened
                     updateScoreDisplay();
@@ -3327,14 +3334,16 @@ function setupSlider(slider, display) {
                     screenState.gameActuallyStarted = false;
                     screenState.showLevelCompleteCover = 0;
                     screenState.showWorldCompleteCover = 0;
-                    screenState.showDefeatCoverForWorld = 0;
-                    screenState.showTimeoutCover = false;
-                    screenState.showFreeModeCover = false;
-                    screenState.showClassificationCover = false;
-                } else if (gameMode === 'freeMode') {
-                    screenState.showFreeModeCover = true;
-                    screenState.gameActuallyStarted = false;
-                    snake = []; // Vaciar la serpiente
+                screenState.showDefeatCoverForWorld = 0;
+                screenState.showTimeoutCover = false;
+                screenState.showFreeModeCover = false;
+                screenState.showFreeModeEnd = false;
+                screenState.showClassificationCover = false;
+            } else if (gameMode === 'freeMode') {
+                screenState.showFreeModeCover = true;
+                screenState.showFreeModeEnd = false;
+                screenState.gameActuallyStarted = false;
+                snake = []; // Vaciar la serpiente
                 } else if (gameMode === 'classification') {
                     screenState.showClassificationCover = true;
                     screenState.gameActuallyStarted = false;
@@ -3356,11 +3365,13 @@ function setupSlider(slider, display) {
                     screenState.showWorldCompleteCover = 0;
                     screenState.showDefeatCoverForWorld = 0;
                     screenState.showFreeModeCover = false;
+                    screenState.showFreeModeEnd = false;
                     screenState.showClassificationCover = false;
                     updateScoreDisplay();
                     updateTargetScoreDisplay();
                 } else if (gameMode === "freeMode") {
                     screenState.showFreeModeCover = true;
+                    screenState.showFreeModeEnd = false;
                     screenState.gameActuallyStarted = false;
                     updateScoreDisplay();
                     updateTimeLengthDisplay();
@@ -3579,6 +3590,7 @@ function setupSlider(slider, display) {
                     screenState.showMazeCover = false;
                 } else if (gameMode === 'freeMode') {
                     screenState.showFreeModeCover = true;
+                    screenState.showFreeModeEnd = false;
                     screenState.showCoverForWorld = 0;
                     screenState.showClassificationCover = false;
                     screenState.showMazeCover = false;
@@ -4684,6 +4696,7 @@ function setupSlider(slider, display) {
                 screenState.showWorldCompleteCover = 0;
                 screenState.showDefeatCoverForWorld = 0;
                 screenState.showTimeoutCover = false;
+                screenState.showFreeModeEnd = false;
             } else if (gameMode === 'classification') {
                 screenState.showClassificationCover = false;
                 screenState.showCoverForWorld = 0;
@@ -4707,12 +4720,9 @@ function setupSlider(slider, display) {
             isNewHighScore = false; 
 
             if (gameMode === 'freeMode') {
-                const freeModeResult = handleFreeModeEnd(score, Math.floor(gameTimeElapsed / 1000), difficulty);
-                isNewHighScore = freeModeResult.isNewRecord;
-                levelEffectivelyWon = freeModeResult.isEffectivelyWon;
-                if (isNewHighScore) {
-                    blinkAnimation.rowIndex = freeModeResult.rowIndex;
-                }
+                screenState.showFreeModeEnd = true;
+                isNewHighScore = false;
+                levelEffectivelyWon = false;
             } else if (gameMode === 'classification') {
                 const classificationResult = handleClassificationModeEnd(score, Math.floor(gameTimeElapsed / 1000), difficulty);
                 isNewHighScore = classificationResult.isNewRecord;
@@ -4889,6 +4899,22 @@ function setupSlider(slider, display) {
                 } else if (img.naturalHeight === 0) {
                     console.warn(`Imagen de portada de Modo Libre parece estar corrupta o no es una imagen válida.`);
                 }
+            }
+        }
+
+        function drawFreeModeEndScreen() {
+            if (!ctx || !canvasEl) return;
+            ctx.fillStyle = "#374151";
+            ctx.fillRect(0, 0, canvasEl.width, canvasEl.height);
+
+            const img = freeModeEndImg;
+            if (img && img.complete && img.naturalHeight !== 0) {
+                ctx.drawImage(img, 0, 0, canvasEl.width, canvasEl.height);
+            } else {
+                ctx.fillStyle = 'white';
+                ctx.textAlign = 'center';
+                ctx.font = `${Math.floor(canvasEl.width / 15)}px 'Press Start 2P'`;
+                ctx.fillText('Fin de partida', canvasEl.width / 2, canvasEl.height / 2);
             }
         }
 
@@ -5196,6 +5222,11 @@ function setupSlider(slider, display) {
             }
             if (screenState.showTimeoutCover && !screenState.gameActuallyStarted) {
                 drawTimeoutScreen();
+                updateMainButtonStates();
+                return;
+            }
+            if (screenState.showFreeModeEnd && !screenState.gameActuallyStarted) {
+                drawFreeModeEndScreen();
                 updateMainButtonStates();
                 return;
             }
@@ -6139,6 +6170,7 @@ async function startGame(isRestart = false) {
             screenState.showTimeoutCover = false;
             screenState.showWorldCompleteCover = 0;
             screenState.showFreeModeCover = false;
+            screenState.showFreeModeEnd = false;
             screenState.showMazeCover = false;
             screenState.mazeResultType = '';
             restartMazeButton.classList.add('hidden');
@@ -6789,6 +6821,7 @@ async function startGame(isRestart = false) {
                 screenState.showTimeoutCover = false;
                 screenState.showWorldCompleteCover = 0;
                 screenState.showFreeModeCover = false;
+                screenState.showFreeModeEnd = false;
                 screenState.showClassificationCover = false;
                 screenState.showMazeCover = false;
             } else if (gameMode === 'freeMode') {
@@ -6800,6 +6833,7 @@ async function startGame(isRestart = false) {
                 screenState.showTimeoutCover = false;
                 screenState.showWorldCompleteCover = 0;
                 screenState.showFreeModeCover = true; // Show free mode cover
+                screenState.showFreeModeEnd = false;
                 screenState.showClassificationCover = false;
                 screenState.showMazeCover = false;
                 screenState.gameActuallyStarted = false;
@@ -6890,6 +6924,7 @@ async function startGame(isRestart = false) {
                     screenState.showCoverForWorld = currentWorld;
                 } else if (selectedMode === 'freeMode') {
                     screenState.showFreeModeCover = true;
+                    screenState.showFreeModeEnd = false;
                     openFreeSettingsPanel();
                 } else if (selectedMode === 'classification') {
                     screenState.showClassificationCover = true;
@@ -7414,6 +7449,7 @@ async function startGame(isRestart = false) {
             screenState.showDefeatCoverForWorld = 0;
             screenState.showTimeoutCover = false;
             screenState.showFreeModeCover = false;
+            screenState.showFreeModeEnd = false;
             screenState.showClassificationCover = false;
 
             // Set initial display state based on current gameMode
@@ -7422,6 +7458,7 @@ async function startGame(isRestart = false) {
                 screenState.showCoverForWorld = currentWorld; // currentWorld from loaded settings
             } else if (gameMode === 'freeMode') {
                 screenState.showFreeModeCover = true;
+                screenState.showFreeModeEnd = false;
                 // Ensure gameOver is false if free mode cover is shown before first game
                 if (snake.length === 0) gameOver = false;
             } else if (gameMode === 'classification') {
