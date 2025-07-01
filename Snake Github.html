@@ -7129,14 +7129,10 @@ async function startGame(isRestart = false) {
             }
 
             attachSplashButtonEvents(splashInfoButtonEl, () => {
-                if (splashScreen) splashScreen.classList.add('hidden');
-                if (gameContainer) gameContainer.classList.remove('hidden');
                 openInfoPanel();
             });
 
             attachSplashButtonEvents(splashSettingsButtonEl, () => {
-                if (splashScreen) splashScreen.classList.add('hidden');
-                if (gameContainer) gameContainer.classList.remove('hidden');
                 openSettingsPanel();
             });
 
