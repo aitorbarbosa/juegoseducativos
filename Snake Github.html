@@ -2346,6 +2346,8 @@ function setupSlider(slider, display) {
         let gameTimeRemaining;
         let gameTimeElapsed;
         let gameTimerIntervalId;
+        let lastMovementTime;
+        let inactivityIntervalId;
         let gameMode = ''; // No mode selected initially
         let isNewHighScore = false; // Flag for new high score
         
@@ -2488,6 +2490,7 @@ function setupSlider(slider, display) {
         const GAME_OVER_SOUND_DURATION = 800; // ms
         const COIN_MESSAGE_DISPLAY_TIME = 1000; // ms
         const MAX_HIGH_SCORES = 10;
+        const FREE_MODE_INACTIVITY_LIMIT = 30000; // ms without movement before game ends in free mode
         const FALSE_FOOD_LIFESPAN = 5000;
         const FALSE_FOOD_SPAWN_RANGES_WORLD4 = [
             [5000, 7000],
@@ -4429,6 +4432,8 @@ function setupSlider(slider, display) {
             clearTimeout(foodDisappearTimeoutId);
             clearInterval(foodVisualTimerIntervalId);
             clearInterval(gameTimerIntervalId);
+            clearInterval(inactivityIntervalId);
+            inactivityIntervalId = null;
             stopWorld4FalseFoodMechanics();
             stopWorld5Obstacles();
             stopWorld6Obstacles();
@@ -6425,11 +6430,23 @@ async function startGame(isRestart = false) {
             skinControlGroup.classList.remove("interactive-mode");
             foodControlGroup.classList.remove("interactive-mode");
             musicVolumeControlGroup.classList.remove("interactive-mode");
-            draw(); 
+            if (gameMode === 'freeMode') {
+                lastMovementTime = Date.now();
+                clearInterval(inactivityIntervalId);
+                inactivityIntervalId = setInterval(() => {
+                    if (gameMode === 'freeMode' && gameIntervalId && !gameOver && Date.now() - lastMovementTime >= FREE_MODE_INACTIVITY_LIMIT) {
+                        finalizeGameOver();
+                    }
+                }, 1000);
+            }
+            draw();
         }
 
         function changeDirection(newDirectionCmd) { // Renamed parameter for clarity
             if (gameOver) return;
+            if (gameMode === 'freeMode') {
+                lastMovementTime = Date.now();
+            }
             // Invert controls if mirror effect active
             if (controlsInverted) {
                 switch (newDirectionCmd) {
