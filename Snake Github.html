@@ -544,6 +544,24 @@
             margin-right: 4px;
         }
 
+        #earnedCoinsMessage {
+            position: absolute;
+            top: 50%;
+            left: 100%;
+            transform: translateX(10px) translateY(-50%);
+            color: #6ee7b7;
+            font-size: 0.7em;
+            white-space: nowrap;
+            opacity: 0;
+            transition: opacity 0.3s, transform 0.3s;
+            pointer-events: none;
+        }
+
+        #earnedCoinsMessage.show {
+            opacity: 1;
+            transform: translateX(0) translateY(-50%);
+        }
+
 
         #difficultySelector, #worldsSelector, #mazeLevelSelector, #audioToggleSelector, #skinSelector, #foodSelector, #gameModeSelector, #playerNameSelector {
             padding: 4px 6px;
@@ -1280,11 +1298,12 @@
         <div id="top-info-bar">
             <div class="info-group">
                 <span class="info-label">Monedas:</span>
-                <div class="flex items-center justify-center">
+                <div class="flex items-center justify-center relative">
                     <svg class="coin-icon" viewBox="0 0 24 24" fill="none">
                         <circle cx="12" cy="12" r="9" fill="#FCD34D" stroke="#D97706" stroke-width="2" />
                     </svg>
                     <span id="coinValue" class="info-value">0</span>
+                    <span id="earnedCoinsMessage" class="earned-coins-msg hidden">+0</span>
                 </div>
             </div>
             <div class="info-group">
@@ -1646,6 +1665,7 @@
         let ctx; 
         const gameContainer = document.querySelector('.game-container'); 
         const coinValueDisplay = document.getElementById("coinValue");
+        const earnedCoinsMessage = document.getElementById("earnedCoinsMessage");
         const scoreValueDisplay = document.getElementById("scoreValue");
         const targetScoreDivider = document.getElementById("target-score-divider");
         const targetScoreValueDisplay = document.getElementById("targetScoreValue");
@@ -2443,7 +2463,10 @@ function setupSlider(slider, display) {
         const FOOD_WARNING_TIME = 3000; 
         const POINTS_PER_FOOD = 10;
         const POINTS_PER_COIN = 10;
-        const MAX_HIGH_SCORES = 10; 
+        const WIN_SOUND_DURATION = 1300; // ms
+        const GAME_OVER_SOUND_DURATION = 800; // ms
+        const COIN_MESSAGE_DISPLAY_TIME = 1000; // ms
+        const MAX_HIGH_SCORES = 10;
         const FALSE_FOOD_LIFESPAN = 5000;
         const FALSE_FOOD_SPAWN_RANGES_WORLD4 = [
             [5000, 7000],
@@ -4687,20 +4710,25 @@ function setupSlider(slider, display) {
             gameOverByTimeout = false;
 
             playSoundForGameOver(levelEffectivelyWon);
-            draw(); 
+            draw();
             managePostGameOverMusicAndAnimation();
 
             const earnedCoins = Math.floor(score / POINTS_PER_COIN);
             const previousCoins = totalCoins;
-            totalCoins += earnedCoins;
-            animateCoinGain(previousCoins, totalCoins);
-            localStorage.setItem('snakeGameCoins', totalCoins.toString());
 
-            updateUIOnGameOver();
-
-            if (gameMode === 'levels' || gameMode === 'maze') {
-                saveGameSettings(); // Guardamos el estado actualizado (nivel/mundo avanzado)
-            }
+            const soundDelay = levelEffectivelyWon ? WIN_SOUND_DURATION : GAME_OVER_SOUND_DURATION;
+            setTimeout(() => {
+                showEarnedCoinsMessage(earnedCoins);
+                setTimeout(() => {
+                    totalCoins += earnedCoins;
+                    animateCoinGain(previousCoins, totalCoins);
+                    localStorage.setItem('snakeGameCoins', totalCoins.toString());
+                    updateUIOnGameOver();
+                    if (gameMode === 'levels' || gameMode === 'maze') {
+                        saveGameSettings();
+                    }
+                }, COIN_MESSAGE_DISPLAY_TIME);
+            }, soundDelay);
         }
         
         function drawSingleWorldCover(worldNumber) {
@@ -5690,6 +5718,18 @@ function setupSlider(slider, display) {
                 if (progress < 1) requestAnimationFrame(step);
             }
             requestAnimationFrame(step);
+        }
+
+        function showEarnedCoinsMessage(amount) {
+            if (!earnedCoinsMessage) return;
+            earnedCoinsMessage.textContent = `+${amount}`;
+            earnedCoinsMessage.classList.remove('hidden');
+            void earnedCoinsMessage.offsetWidth;
+            earnedCoinsMessage.classList.add('show');
+            setTimeout(() => {
+                earnedCoinsMessage.classList.remove('show');
+                setTimeout(() => earnedCoinsMessage.classList.add('hidden'), 300);
+            }, COIN_MESSAGE_DISPLAY_TIME);
         }
 
         function updateTargetScoreDisplay() {
