@@ -1305,12 +1305,12 @@
                         <label class="control-label">Desaparición comida</label>
                         <label class="switch"><input type="checkbox" id="free-lifespan-toggle" checked><span class="slider round"></span></label>
                     </div>
-                    <label class="control-label" for="free-lifespan-input">Tiempo en desaparecer (s): <span id="free-lifespan-value">7.5</span></label>
+                    <label class="control-label" for="free-lifespan-input">Tiempo(s): <span id="free-lifespan-value">7.5</span></label>
                     <input type="range" class="settings-range" id="free-lifespan-input" min="4" max="8" step="0.5" value="7.5">
                 </div>
                 <div class="control-group" id="streak-control-group">
                     <div class="control-label-icon-row">
-                        <label class="control-label">Racha (x1-x5)</label>
+                        <label class="control-label">Racha (x1 - x5)</label>
                         <label class="switch"><input type="checkbox" id="free-streak-toggle" checked><span class="slider round"></span></label>
                     </div>
                 </div>
@@ -1321,7 +1321,7 @@
                     </div>
                     <label class="control-label" for="free-golden-chance-input">Probabilidad: <span id="free-golden-chance-value">10</span>%</label>
                     <input type="range" class="settings-range" id="free-golden-chance-input" min="5" max="100" step="5" value="10">
-                    <label class="control-label" for="free-golden-lifespan-input">Duración (s): <span id="free-golden-lifespan-value">4</span></label>
+                    <label class="control-label" for="free-golden-lifespan-input">Duración(s): <span id="free-golden-lifespan-value">4</span></label>
                     <input type="range" class="settings-range" id="free-golden-lifespan-input" min="4" max="8" step="0.5" value="4">
                 </div>
                 <div class="control-group">
@@ -1329,12 +1329,12 @@
                         <label class="control-label">Rayos</label>
                         <label class="switch"><input type="checkbox" id="free-lightning-toggle" checked><span class="slider round"></span></label>
                     </div>
-                    <label class="control-label" for="free-lightning-range">Intervalo (s): <span id="free-lightning-range-display">4 - 8</span></label>
+                    <label class="control-label" for="free-lightning-range">Intervalo(s): <span id="free-lightning-range-display">4 - 8</span></label>
                     <input type="range" class="settings-range" id="free-lightning-range" min="0" max="16" step="0.5" value="4">
-                    <label class="control-label" for="free-lightning-lifespan">Duración del rayo (s): <span id="free-lightning-lifespan-value">5</span></label>
+                    <label class="control-label" for="free-lightning-lifespan">Duración(s): <span id="free-lightning-lifespan-value">5</span></label>
                     <input type="range" class="settings-range" id="free-lightning-lifespan" min="4" max="10" step="0.5" value="5">
-                    <label class="control-label" for="free-yellow-chance">Probabilidad rayo amarillo: <span id="free-yellow-chance-value">75</span>%</label>
-                    <input type="range" class="settings-range" id="free-yellow-chance" min="0" max="100" step="5" value="75">
+                    <label class="control-label" for="free-red-chance">Probabilidad Súper Rayo: <span id="free-red-chance-value">25</span>%</label>
+                    <input type="range" class="settings-range" id="free-red-chance" min="0" max="100" step="5" value="25">
                 </div>
                 <div class="control-group">
                     <div class="control-label-icon-row">
@@ -1343,7 +1343,7 @@
                     </div>
                     <label class="control-label" for="free-false-range">Intervalo (s): <span id="free-false-range-display">4 - 8</span></label>
                     <input type="range" class="settings-range" id="free-false-range" min="0" max="16" step="0.5" value="4">
-                    <label class="control-label" for="free-false-lifespan">Duración comida falsa (s): <span id="free-false-lifespan-value">5</span></label>
+                    <label class="control-label" for="free-false-lifespan">Duración(s): <span id="free-false-lifespan-value">5</span></label>
                     <input type="range" class="settings-range" id="free-false-lifespan" min="4" max="10" step="0.5" value="5">
                 </div>
                 <div class="control-group">
@@ -1351,11 +1351,11 @@
                         <label class="control-label">Espejos</label>
                         <label class="switch"><input type="checkbox" id="free-mirror-toggle" checked><span class="slider round"></span></label>
                     </div>
-                    <label class="control-label" for="free-mirror-range">Intervalo (s): <span id="free-mirror-range-display">4 - 8</span></label>
+                    <label class="control-label" for="free-mirror-range">Intervalo(s): <span id="free-mirror-range-display">4 - 8</span></label>
                     <input type="range" class="settings-range" id="free-mirror-range" min="0" max="16" step="0.5" value="4">
-                    <label class="control-label" for="free-mirror-lifespan">Duración del espejo (s): <span id="free-mirror-lifespan-value">5</span></label>
+                    <label class="control-label" for="free-mirror-lifespan">Duración(s): <span id="free-mirror-lifespan-value">5</span></label>
                     <input type="range" class="settings-range" id="free-mirror-lifespan" min="4" max="10" step="0.5" value="5">
-                    <label class="control-label" for="free-mirror-effect">Duración efecto espejo (s): <span id="free-mirror-effect-value">3</span></label>
+                    <label class="control-label" for="free-mirror-effect">Duración efecto(s): <span id="free-mirror-effect-value">3</span></label>
                     <input type="range" class="settings-range" id="free-mirror-effect" min="3" max="10" step="0.5" value="3">
                 </div>
                 <div class="control-group">
@@ -1589,8 +1589,8 @@
         const freeLightningRangeDisplay = document.getElementById("free-lightning-range-display");
         const freeLightningLifespan = document.getElementById("free-lightning-lifespan");
         const freeLightningLifespanValue = document.getElementById("free-lightning-lifespan-value");
-        const freeYellowChance = document.getElementById("free-yellow-chance");
-        const freeYellowChanceValue = document.getElementById("free-yellow-chance-value");
+        const freeRedChance = document.getElementById("free-red-chance");
+        const freeRedChanceValue = document.getElementById("free-red-chance-value");
         const freeLightningToggle = document.getElementById("free-lightning-toggle");
         const freeStreakToggle = document.getElementById("free-streak-toggle");
         const freeFalseRange = document.getElementById("free-false-range");
@@ -1641,7 +1641,7 @@ function setupSlider(slider, display) {
         setupSlider(freeGoldenLifespanInput, freeGoldenLifespanValue);
         setupRangeSlider(freeLightningRange, freeLightningRangeDisplay);
         setupSlider(freeLightningLifespan, freeLightningLifespanValue);
-        setupSlider(freeYellowChance, freeYellowChanceValue);
+        setupSlider(freeRedChance, freeRedChanceValue);
         setupRangeSlider(freeFalseRange, freeFalseRangeDisplay);
         setupSlider(freeFalseLifespan, freeFalseLifespanValue);
         setupRangeSlider(freeMirrorRange, freeMirrorRangeDisplay);
@@ -1650,7 +1650,7 @@ function setupSlider(slider, display) {
 
         setupToggle(freeLifespanToggle, freeLifespanInput);
         setupToggle(freeGoldenToggle, [freeGoldenChanceInput, freeGoldenLifespanInput]);
-        setupToggle(freeLightningToggle, [freeLightningRange, freeLightningLifespan, freeYellowChance]);
+        setupToggle(freeLightningToggle, [freeLightningRange, freeLightningLifespan, freeRedChance]);
         setupToggle(freeStreakToggle);
         setupToggle(freeFalseToggle, [freeFalseRange, freeFalseLifespan]);
         setupToggle(freeMirrorToggle, [freeMirrorRange, freeMirrorLifespan, freeMirrorEffect]);
@@ -2205,7 +2205,7 @@ function setupSlider(slider, display) {
             goldenFoodLifespan: 4000,
             lightningSpawnRange: [4000, 8000],
             lightningLifespan: 5000,
-            yellowLightningChance: 0.75,
+            redLightningChance: 0.25,
             streakReduction: 800,
             falseFoodSpawnRange: [4000, 8000],
             falseFoodLifespan: 5000,
@@ -2233,7 +2233,7 @@ function setupSlider(slider, display) {
                 goldenFoodLifespan: 3500,
                 lightningSpawnRange: [6000, 10000],
                 lightningLifespan: 5000,
-                yellowLightningChance: 0.75,
+                redLightningChance: 0.25,
                 streakReduction: 800
             },
             veterano:     {
@@ -2244,7 +2244,7 @@ function setupSlider(slider, display) {
                 goldenFoodLifespan: 4000,
                 lightningSpawnRange: [6000, 10000],
                 lightningLifespan: 5000,
-                yellowLightningChance: 0.75,
+                redLightningChance: 0.25,
                 streakReduction: 800,
                 falseFoodSpawnRange: [6000, 10000],
                 falseFoodLifespan: 5000,
@@ -2261,7 +2261,7 @@ function setupSlider(slider, display) {
                 goldenFoodLifespan: 4000,
                 lightningSpawnRange: [6000, 10000],
                 lightningLifespan: 5000,
-                yellowLightningChance: 0.75,
+                redLightningChance: 0.25,
                 streakReduction: 800,
                 falseFoodSpawnRange: [5000, 7000],
                 falseFoodLifespan: 6000,
@@ -2989,9 +2989,9 @@ function setupSlider(slider, display) {
             freeLightningLifespan.value = freeModeSettings.lightningLifespan / 1000;
             if (freeLightningLifespanValue) freeLightningLifespanValue.textContent = freeLightningLifespan.value;
             freeLightningLifespan.disabled = !freeLightningToggle.checked;
-            freeYellowChance.value = freeModeSettings.yellowLightningChance * 100;
-            if (freeYellowChanceValue) freeYellowChanceValue.textContent = freeYellowChance.value;
-            freeYellowChance.disabled = !freeLightningToggle.checked;
+            freeRedChance.value = freeModeSettings.redLightningChance * 100;
+            if (freeRedChanceValue) freeRedChanceValue.textContent = freeRedChance.value;
+            freeRedChance.disabled = !freeLightningToggle.checked;
 
             freeStreakToggle.checked = freeModeSettings.streakReduction > 0;
 
@@ -3037,7 +3037,7 @@ function setupSlider(slider, display) {
                 goldenFoodLifespan: parseFloat(freeGoldenLifespanInput.value) * 1000,
                 lightningSpawnRange: freeLightningToggle.checked ? [parseFloat(freeLightningRange.value) * 1000, (parseFloat(freeLightningRange.value) + 4) * 1000] : null,
                 lightningLifespan: parseFloat(freeLightningLifespan.value) * 1000,
-                yellowLightningChance: parseFloat(freeYellowChance.value) / 100,
+                redLightningChance: parseFloat(freeRedChance.value) / 100,
                 streakReduction: freeStreakToggle.checked ? FREE_MODE_DEFAULTS.streakReduction : 0,
                 falseFoodSpawnRange: freeFalseToggle.checked ? [parseFloat(freeFalseRange.value) * 1000, (parseFloat(freeFalseRange.value) + 4) * 1000] : null,
                 falseFoodLifespan: parseFloat(freeFalseLifespan.value) * 1000,
@@ -3786,14 +3786,14 @@ function setupSlider(slider, display) {
                     lightningItems.some(l => l.x === pos.x && l.y === pos.y) ||
                     isAdjacentToAnyFood(pos)) && attempts < 100);
             if (attempts >= 100) return;
-            let yellowChance = 0.75;
+            let redChance = 0.25;
             if (gameMode === 'classification' || gameMode === 'freeMode') {
                 const cfg = (gameMode === 'classification') ? (DIFFICULTY_SETTINGS[difficultySelector.value] || {}) : freeModeSettings;
-                if (typeof cfg.yellowLightningChance === 'number') {
-                    yellowChance = cfg.yellowLightningChance;
+                if (typeof cfg.redLightningChance === 'number') {
+                    redChance = cfg.redLightningChance;
                 }
             }
-            const color = Math.random() < yellowChance ? 'yellow' : 'red';
+            const color = Math.random() < redChance ? 'red' : 'yellow';
             let lifespan = LIGHTNING_LIFESPAN;
             if (gameMode === 'classification' || gameMode === 'freeMode') {
                 const cfg = (gameMode === 'classification') ? (DIFFICULTY_SETTINGS[difficultySelector.value] || {}) : freeModeSettings;
