@@ -756,7 +756,7 @@
             min-width: auto; 
             display: flex; 
         }
-        #info-button-wrapper {
+        #back-button-wrapper {
             flex-grow: 1;
         }
         #start-button-wrapper {
@@ -771,7 +771,7 @@
         }
 
 
-        #startButton, #restartMazeButton, #configButton, #infoButton {
+        #startButton, #restartMazeButton, #configButton, #backButton {
             padding: 10px 15px;
             font-size: 0.85em;
             color: #f5f5f5;
@@ -794,15 +794,15 @@
             background-color: #4CAF50;
             min-width: 65px;
         }
-        #configButton, #infoButton {
+        #configButton, #backButton {
             background-color: #384152;
             min-width: 65px;
         }
 
         #startButton:hover, #restartMazeButton:hover { background-color: #45a049; }
-        #configButton:hover, #infoButton:hover { background-color: #4a5568; }
+        #configButton:hover, #backButton:hover { background-color: #4a5568; }
 
-        #startButton:disabled, #restartMazeButton:disabled, #configButton:disabled, #infoButton:disabled {
+        #startButton:disabled, #restartMazeButton:disabled, #configButton:disabled, #backButton:disabled {
             background-color: #94a3b8;
             cursor: not-allowed;
         }
@@ -1003,11 +1003,11 @@
             }
             .arrow-svg { width: 55%; height: 55%; } 
             
-             #startButton, #restartMazeButton, #configButton, #infoButton {
+             #startButton, #restartMazeButton, #configButton, #backButton {
                  font-size: 0.75em;
                  height: 55px;
             }
-            #restartMazeButton, #configButton, #infoButton {
+            #restartMazeButton, #configButton, #backButton {
                 min-width: 55px;
             }
 
@@ -1091,11 +1091,11 @@
             }
             .arrow-svg { width: 50%; height: 50%; }
 
-             #startButton, #restartMazeButton, #configButton, #infoButton {
+             #startButton, #restartMazeButton, #configButton, #backButton {
                  font-size: 0.7em;
                  height: 50px;
             }
-            #restartMazeButton, #configButton, #infoButton {
+            #restartMazeButton, #configButton, #backButton {
                 min-width: 50px;
             }
             .config-svg, .info-svg {  
@@ -1542,11 +1542,9 @@
             </div>
 
             <div class="control-row" id="action-buttons-row">
-                <div class="action-button-wrapper" id="info-button-wrapper">
-                    <button id="infoButton" aria-label="Información">
-                        <svg class="info-svg" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 15c-.55 0-1-.45-1-1v-4c0-.55.45-1 1-1s1 .45 1 1v4c0 .55-.45 1-1 1zm1-8h-2V7h2v2z"/>
-                        </svg>
+                <div class="action-button-wrapper" id="back-button-wrapper">
+                    <button id="backButton" aria-label="Volver">
+                        <img id="backButtonIcon" src="https://i.imgur.com/1WrBpTQ.png" alt="Volver" style="width:24px;height:24px;" onerror="this.src='https://placehold.co/24x24/02030D/FFFFFF?text=Err';">
                     </button>
                 </div>
                 <div class="action-button-wrapper" id="start-button-wrapper">
@@ -1691,9 +1689,10 @@
         const applyFreeSettingsButton = document.getElementById("apply-free-settings");
         const applyFreeSettingsBottomButton = document.getElementById("apply-free-settings-bottom");
 
-        const infoButton = document.getElementById("infoButton");
+        const backButton = document.getElementById("backButton");
+        const backButtonIcon = document.getElementById("backButtonIcon");
         const infoPanel = document.getElementById("info-panel");
-        const infoPanelContent = document.getElementById("info-panel-content"); 
+        const infoPanelContent = document.getElementById("info-panel-content");
         const closeInfoButton = document.getElementById("close-info-button");
         const topInfoBar = document.getElementById('top-info-bar');
         const setupControls = document.getElementById('setup-controls');
@@ -2877,7 +2876,8 @@ function setupSlider(slider, display) {
                 startButton.disabled = true;
                 restartMazeButton.disabled = true;
                 configButton.disabled = true;
-                infoButton.disabled = true;
+                backButton.disabled = true;
+                backButtonIcon.src = showModeSelect ? 'https://i.imgur.com/1WrBpTQ.png' : 'https://i.imgur.com/Wvl87cV.png';
                 return;
             }
 
@@ -2885,7 +2885,8 @@ function setupSlider(slider, display) {
                 startButton.disabled = true;
                 restartMazeButton.disabled = true;
                 configButton.disabled = true;
-                infoButton.disabled = true;
+                backButton.disabled = true;
+                backButtonIcon.src = showModeSelect ? 'https://i.imgur.com/1WrBpTQ.png' : 'https://i.imgur.com/Wvl87cV.png';
             } else {
                 const isWorldIntroCover = screenState.showCoverForWorld > 0 && !screenState.gameActuallyStarted;
                 const isWorldCompleteScreen = screenState.showWorldCompleteCover > 0;
@@ -2904,7 +2905,13 @@ function setupSlider(slider, display) {
                 startButton.disabled = isModeSelectIntro || isSelectedWorldLocked || isSelectedMazeLocked;
                 restartMazeButton.disabled = restartMazeButton.classList.contains('hidden');
                 configButton.disabled = false;
-                infoButton.disabled = false;
+                backButton.disabled = false;
+
+                if (isModeSelectActive) {
+                    backButtonIcon.src = 'https://i.imgur.com/1WrBpTQ.png';
+                } else {
+                    backButtonIcon.src = 'https://i.imgur.com/Wvl87cV.png';
+                }
 
                 if (isModeSelectActive) {
                     startButton.textContent = "Seleccionar";
@@ -2988,7 +2995,7 @@ function setupSlider(slider, display) {
                 
                 startButton.disabled = true;
                 configButton.disabled = true;
-                infoButton.disabled = true;
+                backButton.disabled = true;
 
                 if (panelElement === settingsPanel && !gameIntervalId) {
                     gameModeSelector.disabled = false;
@@ -3321,7 +3328,7 @@ function setupSlider(slider, display) {
         if (applyFreeSettingsBottomButton) applyFreeSettingsBottomButton.addEventListener('click', applyFreeSettings);
         closeFreeSettingsButton.addEventListener('click', closeFreeSettingsPanel);
         closeSettingsButton.addEventListener('click', closeSettingsPanel);
-        infoButton.addEventListener('click', openInfoPanel);
+        backButton.addEventListener('click', handleBackButtonClick);
         closeInfoButton.addEventListener('click', closeInfoPanel);
 
         function openResetConfirmPanel() {
@@ -3456,7 +3463,7 @@ function setupSlider(slider, display) {
                 // Ensure main action buttons reflect that settings panel is still the context
                 startButton.disabled = true;
                 configButton.disabled = true;
-                infoButton.disabled = true;
+                backButton.disabled = true;
             } else {
                 // If settings panel was not open, or game is running, update main buttons normally
                 updateMainButtonStates();
@@ -4589,7 +4596,7 @@ function setupSlider(slider, display) {
         // --- Fin de Funciones de Refactorización ---
 
         function finalizeGameOver() {
-            if (gameOver && startButton.disabled === false && configButton.disabled === false && infoButton.disabled === false && gameIntervalId === null) return;
+            if (gameOver && startButton.disabled === false && configButton.disabled === false && backButton.disabled === false && gameIntervalId === null) return;
 
             gameOver = true;
             screenState.gameActuallyStarted = false; // Game is no longer "actually started"
@@ -6791,6 +6798,40 @@ async function startGame(isRestart = false) {
             } else {
                 startGame(false);
             }
+        }
+
+        function handleBackButtonClick() {
+            if (showModeSelect) {
+                // Return to splash screen
+                showModeSelect = false;
+                introOptionAvailable = true;
+                modeTransitionStart = null;
+                gameMode = '';
+                gameModeSelector.value = '';
+                if (gameContainer) gameContainer.classList.add('hidden');
+                if (splashScreen) splashScreen.classList.remove('hidden');
+            } else {
+                // Return to mode selection
+                showModeSelect = true;
+                modeTransitionStart = null;
+                introOptionAvailable = false;
+                modeSelectIndex = MODE_SELECT_ORDER.indexOf(gameMode) >= 0 ? MODE_SELECT_ORDER.indexOf(gameMode) : 0;
+                gameMode = '';
+                gameModeSelector.value = '';
+                screenState.showCoverForWorld = 0;
+                screenState.showLevelCompleteCover = 0;
+                screenState.showWorldCompleteCover = 0;
+                screenState.showDefeatCoverForWorld = 0;
+                screenState.showTimeoutCover = false;
+                screenState.showFreeModeCover = false;
+                screenState.showClassificationCover = false;
+                screenState.showMazeCover = false;
+                screenState.mazeResultType = '';
+                screenState.gameActuallyStarted = false;
+                draw();
+            }
+            updateGameModeUI();
+            updateMainButtonStates();
         }
 
         function displayClassificationHighScoreInPanel() {
