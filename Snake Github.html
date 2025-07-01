@@ -756,9 +756,6 @@
             min-width: auto; 
             display: flex; 
         }
-        #back-button-wrapper {
-            flex-grow: 1;
-        }
         #start-button-wrapper {
             flex-grow: 3;
             display: flex;
@@ -768,6 +765,15 @@
         #start-button-wrapper.split #restartMazeButton { flex-grow: 1; }
         #config-button-wrapper {
             flex-grow: 1;
+        }
+        #backButton {
+            flex-grow: 1;
+            padding: 0;
+            width: auto;
+        }
+        #backButtonIcon {
+            height: 100%;
+            width: auto;
         }
 
 
@@ -1010,6 +1016,15 @@
             #restartMazeButton, #configButton, #backButton {
                 min-width: 55px;
             }
+            #backButton {
+                padding: 0;
+                width: auto;
+                flex-grow: 1;
+            }
+            #backButtonIcon {
+                height: 100%;
+                width: auto;
+            }
 
             #settings-panel, #info-panel, #specific-info-panel, #free-settings-panel {
                 width: calc(100% - 20px);
@@ -1098,7 +1113,16 @@
             #restartMazeButton, #configButton, #backButton {
                 min-width: 50px;
             }
-            .config-svg, .info-svg {  
+            #backButton {
+                padding: 0;
+                width: auto;
+                flex-grow: 1;
+            }
+            #backButtonIcon {
+                height: 100%;
+                width: auto;
+            }
+            .config-svg, .info-svg {
                 width: 20px;
                 height: 20px;
             }
@@ -1542,11 +1566,9 @@
             </div>
 
             <div class="control-row" id="action-buttons-row">
-                <div class="action-button-wrapper" id="back-button-wrapper">
-                    <button id="backButton" aria-label="Volver">
-                        <img id="backButtonIcon" src="https://i.imgur.com/1WrBpTQ.png" alt="Volver" style="width:24px;height:24px;" onerror="this.src='https://placehold.co/24x24/02030D/FFFFFF?text=Err';">
-                    </button>
-                </div>
+                <button id="backButton" aria-label="Volver">
+                    <img id="backButtonIcon" src="https://i.imgur.com/1WrBpTQ.png" alt="Volver" onerror="this.src='https://placehold.co/24x24/02030D/FFFFFF?text=Err';">
+                </button>
                 <div class="action-button-wrapper" id="start-button-wrapper">
                     <button id="startButton">Empezar</button>
                     <button id="restartMazeButton" class="hidden" aria-label="Reiniciar">
