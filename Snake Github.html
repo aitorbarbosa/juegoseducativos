@@ -4766,7 +4766,13 @@ function setupSlider(slider, display) {
             draw();
             managePostGameOverMusicAndAnimation();
 
-            const earnedCoins = Math.floor(score / POINTS_PER_COIN);
+            let earnedCoins;
+            if (gameMode === 'freeMode') {
+                // In free mode coins are earned based on time played
+                earnedCoins = Math.floor(gameTimeElapsed / 1000);
+            } else {
+                earnedCoins = Math.floor(score / POINTS_PER_COIN);
+            }
             const previousCoins = totalCoins;
 
             const soundDelay = levelEffectivelyWon ? WIN_SOUND_DURATION : GAME_OVER_SOUND_DURATION;
