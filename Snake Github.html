@@ -537,7 +537,7 @@
         }
 
 
-        #difficultySelector, #worldsSelector, #mazeLevelSelector, #audioToggleSelector, #skinSelector, #foodSelector, #gameModeSelector {
+        #difficultySelector, #worldsSelector, #mazeLevelSelector, #audioToggleSelector, #skinSelector, #foodSelector, #gameModeSelector, #playerNameSelector {
             padding: 4px 6px;
             width: calc(100% - 50px);
             font-size: 0.75em;
@@ -556,14 +556,14 @@
             margin-bottom: 0;
         }
         
-        #difficultySelector option, #worldsSelector option, #mazeLevelSelector option, #audioToggleSelector option, #skinSelector option, #foodSelector option, #gameModeSelector option {
+        #difficultySelector option, #worldsSelector option, #mazeLevelSelector option, #audioToggleSelector option, #skinSelector option, #foodSelector option, #gameModeSelector option, #playerNameSelector option {
             background-color: #374151;
             color: #f5f5f5;
             font-family: 'Press Start 2P', sans-serif;
             text-align: left; 
         }
         
-        #difficultySelector, #worldsSelector, #mazeLevelSelector, #audioToggleSelector, #skinSelector, #foodSelector, #gameModeSelector {
+        #difficultySelector, #worldsSelector, #mazeLevelSelector, #audioToggleSelector, #skinSelector, #foodSelector, #gameModeSelector, #playerNameSelector {
             text-align-last: left;
         }
         select option {
@@ -571,11 +571,11 @@
         }
 
 
-        #difficultySelector:focus, #worldsSelector:focus, #mazeLevelSelector:focus, #audioToggleSelector:focus, #skinSelector:focus, #foodSelector:focus, #gameModeSelector:focus {
+        #difficultySelector:focus, #worldsSelector:focus, #mazeLevelSelector:focus, #audioToggleSelector:focus, #skinSelector:focus, #foodSelector:focus, #gameModeSelector:focus, #playerNameSelector:focus {
             outline: 1px solid #6ee7b7; 
             box-shadow: none; 
         }
-        #difficultySelector:disabled, #worldsSelector:disabled, #mazeLevelSelector:disabled, #audioToggleSelector:disabled, #skinSelector:disabled, #foodSelector:disabled, #gameModeSelector:disabled, #musicVolumeSlider:disabled {
+        #difficultySelector:disabled, #worldsSelector:disabled, #mazeLevelSelector:disabled, #audioToggleSelector:disabled, #skinSelector:disabled, #foodSelector:disabled, #gameModeSelector:disabled, #playerNameSelector:disabled, #musicVolumeSlider:disabled {
             opacity: 0.7;
             cursor: not-allowed;
         }
@@ -809,7 +809,7 @@
             padding: 25px;
             border-radius: 12px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.6);
-            z-index: 1001;
+            z-index: 2100;
             width: 100%;
             max-width: var(--game-max-width);
             display: flex;
@@ -819,6 +819,14 @@
             overflow-y: auto;
             opacity: 0;
             transition: opacity 0.3s ease-out, transform 0.3s ease-out;
+        }
+
+        .centered-panel {
+            top: 50%;
+            transform: translate(-50%, -50%) scale(0.95);
+        }
+        .centered-panel.panel-visible {
+            transform: translate(-50%, -50%) scale(1);
         }
         #settings-panel.panel-visible,
         #info-panel.panel-visible,
@@ -830,7 +838,7 @@
         }
 
          #specific-info-panel {
-            z-index: 1002; 
+            z-index: 2101;
         }
         .settings-header, .info-header, .specific-info-header, .reset-header {
             display: flex;
@@ -993,6 +1001,7 @@
              #settings-panel #skinSelector,
              #settings-panel #foodSelector,
              #settings-panel #gameModeSelector,
+             #settings-panel #playerNameSelector,
              #settings-panel #musicVolumeSlider {
                 font-size: 0.65em;
                 margin-top: 2px;
@@ -1135,7 +1144,7 @@
         }
         #free-settings-panel #apply-free-settings-bottom:hover { background-color: #45a049; }
 
-        #reset-confirmation-panel { z-index: 1003; }
+        #reset-confirmation-panel { z-index: 2102; }
 
         .reset-panel-hidden { display: none !important; }
 
@@ -1253,6 +1262,20 @@
                 <div class="settings-header">
                     <h2>Configuración</h2>
                     <button id="close-settings-button" aria-label="Cerrar configuración">&times;</button>
+                </div>
+                <div id="player-name-control-group" class="control-group hidden">
+                    <div class="control-label-icon-row">
+                        <label class="control-label" for="playerNameSelector">Jugador:</label>
+                        <button id="add-player-name-button" class="setting-info-button" aria-label="Añadir nuevo nombre">
+                            <svg class="setting-info-icon" viewBox="0 0 20 20" fill="currentColor">
+                                <path stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M10 5v10M5 10h10" />
+                            </svg>
+                        </button>
+                    </div>
+                    <select id="playerNameSelector">
+                        <option value="Snake" selected>Snake</option>
+                        <option value="GamiSnake">GamiSnake</option>
+                    </select>
                 </div>
                 <div class="control-group" id="game-mode-control-group">
                     <div class="control-label-icon-row">
@@ -1581,6 +1604,9 @@
         const skinSelector = document.getElementById("skinSelector");
         const foodSelector = document.getElementById("foodSelector");
         const gameModeSelector = document.getElementById("gameModeSelector");
+        const playerNameSelector = document.getElementById("playerNameSelector");
+        const addPlayerNameButton = document.getElementById("add-player-name-button");
+        const playerNameControlGroup = document.getElementById("player-name-control-group");
         const difficultyControlGroup = document.getElementById("difficulty-control-group");
         const audioControlGroup = document.getElementById("audio-control-group");
         const skinControlGroup = document.getElementById("skin-control-group");
@@ -2185,6 +2211,8 @@ function setupSlider(slider, display) {
             }
         };
         let currentSkin = 'snake';
+        let playerNames = ['Snake', 'GamiSnake'];
+        let currentPlayerName = 'Snake';
         // --- Fin Configuración de Jugadores ---
 
         // --- Configuración de Comestibles ---
@@ -2248,6 +2276,7 @@ function setupSlider(slider, display) {
         let modeSelectIndex = 0;
         const MODE_SELECT_ORDER = ['intro', 'levels', 'freeMode', 'classification', 'maze'];
         let showModeSelect = false;
+        let panelOpenedFromSplash = false;
         let introOptionAvailable = true; // controls visibility of the intro slide
         const MODE_TRANSITION_DURATION = 300; // ms
         let modeTransitionStart = null;
@@ -2738,6 +2767,12 @@ function setupSlider(slider, display) {
         }
 
         function positionPanel(panelElement) {
+            if (panelOpenedFromSplash) {
+                panelElement.style.top = '50%';
+                panelElement.style.bottom = 'auto';
+                panelElement.style.height = 'auto';
+                return;
+            }
             let topReferenceElement = progressPanel;
             if (progressPanel.classList.contains('hidden') || !progressPanel.offsetParent) {
                 if (!titlePanel.classList.contains('hidden') && titlePanel.offsetParent) {
@@ -2936,7 +2971,23 @@ function setupSlider(slider, display) {
 
 
         function openSettingsPanel() {
+            if (panelOpenedFromSplash) settingsPanel.classList.add('centered-panel');
+            else settingsPanel.classList.remove('centered-panel');
             togglePanel(settingsPanel, settingsPanel, true);
+            // Show or hide certain settings when accessed from the splash screen
+            gameModeControlGroup.classList.remove('hidden');
+            difficultyControlGroup.classList.remove('hidden');
+            skinControlGroup.classList.remove('hidden');
+            foodControlGroup.classList.remove('hidden');
+            playerNameControlGroup.classList.add('hidden');
+
+            if (panelOpenedFromSplash) {
+                playerNameControlGroup.classList.remove('hidden');
+                gameModeControlGroup.classList.add('hidden');
+                difficultyControlGroup.classList.add('hidden');
+                skinControlGroup.classList.add('hidden');
+                foodControlGroup.classList.add('hidden');
+            }
             if (gameOver && !gameIntervalId) { // Game is over and not running
                 if (ctx && canvasEl) {
                     ctx.fillStyle = "#374151";
@@ -3014,6 +3065,12 @@ function setupSlider(slider, display) {
             setTimeout(() => { // Ensure buttons are updated after panel animation
                 updateMainButtonStates();
             }, 0);
+            settingsPanel.classList.remove('centered-panel');
+
+            if (panelOpenedFromSplash && splashScreen && !splashScreen.classList.contains('hidden')) {
+                if (gameContainer) gameContainer.classList.add('hidden');
+                panelOpenedFromSplash = false;
+            }
         }
 
         function openFreeSettingsPanel() {
@@ -3130,6 +3187,8 @@ function setupSlider(slider, display) {
         }
 
         function openInfoPanel() {
+            if (panelOpenedFromSplash) infoPanel.classList.add('centered-panel');
+            else infoPanel.classList.remove('centered-panel');
             togglePanel(infoPanel, infoPanelContent, true);
             if (gameOver && !gameIntervalId) {
                 if (ctx && canvasEl) {
@@ -3193,6 +3252,12 @@ function setupSlider(slider, display) {
             setTimeout(() => {
                 updateMainButtonStates();
             }, 0);
+            infoPanel.classList.remove('centered-panel');
+
+            if (panelOpenedFromSplash && splashScreen && !splashScreen.classList.contains('hidden')) {
+                if (gameContainer) gameContainer.classList.add('hidden');
+                panelOpenedFromSplash = false;
+            }
         }
         
         configButton.addEventListener('click', () => {
@@ -6336,6 +6401,27 @@ async function startGame(isRestart = false) {
             saveGameSettings();
         });
 
+        playerNameSelector.addEventListener('change', function() {
+            currentPlayerName = this.value;
+            saveGameSettings();
+        });
+
+        if (addPlayerNameButton) {
+            addPlayerNameButton.addEventListener('click', function() {
+                const newName = prompt('Introduce un nuevo nombre de jugador:');
+                if (newName) {
+                    playerNames.push(newName);
+                    const opt = document.createElement('option');
+                    opt.value = newName;
+                    opt.textContent = newName;
+                    playerNameSelector.appendChild(opt);
+                    playerNameSelector.value = newName;
+                    currentPlayerName = newName;
+                    saveGameSettings();
+                }
+            });
+        }
+
         difficultySelector.addEventListener('change', function() {
             const oldIndex = classificationDifficultyIndex;
             difficulty = this.value;
@@ -6821,6 +6907,8 @@ async function startGame(isRestart = false) {
             localStorage.setItem('snakeGameDifficulty', difficultySelector.value);
             localStorage.setItem('snakeGameSkin', skinSelector.value);
             localStorage.setItem('snakeGameFood', foodSelector.value);
+            localStorage.setItem('snakeGamePlayerName', playerNameSelector.value);
+            localStorage.setItem('snakePlayerNames', JSON.stringify(playerNames));
             localStorage.setItem('snakeGameAudioGeneral', audioToggleSelector.value);
             localStorage.setItem('snakeGameMusicVolume', musicVolumeSlider.value);
             localStorage.setItem('snakeGameMode', gameModeSelector.value);
@@ -6846,6 +6934,31 @@ async function startGame(isRestart = false) {
 
             const savedSkin = localStorage.getItem('snakeGameSkin');
             if (savedSkin) skinSelector.value = savedSkin;
+
+            const savedPlayerNames = localStorage.getItem('snakePlayerNames');
+            if (savedPlayerNames) {
+                try {
+                    const parsed = JSON.parse(savedPlayerNames);
+                    if (Array.isArray(parsed) && parsed.length > 0) playerNames = parsed;
+                } catch (e) {
+                    console.error('Error parsing player names from localStorage', e);
+                    playerNames = ['Snake', 'GamiSnake'];
+                }
+            }
+            playerNameSelector.innerHTML = '';
+            playerNames.forEach(name => {
+                const opt = document.createElement('option');
+                opt.value = name;
+                opt.textContent = name;
+                playerNameSelector.appendChild(opt);
+            });
+            const savedPlayerName = localStorage.getItem('snakeGamePlayerName');
+            if (savedPlayerName && playerNames.includes(savedPlayerName)) {
+                playerNameSelector.value = savedPlayerName;
+                currentPlayerName = savedPlayerName;
+            } else {
+                currentPlayerName = playerNameSelector.value;
+            }
 
             const savedFood = localStorage.getItem('snakeGameFood');
             if (savedFood) foodSelector.value = savedFood;
@@ -6980,6 +7093,7 @@ async function startGame(isRestart = false) {
             initialSnakeLength = cfg.initialLength;
             currentSkin = skinSelector.value;
             currentFood = foodSelector.value;
+            currentPlayerName = playerNameSelector.value;
             
             isMusicEnabled = (audioToggleSelector.value === 'all');
             areSfxEnabled = (audioToggleSelector.value === 'all' || audioToggleSelector.value === 'sfx_only');
@@ -7129,13 +7243,13 @@ async function startGame(isRestart = false) {
             }
 
             attachSplashButtonEvents(splashInfoButtonEl, () => {
-                if (splashScreen) splashScreen.classList.add('hidden');
+                panelOpenedFromSplash = true;
                 if (gameContainer) gameContainer.classList.remove('hidden');
                 openInfoPanel();
             });
 
             attachSplashButtonEvents(splashSettingsButtonEl, () => {
-                if (splashScreen) splashScreen.classList.add('hidden');
+                panelOpenedFromSplash = true;
                 if (gameContainer) gameContainer.classList.remove('hidden');
                 openSettingsPanel();
             });
