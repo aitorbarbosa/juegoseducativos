@@ -394,11 +394,7 @@
             height: 100%; 
             box-sizing: border-box;
         }
-        .d-pad-button-pressed {
-            transform: scale(0.95) translateY(1px);
-            filter: brightness(0.8);
-        }
-        .action-button-pressed {
+        .d-pad-button-pressed { 
             transform: scale(0.95) translateY(1px);
             filter: brightness(0.8);
         }
@@ -750,15 +746,15 @@
         }
 
         #action-buttons-row {
-            justify-content: center;
-            min-height: 65px;
-            flex-wrap: nowrap;
+            justify-content: center; 
+            min-height: 65px; 
         }
-        .action-button-wrapper {
-            background-color: #1F2937;
-            padding: 0;
-            min-width: auto;
-            display: flex;
+        .action-button-wrapper { 
+            background-color: transparent !important; 
+            padding: 0 !important; 
+            min-height: auto !important;
+            min-width: auto; 
+            display: flex; 
         }
         #back-button-wrapper {
             flex-grow: 1;
@@ -780,13 +776,13 @@
             font-size: 0.85em;
             color: #f5f5f5;
             border: none;
-            border-radius: 8px;
+            border-radius: 8px; 
             cursor: pointer;
-            transition: background-color 0.3s ease;
-            width: 100%;
-            height: 100%;
-            font-family: 'Press Start 2P', sans-serif;
-            display: flex;
+            transition: background-color 0.3s ease; 
+            width: 100%; 
+            height: 65px; 
+            font-family: 'Press Start 2P', sans-serif; 
+            display: flex; 
             align-items: center;
             justify-content: center;
             box-sizing: border-box;
@@ -802,11 +798,6 @@
             background-color: #384152;
             min-width: 65px;
         }
-        #backButton {
-            background-color: transparent;
-            padding: 0;
-            max-height: 65px;
-        }
 
         #startButton:hover, #restartMazeButton:hover { background-color: #45a049; }
         #configButton:hover, #backButton:hover { background-color: #4a5568; }
@@ -820,15 +811,10 @@
             height: 24px;
             fill: currentColor;
         }
-        .config-svg, .info-svg {
+        .config-svg, .info-svg { 
             width: 24px;
             height: 24px;
             fill: currentColor;
-        }
-        #backButtonIcon {
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
         }
 
         .settings-panel-hidden, .info-panel-hidden, .specific-info-panel-hidden, .free-settings-panel-hidden, .reset-panel-hidden {
@@ -1019,14 +1005,10 @@
             
              #startButton, #restartMazeButton, #configButton, #backButton {
                  font-size: 0.75em;
+                 height: 55px;
             }
             #restartMazeButton, #configButton, #backButton {
                 min-width: 55px;
-            }
-            #backButton {
-                background-color: transparent;
-                padding: 0;
-                max-height: 55px;
             }
 
             #settings-panel, #info-panel, #specific-info-panel, #free-settings-panel {
@@ -1111,16 +1093,12 @@
 
              #startButton, #restartMazeButton, #configButton, #backButton {
                  font-size: 0.7em;
+                 height: 50px;
             }
             #restartMazeButton, #configButton, #backButton {
                 min-width: 50px;
             }
-            #backButton {
-                background-color: transparent;
-                padding: 0;
-                max-height: 50px;
-            }
-            .config-svg, .info-svg {
+            .config-svg, .info-svg {  
                 width: 20px;
                 height: 20px;
             }
@@ -1566,7 +1544,7 @@
             <div class="control-row" id="action-buttons-row">
                 <div class="action-button-wrapper" id="back-button-wrapper">
                     <button id="backButton" aria-label="Volver">
-                        <img id="backButtonIcon" src="https://i.imgur.com/1WrBpTQ.png" alt="Volver" onerror="this.src='https://placehold.co/24x24/02030D/FFFFFF?text=Err';">
+                        <img id="backButtonIcon" src="https://i.imgur.com/1WrBpTQ.png" alt="Volver" style="width:24px;height:24px;" onerror="this.src='https://placehold.co/24x24/02030D/FFFFFF?text=Err';">
                     </button>
                 </div>
                 <div class="action-button-wrapper" id="start-button-wrapper">
@@ -6917,26 +6895,15 @@ async function startGame(isRestart = false) {
                 if (gameIntervalId) button.classList.add("d-pad-button-pressed");
             });
             button.addEventListener("mouseup", () => button.classList.remove("d-pad-button-pressed"));
-            button.addEventListener("mouseleave", () => button.classList.remove("d-pad-button-pressed"));
+            button.addEventListener("mouseleave", () => button.classList.remove("d-pad-button-pressed")); 
             button.addEventListener("touchstart", (e) => {
-                e.preventDefault();
+                e.preventDefault(); 
                 if (gameIntervalId) button.classList.add("d-pad-button-pressed");
-                changeDirection(button.id.replace('-button', ''));
+                changeDirection(button.id.replace('-button', '')); 
             });
             button.addEventListener("touchend", () => button.classList.remove("d-pad-button-pressed"));
             button.addEventListener("touchcancel", () => button.classList.remove("d-pad-button-pressed"));
         });
-
-        function addActionButtonPressHandlers(btn) {
-            if (!btn) return;
-            btn.addEventListener("mousedown", () => btn.classList.add("action-button-pressed"));
-            btn.addEventListener("mouseup", () => btn.classList.remove("action-button-pressed"));
-            btn.addEventListener("mouseleave", () => btn.classList.remove("action-button-pressed"));
-            btn.addEventListener("touchstart", () => btn.classList.add("action-button-pressed"));
-            btn.addEventListener("touchend", () => btn.classList.remove("action-button-pressed"));
-            btn.addEventListener("touchcancel", () => btn.classList.remove("action-button-pressed"));
-        }
-        [startButton, restartMazeButton, configButton, backButton].forEach(addActionButtonPressHandlers);
 
         // Original click listeners for D-Pad 
         upButton.addEventListener("click", () => changeDirection("up"));
