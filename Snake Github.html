@@ -1112,6 +1112,32 @@
             justify-content: center;
             height: 40px;
         }
+        #free-settings-panel #return-mode-select-button {
+            background-color: #384152;
+            color: #f5f5f5;
+            border-radius: 8px;
+            padding: 10px;
+            font-family: 'Press Start 2P', sans-serif;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            min-width: 65px;
+            width: 65px;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 40px;
+        }
+        #free-settings-panel #return-mode-select-button:hover { background-color: #4a5568; }
+        #free-settings-panel #return-mode-select-button img {
+            width: 24px;
+            height: 24px;
+            pointer-events: none;
+        }
+        #free-settings-bottom-row {
+            display: flex;
+            gap: 8px;
+        }
         #free-settings-panel #apply-free-settings-bottom:hover { background-color: #45a049; }
 
         #reset-confirmation-panel { z-index: 1003; }
@@ -1395,7 +1421,12 @@
                     <label class="control-label" for="free-obstacle-count">Obstáculos: <span id="free-obstacle-count-value">5</span></label>
                     <input type="range" class="settings-range" id="free-obstacle-count" min="0" max="50" value="5">
                 </div>
-                <div class="control-group" id="apply-free-settings-bottom">Jugar</div>
+                <div id="free-settings-bottom-row">
+                    <div class="control-group" id="return-mode-select-button">
+                        <img src="https://i.imgur.com/Wvl87cV.png" alt="Volver" />
+                    </div>
+                    <div class="control-group" id="apply-free-settings-bottom">Jugar</div>
+                </div>
             </div>
 
             <div id="info-panel" class="info-panel-hidden">
@@ -1585,6 +1616,7 @@
         const closeFreeSettingsButton = document.getElementById("close-free-settings-button");
         const applyFreeSettingsButton = document.getElementById("apply-free-settings");
         const applyFreeSettingsBottomButton = document.getElementById("apply-free-settings-bottom");
+        const returnModeSelectButton = document.getElementById("return-mode-select-button");
 
         const infoButton = document.getElementById("infoButton");
         const infoPanel = document.getElementById("info-panel");
@@ -2998,6 +3030,25 @@ function setupSlider(slider, display) {
             setTimeout(updateMainButtonStates, 0);
         }
 
+        function returnToModeSelect() {
+            togglePanel(freeSettingsPanel, freeSettingsPanel, false);
+            showModeSelect = true;
+            modeTransitionStart = null;
+            modeSelectIndex = MODE_SELECT_ORDER.indexOf(gameMode);
+            screenState.showCoverForWorld = 0;
+            screenState.showWorldCompleteCover = 0;
+            screenState.showLevelCompleteCover = 0;
+            screenState.showDefeatCoverForWorld = 0;
+            screenState.showTimeoutCover = false;
+            screenState.showFreeModeCover = false;
+            screenState.showClassificationCover = false;
+            screenState.showMazeCover = false;
+            screenState.mazeResultType = '';
+            screenState.gameActuallyStarted = false;
+            draw();
+            updateMainButtonStates();
+        }
+
         function populateFreeSettingsInputs() {
             const speedFactor = freeModeSettings.speed / FREE_MODE_DEFAULTS.speed;
             freeSpeedInput.value = Math.round(((2 - speedFactor) / 1.5) * 100);
@@ -3173,6 +3224,7 @@ function setupSlider(slider, display) {
         });
         applyFreeSettingsButton.addEventListener('click', applyFreeSettings);
         if (applyFreeSettingsBottomButton) applyFreeSettingsBottomButton.addEventListener('click', applyFreeSettings);
+        if (returnModeSelectButton) returnModeSelectButton.addEventListener('click', returnToModeSelect);
         closeFreeSettingsButton.addEventListener('click', closeFreeSettingsPanel);
         closeSettingsButton.addEventListener('click', closeSettingsPanel);
         infoButton.addEventListener('click', openInfoPanel);
