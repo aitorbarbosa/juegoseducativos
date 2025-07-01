@@ -603,7 +603,11 @@
         .control-group.interactive-mode:hover #musicVolumeSlider {
             cursor: pointer;
         }
-        
+
+        .control-group.dimmed {
+            filter: brightness(0.6);
+        }
+
         #musicVolumeSlider {
             -webkit-appearance: none;
             appearance: none;
@@ -1635,10 +1639,15 @@ function setupSlider(slider, display) {
         function setupToggle(toggle, inputs) {
             if (!toggle) return;
             const arr = Array.isArray(inputs) ? inputs : [inputs];
-            toggle.addEventListener('change', () => {
+            const container = toggle.closest('.control-group');
+            const update = () => {
                 arr.forEach(inp => { if (inp) inp.disabled = !toggle.checked; });
-            });
-            arr.forEach(inp => { if (inp) inp.disabled = !toggle.checked; });
+                if (container) {
+                    container.classList.toggle('dimmed', !toggle.checked);
+                }
+            };
+            toggle.addEventListener('change', update);
+            update();
         }
 
         setupSlider(freeSpeedInput, freeSpeedValue);
@@ -3033,6 +3042,15 @@ function setupSlider(slider, display) {
             freeMirrorLifespan.disabled = freeMirrorEffect.disabled = !freeMirrorToggle.checked;
 
             freeObstacleCount.value = freeModeSettings.obstacleCount;
+
+            [
+                freeLifespanToggle,
+                freeGoldenToggle,
+                freeLightningToggle,
+                freeStreakToggle,
+                freeFalseToggle,
+                freeMirrorToggle
+            ].forEach(t => t && t.dispatchEvent(new Event('change')));
         }
 
         function applyFreeSettings() {
