@@ -6982,8 +6982,8 @@ async function startGame(isRestart = false) {
                 // Return to mode selection
                 showModeSelect = true;
                 modeTransitionStart = null;
-                introOptionAvailable = false;
-                modeSelectIndex = MODE_SELECT_ORDER.indexOf(gameMode) >= 0 ? MODE_SELECT_ORDER.indexOf(gameMode) : 0;
+                introOptionAvailable = true;
+                modeSelectIndex = 0;
                 gameMode = '';
                 gameModeSelector.value = '';
                 screenState.showCoverForWorld = 0;
