@@ -1006,34 +1006,43 @@
         #info-panel-content li, #specific-info-content li {
             margin-bottom: 6px;
         }
-        #info-panel-content::-webkit-scrollbar, #specific-info-content::-webkit-scrollbar {
+        /* Estilos de scroll unificados para todos los paneles */
+        #info-panel-content::-webkit-scrollbar,
+        #specific-info-content::-webkit-scrollbar,
+        #settings-panel::-webkit-scrollbar,
+        #info-panel::-webkit-scrollbar,
+        #specific-info-panel::-webkit-scrollbar,
+        #free-settings-panel::-webkit-scrollbar,
+        #reset-confirmation-panel::-webkit-scrollbar {
             width: 8px;
         }
-        #info-panel-content::-webkit-scrollbar-track, #specific-info-content::-webkit-scrollbar-track {
-            background: #2d3748; 
-            border-radius: 4px;
-        }
-        #info-panel-content::-webkit-scrollbar-thumb, #specific-info-content::-webkit-scrollbar-thumb {
-            background: #4b5563; 
-            border-radius: 4px;
-        }
-        #info-panel-content::-webkit-scrollbar-thumb:hover, #specific-info-content::-webkit-scrollbar-thumb:hover {
-            background: #8f66af;
-        }
-
-        /* Estilos de scroll para el panel de ajustes del modo libre */
-        #free-settings-panel::-webkit-scrollbar {
-            width: 8px;
-        }
-        #free-settings-panel::-webkit-scrollbar-track {
+        #info-panel-content::-webkit-scrollbar-track,
+        #specific-info-content::-webkit-scrollbar-track,
+        #settings-panel::-webkit-scrollbar-track,
+        #info-panel::-webkit-scrollbar-track,
+        #specific-info-panel::-webkit-scrollbar-track,
+        #free-settings-panel::-webkit-scrollbar-track,
+        #reset-confirmation-panel::-webkit-scrollbar-track {
             background: #2d3748;
             border-radius: 4px;
         }
-        #free-settings-panel::-webkit-scrollbar-thumb {
+        #info-panel-content::-webkit-scrollbar-thumb,
+        #specific-info-content::-webkit-scrollbar-thumb,
+        #settings-panel::-webkit-scrollbar-thumb,
+        #info-panel::-webkit-scrollbar-thumb,
+        #specific-info-panel::-webkit-scrollbar-thumb,
+        #free-settings-panel::-webkit-scrollbar-thumb,
+        #reset-confirmation-panel::-webkit-scrollbar-thumb {
             background: #4b5563;
             border-radius: 4px;
         }
-        #free-settings-panel::-webkit-scrollbar-thumb:hover {
+        #info-panel-content::-webkit-scrollbar-thumb:hover,
+        #specific-info-content::-webkit-scrollbar-thumb:hover,
+        #settings-panel::-webkit-scrollbar-thumb:hover,
+        #info-panel::-webkit-scrollbar-thumb:hover,
+        #specific-info-panel::-webkit-scrollbar-thumb:hover,
+        #free-settings-panel::-webkit-scrollbar-thumb:hover,
+        #reset-confirmation-panel::-webkit-scrollbar-thumb:hover {
             background: #8f66af;
         }
 
