@@ -874,7 +874,7 @@
             left: 50%;
             transform: translateX(-50%) scale(0.95);
             background-color: #1F2937;
-            padding: 25px;
+            padding: 25px 0 25px 25px;
             border-radius: 12px;
             box-shadow:
                 inset 0 0 0 4px #8f66af,
@@ -943,6 +943,7 @@
             align-items: center;
             color: #8f66af;
             margin-bottom: 10px;
+            padding-right: 25px;
         }
         .settings-header h2, .info-header h2, .specific-info-header h2, .reset-header h2 {
             font-size: 1.4em;
@@ -1119,7 +1120,10 @@
 
             #settings-panel, #info-panel, #specific-info-panel, #free-settings-panel {
                 width: calc(100% - 20px);
-                padding: 20px;
+                padding: 20px 0 20px 20px;
+            }
+            .settings-header, .info-header, .specific-info-header, .reset-header {
+                padding-right: 20px;
             }
             .settings-header h2, .info-header h2, .specific-info-header h2 {
                 font-size: 1.1em;
