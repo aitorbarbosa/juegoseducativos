@@ -202,7 +202,7 @@
         #title-panel h2 {
             font-size: 1.4em;
             margin: 0;
-            color: #6ee7b7;
+            color: #8f66af;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
@@ -553,7 +553,7 @@
             top: 50%;
             left: 100%;
             transform: translateX(10px) translateY(-50%);
-            color: #6ee7b7;
+            color: #8f66af;
             font-size: 0.7em;
             white-space: nowrap;
             opacity: 0;
@@ -607,7 +607,7 @@
 
 
         #difficultySelector:focus, #worldsSelector:focus, #mazeLevelSelector:focus, #audioToggleSelector:focus, #skinSelector:focus, #foodSelector:focus, #gameModeSelector:focus, #playerNameSelector:focus {
-            outline: 1px solid #6ee7b7; 
+            outline: 1px solid #8f66af; 
             box-shadow: none; 
         }
         #difficultySelector:disabled, #worldsSelector:disabled, #mazeLevelSelector:disabled, #audioToggleSelector:disabled, #skinSelector:disabled, #foodSelector:disabled, #gameModeSelector:disabled, #playerNameSelector:disabled, #musicVolumeSlider:disabled {
@@ -619,7 +619,7 @@
             padding: 4px 6px;
             width: calc(100% - 50px);
             font-size: 0.75em;
-            border: 1px solid #6ee7b7;
+            border: 1px solid #8f66af;
             border-radius: 4px;
             background-color: transparent;
             color: #f5f5f5;
@@ -630,7 +630,7 @@
             margin-bottom: 0;
         }
         #newPlayerNameInput:focus {
-            outline: 1px solid #6ee7b7;
+            outline: 1px solid #8f66af;
             box-shadow: none;
         }
 
@@ -649,7 +649,7 @@
         }
 
         #free-settings-panel input[type="number"]:focus {
-            outline: 1px solid #6ee7b7;
+            outline: 1px solid #8f66af;
             box-shadow: none;
         }
 
@@ -700,14 +700,14 @@
             appearance: none;
             width: 20px;
             height: 20px;
-            background: #6ee7b7;
+            background: #8f66af;
             cursor: pointer;
             border-radius: 50%;
         }
         #musicVolumeSlider::-moz-range-thumb {
             width: 20px;
             height: 20px;
-            background: #6ee7b7;
+            background: #8f66af;
             cursor: pointer;
             border-radius: 50%;
             border: none;
@@ -732,14 +732,14 @@
             appearance: none;
             width: 20px;
             height: 20px;
-            background: #6ee7b7;
+            background: #8f66af;
             cursor: pointer;
             border-radius: 50%;
         }
         .settings-range::-moz-range-thumb {
             width: 20px;
             height: 20px;
-            background: #6ee7b7;
+            background: #8f66af;
             cursor: pointer;
             border-radius: 50%;
             border: none;
@@ -774,7 +774,7 @@
             border-radius: 50%;
         }
         .switch input:checked + .slider.round {
-            background-color: #6ee7b7;
+            background-color: #8f66af;
         }
         .switch input:checked + .slider.round:before {
             transform: translateX(16px);
@@ -926,7 +926,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            color: #6ee7b7;
+            color: #8f66af;
             margin-bottom: 10px;
         }
         .settings-header h2, .info-header h2, .specific-info-header h2, .reset-header h2 {
@@ -946,7 +946,7 @@
             line-height: 1;
         }
         #close-settings-button:hover, #close-info-button:hover, #close-specific-info-button:hover, #close-free-settings-button:hover {
-            color: #6ee7b7;
+            color: #8f66af;
         }
         #settings-panel .control-group {
             background-color: #374151;
@@ -976,7 +976,7 @@
         #info-panel-content h4, 
         #specific-info-content h4 { 
             font-size: 1.1em; 
-            color: #6ee7b7; 
+            color: #8f66af; 
             margin-top: 20px; 
             margin-bottom: 10px; 
             text-align: left; 
@@ -1012,7 +1012,7 @@
             border-radius: 4px;
         }
         #info-panel-content::-webkit-scrollbar-thumb:hover, #specific-info-content::-webkit-scrollbar-thumb:hover {
-            background: #6ee7b7;
+            background: #8f66af;
         }
 
         /* Estilos de scroll para el panel de ajustes del modo libre */
@@ -1028,7 +1028,7 @@
             border-radius: 4px;
         }
         #free-settings-panel::-webkit-scrollbar-thumb:hover {
-            background: #6ee7b7;
+            background: #8f66af;
         }
 
 
@@ -5540,7 +5540,7 @@ function setupSlider(slider, display) {
                         ctx.restore();
                         
                         ctx.font = `${highScoreTitleFontSize}px 'Press Start 2P'`;
-                        ctx.fillStyle = "#6ee7b7";
+                        ctx.fillStyle = "#8f66af";
                         ctx.textAlign = "center";
                         ctx.textBaseline = "middle";
                         ctx.fillText(classificationTitleText, canvasEl.width / 2, titleRowActualY + titleRowHeight / 2);
@@ -5575,7 +5575,7 @@ function setupSlider(slider, display) {
                         const highScores = gameMode === 'freeMode' ? loadHighScores(difficulty) : loadClassificationHighScores(difficulty);
                         const entryFont = `${highScoreEntryFontSize}px 'Press Start 2P'`;
                         const defaultEntryColor = "#F5F5F5";
-                        const highlightEntryColor = "#6ee7b7"; 
+                        const highlightEntryColor = "#8f66af"; 
                         const blinkOffColor = "#5A6578"; 
                         
                         let newHighScoreEntryProcessedForVisuals = false; 
