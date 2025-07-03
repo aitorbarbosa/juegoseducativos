@@ -892,7 +892,7 @@
             transition: opacity 0.3s ease-out, transform 0.3s ease-out;
         }
 
-        .panel-content {
+.panel-content {
             overflow-y: auto;
             flex: 1 1 auto;
             display: flex;
@@ -900,7 +900,7 @@
             gap: 15px;
             padding-right: 0;
         }
-        .scroll-padding { padding-right: 10px; }
+        .scroll-padding { padding-right: 4px; }
 
         #info-panel,
         #specific-info-panel {
@@ -981,7 +981,16 @@
         }
 
         /* Estilos para el contenido del panel de información */
-        #info-panel-content, #specific-info-content {
+        #info-panel-content {
+            line-height: 1.6;
+            overflow-y: auto;
+            color: #d1d5db;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            padding-right: 4px;
+        }
+        #specific-info-content {
             line-height: 1.6;
             overflow-y: auto;
             color: #d1d5db;
