@@ -427,14 +427,20 @@
             height: 60%;
             fill: currentColor;
         }
+        .arrow-icon {
+            width: 100%;
+            height: 100%;
+            display: block;
+            transition: transform 0.05s ease-out, filter 0.05s ease-out;
+        }
 
         .mode-nav-button {
             position: absolute;
             top: 50%;
             transform: translateY(-50%);
-            background-color: rgba(56,65,82,0.8);
-            border: 1px solid #2D3748;
-            border-radius: 50%;
+            background-color: transparent;
+            border: none;
+            padding: 0;
             width: 50px;
             height: 50px;
             display: flex;
@@ -1111,7 +1117,8 @@
                 min-height: 110px; 
                 gap: 6px;
             }
-            .arrow-svg { width: 55%; height: 55%; } 
+            .arrow-svg { width: 55%; height: 55%; }
+            .arrow-icon { width: 100%; height: 100%; }
             
              #startButton, #restartMazeButton, #configButton, #backButton {
                  font-size: 0.75em;
@@ -1200,6 +1207,7 @@
                 gap: 5px;
             }
             .arrow-svg { width: 50%; height: 50%; }
+            .arrow-icon { width: 100%; height: 100%; }
 
              #startButton, #restartMazeButton, #configButton, #backButton {
                  font-size: 0.7em;
@@ -1381,10 +1389,10 @@
         
         <canvas id="gameCanvas"></canvas>
         <button id="mode-left-button" class="mode-nav-button hidden" aria-label="Modo anterior">
-            <svg class="arrow-svg" viewBox="0 0 24 24"><path d="M15.41 7.41L10.83 12l4.58 4.59L14 18l-6-6 6-6z"/></svg>
+            <img id="mode-left-button-icon" class="arrow-icon" src="https://i.imgur.com/pDjzolV.png" alt="Anterior" onerror="this.src='https://placehold.co/50x50/02030D/FFFFFF?text=Err';">
         </button>
         <button id="mode-right-button" class="mode-nav-button hidden" aria-label="Modo siguiente">
-            <svg class="arrow-svg" viewBox="0 0 24 24"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/></svg>
+            <img id="mode-right-button-icon" class="arrow-icon" src="https://i.imgur.com/kwtquW9.png" alt="Siguiente" onerror="this.src='https://placehold.co/50x50/02030D/FFFFFF?text=Err';">
         </button>
 
         <div id="setup-controls"> 
@@ -1801,6 +1809,8 @@
 
         const modeLeftButton = document.getElementById("mode-left-button");
         const modeRightButton = document.getElementById("mode-right-button");
+        const modeLeftButtonIcon = document.getElementById("mode-left-button-icon");
+        const modeRightButtonIcon = document.getElementById("mode-right-button-icon");
 
         // New DOM elements for specific info panel
         const specificInfoPanel = document.getElementById("specific-info-panel");
@@ -3462,13 +3472,17 @@ function setupSlider(slider, display) {
         }
         
         configButton.addEventListener('click', () => {
+            if (areSfxEnabled) playSound('modeSwitch');
             if (gameMode === 'freeMode') openFreeSettingsPanel();
             else openSettingsPanel();
         });
         if (applyFreeSettingsBottomButton) applyFreeSettingsBottomButton.addEventListener('click', applyFreeSettings);
         closeFreeSettingsButton.addEventListener('click', closeFreeSettingsPanel);
         closeSettingsButton.addEventListener('click', closeSettingsPanel);
-        backButton.addEventListener('click', handleBackButtonClick);
+        backButton.addEventListener('click', () => {
+            if (areSfxEnabled) playSound('modeSwitch');
+            handleBackButtonClick();
+        });
         closeInfoButton.addEventListener('click', closeInfoPanel);
 
         function openResetConfirmPanel() {
@@ -3617,10 +3631,17 @@ function setupSlider(slider, display) {
 
         document.querySelectorAll('.setting-info-button').forEach(button => {
             const icon = button.querySelector('.setting-info-icon');
-            button.addEventListener('click', function() {
-                const settingKey = this.dataset.setting;
-                openSpecificInfoPanel(settingKey);
-            });
+            const settingKey = button.dataset.setting;
+            if (settingKey) {
+                button.addEventListener('click', () => {
+                    if (areSfxEnabled) playSound('modeSwitch');
+                    openSpecificInfoPanel(settingKey);
+                });
+            } else {
+                button.addEventListener('click', () => {
+                    if (areSfxEnabled) playSound('modeSwitch');
+                });
+            }
             if (icon) {
                 button.addEventListener('mousedown', () => icon.classList.add('icon-button-pressed'));
                 button.addEventListener('mouseup', () => icon.classList.remove('icon-button-pressed'));
@@ -7151,6 +7172,8 @@ async function startGame(isRestart = false) {
         addIconPressEvents(configButton, configButtonIcon);
         addIconPressEvents(backButton, backButtonIcon);
         addIconPressEvents(restartMazeButton, restartMazeButtonIcon);
+        addIconPressEvents(modeLeftButton, modeLeftButtonIcon);
+        addIconPressEvents(modeRightButton, modeRightButtonIcon);
 
         // Original click listeners for D-Pad 
         upButton.addEventListener("click", () => changeDirection("up"));
@@ -7281,7 +7304,10 @@ async function startGame(isRestart = false) {
         });
 
         startButton.addEventListener("click", handleStartClick);
-        restartMazeButton.addEventListener("click", () => startGame(true));
+        restartMazeButton.addEventListener("click", () => {
+            if (areSfxEnabled) playSound('modeSwitch');
+            startGame(true);
+        });
         
         window.addEventListener('resize', resizeGameElements); 
         
