@@ -899,8 +899,9 @@
             flex-direction: column;
             gap: 15px;
             padding-right: 0;
+            scrollbar-gutter: stable both-edges;
         }
-        .scroll-padding { padding-right: 4px; }
+        .scroll-padding { padding-right: 0; }
 
         #info-panel,
         #specific-info-panel {
@@ -3068,10 +3069,8 @@ function setupSlider(slider, display) {
         }
 
         function applyScrollbarPadding(el) {
-            if (!el) return;
-            const needsPadding = el.scrollHeight > el.clientHeight + 1;
-            if (needsPadding) el.classList.add('scroll-padding');
-            else el.classList.remove('scroll-padding');
+            // Con scrollbar-gutter estable ya no es necesario ajustar
+            // el padding manualmente para el scroll.
         }
 
         // --- Panel Management Refactor ---
