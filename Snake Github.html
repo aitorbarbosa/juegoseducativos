@@ -207,6 +207,17 @@
             overflow: hidden;
             text-overflow: ellipsis;
         }
+        #title-image {
+            max-height: 45px;
+            width: auto;
+            max-width: 90%;
+        }
+
+        #main-info-title img {
+            max-height: 45px;
+            width: auto;
+            max-width: 90%;
+        }
 
         #progress-panel {
             display: grid; 
@@ -1342,7 +1353,7 @@
         </div>
 
     <div class="game-container hidden">
-        <div id="title-panel" class="hidden"><h2>Snake Mobile</h2></div>
+        <div id="title-panel" class="hidden"><img id="title-image" src="https://i.imgur.com/CZa88Hk.png" alt="Snake Mobile" onerror="this.src='https://placehold.co/300x80/02030D/FFFFFF?text=Title+Error'; console.error('Error loading title-image');"></div>
         <div id="progress-panel" class="hidden">
             <div id="current-world-info-group">
                 <span id="progress-panel-left-label" class="info-label">Nivel:</span> <span id="progress-panel-left-value" class="info-value">1</span> </div>
@@ -1605,7 +1616,7 @@
                     <button id="close-info-button" aria-label="Cerrar información">&times;</button>
                 </div>
                 <div id="info-panel-content">
-                    <h3 id="main-info-title">Snake Mobile</h3>
+                    <h3 id="main-info-title"><img src="https://i.imgur.com/CZa88Hk.png" alt="Snake Mobile" onerror="this.src='https://placehold.co/300x80/02030D/FFFFFF?text=Title+Error'; console.error('Error loading main-info-title image');"></h3>
                     <p>¡Prepárate para la clásica diversión de la serpiente con un toque moderno y desafiante! Guía a tu serpiente para que devore la comida, crezca lo más posible y acumule puntos. ¡Pero cuidado! No choques contra los bordes del escenario ni contra tu propio cuerpo o la partida terminará. ¡No te rindas! Cada partida es una nueva oportunidad para superar tu récord.</p>
                     
                     <h4>Cómo Jugar</h4>
