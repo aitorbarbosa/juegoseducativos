@@ -888,9 +888,14 @@
             flex-direction: column;
             gap: 15px;
             border: 2px solid #2d1d3a;
-            overflow-y: auto;
             opacity: 0;
             transition: opacity 0.3s ease-out, transform 0.3s ease-out;
+        }
+
+        .panel-content {
+            overflow-y: auto;
+            padding-right: 10px;
+            flex: 1 1 auto;
         }
 
         #info-panel,
@@ -1009,30 +1014,30 @@
         /* Estilos de scroll unificados para todos los paneles */
         #info-panel-content::-webkit-scrollbar,
         #specific-info-content::-webkit-scrollbar,
-        #settings-panel::-webkit-scrollbar,
-        #info-panel::-webkit-scrollbar,
-        #specific-info-panel::-webkit-scrollbar,
-        #free-settings-panel::-webkit-scrollbar,
-        #reset-confirmation-panel::-webkit-scrollbar {
+        #settings-panel .panel-content::-webkit-scrollbar,
+        #info-panel .panel-content::-webkit-scrollbar,
+        #specific-info-panel .panel-content::-webkit-scrollbar,
+        #free-settings-panel .panel-content::-webkit-scrollbar,
+        #reset-confirmation-panel .panel-content::-webkit-scrollbar {
             width: 8px;
         }
         #info-panel-content::-webkit-scrollbar-track,
         #specific-info-content::-webkit-scrollbar-track,
-        #settings-panel::-webkit-scrollbar-track,
-        #info-panel::-webkit-scrollbar-track,
-        #specific-info-panel::-webkit-scrollbar-track,
-        #free-settings-panel::-webkit-scrollbar-track,
-        #reset-confirmation-panel::-webkit-scrollbar-track {
+        #settings-panel .panel-content::-webkit-scrollbar-track,
+        #info-panel .panel-content::-webkit-scrollbar-track,
+        #specific-info-panel .panel-content::-webkit-scrollbar-track,
+        #free-settings-panel .panel-content::-webkit-scrollbar-track,
+        #reset-confirmation-panel .panel-content::-webkit-scrollbar-track {
             background: #2d1d3a;
             border-radius: 4px;
         }
         #info-panel-content::-webkit-scrollbar-thumb,
         #specific-info-content::-webkit-scrollbar-thumb,
-        #settings-panel::-webkit-scrollbar-thumb,
-        #info-panel::-webkit-scrollbar-thumb,
-        #specific-info-panel::-webkit-scrollbar-thumb,
-        #free-settings-panel::-webkit-scrollbar-thumb,
-        #reset-confirmation-panel::-webkit-scrollbar-thumb {
+        #settings-panel .panel-content::-webkit-scrollbar-thumb,
+        #info-panel .panel-content::-webkit-scrollbar-thumb,
+        #specific-info-panel .panel-content::-webkit-scrollbar-thumb,
+        #free-settings-panel .panel-content::-webkit-scrollbar-thumb,
+        #reset-confirmation-panel .panel-content::-webkit-scrollbar-thumb {
             background: #442F58;
             border-radius: 4px;
         }
@@ -1040,16 +1045,16 @@
         #info-panel-content::-webkit-scrollbar-thumb:active,
         #specific-info-content::-webkit-scrollbar-thumb:hover,
         #specific-info-content::-webkit-scrollbar-thumb:active,
-        #settings-panel::-webkit-scrollbar-thumb:hover,
-        #settings-panel::-webkit-scrollbar-thumb:active,
-        #info-panel::-webkit-scrollbar-thumb:hover,
-        #info-panel::-webkit-scrollbar-thumb:active,
-        #specific-info-panel::-webkit-scrollbar-thumb:hover,
-        #specific-info-panel::-webkit-scrollbar-thumb:active,
-        #free-settings-panel::-webkit-scrollbar-thumb:hover,
-        #free-settings-panel::-webkit-scrollbar-thumb:active,
-        #reset-confirmation-panel::-webkit-scrollbar-thumb:hover,
-        #reset-confirmation-panel::-webkit-scrollbar-thumb:active {
+        #settings-panel .panel-content::-webkit-scrollbar-thumb:hover,
+        #settings-panel .panel-content::-webkit-scrollbar-thumb:active,
+        #info-panel .panel-content::-webkit-scrollbar-thumb:hover,
+        #info-panel .panel-content::-webkit-scrollbar-thumb:active,
+        #specific-info-panel .panel-content::-webkit-scrollbar-thumb:hover,
+        #specific-info-panel .panel-content::-webkit-scrollbar-thumb:active,
+        #free-settings-panel .panel-content::-webkit-scrollbar-thumb:hover,
+        #free-settings-panel .panel-content::-webkit-scrollbar-thumb:active,
+        #reset-confirmation-panel .panel-content::-webkit-scrollbar-thumb:hover,
+        #reset-confirmation-panel .panel-content::-webkit-scrollbar-thumb:active {
             background: #8f66af;
         }
 
@@ -1188,10 +1193,10 @@
                 height: 100%;
                 width: auto;
             }
-             #settings-panel, #info-panel, #specific-info-panel, #free-settings-panel {
+            #settings-panel, #info-panel, #specific-info-panel, #free-settings-panel {
                 padding: 15px;
             }
-            #info-panel-content h3#main-info-title, #specific-info-content h3 { font-size: 0.9em; } 
+            #info-panel-content h3#main-info-title, #specific-info-content h3 { font-size: 0.9em; }
             #info-panel-content h4, #specific-info-content h4 { font-size: 0.9em; }
             #info-panel-content p, #info-panel-content ul, #specific-info-content p, #specific-info-content ul { font-size: 0.75em; }
         }
@@ -1368,6 +1373,7 @@
                     <h2>Configuración</h2>
                     <button id="close-settings-button" aria-label="Cerrar configuración">&times;</button>
                 </div>
+                <div class="panel-content">
                 <div class="control-row" id="player-row">
                     <div id="player-select-control-group" class="control-group hidden">
                         <div class="control-label-icon-row">
@@ -1482,6 +1488,7 @@
                     <input type="range" id="musicVolumeSlider" min="0" max="100" value="50">
                 </div>
                 <div class="control-group" id="resetDataButton">Reiniciar datos del juego</div>
+                </div>
             </div>
 
             <div id="free-settings-panel" class="free-settings-panel-hidden">
@@ -1489,6 +1496,7 @@
                     <h2>Personaliza tu juego</h2>
                     <button id="close-free-settings-button" aria-label="Cerrar ajustes">&times;</button>
                 </div>
+                <div class="panel-content">
                 <div class="control-group">
                     <label class="control-label" for="free-speed-input">Velocidad: <span id="free-speed-value">67</span>%</label>
                     <input type="range" class="settings-range" id="free-speed-input" min="0" max="100" step="5" value="67">
@@ -1560,6 +1568,7 @@
                     <input type="range" class="settings-range" id="free-obstacle-count" min="0" max="50" value="5">
                 </div>
                 <div class="control-group" id="apply-free-settings-bottom">Jugar</div>
+                </div>
             </div>
 
             <div id="info-panel" class="info-panel-hidden">
@@ -1598,11 +1607,13 @@
                 <div class="reset-header">
                     <h2>Reiniciar</h2>
                 </div>
-                <p>Esta decisión eliminará todos tus progresos y puntuaciones</p>
-                <p>¿Estás seguro de que deseas eliminar todos los datos del juego?</p>
-                <div class="reset-buttons">
-                    <button id="confirmResetYes">Sí</button>
-                    <button id="confirmResetNo">No</button>
+                <div class="panel-content">
+                    <p>Esta decisión eliminará todos tus progresos y puntuaciones</p>
+                    <p>¿Estás seguro de que deseas eliminar todos los datos del juego?</p>
+                    <div class="reset-buttons">
+                        <button id="confirmResetYes">Sí</button>
+                        <button id="confirmResetNo">No</button>
+                    </div>
                 </div>
             </div>
 
