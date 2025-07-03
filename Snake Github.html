@@ -867,13 +867,15 @@
             position: fixed;
             left: 50%;
             transform: translateX(-50%) scale(0.95);
-            background-color: #1F2937;
+            background-image: url('https://raw.githubusercontent.com/GamificAitor/JuegosEducativos/601be8d8f7e10e4bbc65627265b990f216ade749/Men%C3%BA.svg');
+            background-size: 100% 100%;
+            background-position: center;
+            background-repeat: no-repeat;
             padding: 25px;
             border-radius: 12px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.6);
             z-index: 2100;
             width: 100%;
-            max-width: var(--game-max-width);
             display: flex;
             flex-direction: column;
             gap: 15px;
@@ -885,7 +887,6 @@
 
         #info-panel,
         #specific-info-panel {
-            max-height: 90vh;
             box-sizing: border-box;
         }
 
@@ -1070,9 +1071,13 @@
                 min-width: 55px;
             }
 
-            #settings-panel, #info-panel, #specific-info-panel, #free-settings-panel {
+            #settings-panel, #info-panel, #specific-info-panel, #free-settings-panel, #reset-confirmation-panel {
                 width: calc(100% - 20px);
                 padding: 20px;
+                background-image: url('https://raw.githubusercontent.com/GamificAitor/JuegosEducativos/601be8d8f7e10e4bbc65627265b990f216ade749/Men%C3%BA.svg');
+                background-size: 100% 100%;
+                background-position: center;
+                background-repeat: no-repeat;
             }
             .settings-header h2, .info-header h2, .specific-info-header h2 {
                 font-size: 1.1em;
@@ -1162,8 +1167,12 @@
                 height: 100%;
                 width: auto;
             }
-             #settings-panel, #info-panel, #specific-info-panel, #free-settings-panel {
+            #settings-panel, #info-panel, #specific-info-panel, #free-settings-panel, #reset-confirmation-panel {
                 padding: 15px;
+                background-image: url('https://raw.githubusercontent.com/GamificAitor/JuegosEducativos/601be8d8f7e10e4bbc65627265b990f216ade749/Men%C3%BA.svg');
+                background-size: 100% 100%;
+                background-position: center;
+                background-repeat: no-repeat;
             }
             #info-panel-content h3#main-info-title, #specific-info-content h3 { font-size: 0.9em; } 
             #info-panel-content h4, #specific-info-content h4 { font-size: 0.9em; }
