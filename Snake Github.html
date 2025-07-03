@@ -860,24 +860,34 @@
             display: block;
         }
 
+# Panel visibility helper classes
         .settings-panel-hidden, .info-panel-hidden, .specific-info-panel-hidden, .free-settings-panel-hidden, .reset-panel-hidden {
             display: none !important;
+        }
+
+        /* Reusable panel style */
+        .panel-style {
+            background: linear-gradient(to bottom, #f9fafb, #e5e7eb);
+            border: 1px solid #cbd5e1;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+            border-radius: 10px;
+            padding: 25px;
         }
         #settings-panel, #info-panel, #specific-info-panel, #free-settings-panel, #reset-confirmation-panel {
             position: fixed;
             left: 50%;
             transform: translateX(-50%) scale(0.95);
-            background-color: #1F2937;
-            padding: 25px;
-            border-radius: 12px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+            background: linear-gradient(to bottom, #f9fafb, #e5e7eb);
+            border-radius: 10px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.4);
             z-index: 2100;
             width: 100%;
             max-width: var(--game-max-width);
             display: flex;
             flex-direction: column;
             gap: 15px;
-            border: 2px solid #4b5563;
+            border: 1px solid #cbd5e1;
+            padding: 25px;
             overflow-y: auto;
             opacity: 0;
             transition: opacity 0.3s ease-out, transform 0.3s ease-out;
@@ -1354,7 +1364,7 @@
         </button>
 
         <div id="setup-controls"> 
-        <div id="settings-panel" class="settings-panel-hidden">
+        <div id="settings-panel" class="settings-panel-hidden panel-style">
                 <div class="settings-header">
                     <h2>Configuración</h2>
                     <button id="close-settings-button" aria-label="Cerrar configuración">&times;</button>
@@ -1475,7 +1485,7 @@
                 <div class="control-group" id="resetDataButton">Reiniciar datos del juego</div>
             </div>
 
-            <div id="free-settings-panel" class="free-settings-panel-hidden">
+            <div id="free-settings-panel" class="free-settings-panel-hidden panel-style">
                 <div class="settings-header">
                     <h2>Personaliza tu juego</h2>
                     <button id="close-free-settings-button" aria-label="Cerrar ajustes">&times;</button>
@@ -1554,7 +1564,7 @@
                 <div class="control-group" id="apply-free-settings-bottom">Jugar</div>
             </div>
 
-            <div id="info-panel" class="info-panel-hidden">
+            <div id="info-panel" class="info-panel-hidden panel-style">
                 <div class="info-header">
                     <h2>Información</h2> 
                     <button id="close-info-button" aria-label="Cerrar información">&times;</button>
@@ -1578,7 +1588,7 @@
                 </div>
             </div>
 
-            <div id="specific-info-panel" class="specific-info-panel-hidden">
+            <div id="specific-info-panel" class="specific-info-panel-hidden panel-style">
                 <div class="specific-info-header">
                     <h2 id="specific-info-title">Detalle del Ajuste</h2>
                     <button id="close-specific-info-button" aria-label="Cerrar detalle">&times;</button>
@@ -1586,7 +1596,7 @@
                 <div id="specific-info-content">
                  </div>
             </div>
-            <div id="reset-confirmation-panel" class="reset-panel-hidden">
+            <div id="reset-confirmation-panel" class="reset-panel-hidden panel-style">
                 <div class="reset-header">
                     <h2>Reiniciar</h2>
                 </div>
