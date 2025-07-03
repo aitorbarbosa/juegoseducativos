@@ -822,36 +822,42 @@
             background-color: #4CAF50;
         }
         #restartMazeButton {
-            background-color: #4CAF50;
-            min-width: 65px;
+            padding: 0;
+            background-color: transparent;
+            flex: 0 0 auto;
+            width: auto;
+            min-width: 0;
         }
         #configButton, #backButton {
             background-color: #384152;
             min-width: 65px;
         }
 
-        #startButton:hover, #restartMazeButton:hover { background-color: #45a049; }
+        #startButton:hover { background-color: #45a049; }
 
-        #startButton:disabled, #restartMazeButton:disabled {
+        #startButton:disabled {
             background-color: #94a3b8;
             cursor: not-allowed;
         }
-        #configButton:disabled, #backButton:disabled {
+        #restartMazeButton:disabled,
+        #configButton:disabled,
+        #backButton:disabled {
             cursor: not-allowed;
         }
         #configButton:disabled #configButtonIcon,
-        #backButton:disabled #backButtonIcon {
+        #backButton:disabled #backButtonIcon,
+        #restartMazeButton:disabled #restartMazeButtonIcon {
             filter: brightness(0.7);
         }
         #backButton { padding: 0; background-color: transparent; flex: 0 0 auto; width: auto; min-width: 0; }
         #backButtonIcon { height: 100%; width: auto; display: block; transition: transform 0.05s ease-out, filter 0.05s ease-out; }
+        #restartMazeButtonIcon { height: 100%; width: auto; display: block; transition: transform 0.05s ease-out, filter 0.05s ease-out; }
         #configButton { padding: 0; background-color: transparent; flex: 0 0 auto; width: auto; min-width: 0; }
         #configButtonIcon { height: 100%; width: auto; display: block; transition: transform 0.05s ease-out, filter 0.05s ease-out; }
         .icon-button-pressed {
             transform: scale(0.90) translateY(2px);
             filter: brightness(0.7);
         }
-        .restart-svg,
         .config-svg,
         .info-svg {
             height: 100%;
@@ -1591,9 +1597,8 @@
                 <div class="action-button-wrapper" id="start-button-wrapper">
                     <button id="startButton">Empezar</button>
                     <button id="restartMazeButton" class="hidden" aria-label="Reiniciar">
-                        <svg class="restart-svg" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M12 4V1L8 5l4 4V6a6 6 0 11-6 6H4a8 8 0 108-8z" />
-                        </svg>
+                        <img id="restartMazeButtonIcon" src="https://i.imgur.com/i4m4tSV.png" alt="Reiniciar"
+                             onerror="this.src='https://placehold.co/24x24/02030D/FFFFFF?text=Err';">
                     </button>
                 </div>
                 <button id="configButton" aria-label="Configuración">
@@ -1680,6 +1685,7 @@
         const timeLengthValueEl = document.getElementById("timeLengthValue");
         const startButton = document.getElementById("startButton");
         const restartMazeButton = document.getElementById("restartMazeButton");
+        const restartMazeButtonIcon = document.getElementById("restartMazeButtonIcon");
         const startButtonWrapperEl = document.getElementById("start-button-wrapper");
         const difficultySelector = document.getElementById("difficultySelector");
         const worldsSelector = document.getElementById("worldsSelector");
@@ -7070,6 +7076,7 @@ async function startGame(isRestart = false) {
 
         addIconPressEvents(configButton, configButtonIcon);
         addIconPressEvents(backButton, backButtonIcon);
+        addIconPressEvents(restartMazeButton, restartMazeButtonIcon);
 
         // Original click listeners for D-Pad 
         upButton.addEventListener("click", () => changeDirection("up"));
