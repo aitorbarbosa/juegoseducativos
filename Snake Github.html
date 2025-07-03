@@ -901,6 +901,7 @@
             padding-right: 0;
         }
         .scroll-padding { padding-right: 4px; }
+        .scrolling-panel { padding-right: 10px; }
 
         #info-panel,
         #specific-info-panel {
@@ -1121,6 +1122,7 @@
                 width: calc(100% - 20px);
                 padding: 20px;
             }
+            .scrolling-panel { padding-right: 8px; }
             .settings-header h2, .info-header h2, .specific-info-header h2 {
                 font-size: 1.1em;
             }
@@ -3072,6 +3074,11 @@ function setupSlider(slider, display) {
             const needsPadding = el.scrollHeight > el.clientHeight + 1;
             if (needsPadding) el.classList.add('scroll-padding');
             else el.classList.remove('scroll-padding');
+            const panelEl = el.parentElement;
+            if (panelEl) {
+                if (needsPadding) panelEl.classList.add('scrolling-panel');
+                else panelEl.classList.remove('scrolling-panel');
+            }
         }
 
         // --- Panel Management Refactor ---
