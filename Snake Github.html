@@ -893,6 +893,14 @@
             transition: opacity 0.3s ease-out, transform 0.3s ease-out;
         }
 
+        /* Extra padding on the right so scrollbars don't overlap content */
+        #settings-panel,
+        #specific-info-panel,
+        #free-settings-panel,
+        #reset-confirmation-panel {
+            padding-right: calc(25px + 10px);
+        }
+
         #info-panel,
         #specific-info-panel {
             max-height: 90vh;
@@ -1100,6 +1108,11 @@
                 width: calc(100% - 20px);
                 padding: 20px;
             }
+            #settings-panel,
+            #specific-info-panel,
+            #free-settings-panel {
+                padding-right: calc(20px + 10px);
+            }
             .settings-header h2, .info-header h2, .specific-info-header h2 {
                 font-size: 1.1em;
             }
@@ -1188,10 +1201,15 @@
                 height: 100%;
                 width: auto;
             }
-             #settings-panel, #info-panel, #specific-info-panel, #free-settings-panel {
+            #settings-panel, #info-panel, #specific-info-panel, #free-settings-panel {
                 padding: 15px;
             }
-            #info-panel-content h3#main-info-title, #specific-info-content h3 { font-size: 0.9em; } 
+            #settings-panel,
+            #specific-info-panel,
+            #free-settings-panel {
+                padding-right: calc(15px + 10px);
+            }
+            #info-panel-content h3#main-info-title, #specific-info-content h3 { font-size: 0.9em; }
             #info-panel-content h4, #specific-info-content h4 { font-size: 0.9em; }
             #info-panel-content p, #info-panel-content ul, #specific-info-content p, #specific-info-content ul { font-size: 0.75em; }
         }
