@@ -1208,23 +1208,6 @@
 
 #settings-panel #resetDataButton:hover { background-color: #b91c1c; }
 
-        #free-settings-panel #apply-free-settings {
-            background-color: #4CAF50;
-            color: #f5f5f5;
-            border-radius: 8px;
-            padding: 10px 15px;
-            font-family: 'Press Start 2P', sans-serif;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-            width: 100%;
-            text-align: center;
-            font-size: 0.75em;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            height: 40px;
-        }
-        #free-settings-panel #apply-free-settings:hover { background-color: #45a049; }
         #free-settings-panel #apply-free-settings-bottom {
             background-color: #4CAF50;
             color: #f5f5f5;
@@ -1484,7 +1467,6 @@
                     <h2>Personaliza tu juego</h2>
                     <button id="close-free-settings-button" aria-label="Cerrar ajustes">&times;</button>
                 </div>
-                <div class="control-group" id="apply-free-settings">Jugar</div>
                 <div class="control-group">
                     <label class="control-label" for="free-speed-input">Velocidad: <span id="free-speed-value">67</span>%</label>
                     <input type="range" class="settings-range" id="free-speed-input" min="0" max="100" step="5" value="67">
@@ -1744,7 +1726,6 @@
         const configButtonIcon = document.getElementById("configButtonIcon");
         const closeSettingsButton = document.getElementById("close-settings-button");
         const closeFreeSettingsButton = document.getElementById("close-free-settings-button");
-        const applyFreeSettingsButton = document.getElementById("apply-free-settings");
         const applyFreeSettingsBottomButton = document.getElementById("apply-free-settings-bottom");
 
         const backButton = document.getElementById("backButton");
@@ -3406,7 +3387,6 @@ function setupSlider(slider, display) {
             if (gameMode === 'freeMode') openFreeSettingsPanel();
             else openSettingsPanel();
         });
-        applyFreeSettingsButton.addEventListener('click', applyFreeSettings);
         if (applyFreeSettingsBottomButton) applyFreeSettingsBottomButton.addEventListener('click', applyFreeSettings);
         closeFreeSettingsButton.addEventListener('click', closeFreeSettingsPanel);
         closeSettingsButton.addEventListener('click', closeSettingsPanel);
