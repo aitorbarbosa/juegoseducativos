@@ -3232,13 +3232,24 @@ function setupSlider(slider, display) {
                     if (gameMode === 'levels') worldsSelector.disabled = false; else difficultySelector.disabled = false;
                     difficultyControlGroup.classList.add("interactive-mode");
                     if (typeof Tone !== 'undefined') {
-                        audioToggleSelector.disabled = false;
-                        audioControlGroup.classList.add("interactive-mode");
-                        musicVolumeSlider.disabled = (audioToggleSelector.value === 'off' || audioToggleSelector.value === 'sfx_only');
-                        if (!musicVolumeSlider.disabled) musicVolumeControlGroup.classList.add("interactive-mode");
-                        else musicVolumeControlGroup.classList.remove("interactive-mode");
+                        if (panelOpenedFromSplash) {
+                            audioControlGroup.classList.remove('hidden');
+                            musicVolumeControlGroup.classList.remove('hidden');
+                            audioToggleSelector.disabled = false;
+                            audioControlGroup.classList.add("interactive-mode");
+                            musicVolumeSlider.disabled = (audioToggleSelector.value === 'off' || audioToggleSelector.value === 'sfx_only');
+                            if (!musicVolumeSlider.disabled) musicVolumeControlGroup.classList.add("interactive-mode");
+                            else musicVolumeControlGroup.classList.remove("interactive-mode");
+                        } else {
+                            audioToggleSelector.disabled = true;
+                            musicVolumeSlider.disabled = true;
+                            audioControlGroup.classList.add('hidden');
+                            musicVolumeControlGroup.classList.add('hidden');
+                            audioControlGroup.classList.remove("interactive-mode");
+                            musicVolumeControlGroup.classList.remove("interactive-mode");
+                        }
                     }
-                     settingsPanel.querySelectorAll('.setting-info-button').forEach(btn => btn.disabled = false);
+                    settingsPanel.querySelectorAll('.setting-info-button').forEach(btn => btn.disabled = !panelOpenedFromSplash);
                 }
             } else { // Hiding a panel
                 panelElement.classList.remove(visibleClassName); 
@@ -3684,11 +3695,22 @@ function setupSlider(slider, display) {
                 difficultyControlGroup.classList.add("interactive-mode");
 
                 if (typeof Tone !== 'undefined') {
-                    audioToggleSelector.disabled = false;
-                    audioControlGroup.classList.add("interactive-mode");
-                    musicVolumeSlider.disabled = (audioToggleSelector.value === 'off' || audioToggleSelector.value === 'sfx_only');
-                    if (!musicVolumeSlider.disabled) musicVolumeControlGroup.classList.add("interactive-mode");
-                    else musicVolumeControlGroup.classList.remove("interactive-mode");
+                    if (panelOpenedFromSplash) {
+                        audioControlGroup.classList.remove('hidden');
+                        musicVolumeControlGroup.classList.remove('hidden');
+                        audioToggleSelector.disabled = false;
+                        audioControlGroup.classList.add("interactive-mode");
+                        musicVolumeSlider.disabled = (audioToggleSelector.value === 'off' || audioToggleSelector.value === 'sfx_only');
+                        if (!musicVolumeSlider.disabled) musicVolumeControlGroup.classList.add("interactive-mode");
+                        else musicVolumeControlGroup.classList.remove("interactive-mode");
+                    } else {
+                        audioToggleSelector.disabled = true;
+                        musicVolumeSlider.disabled = true;
+                        audioControlGroup.classList.add('hidden');
+                        musicVolumeControlGroup.classList.add('hidden');
+                        audioControlGroup.classList.remove("interactive-mode");
+                        musicVolumeControlGroup.classList.remove("interactive-mode");
+                    }
                 }
                 playerNameSelector.disabled = false;
                 if (playerSelectControlGroup) playerSelectControlGroup.classList.add("interactive-mode");
@@ -4839,16 +4861,29 @@ function setupSlider(slider, display) {
             }
             difficultyControlGroup.classList.add("interactive-mode"); 
             
-            if (typeof Tone !== 'undefined') { 
-                 audioToggleSelector.disabled = false;
-                 audioControlGroup.classList.add("interactive-mode");
-                 musicVolumeSlider.disabled = (audioToggleSelector.value === 'off' || audioToggleSelector.value === 'sfx_only');
-                 if (!musicVolumeSlider.disabled) musicVolumeControlGroup.classList.add("interactive-mode");
-                 else musicVolumeControlGroup.classList.remove("interactive-mode");
+            if (typeof Tone !== 'undefined') {
+                 if (panelOpenedFromSplash) {
+                     audioControlGroup.classList.remove('hidden');
+                     musicVolumeControlGroup.classList.remove('hidden');
+                     audioToggleSelector.disabled = false;
+                     audioControlGroup.classList.add("interactive-mode");
+                     musicVolumeSlider.disabled = (audioToggleSelector.value === 'off' || audioToggleSelector.value === 'sfx_only');
+                     if (!musicVolumeSlider.disabled) musicVolumeControlGroup.classList.add("interactive-mode");
+                     else musicVolumeControlGroup.classList.remove("interactive-mode");
+                 } else {
+                     audioToggleSelector.disabled = true;
+                     musicVolumeSlider.disabled = true;
+                     audioControlGroup.classList.add('hidden');
+                     musicVolumeControlGroup.classList.add('hidden');
+                     audioControlGroup.classList.remove("interactive-mode");
+                     musicVolumeControlGroup.classList.remove("interactive-mode");
+                 }
             } else {
                  audioToggleSelector.disabled = true;
-                 audioControlGroup.classList.remove("interactive-mode");
                  musicVolumeSlider.disabled = true;
+                 audioControlGroup.classList.add('hidden');
+                 musicVolumeControlGroup.classList.add('hidden');
+                 audioControlGroup.classList.remove("interactive-mode");
                  musicVolumeControlGroup.classList.remove("interactive-mode");
             }
             
