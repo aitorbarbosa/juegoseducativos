@@ -841,7 +841,16 @@
             box-sizing: border-box;
         }
         #startButton {
-            background-color: #4CAF50;
+            background-color: #8f66af;
+            color: #F3F3F3;
+            border: 3px solid #2d1d3a;
+            box-shadow:
+                inset 0 10px 6px #D6BCE9,
+                4px 4px 6px #442F58;
+            text-shadow: -1px -1px 0 #2d1d3a,
+                         1px -1px 0 #2d1d3a,
+                        -1px 1px 0 #2d1d3a,
+                         1px 1px 0 #2d1d3a;
         }
         #restartMazeButton {
             padding: 0;
@@ -855,10 +864,12 @@
             min-width: 65px;
         }
 
-        #startButton:hover { background-color: #45a049; }
+        #startButton:hover {
+            filter: brightness(0.95);
+        }
 
         #startButton:disabled {
-            background-color: #94a3b8;
+            filter: brightness(0.6);
             cursor: not-allowed;
         }
         #restartMazeButton:disabled,
