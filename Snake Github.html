@@ -957,6 +957,10 @@
             max-height: 90vh;
             box-sizing: border-box;
         }
+        #free-settings-panel {
+            max-height: 90vh;
+            box-sizing: border-box;
+        }
 
         .centered-panel {
             top: 50%;
@@ -3027,7 +3031,7 @@ function setupSlider(slider, display) {
         }
 
         function positionPanel(panelElement) {
-            if (panelOpenedFromSplash) {
+            if (panelElement.classList.contains('centered-panel')) {
                 panelElement.style.top = '50%';
                 panelElement.style.bottom = 'auto';
                 panelElement.style.height = 'auto';
@@ -3232,13 +3236,24 @@ function setupSlider(slider, display) {
                     if (gameMode === 'levels') worldsSelector.disabled = false; else difficultySelector.disabled = false;
                     difficultyControlGroup.classList.add("interactive-mode");
                     if (typeof Tone !== 'undefined') {
-                        audioToggleSelector.disabled = false;
-                        audioControlGroup.classList.add("interactive-mode");
-                        musicVolumeSlider.disabled = (audioToggleSelector.value === 'off' || audioToggleSelector.value === 'sfx_only');
-                        if (!musicVolumeSlider.disabled) musicVolumeControlGroup.classList.add("interactive-mode");
-                        else musicVolumeControlGroup.classList.remove("interactive-mode");
+                        if (panelOpenedFromSplash) {
+                            audioControlGroup.classList.remove('hidden');
+                            musicVolumeControlGroup.classList.remove('hidden');
+                            audioToggleSelector.disabled = false;
+                            audioControlGroup.classList.add("interactive-mode");
+                            musicVolumeSlider.disabled = (audioToggleSelector.value === 'off' || audioToggleSelector.value === 'sfx_only');
+                            if (!musicVolumeSlider.disabled) musicVolumeControlGroup.classList.add("interactive-mode");
+                            else musicVolumeControlGroup.classList.remove("interactive-mode");
+                        } else {
+                            audioToggleSelector.disabled = true;
+                            musicVolumeSlider.disabled = true;
+                            audioControlGroup.classList.add('hidden');
+                            musicVolumeControlGroup.classList.add('hidden');
+                            audioControlGroup.classList.remove("interactive-mode");
+                            musicVolumeControlGroup.classList.remove("interactive-mode");
+                        }
                     }
-                     settingsPanel.querySelectorAll('.setting-info-button').forEach(btn => btn.disabled = false);
+                    settingsPanel.querySelectorAll('.setting-info-button').forEach(btn => btn.disabled = false);
                 }
             } else { // Hiding a panel
                 panelElement.classList.remove(visibleClassName); 
@@ -3254,16 +3269,18 @@ function setupSlider(slider, display) {
 
 
         function openSettingsPanel() {
-            if (panelOpenedFromSplash) settingsPanel.classList.add('centered-panel');
-            else settingsPanel.classList.remove('centered-panel');
+            settingsPanel.classList.add('centered-panel');
             togglePanel(settingsPanel, settingsPanelContent, true);
             // Show or hide certain settings when accessed from the splash screen
             gameModeControlGroup.classList.remove('hidden');
-            difficultyControlGroup.classList.remove('hidden');
+            if (!gameMode) difficultyControlGroup.classList.add('hidden');
+            else difficultyControlGroup.classList.remove('hidden');
             skinControlGroup.classList.remove('hidden');
             foodControlGroup.classList.remove('hidden');
             playerSelectControlGroup.classList.add('hidden');
             addPlayerControlGroup.classList.add('hidden');
+            resetDataButton.classList.add('hidden');
+            resetDataButton.classList.remove('interactive-mode');
 
             if (panelOpenedFromSplash) {
                 playerSelectControlGroup.classList.remove('hidden');
@@ -3272,6 +3289,8 @@ function setupSlider(slider, display) {
                 difficultyControlGroup.classList.add('hidden');
                 skinControlGroup.classList.add('hidden');
                 foodControlGroup.classList.add('hidden');
+                resetDataButton.classList.remove('hidden');
+                resetDataButton.classList.add('interactive-mode');
             }
             if (gameOver && !gameIntervalId) { // Game is over and not running
                 if (ctx && canvasEl) {
@@ -3361,7 +3380,8 @@ function setupSlider(slider, display) {
             }
         }
 
-        function openFreeSettingsPanel() {
+       function openFreeSettingsPanel() {
+            freeSettingsPanel.classList.add('centered-panel');
             togglePanel(freeSettingsPanel, freeSettingsPanelContent, true);
             populateFreeSettingsInputs();
         }
@@ -3369,6 +3389,7 @@ function setupSlider(slider, display) {
         function closeFreeSettingsPanel() {
             togglePanel(freeSettingsPanel, freeSettingsPanelContent, false);
             setTimeout(updateMainButtonStates, 0);
+            freeSettingsPanel.classList.remove('centered-panel');
         }
 
         function populateFreeSettingsInputs() {
@@ -3475,8 +3496,7 @@ function setupSlider(slider, display) {
         }
 
         function openInfoPanel() {
-            if (panelOpenedFromSplash) infoPanel.classList.add('centered-panel');
-            else infoPanel.classList.remove('centered-panel');
+            infoPanel.classList.add('centered-panel');
             togglePanel(infoPanel, infoPanelContent, true);
             if (gameOver && !gameIntervalId) {
                 if (ctx && canvasEl) {
@@ -3567,8 +3587,8 @@ function setupSlider(slider, display) {
         closeInfoButton.addEventListener('click', closeInfoPanel);
 
         function openResetConfirmPanel() {
-            if (panelOpenedFromSplash) resetConfirmPanel.classList.add('centered-panel');
-            else resetConfirmPanel.classList.remove('centered-panel');
+            if (!panelOpenedFromSplash) return;
+            resetConfirmPanel.classList.add('centered-panel');
             togglePanel(settingsPanel, settingsPanelContent, false);
             togglePanel(resetConfirmPanel, resetConfirmPanelContent, true);
         }
@@ -3655,8 +3675,7 @@ function setupSlider(slider, display) {
             Array.from(settingsPanel.querySelectorAll('select, input[type="range"], .setting-info-button')).forEach(el => el.disabled = true);
             Array.from(settingsPanel.querySelectorAll('.control-group.interactive-mode')).forEach(el => el.classList.remove("interactive-mode")); // Visually indicate disabled state
 
-            if (panelOpenedFromSplash) specificInfoPanel.classList.add('centered-panel');
-            else specificInfoPanel.classList.remove('centered-panel');
+            specificInfoPanel.classList.add('centered-panel');
 
             togglePanel(specificInfoPanel, specificInfoContent, true);
         }
@@ -3684,11 +3703,22 @@ function setupSlider(slider, display) {
                 difficultyControlGroup.classList.add("interactive-mode");
 
                 if (typeof Tone !== 'undefined') {
-                    audioToggleSelector.disabled = false;
-                    audioControlGroup.classList.add("interactive-mode");
-                    musicVolumeSlider.disabled = (audioToggleSelector.value === 'off' || audioToggleSelector.value === 'sfx_only');
-                    if (!musicVolumeSlider.disabled) musicVolumeControlGroup.classList.add("interactive-mode");
-                    else musicVolumeControlGroup.classList.remove("interactive-mode");
+                    if (panelOpenedFromSplash) {
+                        audioControlGroup.classList.remove('hidden');
+                        musicVolumeControlGroup.classList.remove('hidden');
+                        audioToggleSelector.disabled = false;
+                        audioControlGroup.classList.add("interactive-mode");
+                        musicVolumeSlider.disabled = (audioToggleSelector.value === 'off' || audioToggleSelector.value === 'sfx_only');
+                        if (!musicVolumeSlider.disabled) musicVolumeControlGroup.classList.add("interactive-mode");
+                        else musicVolumeControlGroup.classList.remove("interactive-mode");
+                    } else {
+                        audioToggleSelector.disabled = true;
+                        musicVolumeSlider.disabled = true;
+                        audioControlGroup.classList.add('hidden');
+                        musicVolumeControlGroup.classList.add('hidden');
+                        audioControlGroup.classList.remove("interactive-mode");
+                        musicVolumeControlGroup.classList.remove("interactive-mode");
+                    }
                 }
                 playerNameSelector.disabled = false;
                 if (playerSelectControlGroup) playerSelectControlGroup.classList.add("interactive-mode");
@@ -4837,24 +4867,40 @@ function setupSlider(slider, display) {
             } else { 
                 difficultySelector.disabled = false;
             }
-            difficultyControlGroup.classList.add("interactive-mode"); 
-            
-            if (typeof Tone !== 'undefined') { 
-                 audioToggleSelector.disabled = false;
-                 audioControlGroup.classList.add("interactive-mode");
-                 musicVolumeSlider.disabled = (audioToggleSelector.value === 'off' || audioToggleSelector.value === 'sfx_only');
-                 if (!musicVolumeSlider.disabled) musicVolumeControlGroup.classList.add("interactive-mode");
-                 else musicVolumeControlGroup.classList.remove("interactive-mode");
+            difficultyControlGroup.classList.add("interactive-mode");
+
+            if (typeof Tone !== 'undefined') {
+                 if (panelOpenedFromSplash) {
+                     audioControlGroup.classList.remove('hidden');
+                     musicVolumeControlGroup.classList.remove('hidden');
+                     audioToggleSelector.disabled = false;
+                     audioControlGroup.classList.add("interactive-mode");
+                     musicVolumeSlider.disabled = (audioToggleSelector.value === 'off' || audioToggleSelector.value === 'sfx_only');
+                     if (!musicVolumeSlider.disabled) musicVolumeControlGroup.classList.add("interactive-mode");
+                     else musicVolumeControlGroup.classList.remove("interactive-mode");
+                 } else {
+                     audioToggleSelector.disabled = true;
+                     musicVolumeSlider.disabled = true;
+                     audioControlGroup.classList.add('hidden');
+                     musicVolumeControlGroup.classList.add('hidden');
+                     audioControlGroup.classList.remove("interactive-mode");
+                     musicVolumeControlGroup.classList.remove("interactive-mode");
+                 }
             } else {
                  audioToggleSelector.disabled = true;
-                 audioControlGroup.classList.remove("interactive-mode");
                  musicVolumeSlider.disabled = true;
+                 audioControlGroup.classList.add('hidden');
+                 musicVolumeControlGroup.classList.add('hidden');
+                 audioControlGroup.classList.remove("interactive-mode");
                  musicVolumeControlGroup.classList.remove("interactive-mode");
             }
-            
-            updateScoreDisplay(); 
+
+            resetDataButton.classList.add('hidden');
+            resetDataButton.classList.remove('interactive-mode');
+
+            updateScoreDisplay();
             updateTimeLengthDisplay();
-            updateGameModeUI(); 
+            updateGameModeUI();
         }
         // --- Fin de Funciones de Refactorización ---
 
