@@ -3416,12 +3416,9 @@ function setupSlider(slider, display) {
             skinControlGroup.classList.remove('hidden');
             foodControlGroup.classList.remove('hidden');
             if (playerNameControlGroup) playerNameControlGroup.classList.remove('hidden');
-            playerSelectControlGroup.classList.remove('hidden');
-            addPlayerControlGroup.classList.remove('hidden');
-            resetDataButton.classList.add('hidden');
-            resetDataButton.classList.remove('interactive-mode');
-
             if (panelOpenedFromSplash) {
+                playerSelectControlGroup.classList.remove('hidden');
+                addPlayerControlGroup.classList.remove('hidden');
                 gameModeControlGroup.classList.add('hidden');
                 difficultyControlGroup.classList.add('hidden');
                 skinControlGroup.classList.add('hidden');
@@ -3429,6 +3426,11 @@ function setupSlider(slider, display) {
                 if (playerNameControlGroup) playerNameControlGroup.classList.add('hidden');
                 resetDataButton.classList.remove('hidden');
                 resetDataButton.classList.add('interactive-mode');
+            } else {
+                playerSelectControlGroup.classList.add('hidden');
+                addPlayerControlGroup.classList.add('hidden');
+                resetDataButton.classList.add('hidden');
+                resetDataButton.classList.remove('interactive-mode');
             }
             if (gameOver && !gameIntervalId) { // Game is over and not running
                 if (ctx && canvasEl) {
@@ -3867,8 +3869,10 @@ function setupSlider(slider, display) {
                     }
                 }
                 playerNameSelectors.forEach(sel => sel.disabled = false);
-                if (playerSelectControlGroup) playerSelectControlGroup.classList.add("interactive-mode");
-                if (addPlayerControlGroup) addPlayerControlGroup.classList.add("interactive-mode");
+                if (panelOpenedFromSplash) {
+                    if (playerSelectControlGroup) playerSelectControlGroup.classList.add("interactive-mode");
+                    if (addPlayerControlGroup) addPlayerControlGroup.classList.add("interactive-mode");
+                }
                 settingsPanel.querySelectorAll('.setting-info-button').forEach(btn => btn.disabled = false);
                 
                 // Ensure main action buttons reflect that settings panel is still the context
