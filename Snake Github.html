@@ -1490,7 +1490,7 @@
                 <div class="control-row" id="player-row">
                     <div id="player-select-control-group" class="control-group hidden">
                         <div class="control-label-icon-row">
-                            <label class="control-label" for="playerNameSelector">Nombre del Jugador:</label>
+                            <label class="control-label" for="playerNameSelector">Jugador:</label>
                             <button id="delete-player-name-button" class="setting-info-button" aria-label="Eliminar jugador">
                                 <img class="setting-info-icon" src="https://i.imgur.com/w5E6xdU.png" alt="Eliminar" onerror="this.src='https://placehold.co/24x24/02030D/FFFFFF?text=Err';">
                             </button>
@@ -1543,7 +1543,7 @@
                     <select id="mazeLevelSelector" class="hidden">
                     </select>
                 </div>
-                <div class="control-group">
+                <div class="control-group" id="player-name-control-group">
                     <div class="control-label-icon-row">
                         <label class="control-label" for="playerNameSelector">Nombre del Jugador:</label>
                         <button class="setting-info-button" data-setting="playerName" aria-label="Información sobre nombre del jugador">
@@ -1858,6 +1858,7 @@
         const deletePlayerNameButton = document.getElementById("delete-player-name-button");
         const newPlayerNameInput = document.getElementById("newPlayerNameInput");
         const playerSelectControlGroup = document.getElementById("player-select-control-group");
+        const playerNameControlGroup = document.getElementById("player-name-control-group");
         const addPlayerControlGroup = document.getElementById("add-player-control-group");
         const difficultyControlGroup = document.getElementById("difficulty-control-group");
         const audioControlGroup = document.getElementById("audio-control-group");
@@ -3310,6 +3311,7 @@ function setupSlider(slider, display) {
             else difficultyControlGroup.classList.remove('hidden');
             skinControlGroup.classList.remove('hidden');
             foodControlGroup.classList.remove('hidden');
+            if (playerNameControlGroup) playerNameControlGroup.classList.remove('hidden');
             playerSelectControlGroup.classList.add('hidden');
             addPlayerControlGroup.classList.add('hidden');
             resetDataButton.classList.add('hidden');
@@ -3322,6 +3324,7 @@ function setupSlider(slider, display) {
                 difficultyControlGroup.classList.add('hidden');
                 skinControlGroup.classList.add('hidden');
                 foodControlGroup.classList.add('hidden');
+                if (playerNameControlGroup) playerNameControlGroup.classList.add('hidden');
                 resetDataButton.classList.remove('hidden');
                 resetDataButton.classList.add('interactive-mode');
             }
