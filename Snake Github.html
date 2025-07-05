@@ -3316,6 +3316,13 @@ function setupSlider(slider, display) {
             else el.classList.remove('scroll-padding');
         }
 
+        function matchPanelSizeWithElement(sourceElement, targetPanel) {
+            if (!sourceElement || !targetPanel) return;
+            const srcRect = sourceElement.getBoundingClientRect();
+            targetPanel.style.top = srcRect.top + 'px';
+            targetPanel.style.height = srcRect.height + 'px';
+        }
+
         // --- Panel Management Refactor ---
         function togglePanel(panelElement, contentContainer, show) {
             if (!panelElement) {
@@ -3647,6 +3654,13 @@ function setupSlider(slider, display) {
         function openInfoPanel() {
             infoPanel.classList.add('centered-panel');
             togglePanel(infoPanel, infoPanelContent, true);
+            if (panelOpenedFromSplash) {
+                const splashContent = document.getElementById('splash-content');
+                requestAnimationFrame(() => {
+                    matchPanelSizeWithElement(splashContent, infoPanel);
+                    infoPanel.classList.remove('centered-panel');
+                });
+            }
             if (gameOver && !gameIntervalId) {
                 if (ctx && canvasEl) {
                     ctx.fillStyle = "#374151";
@@ -3777,23 +3791,23 @@ function setupSlider(slider, display) {
             },
             skin: {
                 title: "Disfraz",
-                text: "<p>Personaliza tu serpiente, juega con el look que más te guste y convierte tu experiencia en algo único y divertido</p><h4>Selección de Disfraz</h4><p>Elige entre una variedad de estilos visuales disponibles en el selector. Cada disfraz ofrece una estética diferente para tu reptil protagonista, desde aspectos clásicos hasta diseños más originales y temáticos.</p><p>Algunos disfraces pueden estar disponibles desde el inicio, mientras que otros podrían requerir ser desbloqueados mediante logros en el juego o estar disponibles en futuras actualizaciones.</p><p>Es importante destacar que la elección del disfraz es <strong>puramente estética</strong>. Cambiar la apariencia de tu serpiente no afecta de ninguna manera su velocidad, longitud, la forma en que come, ni las puntuaciones que obtienes.</p><p>¡Así que siéntete libre de experimentar y elegir el que más te guste sin preocuparte por ventajas o desventajas en el juego!</p>"
+                text: "<p>Desbloquea disfraces con estética temática u original, juega con el look que más te guste y convierte tu experiencia en algo único y divertido</p><p>La elección del disfraz es <strong>puramente estética</strong>.<p>¡Así que <strong>siéntete libre de experimentar</strong> sin preocuparte por ventajas o desventajas en el juego!</p>"
             },
             food: {
                 title: "Comestible",
-                text: "<p>Selecciona el alimento que quieres que aparezca en el escenario. Esta elección solo afecta al aspecto visual y no modifica la jugabilidad.</p>"
+                text: "<p>Selecciona el alimento que quieres que aparezca en el escenario entre todos los que hayas desbloqueado. Esta elección <strong>solo afecta al aspecto visual</strong> y no modifica la jugabilidad.</p>"
             },
             playerName: {
                 title: "Jugador",
-                text: "<p>El nombre de jugador que selecciones, tiene diferentes utilidades. En el <strong>Modo Libre</strong>, se utiliza para guardar los ajustes personalizados de la partida, en el <strong>Modo Clasificación</strong>, tu nombre se mostrará en el ranking para que puedas comparar tu puntuación con otros jugadores y, en el <strong>Modo Aventura</strong> y el <strong>Modo Laberinto</strong>, te permite guardar tus progresos y continuar donde la habías dejado.</p><p>Si deseas <strong>registrar a un nuevo jugador</strong>, puedes hacerlo desde el menú de configuración de la pantalla de inicio.</p>"
+                text: "<p>En el <strong>Modo Libre</strong>, se utiliza para guardar los ajustes personalizados de la partida, en el <strong>Modo Clasificación</strong>, tu nombre se mostrará en el ranking para que puedas comparar tu puntuación con otros jugadores y, en el <strong>Modo Aventura</strong> y el <strong>Modo Laberinto</strong>, te permite guardar tus progresos y continuar donde la habías dejado.</p><p>Si deseas <strong>registrar a un nuevo jugador</strong>, puedes hacerlo desde el menú de configuración de la pantalla de inicio.</p>"
             },
             audioGeneral: {
                 title: "Audio General",
-                text: "<p>Controla los elementos sonoros del juego para crear la atmósfera perfecta para ti.</p><h4>Activado (Música y FX)</h4><p>Selecciona esta opción para disfrutar de la experiencia sonora completa. Esto incluye:</p><ul><li><strong>Música de fondo:</strong> Utilizada para ambientar, tanto el juego en general, como tus partidas.</li><li><strong>Efectos de sonido (SFX):</strong> Indicaciones auditivas para acciones cruciales como comenzar una partida, comer, superar un nivel, perder, conseguir un récord...</li></ul><h4>Sólo SFX</h4><p>Si la música de fondo te resulta distractora pero aun así deseas la retroalimentación auditiva de tus acciones en el juego, esta es tu opción.</p><h4>Desactivado</h4><p>Elige esta opción para silenciar completamente el juego. Es ideal si prefieres jugar mientras escuchas tu propia música o podcast mientras juegas.</p>"
+                text: "<p>Controla los elementos sonoros del juego para crear la atmósfera perfecta para ti.</p><p>Selecciona <strong>Activado</strong> para disfrutar de la experiencia sonora completa, <strong>Efectos de sonido (SFX)</strong> para escuchar solamente acciones cruciales como comenzar una partida, comer, superar un nivel, perder, conseguir un récord... y <strong>Desactivado</strong> para silenciar completamente el juego."
             },
             musicVolume: {
                 title: "Volumen Música",
-                text: "<p>Ajusta con precisión qué tan fuerte o suave quieres que suene la música de fondo del juego, siempre que la tengas activada.</p><h4>Control de Volumen</h4><p>Utiliza el deslizador (slider) para regular el nivel del volumen de la música. Moviéndolo hacia la derecha aumentarás el volumen, y hacia la izquierda lo disminuirás.</p><p>Encuentra el punto perfecto que te permita disfrutar de la banda sonora del juego sin que resulte abrumadora o tape otros sonidos importantes, especialmente si también tienes los efectos de sonido (SFX) activados.</p><h4>Condiciones de Uso</h4><p>Es fundamental recordar que para que este ajuste de volumen de música tenga algún efecto, la opción de <strong>\"Audio General\"</strong> debe estar configurada en <strong>\"Activado (Música y FX)\"</strong>.</p><p>Si el \"Audio General\" está seleccionado como \"Sólo SFX\" o \"Desactivado\", no escucharás la música independientemente del nivel que establezcas en este control de volumen, ya que la fuente principal de música estará deshabilitada.</p>"
+                text: "<p>Ajusta con precisión qué tan fuerte o suave quieres que suene la música de fondo del juego, siempre que la tengas activada.</p><p>Mueve el deslizador hacia la derecha para aumentar el volumen, y hacia la izquierda para disminuirlo.</p>"
             }
         };
 
@@ -3829,8 +3843,21 @@ function setupSlider(slider, display) {
             Array.from(settingsPanel.querySelectorAll('.control-group.interactive-mode')).forEach(el => el.classList.remove("interactive-mode")); // Visually indicate disabled state
 
             specificInfoPanel.classList.add('centered-panel');
-
             togglePanel(specificInfoPanel, specificInfoContent, true);
+
+            let sourcePanel = null;
+            if (!settingsPanel.classList.contains('settings-panel-hidden')) {
+                sourcePanel = settingsPanel;
+            } else if (freeSettingsPanel && !freeSettingsPanel.classList.contains('free-settings-panel-hidden')) {
+                sourcePanel = freeSettingsPanel;
+            }
+            if (sourcePanel) {
+                requestAnimationFrame(() => {
+                    matchPanelSizeWithElement(sourcePanel, specificInfoPanel);
+                    specificInfoPanel.classList.remove('centered-panel');
+                    applyScrollbarPadding(specificInfoContent);
+                });
+            }
         }
 
         function closeSpecificInfoPanel() {
