@@ -605,7 +605,7 @@
         }
 
 
-        #difficultySelector, #worldsSelector, #mazeLevelSelector, #audioToggleSelector, #skinSelector, #foodSelector, #gameModeSelector, #playerNameSelector {
+        #difficultySelector, #worldsSelector, #mazeLevelSelector, #audioToggleSelector, #skinSelector, #foodSelector, #gameModeSelector, #playerNameSelector, #playerNameSelectorFree {
             padding: 4px 6px;
             width: calc(100% - 50px);
             font-size: 0.75em;
@@ -624,14 +624,14 @@
             margin-bottom: 0;
         }
         
-        #difficultySelector option, #worldsSelector option, #mazeLevelSelector option, #audioToggleSelector option, #skinSelector option, #foodSelector option, #gameModeSelector option, #playerNameSelector option {
+        #difficultySelector option, #worldsSelector option, #mazeLevelSelector option, #audioToggleSelector option, #skinSelector option, #foodSelector option, #gameModeSelector option, #playerNameSelector option, #playerNameSelectorFree option {
             background-color: #374151;
             color: #f5f5f5;
             font-family: 'Press Start 2P', sans-serif;
             text-align: left; 
         }
         
-        #difficultySelector, #worldsSelector, #mazeLevelSelector, #audioToggleSelector, #skinSelector, #foodSelector, #gameModeSelector, #playerNameSelector {
+        #difficultySelector, #worldsSelector, #mazeLevelSelector, #audioToggleSelector, #skinSelector, #foodSelector, #gameModeSelector, #playerNameSelector, #playerNameSelectorFree {
             text-align-last: left;
         }
         select option {
@@ -639,16 +639,16 @@
         }
 
 
-        #difficultySelector:focus, #worldsSelector:focus, #mazeLevelSelector:focus, #audioToggleSelector:focus, #skinSelector:focus, #foodSelector:focus, #gameModeSelector:focus, #playerNameSelector:focus {
+        #difficultySelector:focus, #worldsSelector:focus, #mazeLevelSelector:focus, #audioToggleSelector:focus, #skinSelector:focus, #foodSelector:focus, #gameModeSelector:focus, #playerNameSelector:focus, #playerNameSelectorFree:focus {
             outline: 1px solid #8f66af; 
             box-shadow: none; 
         }
-        #difficultySelector:disabled, #worldsSelector:disabled, #mazeLevelSelector:disabled, #audioToggleSelector:disabled, #skinSelector:disabled, #foodSelector:disabled, #gameModeSelector:disabled, #playerNameSelector:disabled, #musicVolumeSlider:disabled {
+        #difficultySelector:disabled, #worldsSelector:disabled, #mazeLevelSelector:disabled, #audioToggleSelector:disabled, #skinSelector:disabled, #foodSelector:disabled, #gameModeSelector:disabled, #playerNameSelector:disabled, #playerNameSelectorFree:disabled, #musicVolumeSlider:disabled {
             opacity: 0.7;
             cursor: not-allowed;
         }
 
-        #newPlayerNameInput {
+        #newPlayerNameInput, #newPlayerNameInputFree {
             padding: 4px 6px;
             width: calc(100% - 50px);
             font-size: 0.75em;
@@ -662,7 +662,7 @@
             margin-top: 4px;
             margin-bottom: 0;
         }
-        #newPlayerNameInput:focus {
+        #newPlayerNameInput:focus, #newPlayerNameInputFree:focus {
             outline: 1px solid #8f66af;
             box-shadow: none;
         }
@@ -1202,6 +1202,7 @@
              #settings-panel #foodSelector,
              #settings-panel #gameModeSelector,
              #settings-panel #playerNameSelector,
+             #settings-panel #playerNameSelectorFree,
              #settings-panel #musicVolumeSlider {
                 font-size: 0.65em;
                 margin-top: 2px;
@@ -1545,7 +1546,7 @@
                 </div>
                 <div class="control-group" id="skin-control-group">
                     <div class="control-label-icon-row">
-                        <label class="control-label" for="skinSelector">Jugador:</label>
+                        <label class="control-label" for="skinSelector">Disfraz:</label>
                         <button class="setting-info-button" data-setting="skin" aria-label="Información sobre jugadores">
                             <img class="setting-info-icon" src="https://i.imgur.com/rWe7Ylp.png" alt="info" onerror="this.src='https://placehold.co/24x24/02030D/FFFFFF?text=Err';">
                         </button>
@@ -1610,6 +1611,26 @@
                     <button id="close-free-settings-button" aria-label="Cerrar ajustes">&times;</button>
                 </div>
                 <div class="panel-content">
+                <div class="control-row" id="player-row-free">
+                    <div id="player-select-control-group-free" class="control-group">
+                        <div class="control-label-icon-row">
+                            <label class="control-label" for="playerNameSelectorFree">Jugador:</label>
+                            <button id="delete-player-name-button-free" class="setting-info-button" aria-label="Eliminar jugador">
+                                <img class="setting-info-icon" src="https://i.imgur.com/w5E6xdU.png" alt="Eliminar" onerror="this.src='https://placehold.co/24x24/02030D/FFFFFF?text=Err';">
+                            </button>
+                        </div>
+                        <select id="playerNameSelectorFree"></select>
+                    </div>
+                    <div id="add-player-control-group-free" class="control-group">
+                        <div class="control-label-icon-row">
+                            <label class="control-label" for="newPlayerNameInputFree">Añadir</label>
+                            <button id="confirm-add-player-button-free" class="setting-info-button" aria-label="Confirmar nuevo nombre">
+                                <img class="setting-info-icon" src="https://i.imgur.com/ZGgSVye.png" alt="Añadir" onerror="this.src='https://placehold.co/24x24/02030D/FFFFFF?text=Err';">
+                            </button>
+                        </div>
+                        <input id="newPlayerNameInputFree" type="text">
+                    </div>
+                </div>
                 <div class="control-group">
                     <label class="control-label" for="free-speed-input">Velocidad: <span id="free-speed-value">67</span>%</label>
                     <input type="range" class="settings-range" id="free-speed-input" min="0" max="100" step="5" value="67">
@@ -1836,11 +1857,17 @@
         const foodSelector = document.getElementById("foodSelector");
         const gameModeSelector = document.getElementById("gameModeSelector");
         const playerNameSelector = document.getElementById("playerNameSelector");
+        const playerNameSelectorFree = document.getElementById("playerNameSelectorFree");
         const confirmAddPlayerButton = document.getElementById("confirm-add-player-button");
+        const confirmAddPlayerButtonFree = document.getElementById("confirm-add-player-button-free");
         const deletePlayerNameButton = document.getElementById("delete-player-name-button");
+        const deletePlayerNameButtonFree = document.getElementById("delete-player-name-button-free");
         const newPlayerNameInput = document.getElementById("newPlayerNameInput");
+        const newPlayerNameInputFree = document.getElementById("newPlayerNameInputFree");
         const playerSelectControlGroup = document.getElementById("player-select-control-group");
+        const playerSelectControlGroupFree = document.getElementById("player-select-control-group-free");
         const addPlayerControlGroup = document.getElementById("add-player-control-group");
+        const addPlayerControlGroupFree = document.getElementById("add-player-control-group-free");
         const difficultyControlGroup = document.getElementById("difficulty-control-group");
         const audioControlGroup = document.getElementById("audio-control-group");
         const skinControlGroup = document.getElementById("skin-control-group");
@@ -1849,6 +1876,21 @@
         const musicVolumeSlider = document.getElementById("musicVolumeSlider");
         const musicVolumeValue = document.getElementById("musicVolumeValue");
         const musicVolumeControlGroup = document.getElementById("music-volume-control-group");
+
+        function populatePlayerNameSelectors() {
+            const selects = [];
+            if (playerNameSelector) selects.push(playerNameSelector);
+            if (playerNameSelectorFree) selects.push(playerNameSelectorFree);
+            selects.forEach(sel => sel.innerHTML = '');
+            playerNames.forEach(name => {
+                selects.forEach(sel => {
+                    const opt = document.createElement('option');
+                    opt.value = name;
+                    opt.textContent = name;
+                    sel.appendChild(opt);
+                });
+            });
+        }
         
         const progressPanel = document.getElementById("progress-panel");
         const titlePanel = document.getElementById("title-panel"); 
@@ -2928,7 +2970,7 @@ function setupSlider(slider, display) {
 
         function applySkin(skinName) {
             currentSkin = skinName;
-            console.log(`Jugador aplicado: ${currentSkin}`);
+            console.log(`Disfraz aplicado: ${currentSkin}`);
 
             if (gameOver) {
                 if (ctx && canvasEl) {
@@ -3277,8 +3319,8 @@ function setupSlider(slider, display) {
             else difficultyControlGroup.classList.remove('hidden');
             skinControlGroup.classList.remove('hidden');
             foodControlGroup.classList.remove('hidden');
-            playerSelectControlGroup.classList.add('hidden');
-            addPlayerControlGroup.classList.add('hidden');
+            playerSelectControlGroup.classList.remove('hidden');
+            addPlayerControlGroup.classList.remove('hidden');
             resetDataButton.classList.add('hidden');
             resetDataButton.classList.remove('interactive-mode');
 
@@ -3627,8 +3669,8 @@ function setupSlider(slider, display) {
                 text_classification: "<h4> (Solo en Modo Clasificación)</h4><p>Compite por la mejor puntuación al igual que en el Modo Libre, pero con una tabla de récords independiente.</p>"
             },
             skin: {
-                title: "Jugador",
-                text: "<p>Personaliza tu serpiente, juega con el look que más te guste y convierte tu experiencia en algo único y divertido</p><h4>Selección de Jugador</h4><p>Elige entre una variedad de estilos visuales disponibles en el selector. Cada jugador ofrece una estética diferente para tu reptil protagonista, desde aspectos clásicos hasta diseños más originales y temáticos.</p><p>Algunos jugadores pueden estar disponibles desde el inicio, mientras que otros podrían requerir ser desbloqueados mediante logros en el juego o estar disponibles en futuras actualizaciones.</p><p>Es importante destacar que la elección del jugador es <strong>puramente estética</strong>. Cambiar la apariencia de tu serpiente no afecta de ninguna manera su velocidad, longitud, la forma en que come, ni las puntuaciones que obtienes.</p><p>¡Así que siéntete libre de experimentar y elegir el que más te guste sin preocuparte por ventajas o desventajas en el juego!</p>"
+                title: "Disfraz",
+                text: "<p>Personaliza tu serpiente, juega con el look que más te guste y convierte tu experiencia en algo único y divertido</p><h4>Selección de Disfraz</h4><p>Elige entre una variedad de estilos visuales disponibles en el selector. Cada disfraz ofrece una estética diferente para tu reptil protagonista, desde aspectos clásicos hasta diseños más originales y temáticos.</p><p>Algunos disfraces pueden estar disponibles desde el inicio, mientras que otros podrían requerir ser desbloqueados mediante logros en el juego o estar disponibles en futuras actualizaciones.</p><p>Es importante destacar que la elección del disfraz es <strong>puramente estética</strong>. Cambiar la apariencia de tu serpiente no afecta de ninguna manera su velocidad, longitud, la forma en que come, ni las puntuaciones que obtienes.</p><p>¡Así que siéntete libre de experimentar y elegir el que más te guste sin preocuparte por ventajas o desventajas en el juego!</p>"
             },
             food: {
                 title: "Comestible",
@@ -6852,24 +6894,41 @@ async function startGame(isRestart = false) {
             saveGameSettings();
         });
 
-        playerNameSelector.addEventListener('change', function() {
-            currentPlayerName = this.value;
-            saveGameSettings();
-        });
+        if (playerNameSelector) {
+            playerNameSelector.addEventListener('change', function() {
+                currentPlayerName = this.value;
+                if (playerNameSelectorFree) playerNameSelectorFree.value = this.value;
+                saveGameSettings();
+            });
+        }
+        if (playerNameSelectorFree) {
+            playerNameSelectorFree.addEventListener('change', function() {
+                currentPlayerName = this.value;
+                if (playerNameSelector) playerNameSelector.value = this.value;
+                saveGameSettings();
+            });
+        }
 
         function addNewPlayerFromInput() {
-            const newName = newPlayerNameInput.value.trim();
+            const newName = (newPlayerNameInput && newPlayerNameInput.value.trim()) ||
+                            (newPlayerNameInputFree && newPlayerNameInputFree.value.trim());
             if (newName) {
                 if (!playerNames.includes(newName)) {
                     playerNames.push(newName);
-                    const opt = document.createElement('option');
-                    opt.value = newName;
-                    opt.textContent = newName;
-                    playerNameSelector.appendChild(opt);
+                    [playerNameSelector, playerNameSelectorFree].forEach(sel => {
+                        if (sel) {
+                            const opt = document.createElement('option');
+                            opt.value = newName;
+                            opt.textContent = newName;
+                            sel.appendChild(opt);
+                        }
+                    });
                 }
-                playerNameSelector.value = newName;
+                if (playerNameSelector) playerNameSelector.value = newName;
+                if (playerNameSelectorFree) playerNameSelectorFree.value = newName;
                 currentPlayerName = newName;
-                newPlayerNameInput.value = '';
+                if (newPlayerNameInput) newPlayerNameInput.value = '';
+                if (newPlayerNameInputFree) newPlayerNameInputFree.value = '';
                 saveGameSettings();
             }
         }
@@ -6877,25 +6936,42 @@ async function startGame(isRestart = false) {
         if (confirmAddPlayerButton) {
             confirmAddPlayerButton.addEventListener('click', addNewPlayerFromInput);
         }
+        if (confirmAddPlayerButtonFree) {
+            confirmAddPlayerButtonFree.addEventListener('click', addNewPlayerFromInput);
+        }
         if (newPlayerNameInput) {
             newPlayerNameInput.addEventListener('keyup', function(e) { if (e.key === 'Enter') addNewPlayerFromInput(); });
             newPlayerNameInput.addEventListener('blur', addNewPlayerFromInput);
         }
+        if (newPlayerNameInputFree) {
+            newPlayerNameInputFree.addEventListener('keyup', function(e) { if (e.key === 'Enter') addNewPlayerFromInput(); });
+            newPlayerNameInputFree.addEventListener('blur', addNewPlayerFromInput);
+        }
+        function deleteCurrentPlayer() {
+            if (playerNames.length <= 1) return;
+            const nameToDelete = currentPlayerName;
+            if (nameToDelete === 'Snake') return;
+            const index = playerNames.indexOf(nameToDelete);
+            if (index > -1) {
+                playerNames.splice(index, 1);
+                [playerNameSelector, playerNameSelectorFree].forEach(sel => {
+                    if (sel) {
+                        const optIndex = Array.from(sel.options).findIndex(o => o.value === nameToDelete);
+                        if (optIndex >= 0) sel.removeChild(sel.options[optIndex]);
+                    }
+                });
+                const newSelection = playerNames[0];
+                if (playerNameSelector) playerNameSelector.value = newSelection;
+                if (playerNameSelectorFree) playerNameSelectorFree.value = newSelection;
+                currentPlayerName = newSelection;
+                saveGameSettings();
+            }
+        }
         if (deletePlayerNameButton) {
-            deletePlayerNameButton.addEventListener('click', function() {
-                if (playerNames.length <= 1) return;
-                const nameToDelete = playerNameSelector.value;
-                if (nameToDelete === 'Snake') return;
-                const index = playerNames.indexOf(nameToDelete);
-                if (index > -1) {
-                    playerNames.splice(index, 1);
-                    playerNameSelector.removeChild(playerNameSelector.options[index]);
-                    const newSelection = playerNames[0];
-                    playerNameSelector.value = newSelection;
-                    currentPlayerName = newSelection;
-                    saveGameSettings();
-                }
-            });
+            deletePlayerNameButton.addEventListener('click', deleteCurrentPlayer);
+        }
+        if (deletePlayerNameButtonFree) {
+            deletePlayerNameButtonFree.addEventListener('click', deleteCurrentPlayer);
         }
 
         difficultySelector.addEventListener('change', function() {
@@ -7447,7 +7523,7 @@ async function startGame(isRestart = false) {
             localStorage.setItem('snakeGameDifficulty', difficultySelector.value);
             localStorage.setItem('snakeGameSkin', skinSelector.value);
             localStorage.setItem('snakeGameFood', foodSelector.value);
-            localStorage.setItem('snakeGamePlayerName', playerNameSelector.value);
+            localStorage.setItem('snakeGamePlayerName', currentPlayerName);
             localStorage.setItem('snakePlayerNames', JSON.stringify(playerNames));
             localStorage.setItem('snakeGameAudioGeneral', audioToggleSelector.value);
             localStorage.setItem('snakeGameMusicVolume', musicVolumeSlider.value);
@@ -7485,19 +7561,15 @@ async function startGame(isRestart = false) {
                     playerNames = ['Snake', 'GamiSnake'];
                 }
             }
-            playerNameSelector.innerHTML = '';
-            playerNames.forEach(name => {
-                const opt = document.createElement('option');
-                opt.value = name;
-                opt.textContent = name;
-                playerNameSelector.appendChild(opt);
-            });
+            populatePlayerNameSelectors();
             const savedPlayerName = localStorage.getItem('snakeGamePlayerName');
             if (savedPlayerName && playerNames.includes(savedPlayerName)) {
-                playerNameSelector.value = savedPlayerName;
+                if (playerNameSelector) playerNameSelector.value = savedPlayerName;
+                if (playerNameSelectorFree) playerNameSelectorFree.value = savedPlayerName;
                 currentPlayerName = savedPlayerName;
             } else {
-                currentPlayerName = playerNameSelector.value;
+                if (playerNameSelector) currentPlayerName = playerNameSelector.value;
+                else if (playerNameSelectorFree) currentPlayerName = playerNameSelectorFree.value;
             }
 
             const savedFood = localStorage.getItem('snakeGameFood');
@@ -7633,7 +7705,7 @@ async function startGame(isRestart = false) {
             initialSnakeLength = cfg.initialLength;
             currentSkin = skinSelector.value;
             currentFood = foodSelector.value;
-            currentPlayerName = playerNameSelector.value;
+            currentPlayerName = playerNameSelector ? playerNameSelector.value : (playerNameSelectorFree ? playerNameSelectorFree.value : currentPlayerName);
             
             isMusicEnabled = (audioToggleSelector.value === 'all');
             areSfxEnabled = (audioToggleSelector.value === 'all' || audioToggleSelector.value === 'sfx_only');
