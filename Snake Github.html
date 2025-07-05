@@ -461,24 +461,6 @@
             transition: transform 0.05s ease-out, filter 0.05s ease-out;
         }
 
-        .mode-nav-button {
-            position: absolute;
-            top: 50%;
-            transform: translateY(-50%);
-            background-color: transparent;
-            border: none;
-            padding: 0;
-            width: 50px;
-            height: 50px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            color: #fff3e1;
-            cursor: pointer;
-            z-index: 20;
-        }
-        #mode-left-button { left: 10px; }
-        #mode-right-button { right: 10px; }
         
         #setup-controls {
             display: flex;
@@ -575,10 +557,6 @@
             filter: brightness(0.4);
         }
 
-        /* Semi-transparent navigation arrows */
-        .mode-nav-button .arrow-icon {
-            opacity: 0.6;
-        }
 
         .coin-icon {
             width: 16px;
@@ -1478,12 +1456,6 @@
         </div>
         
         <canvas id="gameCanvas"></canvas>
-        <button id="mode-left-button" class="mode-nav-button hidden" aria-label="Modo anterior">
-            <img id="mode-left-button-icon" class="arrow-icon" src="https://i.imgur.com/pDjzolV.png" alt="Anterior" onerror="this.src='https://placehold.co/50x50/02030D/FFFFFF?text=Err';">
-        </button>
-        <button id="mode-right-button" class="mode-nav-button hidden" aria-label="Modo siguiente">
-            <img id="mode-right-button-icon" class="arrow-icon" src="https://i.imgur.com/kwtquW9.png" alt="Siguiente" onerror="this.src='https://placehold.co/50x50/02030D/FFFFFF?text=Err';">
-        </button>
 
         <div id="setup-controls"> 
         <div id="settings-panel" class="settings-panel-hidden">
@@ -1916,10 +1888,6 @@
         const freeSettingsPanelContent = freeSettingsPanel.querySelector('.panel-content');
         const resetConfirmPanelContent = resetConfirmPanel.querySelector('.panel-content');
 
-        const modeLeftButton = document.getElementById("mode-left-button");
-        const modeRightButton = document.getElementById("mode-right-button");
-        const modeLeftButtonIcon = document.getElementById("mode-left-button-icon");
-        const modeRightButtonIcon = document.getElementById("mode-right-button-icon");
 
         // New DOM elements for specific info panel
         const specificInfoPanel = document.getElementById("specific-info-panel");
@@ -2120,11 +2088,6 @@ function setupSlider(slider, display) {
             veterano: new Image(),
             legendario: new Image()
         };
-        const modeSelectIntroImg = new Image();
-        const modeSelectLevelsImg = new Image();
-        const modeSelectFreeImg = new Image();
-        const modeSelectClassificationImg = new Image();
-        const modeSelectMazeImg = new Image();
 
         const worldImagesConfig = {
             1: { cover: 'https://i.imgur.com/XuoZro6.png', complete: 'https://i.imgur.com/pw2ebzf.png', level: 'https://i.imgur.com/gijG9ec.png', defeat: 'https://i.imgur.com/FZTIteF.png' },
@@ -2663,15 +2626,8 @@ function setupSlider(slider, display) {
             mazeResultType: '',
             gameActuallyStarted: false
         };
-        let modeSelectIndex = 0;
-        const MODE_SELECT_ORDER = ['intro', 'levels', 'freeMode', 'classification', 'maze'];
-        let showModeSelect = false;
         let panelOpenedFromSplash = false;
-        let introOptionAvailable = true; // controls visibility of the intro slide
         const MODE_TRANSITION_DURATION = 300; // ms
-        let modeTransitionStart = null;
-        let modeTransitionDir = 0;
-        let modeTransitionFrom = 0;
 
         const CLASSIFICATION_DIFFICULTY_ORDER = ['principiante', 'explorador', 'veterano', 'legendario'];
         let classificationDifficultyIndex = 0;
@@ -2865,7 +2821,7 @@ function setupSlider(slider, display) {
         let areSfxEnabled = true; 
         let synthsInitialized = false; // Flag to track synth initialization
         let synthEat, synthEatNoise, synthBadEat, synthWarning, synthTimeout, synthGameOver, synthStartGame, synthWin, synthCoinNoise, synthCoinChime;
-        let synthModeSwitch, synthModeSelect;
+        let synthModeSwitch;
 
 
         // --- Configuración para la animación de parpadeo del high score ---
@@ -2994,18 +2950,6 @@ function setupSlider(slider, display) {
             });
         }
 
-        function loadModeSelectionImages() {
-            modeSelectIntroImg.src = 'https://i.imgur.com/W34ctvU.png';
-            modeSelectLevelsImg.src = 'https://i.imgur.com/1Dp5GTu.png';
-            modeSelectFreeImg.src = 'https://i.imgur.com/6cMWnrC.png';
-            modeSelectClassificationImg.src = 'https://i.imgur.com/t5n37Mw.png';
-            modeSelectMazeImg.src = 'https://i.imgur.com/WY3lrHv.png';
-
-            [modeSelectIntroImg, modeSelectLevelsImg, modeSelectFreeImg, modeSelectClassificationImg, modeSelectMazeImg].forEach(img => {
-                img.onload = () => { if (showModeSelect && ctx) requestAnimationFrame(draw); };
-                img.onerror = () => { console.error(`Error al cargar imagen: ${img.src}`); if (showModeSelect && ctx) requestAnimationFrame(draw); };
-            });
-        }
 
         function loadSkinImages() {
             classicSnakeHeadLeftImg.src = 'https://i.imgur.com/x3Wrabg.png';
@@ -3234,8 +3178,8 @@ function setupSlider(slider, display) {
                 restartMazeButton.disabled = true;
                 configButton.disabled = true;
                 backButton.disabled = true;
-                backButtonIcon.src = showModeSelect ? 'https://i.imgur.com/1WrBpTQ.png' : 'https://i.imgur.com/Wvl87cV.png';
-                configButtonIcon.src = showModeSelect ? 'https://i.imgur.com/9HHOgFe.png' : 'https://i.imgur.com/jekDmyV.png';
+                backButtonIcon.src = 'https://i.imgur.com/Wvl87cV.png';
+                configButtonIcon.src = 'https://i.imgur.com/jekDmyV.png';
                 return;
             }
 
@@ -3244,8 +3188,8 @@ function setupSlider(slider, display) {
                 restartMazeButton.disabled = true;
                 configButton.disabled = true;
                 backButton.disabled = true;
-                backButtonIcon.src = showModeSelect ? 'https://i.imgur.com/1WrBpTQ.png' : 'https://i.imgur.com/Wvl87cV.png';
-                configButtonIcon.src = showModeSelect ? 'https://i.imgur.com/9HHOgFe.png' : 'https://i.imgur.com/jekDmyV.png';
+                backButtonIcon.src = 'https://i.imgur.com/Wvl87cV.png';
+                configButtonIcon.src = 'https://i.imgur.com/jekDmyV.png';
             } else {
                 const isWorldIntroCover = screenState.showCoverForWorld > 0 && !screenState.gameActuallyStarted;
                 const isWorldCompleteScreen = screenState.showWorldCompleteCover > 0;
@@ -3257,27 +3201,17 @@ function setupSlider(slider, display) {
                 const isClassificationCoverActive = screenState.showClassificationCover && !screenState.gameActuallyStarted;
                 const isMazeCoverActive = screenState.showMazeCover && !screenState.gameActuallyStarted;
                 const isMazeResultScreen = screenState.mazeResultType && !screenState.gameActuallyStarted;
-                const isModeSelectActive = showModeSelect;
-                const isModeSelectIntro = isModeSelectActive && MODE_SELECT_ORDER[modeSelectIndex] === 'intro';
                 const isSelectedWorldLocked = isWorldIntroCover && displayWorld > maxUnlockedWorld;
                 const isSelectedMazeLocked = isMazeCoverActive && displayMazeLevel > currentMazeLevel;
 
-                startButton.disabled = isModeSelectIntro || isSelectedWorldLocked || isSelectedMazeLocked;
+                startButton.disabled = isSelectedWorldLocked || isSelectedMazeLocked;
                 restartMazeButton.disabled = restartMazeButton.classList.contains('hidden');
                 configButton.disabled = false;
                 backButton.disabled = false;
+                backButtonIcon.src = 'https://i.imgur.com/Wvl87cV.png';
+                configButtonIcon.src = 'https://i.imgur.com/jekDmyV.png';
 
-                if (isModeSelectActive) {
-                    backButtonIcon.src = 'https://i.imgur.com/1WrBpTQ.png';
-                    configButtonIcon.src = 'https://i.imgur.com/9HHOgFe.png';
-                } else {
-                    backButtonIcon.src = 'https://i.imgur.com/Wvl87cV.png';
-                    configButtonIcon.src = 'https://i.imgur.com/jekDmyV.png';
-                }
-
-                if (isModeSelectActive) {
-                    startButton.textContent = "Seleccionar";
-                } else if (isLevelCompleteScreen) {
+                if (isLevelCompleteScreen) {
                     // Text is set by handleLevelsModeEnd
                 } else if (isWorldCompleteScreen) {
                     // Text is set by handleLevelsModeEnd
@@ -3299,7 +3233,7 @@ function setupSlider(slider, display) {
                     startButton.textContent = "Empezar";
                 }
                 
-                const isAnyCoverScreenActive = isWorldIntroCover || isWorldCompleteScreen || isLevelCompleteScreen || isDefeatScreen || isTimeoutScreen || isFreeModeEndScreen || isFreeModeCoverActive || isClassificationCoverActive || isMazeCoverActive || isMazeResultScreen || isModeSelectActive;
+                const isAnyCoverScreenActive = isWorldIntroCover || isWorldCompleteScreen || isLevelCompleteScreen || isDefeatScreen || isTimeoutScreen || isFreeModeEndScreen || isFreeModeCoverActive || isClassificationCoverActive || isMazeCoverActive || isMazeResultScreen;
                 if (!isAnyCoverScreenActive && !gameOver) {
                      if (isMusicEnabled && generalBackgroundMusic && generalBackgroundMusic.paused) {
                         if (inGameBackgroundMusic && !inGameBackgroundMusic.paused) inGameBackgroundMusic.pause();
@@ -3950,7 +3884,7 @@ function setupSlider(slider, display) {
                 const isSettingsOpen = !settingsPanel.classList.contains('settings-panel-hidden');
                 const isInfoOpen = !infoPanel.classList.contains('info-panel-hidden');
                 const isSpecificInfoOpen = specificInfoPanel && !specificInfoPanel.classList.contains('specific-info-panel-hidden');
-                if (isSettingsOpen || isInfoOpen || isSpecificInfoOpen || gameIntervalId || showModeSelect) return;
+                if (isSettingsOpen || isInfoOpen || isSpecificInfoOpen || gameIntervalId) return;
 
                 // Reset any result screens that may be showing
                 screenState.showWorldCompleteCover = 0;
@@ -5520,72 +5454,11 @@ function setupSlider(slider, display) {
             }
         }
 
-        function getModeImage(mode) {
-            if (mode === 'intro') return modeSelectIntroImg;
-            if (mode === 'levels') return modeSelectLevelsImg;
-            if (mode === 'freeMode') return modeSelectFreeImg;
-            if (mode === 'classification') return modeSelectClassificationImg;
-            return modeSelectMazeImg;
-        }
+function draw() {
+     if (!ctx) return;
+    ctx.fillStyle = "#374151";
+    ctx.fillRect(0, 0, canvasEl.width, canvasEl.height);
 
-        function drawModeSelection() {
-            modeLeftButton.classList.remove('hidden');
-            modeRightButton.classList.remove('hidden');
-
-            const now = performance.now();
-            let progress = 1;
-            if (modeTransitionStart !== null) {
-                progress = Math.min((now - modeTransitionStart) / MODE_TRANSITION_DURATION, 1);
-            }
-
-            const fromImg = getModeImage(MODE_SELECT_ORDER[modeTransitionStart !== null ? modeTransitionFrom : modeSelectIndex]);
-            const toImg = getModeImage(MODE_SELECT_ORDER[modeSelectIndex]);
-
-            if (modeTransitionStart !== null && progress < 1) {
-                const offset = canvasEl.width * progress;
-                const dir = modeTransitionDir;
-                if (fromImg && fromImg.complete && fromImg.naturalHeight !== 0) {
-                    ctx.drawImage(fromImg, -dir * offset, 0, canvasEl.width, canvasEl.height);
-                }
-                if (toImg && toImg.complete && toImg.naturalHeight !== 0) {
-                    ctx.drawImage(toImg, canvasEl.width * dir - dir * offset, 0, canvasEl.width, canvasEl.height);
-                }
-                requestAnimationFrame(draw);
-            } else {
-                modeTransitionStart = null;
-                if (toImg && toImg.complete && toImg.naturalHeight !== 0) {
-                    ctx.drawImage(toImg, 0, 0, canvasEl.width, canvasEl.height);
-                } else {
-                    ctx.fillStyle = 'white';
-                    ctx.textAlign = 'center';
-                    ctx.font = `${Math.floor(canvasEl.width / 15)}px 'Press Start 2P'`;
-                    ctx.fillText('Selecciona modo', canvasEl.width / 2, canvasEl.height / 2);
-                }
-            }
-        }
-
-
-        function draw() {
-             if (!ctx) return;
-            ctx.fillStyle = "#374151";
-            ctx.fillRect(0, 0, canvasEl.width, canvasEl.height);
-
-            if (showModeSelect) {
-                drawModeSelection();
-                updateMainButtonStates();
-                return;
-            } else {
-                if ((screenState.showClassificationCover ||
-                     (screenState.showCoverForWorld > 0 && gameMode === 'levels') ||
-                     (screenState.showMazeCover && gameMode === 'maze')) &&
-                    !screenState.gameActuallyStarted) {
-                    modeLeftButton.classList.remove('hidden');
-                    modeRightButton.classList.remove('hidden');
-                } else {
-                    modeLeftButton.classList.add('hidden');
-                    modeRightButton.classList.add('hidden');
-                }
-            }
 
             let speedBoostVisible = false;
             let speedBoostOverlayColor = '';
@@ -5625,8 +5498,6 @@ function setupSlider(slider, display) {
                 return;
             }
             if (screenState.showMazeCover && !screenState.gameActuallyStarted) {
-                modeLeftButton.classList.remove('hidden');
-                modeRightButton.classList.remove('hidden');
                 drawMazeCover();
                 updateMainButtonStates();
                 return;
@@ -5662,8 +5533,6 @@ function setupSlider(slider, display) {
                 return;
             }
             if (screenState.showCoverForWorld > 0 && gameMode === 'levels' && !screenState.gameActuallyStarted) {
-                modeLeftButton.classList.remove('hidden');
-                modeRightButton.classList.remove('hidden');
                 drawWorldCover();
                 updateMainButtonStates();
                 return;
@@ -6543,8 +6412,6 @@ function setupSlider(slider, display) {
             synthCoinChime.volume.value = -2;
             synthModeSwitch = new Tone.Synth({ oscillator: { type: 'square' }, envelope: { attack: 0.005, decay: 0.1, sustain: 0, release: 0.05 } }).toDestination();
             synthModeSwitch.volume.value = -2;
-            synthModeSelect = new Tone.Synth({ oscillator: { type: 'triangle' }, envelope: { attack: 0.005, decay: 0.15, sustain: 0, release: 0.05 } }).toDestination();
-            synthModeSelect.volume.value = -2;
             // synthSplashStart is initialized in window.onload
 
             synthsInitialized = true;
@@ -6959,9 +6826,6 @@ async function startGame(isRestart = false) {
                     synthCoinChime.triggerAttackRelease("C6", "16n", now + Math.max(0, duration - 0.1));
                 } else if (type === 'modeSwitch' && synthModeSwitch) {
                     synthModeSwitch.triggerAttackRelease('C5', '16n', now);
-                } else if (type === 'modeSelect' && synthModeSelect) {
-                    synthModeSelect.triggerAttackRelease('G4', '16n', now);
-                    synthModeSelect.triggerAttackRelease('C5', '16n', now + 0.1);
                 }
             } catch (error) { console.error("Error al reproducir sonido con Tone.js:", error); }
         }
@@ -7234,14 +7098,7 @@ async function startGame(isRestart = false) {
             const previousMode = gameMode;
             gameMode = gameModeSelector.value; // Update gameMode first
 
-            // If a mode is chosen via settings while the mode selection screen
-            // is visible, hide that screen and sync indexes
-            if (showModeSelect) {
-                showModeSelect = false;
-                introOptionAvailable = false;
-                modeTransitionStart = null;
-                modeSelectIndex = MODE_SELECT_ORDER.indexOf(gameMode);
-            }
+
 
             if (previousMode === 'maze' && gameMode !== 'maze') {
                 screenState.mazeResultType = '';
@@ -7347,94 +7204,28 @@ async function startGame(isRestart = false) {
         });
 
         function handleStartClick() {
-            if (showModeSelect) {
-                if (MODE_SELECT_ORDER[modeSelectIndex] === 'intro') return;
-                introOptionAvailable = false; // remove intro option after selecting a mode
-                if (areSfxEnabled) playSound('modeSelect');
-                const selectedMode = MODE_SELECT_ORDER[modeSelectIndex];
-                gameModeSelector.value = selectedMode;
-                gameMode = selectedMode;
-                showModeSelect = false;
-                modeTransitionStart = null;
-
-                screenState.showCoverForWorld = 0;
-                screenState.showLevelCompleteCover = 0;
-                screenState.showWorldCompleteCover = 0;
-                screenState.showDefeatCoverForWorld = 0;
-                screenState.showTimeoutCover = false;
-                screenState.showFreeModeCover = false;
-                screenState.showClassificationCover = false;
-                screenState.showMazeCover = false;
-                screenState.mazeResultType = '';
-                screenState.gameActuallyStarted = false;
-
-                if (selectedMode === 'levels') {
-                    screenState.showCoverForWorld = currentWorld;
-                } else if (selectedMode === 'freeMode') {
-                    screenState.showFreeModeCover = true;
-                    screenState.showFreeModeEnd = false;
-                    openFreeSettingsPanel();
-                } else if (selectedMode === 'classification') {
-                    screenState.showClassificationCover = true;
-                    classificationDifficultyIndex = 0;
-                    const initDiff = CLASSIFICATION_DIFFICULTY_ORDER[classificationDifficultyIndex];
-                    difficultySelector.value = initDiff;
-                    difficultySelector.dispatchEvent(new Event('change'));
-                } else {
-                    screenState.showMazeCover = true;
-                }
-                updateGameModeUI();
-                draw();
-                updateMainButtonStates();
-            } else {
-                startGame(false);
-            }
+            startGame(false);
         }
 
         function handleBackButtonClick() {
-            if (showModeSelect) {
-                // Return to splash screen
-                showModeSelect = false;
-                introOptionAvailable = true;
-                modeTransitionStart = null;
-                gameMode = '';
-                gameModeSelector.value = '';
-                if (gameContainer) gameContainer.classList.add('hidden');
-                if (splashScreen) splashScreen.classList.remove('hidden');
-            } else {
-                // Return to mode selection
-                showModeSelect = true;
-                modeTransitionStart = null;
-                introOptionAvailable = true;
-                modeSelectIndex = 0;
-                gameMode = '';
-                gameModeSelector.value = '';
-
-                // Cancel any in-progress transitions
-                worldTransitionStart = null;
-                classificationTransitionStart = null;
-                mazeTransitionStart = null;
-                worldTransitionDir = 0;
-                classificationTransitionDir = 0;
-                mazeTransitionDir = 0;
-
-                // Hide all cover images
-                screenState.showCoverForWorld = 0;
-                screenState.showLevelCompleteCover = 0;
-                screenState.showWorldCompleteCover = 0;
-                screenState.showDefeatCoverForWorld = 0;
-                screenState.showTimeoutCover = false;
-                screenState.showFreeModeCover = false;
-                screenState.showFreeModeEnd = false;
-                screenState.showClassificationCover = false;
-                screenState.showMazeCover = false;
-                screenState.mazeResultType = '';
-                screenState.gameActuallyStarted = false;
-
-                restartMazeButton.classList.add('hidden');
-                startButtonWrapperEl.classList.remove('split');
-                draw();
-            }
+            gameMode = '';
+            gameModeSelector.value = '';
+            screenState.showCoverForWorld = 0;
+            screenState.showLevelCompleteCover = 0;
+            screenState.showWorldCompleteCover = 0;
+            screenState.showDefeatCoverForWorld = 0;
+            screenState.showTimeoutCover = false;
+            screenState.showFreeModeCover = false;
+            screenState.showFreeModeEnd = false;
+            screenState.showClassificationCover = false;
+            screenState.showMazeCover = false;
+            screenState.mazeResultType = '';
+            screenState.gameActuallyStarted = false;
+            restartMazeButton.classList.add('hidden');
+            startButtonWrapperEl.classList.remove('split');
+            if (gameContainer) gameContainer.classList.add('hidden');
+            if (splashScreen) splashScreen.classList.remove('hidden');
+            draw();
             updateGameModeUI();
             updateMainButtonStates();
         }
@@ -7525,8 +7316,6 @@ async function startGame(isRestart = false) {
         addIconPressEvents(configButton, configButtonIcon);
         addIconPressEvents(backButton, backButtonIcon);
         addIconPressEvents(restartMazeButton, restartMazeButtonIcon);
-        addIconPressEvents(modeLeftButton, modeLeftButtonIcon);
-        addIconPressEvents(modeRightButton, modeRightButtonIcon);
         addIconPressEvents(startButton, startButton);
         addIconPressEvents(applyFreeSettingsBottomButton, applyFreeSettingsBottomButton);
         addIconPressEvents(resetDataButton, resetDataButton);
@@ -7539,21 +7328,6 @@ async function startGame(isRestart = false) {
         leftButton.addEventListener("click", () => changeDirection("left"));
         rightButton.addEventListener("click", () => changeDirection("right"));
 
-        function startModeTransition(dir) {
-            if (modeTransitionStart !== null) return;
-            modeTransitionDir = dir;
-            modeTransitionFrom = modeSelectIndex;
-
-            do {
-                modeSelectIndex = (modeSelectIndex + dir + MODE_SELECT_ORDER.length) % MODE_SELECT_ORDER.length;
-                if (introOptionAvailable && MODE_SELECT_ORDER[modeSelectIndex] !== 'intro') {
-                    introOptionAvailable = false; // once user moves away from intro, remove it
-                }
-            } while (!introOptionAvailable && MODE_SELECT_ORDER[modeSelectIndex] === 'intro');
-
-            modeTransitionStart = performance.now();
-            draw();
-        }
 
         function startClassificationTransition(dir) {
             if (classificationTransitionStart !== null) return;
@@ -7636,31 +7410,6 @@ async function startGame(isRestart = false) {
         }
 
 
-        modeLeftButton.addEventListener("click", () => {
-            if (showModeSelect) {
-                startModeTransition(-1);
-            } else if (screenState.showClassificationCover && !screenState.gameActuallyStarted) {
-                startClassificationTransition(-1);
-            } else if (screenState.showCoverForWorld && gameMode === 'levels' && !screenState.gameActuallyStarted) {
-                startWorldTransition(-1);
-            } else if (screenState.showMazeCover && gameMode === 'maze' && !screenState.gameActuallyStarted) {
-                startMazeTransition(-1);
-            }
-            if (areSfxEnabled) playSound('modeSwitch');
-        });
-        modeRightButton.addEventListener("click", () => {
-            if (showModeSelect) {
-                startModeTransition(1);
-            } else if (screenState.showClassificationCover && !screenState.gameActuallyStarted) {
-                startClassificationTransition(1);
-            } else if (screenState.showCoverForWorld && gameMode === 'levels' && !screenState.gameActuallyStarted) {
-                startWorldTransition(1);
-            } else if (screenState.showMazeCover && gameMode === 'maze' && !screenState.gameActuallyStarted) {
-                startMazeTransition(1);
-            }
-            if (areSfxEnabled) playSound('modeSwitch');
-        });
-
         startButton.addEventListener("click", handleStartClick);
         restartMazeButton.addEventListener("click", () => {
             if (areSfxEnabled) playSound('modeSwitch');
@@ -7714,7 +7463,6 @@ async function startGame(isRestart = false) {
 
             displayWorld = currentWorld;
             displayLevelInWorld = currentLevelInWorld;
-            modeSelectIndex = MODE_SELECT_ORDER.indexOf(gameMode);
 
             if (gameMode === 'levels') {
                 const absoluteDisplayLevelIndex = (displayWorld - 1) * LEVELS_PER_WORLD + (displayLevelInWorld - 1);
@@ -7832,7 +7580,6 @@ async function startGame(isRestart = false) {
         window.onload = () => {
             loadSkinImages();
             loadWorldImages();
-            loadModeSelectionImages();
             loadGameSettings(); // Loads settings including audio preferences and volume
 
             // Initialize HTML5 Audio Players
@@ -7945,10 +7692,6 @@ async function startGame(isRestart = false) {
 
                         if (splashScreen) splashScreen.classList.add('hidden');
                         if (gameContainer) gameContainer.classList.remove('hidden');
-                        modeSelectIndex = 0;
-                        showModeSelect = true;
-                        introOptionAvailable = true; // reset intro visibility on fresh start
-                        modeTransitionStart = null;
                         screenState.showCoverForWorld = 0;
                         screenState.showLevelCompleteCover = 0;
                         screenState.showWorldCompleteCover = 0;
