@@ -1490,7 +1490,7 @@
                 <div class="control-row" id="player-row">
                     <div id="player-select-control-group" class="control-group hidden">
                         <div class="control-label-icon-row">
-                            <label class="control-label" for="playerNameSelector">Jugador:</label>
+                            <label class="control-label" for="playerNameSelector">Nombre del Jugador:</label>
                             <button id="delete-player-name-button" class="setting-info-button" aria-label="Eliminar jugador">
                                 <img class="setting-info-icon" src="https://i.imgur.com/w5E6xdU.png" alt="Eliminar" onerror="this.src='https://placehold.co/24x24/02030D/FFFFFF?text=Err';">
                             </button>
@@ -1545,8 +1545,8 @@
                 </div>
                 <div class="control-group" id="skin-control-group">
                     <div class="control-label-icon-row">
-                        <label class="control-label" for="skinSelector">Jugador:</label>
-                        <button class="setting-info-button" data-setting="skin" aria-label="Información sobre jugadores">
+                        <label class="control-label" for="skinSelector">Disfraz:</label>
+                        <button class="setting-info-button" data-setting="skin" aria-label="Información sobre disfraces">
                             <img class="setting-info-icon" src="https://i.imgur.com/rWe7Ylp.png" alt="info" onerror="this.src='https://placehold.co/24x24/02030D/FFFFFF?text=Err';">
                         </button>
                     </div>
@@ -1610,6 +1610,10 @@
                     <button id="close-free-settings-button" aria-label="Cerrar ajustes">&times;</button>
                 </div>
                 <div class="panel-content">
+                <div class="control-group">
+                    <label class="control-label" for="playerNameSelector">Nombre del Jugador:</label>
+                    <select id="playerNameSelector"></select>
+                </div>
                 <div class="control-group">
                     <label class="control-label" for="free-speed-input">Velocidad: <span id="free-speed-value">67</span>%</label>
                     <input type="range" class="settings-range" id="free-speed-input" min="0" max="100" step="5" value="67">
@@ -1835,7 +1839,7 @@
         const skinSelector = document.getElementById("skinSelector");
         const foodSelector = document.getElementById("foodSelector");
         const gameModeSelector = document.getElementById("gameModeSelector");
-        const playerNameSelector = document.getElementById("playerNameSelector");
+        const playerNameSelectors = document.querySelectorAll("#playerNameSelector");
         const confirmAddPlayerButton = document.getElementById("confirm-add-player-button");
         const deletePlayerNameButton = document.getElementById("delete-player-name-button");
         const newPlayerNameInput = document.getElementById("newPlayerNameInput");
@@ -2456,6 +2460,21 @@ function setupSlider(slider, display) {
         let currentSkin = 'snake';
         let playerNames = ['Snake', 'GamiSnake'];
         let currentPlayerName = 'Snake';
+        function getSelectedPlayerName() {
+            return playerNameSelectors.length ? playerNameSelectors[0].value : '';
+        }
+        function updatePlayerNameSelectors(selectedName) {
+            playerNameSelectors.forEach(sel => {
+                sel.innerHTML = '';
+                playerNames.forEach(name => {
+                    const opt = document.createElement('option');
+                    opt.value = name;
+                    opt.textContent = name;
+                    sel.appendChild(opt);
+                });
+                if (selectedName && playerNames.includes(selectedName)) sel.value = selectedName;
+            });
+        }
         // --- Fin Configuración de Jugadores ---
 
         // --- Configuración de Comestibles ---
@@ -3277,8 +3296,8 @@ function setupSlider(slider, display) {
             else difficultyControlGroup.classList.remove('hidden');
             skinControlGroup.classList.remove('hidden');
             foodControlGroup.classList.remove('hidden');
-            playerSelectControlGroup.classList.add('hidden');
-            addPlayerControlGroup.classList.add('hidden');
+            playerSelectControlGroup.classList.remove('hidden');
+            addPlayerControlGroup.classList.remove('hidden');
             resetDataButton.classList.add('hidden');
             resetDataButton.classList.remove('interactive-mode');
 
@@ -3627,8 +3646,8 @@ function setupSlider(slider, display) {
                 text_classification: "<h4> (Solo en Modo Clasificación)</h4><p>Compite por la mejor puntuación al igual que en el Modo Libre, pero con una tabla de récords independiente.</p>"
             },
             skin: {
-                title: "Jugador",
-                text: "<p>Personaliza tu serpiente, juega con el look que más te guste y convierte tu experiencia en algo único y divertido</p><h4>Selección de Jugador</h4><p>Elige entre una variedad de estilos visuales disponibles en el selector. Cada jugador ofrece una estética diferente para tu reptil protagonista, desde aspectos clásicos hasta diseños más originales y temáticos.</p><p>Algunos jugadores pueden estar disponibles desde el inicio, mientras que otros podrían requerir ser desbloqueados mediante logros en el juego o estar disponibles en futuras actualizaciones.</p><p>Es importante destacar que la elección del jugador es <strong>puramente estética</strong>. Cambiar la apariencia de tu serpiente no afecta de ninguna manera su velocidad, longitud, la forma en que come, ni las puntuaciones que obtienes.</p><p>¡Así que siéntete libre de experimentar y elegir el que más te guste sin preocuparte por ventajas o desventajas en el juego!</p>"
+                title: "Disfraz",
+                text: "<p>Personaliza tu serpiente, juega con el look que más te guste y convierte tu experiencia en algo único y divertido</p><h4>Selección de Disfraz</h4><p>Elige entre una variedad de estilos visuales disponibles en el selector. Cada disfraz ofrece una estética diferente para tu reptil protagonista, desde aspectos clásicos hasta diseños más originales y temáticos.</p><p>Algunos disfraces pueden estar disponibles desde el inicio, mientras que otros podrían requerir ser desbloqueados mediante logros en el juego o estar disponibles en futuras actualizaciones.</p><p>Es importante destacar que la elección del disfraz es <strong>puramente estética</strong>. Cambiar la apariencia de tu serpiente no afecta de ninguna manera su velocidad, longitud, la forma en que come, ni las puntuaciones que obtienes.</p><p>¡Así que siéntete libre de experimentar y elegir el que más te guste sin preocuparte por ventajas o desventajas en el juego!</p>"
             },
             food: {
                 title: "Comestible",
@@ -3720,7 +3739,7 @@ function setupSlider(slider, display) {
                         musicVolumeControlGroup.classList.remove("interactive-mode");
                     }
                 }
-                playerNameSelector.disabled = false;
+                playerNameSelectors.forEach(sel => sel.disabled = false);
                 if (playerSelectControlGroup) playerSelectControlGroup.classList.add("interactive-mode");
                 if (addPlayerControlGroup) addPlayerControlGroup.classList.add("interactive-mode");
                 settingsPanel.querySelectorAll('.setting-info-button').forEach(btn => btn.disabled = false);
@@ -6852,22 +6871,19 @@ async function startGame(isRestart = false) {
             saveGameSettings();
         });
 
-        playerNameSelector.addEventListener('change', function() {
+        playerNameSelectors.forEach(sel => sel.addEventListener('change', function() {
             currentPlayerName = this.value;
+            playerNameSelectors.forEach(s => { if (s !== this) s.value = this.value; });
             saveGameSettings();
-        });
+        }));
 
         function addNewPlayerFromInput() {
             const newName = newPlayerNameInput.value.trim();
             if (newName) {
                 if (!playerNames.includes(newName)) {
                     playerNames.push(newName);
-                    const opt = document.createElement('option');
-                    opt.value = newName;
-                    opt.textContent = newName;
-                    playerNameSelector.appendChild(opt);
                 }
-                playerNameSelector.value = newName;
+                updatePlayerNameSelectors(newName);
                 currentPlayerName = newName;
                 newPlayerNameInput.value = '';
                 saveGameSettings();
@@ -6884,14 +6900,13 @@ async function startGame(isRestart = false) {
         if (deletePlayerNameButton) {
             deletePlayerNameButton.addEventListener('click', function() {
                 if (playerNames.length <= 1) return;
-                const nameToDelete = playerNameSelector.value;
+                const nameToDelete = getSelectedPlayerName();
                 if (nameToDelete === 'Snake') return;
                 const index = playerNames.indexOf(nameToDelete);
                 if (index > -1) {
                     playerNames.splice(index, 1);
-                    playerNameSelector.removeChild(playerNameSelector.options[index]);
                     const newSelection = playerNames[0];
-                    playerNameSelector.value = newSelection;
+                    updatePlayerNameSelectors(newSelection);
                     currentPlayerName = newSelection;
                     saveGameSettings();
                 }
@@ -7447,7 +7462,7 @@ async function startGame(isRestart = false) {
             localStorage.setItem('snakeGameDifficulty', difficultySelector.value);
             localStorage.setItem('snakeGameSkin', skinSelector.value);
             localStorage.setItem('snakeGameFood', foodSelector.value);
-            localStorage.setItem('snakeGamePlayerName', playerNameSelector.value);
+            localStorage.setItem('snakeGamePlayerName', getSelectedPlayerName());
             localStorage.setItem('snakePlayerNames', JSON.stringify(playerNames));
             localStorage.setItem('snakeGameAudioGeneral', audioToggleSelector.value);
             localStorage.setItem('snakeGameMusicVolume', musicVolumeSlider.value);
@@ -7485,19 +7500,13 @@ async function startGame(isRestart = false) {
                     playerNames = ['Snake', 'GamiSnake'];
                 }
             }
-            playerNameSelector.innerHTML = '';
-            playerNames.forEach(name => {
-                const opt = document.createElement('option');
-                opt.value = name;
-                opt.textContent = name;
-                playerNameSelector.appendChild(opt);
-            });
+            updatePlayerNameSelectors();
             const savedPlayerName = localStorage.getItem('snakeGamePlayerName');
             if (savedPlayerName && playerNames.includes(savedPlayerName)) {
-                playerNameSelector.value = savedPlayerName;
+                updatePlayerNameSelectors(savedPlayerName);
                 currentPlayerName = savedPlayerName;
             } else {
-                currentPlayerName = playerNameSelector.value;
+                currentPlayerName = getSelectedPlayerName();
             }
 
             const savedFood = localStorage.getItem('snakeGameFood');
@@ -7633,7 +7642,7 @@ async function startGame(isRestart = false) {
             initialSnakeLength = cfg.initialLength;
             currentSkin = skinSelector.value;
             currentFood = foodSelector.value;
-            currentPlayerName = playerNameSelector.value;
+            currentPlayerName = getSelectedPlayerName();
             
             isMusicEnabled = (audioToggleSelector.value === 'all');
             areSfxEnabled = (audioToggleSelector.value === 'all' || audioToggleSelector.value === 'sfx_only');
