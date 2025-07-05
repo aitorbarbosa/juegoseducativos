@@ -3316,6 +3316,13 @@ function setupSlider(slider, display) {
             else el.classList.remove('scroll-padding');
         }
 
+        function matchPanelSizeWithElement(sourceElement, targetPanel) {
+            if (!sourceElement || !targetPanel) return;
+            const srcRect = sourceElement.getBoundingClientRect();
+            targetPanel.style.top = srcRect.top + 'px';
+            targetPanel.style.height = srcRect.height + 'px';
+        }
+
         // --- Panel Management Refactor ---
         function togglePanel(panelElement, contentContainer, show) {
             if (!panelElement) {
@@ -3647,6 +3654,13 @@ function setupSlider(slider, display) {
         function openInfoPanel() {
             infoPanel.classList.add('centered-panel');
             togglePanel(infoPanel, infoPanelContent, true);
+            if (panelOpenedFromSplash) {
+                const splashContent = document.getElementById('splash-content');
+                requestAnimationFrame(() => {
+                    matchPanelSizeWithElement(splashContent, infoPanel);
+                    infoPanel.classList.remove('centered-panel');
+                });
+            }
             if (gameOver && !gameIntervalId) {
                 if (ctx && canvasEl) {
                     ctx.fillStyle = "#374151";
@@ -3829,8 +3843,21 @@ function setupSlider(slider, display) {
             Array.from(settingsPanel.querySelectorAll('.control-group.interactive-mode')).forEach(el => el.classList.remove("interactive-mode")); // Visually indicate disabled state
 
             specificInfoPanel.classList.add('centered-panel');
-
             togglePanel(specificInfoPanel, specificInfoContent, true);
+
+            let sourcePanel = null;
+            if (!settingsPanel.classList.contains('settings-panel-hidden')) {
+                sourcePanel = settingsPanel;
+            } else if (freeSettingsPanel && !freeSettingsPanel.classList.contains('free-settings-panel-hidden')) {
+                sourcePanel = freeSettingsPanel;
+            }
+            if (sourcePanel) {
+                requestAnimationFrame(() => {
+                    matchPanelSizeWithElement(sourcePanel, specificInfoPanel);
+                    specificInfoPanel.classList.remove('centered-panel');
+                    applyScrollbarPadding(specificInfoContent);
+                });
+            }
         }
 
         function closeSpecificInfoPanel() {
