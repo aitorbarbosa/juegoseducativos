@@ -1507,7 +1507,7 @@
                                 <img class="setting-info-icon" src="https://i.imgur.com/ZGgSVye.png" alt="Añadir" onerror="this.src='https://placehold.co/24x24/02030D/FFFFFF?text=Err';">
                             </button>
                         </div>
-                        <input id="newPlayerNameInput" type="text">
+                        <input id="newPlayerNameInput" type="text" maxlength="10">
                     </div>
                 </div>
                 <div class="control-group" id="game-mode-control-group">
@@ -2473,12 +2473,99 @@ function setupSlider(slider, display) {
             }
         };
         let currentSkin = 'snake';
+        let playerProfiles = {};
         let playerNames = ['Snake', 'GamiSnake'];
         let currentPlayerName = 'Snake';
+
+        function createDefaultProfile() {
+            return {
+                skin: 'snake',
+                food: 'apple',
+                difficulty: 'principiante',
+                audioGeneral: 'all',
+                musicVolume: 75,
+                gameMode: '',
+                currentWorld: 1,
+                currentLevelInWorld: 1,
+                maxUnlockedWorld: 1,
+                levelsProgress: Array(TOTAL_WORLDS * LEVELS_PER_WORLD).fill(false),
+                worldCurrentLevels: Array(TOTAL_WORLDS).fill(1),
+                currentMazeLevel: 1,
+                mazeLevelStars: Array(MAZE_LEVEL_COUNT).fill(0),
+                freeModeSettings: { ...FREE_MODE_DEFAULTS }
+            };
+        }
+
+        function loadPlayerProfiles() {
+            const stored = localStorage.getItem('snakePlayerProfiles');
+            if (stored) {
+                try {
+                    playerProfiles = JSON.parse(stored) || {};
+                } catch (e) {
+                    console.error('Error parsing player profiles', e);
+                    playerProfiles = {};
+                }
+            }
+            if (Object.keys(playerProfiles).length === 0) {
+                playerProfiles['Snake'] = createDefaultProfile();
+                playerProfiles['GamiSnake'] = createDefaultProfile();
+            }
+        }
+
+        function savePlayerProfiles() {
+            localStorage.setItem('snakePlayerProfiles', JSON.stringify(playerProfiles));
+        }
+
+        function applyProfile(profile) {
+            if (!profile) return;
+            difficultySelector.value = profile.difficulty || 'principiante';
+            classificationDifficultyIndex = CLASSIFICATION_DIFFICULTY_ORDER.indexOf(difficultySelector.value);
+            skinSelector.value = profile.skin || 'snake';
+            currentSkin = skinSelector.value;
+            applySkin(currentSkin);
+            foodSelector.value = profile.food || 'apple';
+            currentFood = foodSelector.value;
+            applyFood(currentFood);
+            audioToggleSelector.value = profile.audioGeneral || 'all';
+            musicVolumeSlider.value = profile.musicVolume || 75;
+            if (musicVolumeValue) musicVolumeValue.textContent = musicVolumeSlider.value;
+            currentWorld = profile.currentWorld || 1;
+            currentLevelInWorld = profile.currentLevelInWorld || 1;
+            maxUnlockedWorld = profile.maxUnlockedWorld || 1;
+            levelsProgress = Array.isArray(profile.levelsProgress) ? profile.levelsProgress : Array(TOTAL_WORLDS * LEVELS_PER_WORLD).fill(false);
+            worldCurrentLevels = Array.isArray(profile.worldCurrentLevels) ? profile.worldCurrentLevels : Array(TOTAL_WORLDS).fill(1);
+            currentMazeLevel = profile.currentMazeLevel || 1;
+            mazeLevelStars = Array.isArray(profile.mazeLevelStars) ? profile.mazeLevelStars : Array(MAZE_LEVEL_COUNT).fill(0);
+            freeModeSettings = profile.freeModeSettings ? { ...FREE_MODE_DEFAULTS, ...profile.freeModeSettings } : { ...FREE_MODE_DEFAULTS };
+            populateFreeSettingsInputs();
+
+            // Update display variables when applying profile so UI reflects new player state
+            displayWorld = currentWorld;
+            displayLevelInWorld = currentLevelInWorld;
+            displayMazeLevel = currentMazeLevel;
+
+            if (gameMode === 'levels') {
+                const absoluteDisplayLevelIndex = (displayWorld - 1) * LEVELS_PER_WORLD + (displayLevelInWorld - 1);
+                if (absoluteDisplayLevelIndex >= 0 && absoluteDisplayLevelIndex < TARGET_SCORES_LEVELS.length) {
+                    displayTargetScore = TARGET_SCORES_LEVELS[absoluteDisplayLevelIndex];
+                } else {
+                    displayTargetScore = TARGET_SCORES_LEVELS[TARGET_SCORES_LEVELS.length - 1];
+                }
+            } else if (gameMode === 'maze') {
+                mazePreviousStars = mazeLevelStars[displayMazeLevel - 1] || 0;
+                mazeStarsEarned = mazePreviousStars;
+                if (mazePreviousStars < MAZE_STAR_TARGETS.length) {
+                    displayTargetScore = MAZE_STAR_TARGETS[mazePreviousStars];
+                } else {
+                    displayTargetScore = MAZE_STAR_TARGETS[MAZE_STAR_TARGETS.length - 1];
+                }
+            }
+        }
         function getSelectedPlayerName() {
             return playerNameSelectors.length ? playerNameSelectors[0].value : '';
         }
         function updatePlayerNameSelectors(selectedName) {
+            playerNames = Object.keys(playerProfiles);
             playerNameSelectors.forEach(sel => {
                 sel.innerHTML = '';
                 playerNames.forEach(name => {
@@ -3528,6 +3615,10 @@ function setupSlider(slider, display) {
                 mirrorEffectDuration: parseFloat(freeMirrorEffect.value) * 1000,
                 obstacleCount: parseInt(freeObstacleCount.value, 10)
             };
+            if (playerProfiles[currentPlayerName]) {
+                playerProfiles[currentPlayerName].freeModeSettings = freeModeSettings;
+                saveGameSettings();
+            }
             closeFreeSettingsPanel();
         }
 
@@ -4612,6 +4703,7 @@ function setupSlider(slider, display) {
                 time: timeValue,
                 difficulty: DIFFICULTY_DISPLAY_NAMES[difficultyLevel],
                 skin: currentSkin,
+                playerName: currentPlayerName,
             };
 
             let insertIndex = highScores.findIndex(entry => {
@@ -5870,9 +5962,9 @@ function setupSlider(slider, display) {
                                 ctx.fillText(`${entry.score}`, scoreX, rowTextY);
                                 const secondaryValue = (gameMode === 'classification' || gameMode === 'freeMode') ? formatTime(entry.time) : entry.length;
                                 ctx.fillText(`${secondaryValue}`, lengthX, rowTextY);
-                                // USAR SKIN_DISPLAY_NAMES para mostrar el nombre del jugador
-                                const skinDisplayName = SKIN_DISPLAY_NAMES[entry.skin] || entry.skin || '-';
-                                ctx.fillText(skinDisplayName, skinX, rowTextY);
+                                // Mostrar el nombre del jugador si está disponible, si no el nombre del skin
+                                const playerDisplay = entry.playerName || SKIN_DISPLAY_NAMES[entry.skin] || entry.skin || '-';
+                                ctx.fillText(playerDisplay, skinX, rowTextY);
                             } else {
                                 ctx.fillStyle = defaultEntryColor;
                                 ctx.font = entryFont;
@@ -6893,16 +6985,41 @@ async function startGame(isRestart = false) {
         });
 
         playerNameSelectors.forEach(sel => sel.addEventListener('change', function() {
+            const previous = currentPlayerName;
+            saveGameSettings(); // Save previous profile
             currentPlayerName = this.value;
+            if (!playerProfiles[currentPlayerName]) {
+                playerProfiles[currentPlayerName] = createDefaultProfile();
+            }
             playerNameSelectors.forEach(s => { if (s !== this) s.value = this.value; });
+            applyProfile(playerProfiles[currentPlayerName]);
+            const savedCoins = parseInt(localStorage.getItem('snakeGameCoins'), 10);
+            totalCoins = Number.isFinite(savedCoins) && savedCoins >= 0 ? savedCoins : 0;
+
+            if (!gameIntervalId) {
+                if (gameMode === 'freeMode') {
+                    screenState.showFreeModeCover = true;
+                } else if (gameMode === 'levels') {
+                    screenState.showCoverForWorld = currentWorld;
+                    screenState.showWorldCompleteCover = 0;
+                    screenState.showLevelCompleteCover = 0;
+                    screenState.showDefeatCoverForWorld = 0;
+                    screenState.showTimeoutCover = false;
+                    drawStarProgress();
+                }
+            }
+
+            updateCoinDisplay();
+            updateGameModeUI();
+            requestAnimationFrame(draw);
             saveGameSettings();
         }));
 
         function addNewPlayerFromInput() {
-            const newName = newPlayerNameInput.value.trim();
+            const newName = newPlayerNameInput.value.trim().slice(0, 10);
             if (newName) {
-                if (!playerNames.includes(newName)) {
-                    playerNames.push(newName);
+                if (!playerProfiles[newName]) {
+                    playerProfiles[newName] = createDefaultProfile();
                 }
                 updatePlayerNameSelectors(newName);
                 currentPlayerName = newName;
@@ -6917,20 +7034,21 @@ async function startGame(isRestart = false) {
         if (newPlayerNameInput) {
             newPlayerNameInput.addEventListener('keyup', function(e) { if (e.key === 'Enter') addNewPlayerFromInput(); });
             newPlayerNameInput.addEventListener('blur', addNewPlayerFromInput);
+            newPlayerNameInput.addEventListener('input', function() {
+                if (this.value.length > 10) this.value = this.value.slice(0, 10);
+            });
         }
         if (deletePlayerNameButton) {
             deletePlayerNameButton.addEventListener('click', function() {
-                if (playerNames.length <= 1) return;
+                if (Object.keys(playerProfiles).length <= 1) return;
                 const nameToDelete = getSelectedPlayerName();
                 if (nameToDelete === 'Snake') return;
-                const index = playerNames.indexOf(nameToDelete);
-                if (index > -1) {
-                    playerNames.splice(index, 1);
-                    const newSelection = playerNames[0];
-                    updatePlayerNameSelectors(newSelection);
-                    currentPlayerName = newSelection;
-                    saveGameSettings();
-                }
+                if (playerProfiles[nameToDelete]) delete playerProfiles[nameToDelete];
+                const remaining = Object.keys(playerProfiles);
+                const newSelection = remaining[0];
+                updatePlayerNameSelectors(newSelection);
+                currentPlayerName = newSelection;
+                saveGameSettings();
             });
         }
 
@@ -7232,16 +7350,28 @@ async function startGame(isRestart = false) {
                 modeSelectIndex = 0;
                 gameMode = '';
                 gameModeSelector.value = '';
+
+                // Cancel any in-progress transitions
+                worldTransitionStart = null;
+                classificationTransitionStart = null;
+                mazeTransitionStart = null;
+                worldTransitionDir = 0;
+                classificationTransitionDir = 0;
+                mazeTransitionDir = 0;
+
+                // Hide all cover images
                 screenState.showCoverForWorld = 0;
                 screenState.showLevelCompleteCover = 0;
                 screenState.showWorldCompleteCover = 0;
                 screenState.showDefeatCoverForWorld = 0;
                 screenState.showTimeoutCover = false;
                 screenState.showFreeModeCover = false;
+                screenState.showFreeModeEnd = false;
                 screenState.showClassificationCover = false;
                 screenState.showMazeCover = false;
                 screenState.mazeResultType = '';
                 screenState.gameActuallyStarted = false;
+
                 restartMazeButton.classList.add('hidden');
                 startButtonWrapperEl.classList.remove('split');
                 draw();
@@ -7258,7 +7388,8 @@ async function startGame(isRestart = false) {
             if (highScores.length > 0) {
                 hsScoreValue.textContent = highScores[0].score;
                 if (hsSkinValueDisplay) {
-                    hsSkinValueDisplay.textContent = SKIN_DISPLAY_NAMES[highScores[0].skin] || highScores[0].skin || '-';
+                    const displayName = highScores[0].playerName || SKIN_DISPLAY_NAMES[highScores[0].skin] || highScores[0].skin || '-';
+                    hsSkinValueDisplay.textContent = displayName;
                 }
             } else {
                 hsScoreValue.textContent = "-";
@@ -7480,161 +7611,49 @@ async function startGame(isRestart = false) {
         window.addEventListener('resize', resizeGameElements); 
         
         function saveGameSettings() {
-            localStorage.setItem('snakeGameDifficulty', difficultySelector.value);
-            localStorage.setItem('snakeGameSkin', skinSelector.value);
-            localStorage.setItem('snakeGameFood', foodSelector.value);
-            localStorage.setItem('snakeGamePlayerName', getSelectedPlayerName());
-            localStorage.setItem('snakePlayerNames', JSON.stringify(playerNames));
-            localStorage.setItem('snakeGameAudioGeneral', audioToggleSelector.value);
-            localStorage.setItem('snakeGameMusicVolume', musicVolumeSlider.value);
-            localStorage.setItem('snakeGameMode', gameModeSelector.value);
-            // Levels mode specific
-            localStorage.setItem('snakeCurrentWorld', currentWorld.toString());
-            localStorage.setItem('snakeCurrentLevelInWorld', currentLevelInWorld.toString());
-            localStorage.setItem('snakeMaxUnlockedWorld', maxUnlockedWorld.toString());
-            localStorage.setItem('snakeLevelsProgress', JSON.stringify(levelsProgress));
-            localStorage.setItem('snakeWorldCurrentLevels', JSON.stringify(worldCurrentLevels));
-            localStorage.setItem('snakeCurrentMazeLevel', currentMazeLevel.toString());
-            localStorage.setItem('snakeMazeLevelStars', JSON.stringify(mazeLevelStars));
+            const profile = playerProfiles[currentPlayerName] || createDefaultProfile();
+            profile.difficulty = difficultySelector.value;
+            profile.skin = skinSelector.value;
+            profile.food = foodSelector.value;
+            profile.audioGeneral = audioToggleSelector.value;
+            profile.musicVolume = musicVolumeSlider.value;
+            profile.gameMode = gameModeSelector.value;
+            profile.currentWorld = currentWorld;
+            profile.currentLevelInWorld = currentLevelInWorld;
+            profile.maxUnlockedWorld = maxUnlockedWorld;
+            profile.levelsProgress = levelsProgress;
+            profile.worldCurrentLevels = worldCurrentLevels;
+            profile.currentMazeLevel = currentMazeLevel;
+            profile.mazeLevelStars = mazeLevelStars;
+            profile.freeModeSettings = freeModeSettings;
+            playerProfiles[currentPlayerName] = profile;
+            savePlayerProfiles();
+            localStorage.setItem('snakeGameCoins', totalCoins.toString());
+            localStorage.setItem('snakePlayerNames', JSON.stringify(Object.keys(playerProfiles)));
+            localStorage.setItem('snakeGamePlayerName', currentPlayerName);
             console.log("Configuraciones guardadas en localStorage.");
         }
 
         function loadGameSettings() {
-            const savedDifficulty = localStorage.getItem('snakeGameDifficulty');
-            if (savedDifficulty && DIFFICULTY_SETTINGS[savedDifficulty]) {
-                difficultySelector.value = savedDifficulty;
-            } else {
-                difficultySelector.value = 'principiante';
-            }
-            classificationDifficultyIndex = CLASSIFICATION_DIFFICULTY_ORDER.indexOf(difficultySelector.value);
-
-            const savedSkin = localStorage.getItem('snakeGameSkin');
-            if (savedSkin) skinSelector.value = savedSkin;
-
-            const savedPlayerNames = localStorage.getItem('snakePlayerNames');
-            if (savedPlayerNames) {
-                try {
-                    const parsed = JSON.parse(savedPlayerNames);
-                    if (Array.isArray(parsed) && parsed.length > 0) playerNames = parsed;
-                } catch (e) {
-                    console.error('Error parsing player names from localStorage', e);
-                    playerNames = ['Snake', 'GamiSnake'];
-                }
-            }
+            loadPlayerProfiles();
             updatePlayerNameSelectors();
             const savedPlayerName = localStorage.getItem('snakeGamePlayerName');
-            if (savedPlayerName && playerNames.includes(savedPlayerName)) {
-                updatePlayerNameSelectors(savedPlayerName);
+            if (savedPlayerName && playerProfiles[savedPlayerName]) {
                 currentPlayerName = savedPlayerName;
             } else {
-                currentPlayerName = getSelectedPlayerName();
+                currentPlayerName = Object.keys(playerProfiles)[0];
             }
-
-            const savedFood = localStorage.getItem('snakeGameFood');
-            if (savedFood) foodSelector.value = savedFood;
-            
-            const savedAudioGeneral = localStorage.getItem('snakeGameAudioGeneral');
-            if (savedAudioGeneral) audioToggleSelector.value = savedAudioGeneral;
-
-            const savedMusicVolume = parseInt(localStorage.getItem('snakeGameMusicVolume'), 10);
-            if (Number.isFinite(savedMusicVolume) && savedMusicVolume >= 0 && savedMusicVolume <= 100) {
-                musicVolumeSlider.value = savedMusicVolume;
-            } else {
-                musicVolumeSlider.value = 75;
-            }
-            if (musicVolumeValue) musicVolumeValue.textContent = musicVolumeSlider.value;
-
+            updatePlayerNameSelectors(currentPlayerName);
+            applyProfile(playerProfiles[currentPlayerName]);
             const savedCoins = parseInt(localStorage.getItem('snakeGameCoins'), 10);
             totalCoins = Number.isFinite(savedCoins) && savedCoins >= 0 ? savedCoins : 0;
-            
-            // Always start with no mode selected, regardless of any previously
-            // saved preference. Users must actively choose their mode each time
-            // they open the game.
+
+            // Always start with no mode selected
             gameModeSelector.value = '';
             gameMode = '';
-            
-            // Levels mode specific
-            const savedCurrentWorld = parseInt(localStorage.getItem('snakeCurrentWorld'), 10);
-            currentWorld = Number.isFinite(savedCurrentWorld) && savedCurrentWorld >= 1 ? savedCurrentWorld : 1;
 
-            const savedCurrentLevelInWorld = parseInt(localStorage.getItem('snakeCurrentLevelInWorld'), 10);
-            currentLevelInWorld = Number.isFinite(savedCurrentLevelInWorld) && savedCurrentLevelInWorld >= 1 ? savedCurrentLevelInWorld : 1;
-
-            const savedMaxUnlockedWorld = parseInt(localStorage.getItem('snakeMaxUnlockedWorld'), 10);
-            maxUnlockedWorld = Number.isFinite(savedMaxUnlockedWorld) && savedMaxUnlockedWorld >= 1 ? savedMaxUnlockedWorld : 1;
-
-            const savedLevelsProgress = localStorage.getItem('snakeLevelsProgress');
-            if (savedLevelsProgress) {
-                try {
-                    levelsProgress = JSON.parse(savedLevelsProgress);
-                    if (!Array.isArray(levelsProgress) || levelsProgress.length !== TOTAL_WORLDS * LEVELS_PER_WORLD) {
-                        console.warn("Invalid levels progress found in localStorage, resetting.");
-                        levelsProgress = Array(TOTAL_WORLDS * LEVELS_PER_WORLD).fill(false);
-                    }
-                } catch (e) {
-                    console.error("Error parsing levels progress from localStorage, resetting.", e);
-                    levelsProgress = Array(TOTAL_WORLDS * LEVELS_PER_WORLD).fill(false);
-                }
-            } else {
-                levelsProgress = Array(TOTAL_WORLDS * LEVELS_PER_WORLD).fill(false);
-            }
-
-            const savedWorldCurrentLevels = localStorage.getItem('snakeWorldCurrentLevels');
-            if (savedWorldCurrentLevels) {
-                try {
-                    worldCurrentLevels = JSON.parse(savedWorldCurrentLevels);
-                    if (!Array.isArray(worldCurrentLevels) || worldCurrentLevels.length !== TOTAL_WORLDS) {
-                        console.warn('Invalid world current levels in localStorage, recomputing.');
-                        worldCurrentLevels = Array(TOTAL_WORLDS).fill(1);
-                    }
-                } catch (e) {
-                    console.error('Error parsing world current levels from localStorage, recomputing.', e);
-                    worldCurrentLevels = Array(TOTAL_WORLDS).fill(1);
-                }
-            } else {
-                worldCurrentLevels = Array(TOTAL_WORLDS).fill(1);
-                for (let w = 1; w <= TOTAL_WORLDS; w++) {
-                    const startIdx = (w - 1) * LEVELS_PER_WORLD;
-                    let level = 1;
-                    for (let l = 1; l <= LEVELS_PER_WORLD; l++) {
-                        if (!levelsProgress[startIdx + l - 1]) {
-                            level = l;
-                            break;
-                        }
-                    }
-                    worldCurrentLevels[w - 1] = level;
-                }
-            }
-            if (worldCurrentLevels[currentWorld - 1]) {
-                currentLevelInWorld = worldCurrentLevels[currentWorld - 1];
-            }
-            worldCurrentLevels[currentWorld - 1] = currentLevelInWorld;
-
-            const savedMazeLevel = parseInt(localStorage.getItem('snakeCurrentMazeLevel'), 10);
-            currentMazeLevel = Number.isFinite(savedMazeLevel) && savedMazeLevel >= 1 ? savedMazeLevel : 1;
-            displayMazeLevel = currentMazeLevel;
-            mazeLevelSelector.value = currentMazeLevel.toString();
-
-            const savedMazeLevelStars = localStorage.getItem('snakeMazeLevelStars');
-            if (savedMazeLevelStars) {
-                try {
-                    mazeLevelStars = JSON.parse(savedMazeLevelStars);
-                    if (!Array.isArray(mazeLevelStars) || mazeLevelStars.length !== MAZE_LEVEL_COUNT) {
-                        console.warn("Invalid maze level stars in localStorage, resetting.");
-                        mazeLevelStars = Array(MAZE_LEVEL_COUNT).fill(0);
-                    }
-                } catch (e) {
-                    console.error("Error parsing maze level stars from localStorage, resetting.", e);
-                    mazeLevelStars = Array(MAZE_LEVEL_COUNT).fill(0);
-                }
-            } else {
-                mazeLevelStars = Array(MAZE_LEVEL_COUNT).fill(0);
-            }
-
-            // Initialize display variables after loading game state
             displayWorld = currentWorld;
             displayLevelInWorld = currentLevelInWorld;
-            gameMode = gameModeSelector.value; // Ensure gameMode is set before calculating displayTargetScore
             modeSelectIndex = MODE_SELECT_ORDER.indexOf(gameMode);
 
             if (gameMode === 'levels') {
