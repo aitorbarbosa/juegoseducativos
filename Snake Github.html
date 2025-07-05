@@ -2490,6 +2490,10 @@ function setupSlider(slider, display) {
                 if (selectedName && playerNames.includes(selectedName)) sel.value = selectedName;
             });
         }
+
+        function playerKey(base, name = currentPlayerName) {
+            return `${base}_${name}`;
+        }
         // --- Fin Configuración de Jugadores ---
 
         // --- Configuración de Comestibles ---
@@ -4612,6 +4616,7 @@ function setupSlider(slider, display) {
                 time: timeValue,
                 difficulty: DIFFICULTY_DISPLAY_NAMES[difficultyLevel],
                 skin: currentSkin,
+                playerName: currentPlayerName,
             };
 
             let insertIndex = highScores.findIndex(entry => {
@@ -4647,6 +4652,7 @@ function setupSlider(slider, display) {
                 time: timeValue,
                 difficulty: DIFFICULTY_DISPLAY_NAMES[difficultyLevel],
                 skin: currentSkin, // Guardamos el 'value' del skin actual
+                playerName: currentPlayerName,
             };
 
             let insertIndex = highScores.findIndex(entry => {
@@ -5870,9 +5876,8 @@ function setupSlider(slider, display) {
                                 ctx.fillText(`${entry.score}`, scoreX, rowTextY);
                                 const secondaryValue = (gameMode === 'classification' || gameMode === 'freeMode') ? formatTime(entry.time) : entry.length;
                                 ctx.fillText(`${secondaryValue}`, lengthX, rowTextY);
-                                // USAR SKIN_DISPLAY_NAMES para mostrar el nombre del jugador
-                                const skinDisplayName = SKIN_DISPLAY_NAMES[entry.skin] || entry.skin || '-';
-                                ctx.fillText(skinDisplayName, skinX, rowTextY);
+                                const playerDisplay = entry.playerName || SKIN_DISPLAY_NAMES[entry.skin] || entry.skin || '-';
+                                ctx.fillText(playerDisplay, skinX, rowTextY);
                             } else {
                                 ctx.fillStyle = defaultEntryColor;
                                 ctx.font = entryFont;
@@ -6896,6 +6901,7 @@ async function startGame(isRestart = false) {
             currentPlayerName = this.value;
             playerNameSelectors.forEach(s => { if (s !== this) s.value = this.value; });
             saveGameSettings();
+            loadGameSettings();
         }));
 
         function addNewPlayerFromInput() {
@@ -7258,7 +7264,7 @@ async function startGame(isRestart = false) {
             if (highScores.length > 0) {
                 hsScoreValue.textContent = highScores[0].score;
                 if (hsSkinValueDisplay) {
-                    hsSkinValueDisplay.textContent = SKIN_DISPLAY_NAMES[highScores[0].skin] || highScores[0].skin || '-';
+                    hsSkinValueDisplay.textContent = highScores[0].playerName || SKIN_DISPLAY_NAMES[highScores[0].skin] || highScores[0].skin || '-';
                 }
             } else {
                 hsScoreValue.textContent = "-";
@@ -7480,37 +7486,36 @@ async function startGame(isRestart = false) {
         window.addEventListener('resize', resizeGameElements); 
         
         function saveGameSettings() {
-            localStorage.setItem('snakeGameDifficulty', difficultySelector.value);
-            localStorage.setItem('snakeGameSkin', skinSelector.value);
-            localStorage.setItem('snakeGameFood', foodSelector.value);
-            localStorage.setItem('snakeGamePlayerName', getSelectedPlayerName());
+            const name = getSelectedPlayerName();
+            localStorage.setItem('snakeGamePlayerName', name);
             localStorage.setItem('snakePlayerNames', JSON.stringify(playerNames));
             localStorage.setItem('snakeGameAudioGeneral', audioToggleSelector.value);
             localStorage.setItem('snakeGameMusicVolume', musicVolumeSlider.value);
             localStorage.setItem('snakeGameMode', gameModeSelector.value);
-            // Levels mode specific
-            localStorage.setItem('snakeCurrentWorld', currentWorld.toString());
-            localStorage.setItem('snakeCurrentLevelInWorld', currentLevelInWorld.toString());
-            localStorage.setItem('snakeMaxUnlockedWorld', maxUnlockedWorld.toString());
-            localStorage.setItem('snakeLevelsProgress', JSON.stringify(levelsProgress));
-            localStorage.setItem('snakeWorldCurrentLevels', JSON.stringify(worldCurrentLevels));
-            localStorage.setItem('snakeCurrentMazeLevel', currentMazeLevel.toString());
-            localStorage.setItem('snakeMazeLevelStars', JSON.stringify(mazeLevelStars));
+
+            if (gameMode === 'freeMode') {
+                const profile = {
+                    difficulty: difficultySelector.value,
+                    skin: skinSelector.value,
+                    food: foodSelector.value,
+                };
+                localStorage.setItem(playerKey('snakeProfile', name), JSON.stringify(profile));
+            }
+
+            localStorage.setItem(playerKey('snakeCurrentWorld', name), currentWorld.toString());
+            localStorage.setItem(playerKey('snakeCurrentLevelInWorld', name), currentLevelInWorld.toString());
+            localStorage.setItem(playerKey('snakeMaxUnlockedWorld', name), maxUnlockedWorld.toString());
+            localStorage.setItem(playerKey('snakeLevelsProgress', name), JSON.stringify(levelsProgress));
+            localStorage.setItem(playerKey('snakeWorldCurrentLevels', name), JSON.stringify(worldCurrentLevels));
+            localStorage.setItem(playerKey('snakeCurrentMazeLevel', name), currentMazeLevel.toString());
+            localStorage.setItem(playerKey('snakeMazeLevelStars', name), JSON.stringify(mazeLevelStars));
+            localStorage.setItem(playerKey('snakeGameDifficulty', name), difficultySelector.value);
+            localStorage.setItem(playerKey('snakeGameSkin', name), skinSelector.value);
+            localStorage.setItem(playerKey('snakeGameFood', name), foodSelector.value);
             console.log("Configuraciones guardadas en localStorage.");
         }
 
         function loadGameSettings() {
-            const savedDifficulty = localStorage.getItem('snakeGameDifficulty');
-            if (savedDifficulty && DIFFICULTY_SETTINGS[savedDifficulty]) {
-                difficultySelector.value = savedDifficulty;
-            } else {
-                difficultySelector.value = 'principiante';
-            }
-            classificationDifficultyIndex = CLASSIFICATION_DIFFICULTY_ORDER.indexOf(difficultySelector.value);
-
-            const savedSkin = localStorage.getItem('snakeGameSkin');
-            if (savedSkin) skinSelector.value = savedSkin;
-
             const savedPlayerNames = localStorage.getItem('snakePlayerNames');
             if (savedPlayerNames) {
                 try {
@@ -7530,9 +7535,26 @@ async function startGame(isRestart = false) {
                 currentPlayerName = getSelectedPlayerName();
             }
 
-            const savedFood = localStorage.getItem('snakeGameFood');
+            const name = currentPlayerName;
+            const profileJSON = localStorage.getItem(playerKey('snakeProfile', name));
+            if (profileJSON) {
+                try {
+                    const profile = JSON.parse(profileJSON);
+                    if (profile.difficulty && DIFFICULTY_SETTINGS[profile.difficulty]) {
+                        difficultySelector.value = profile.difficulty;
+                    } else {
+                        difficultySelector.value = 'principiante';
+                    }
+                    if (profile.skin) skinSelector.value = profile.skin;
+                    if (profile.food) foodSelector.value = profile.food;
+                } catch (e) { console.error('Error parsing profile for', name, e); }
+            } else {
+                difficultySelector.value = 'principiante';
+            }
+            classificationDifficultyIndex = CLASSIFICATION_DIFFICULTY_ORDER.indexOf(difficultySelector.value);
+
+            const savedFood = localStorage.getItem(playerKey('snakeGameFood', name));
             if (savedFood) foodSelector.value = savedFood;
-            
             const savedAudioGeneral = localStorage.getItem('snakeGameAudioGeneral');
             if (savedAudioGeneral) audioToggleSelector.value = savedAudioGeneral;
 
@@ -7554,16 +7576,16 @@ async function startGame(isRestart = false) {
             gameMode = '';
             
             // Levels mode specific
-            const savedCurrentWorld = parseInt(localStorage.getItem('snakeCurrentWorld'), 10);
+            const savedCurrentWorld = parseInt(localStorage.getItem(playerKey('snakeCurrentWorld', name)), 10);
             currentWorld = Number.isFinite(savedCurrentWorld) && savedCurrentWorld >= 1 ? savedCurrentWorld : 1;
 
-            const savedCurrentLevelInWorld = parseInt(localStorage.getItem('snakeCurrentLevelInWorld'), 10);
+            const savedCurrentLevelInWorld = parseInt(localStorage.getItem(playerKey('snakeCurrentLevelInWorld', name)), 10);
             currentLevelInWorld = Number.isFinite(savedCurrentLevelInWorld) && savedCurrentLevelInWorld >= 1 ? savedCurrentLevelInWorld : 1;
 
-            const savedMaxUnlockedWorld = parseInt(localStorage.getItem('snakeMaxUnlockedWorld'), 10);
+            const savedMaxUnlockedWorld = parseInt(localStorage.getItem(playerKey('snakeMaxUnlockedWorld', name)), 10);
             maxUnlockedWorld = Number.isFinite(savedMaxUnlockedWorld) && savedMaxUnlockedWorld >= 1 ? savedMaxUnlockedWorld : 1;
 
-            const savedLevelsProgress = localStorage.getItem('snakeLevelsProgress');
+            const savedLevelsProgress = localStorage.getItem(playerKey('snakeLevelsProgress', name));
             if (savedLevelsProgress) {
                 try {
                     levelsProgress = JSON.parse(savedLevelsProgress);
@@ -7579,7 +7601,7 @@ async function startGame(isRestart = false) {
                 levelsProgress = Array(TOTAL_WORLDS * LEVELS_PER_WORLD).fill(false);
             }
 
-            const savedWorldCurrentLevels = localStorage.getItem('snakeWorldCurrentLevels');
+            const savedWorldCurrentLevels = localStorage.getItem(playerKey('snakeWorldCurrentLevels', name));
             if (savedWorldCurrentLevels) {
                 try {
                     worldCurrentLevels = JSON.parse(savedWorldCurrentLevels);
@@ -7610,12 +7632,12 @@ async function startGame(isRestart = false) {
             }
             worldCurrentLevels[currentWorld - 1] = currentLevelInWorld;
 
-            const savedMazeLevel = parseInt(localStorage.getItem('snakeCurrentMazeLevel'), 10);
+            const savedMazeLevel = parseInt(localStorage.getItem(playerKey('snakeCurrentMazeLevel', name)), 10);
             currentMazeLevel = Number.isFinite(savedMazeLevel) && savedMazeLevel >= 1 ? savedMazeLevel : 1;
             displayMazeLevel = currentMazeLevel;
             mazeLevelSelector.value = currentMazeLevel.toString();
 
-            const savedMazeLevelStars = localStorage.getItem('snakeMazeLevelStars');
+            const savedMazeLevelStars = localStorage.getItem(playerKey('snakeMazeLevelStars', name));
             if (savedMazeLevelStars) {
                 try {
                     mazeLevelStars = JSON.parse(savedMazeLevelStars);
