@@ -1620,15 +1620,6 @@
                 </div>
                 <div class="panel-content">
                 <div class="control-group">
-                    <div class="control-label-icon-row">
-                        <label class="control-label" for="playerNameSelector">Nombre del Jugador:</label>
-                        <button class="setting-info-button" data-setting="playerName" aria-label="Información sobre nombre del jugador">
-                            <img class="setting-info-icon" src="https://i.imgur.com/rWe7Ylp.png" alt="info" onerror="this.src='https://placehold.co/24x24/02030D/FFFFFF?text=Err';">
-                        </button>
-                    </div>
-                    <select id="playerNameSelector"></select>
-                </div>
-                <div class="control-group">
                     <label class="control-label" for="free-speed-input">Velocidad: <span id="free-speed-value">67</span>%</label>
                     <input type="range" class="settings-range" id="free-speed-input" min="0" max="100" step="5" value="67">
                 </div>
@@ -3416,12 +3407,9 @@ function setupSlider(slider, display) {
             skinControlGroup.classList.remove('hidden');
             foodControlGroup.classList.remove('hidden');
             if (playerNameControlGroup) playerNameControlGroup.classList.remove('hidden');
-            playerSelectControlGroup.classList.remove('hidden');
-            addPlayerControlGroup.classList.remove('hidden');
-            resetDataButton.classList.add('hidden');
-            resetDataButton.classList.remove('interactive-mode');
-
             if (panelOpenedFromSplash) {
+                playerSelectControlGroup.classList.remove('hidden');
+                addPlayerControlGroup.classList.remove('hidden');
                 gameModeControlGroup.classList.add('hidden');
                 difficultyControlGroup.classList.add('hidden');
                 skinControlGroup.classList.add('hidden');
@@ -3429,6 +3417,11 @@ function setupSlider(slider, display) {
                 if (playerNameControlGroup) playerNameControlGroup.classList.add('hidden');
                 resetDataButton.classList.remove('hidden');
                 resetDataButton.classList.add('interactive-mode');
+            } else {
+                playerSelectControlGroup.classList.add('hidden');
+                addPlayerControlGroup.classList.add('hidden');
+                resetDataButton.classList.add('hidden');
+                resetDataButton.classList.remove('interactive-mode');
             }
             if (gameOver && !gameIntervalId) { // Game is over and not running
                 if (ctx && canvasEl) {
@@ -3867,8 +3860,10 @@ function setupSlider(slider, display) {
                     }
                 }
                 playerNameSelectors.forEach(sel => sel.disabled = false);
-                if (playerSelectControlGroup) playerSelectControlGroup.classList.add("interactive-mode");
-                if (addPlayerControlGroup) addPlayerControlGroup.classList.add("interactive-mode");
+                if (panelOpenedFromSplash) {
+                    if (playerSelectControlGroup) playerSelectControlGroup.classList.add("interactive-mode");
+                    if (addPlayerControlGroup) addPlayerControlGroup.classList.add("interactive-mode");
+                }
                 settingsPanel.querySelectorAll('.setting-info-button').forEach(btn => btn.disabled = false);
                 
                 // Ensure main action buttons reflect that settings panel is still the context
