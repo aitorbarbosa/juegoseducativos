@@ -1490,7 +1490,10 @@
                 <div class="control-row" id="player-row">
                     <div id="player-select-control-group" class="control-group hidden">
                         <div class="control-label-icon-row">
-                            <label class="control-label" for="playerNameSelector">Nombre del Jugador:</label>
+                            <label class="control-label" for="playerNameSelector">Jugador:</label>
+                            <button class="setting-info-button" data-setting="playerName" aria-label="Información sobre nombre del jugador">
+                                <img class="setting-info-icon" src="https://i.imgur.com/rWe7Ylp.png" alt="info" onerror="this.src='https://placehold.co/24x24/02030D/FFFFFF?text=Err';">
+                            </button>
                             <button id="delete-player-name-button" class="setting-info-button" aria-label="Eliminar jugador">
                                 <img class="setting-info-icon" src="https://i.imgur.com/w5E6xdU.png" alt="Eliminar" onerror="this.src='https://placehold.co/24x24/02030D/FFFFFF?text=Err';">
                             </button>
@@ -1611,7 +1614,12 @@
                 </div>
                 <div class="panel-content">
                 <div class="control-group">
-                    <label class="control-label" for="playerNameSelector">Nombre del Jugador:</label>
+                    <div class="control-label-icon-row">
+                        <label class="control-label" for="playerNameSelector">Nombre del Jugador:</label>
+                        <button class="setting-info-button" data-setting="playerName" aria-label="Información sobre nombre del jugador">
+                            <img class="setting-info-icon" src="https://i.imgur.com/rWe7Ylp.png" alt="info" onerror="this.src='https://placehold.co/24x24/02030D/FFFFFF?text=Err';">
+                        </button>
+                    </div>
                     <select id="playerNameSelector"></select>
                 </div>
                 <div class="control-group">
@@ -3652,6 +3660,10 @@ function setupSlider(slider, display) {
             food: {
                 title: "Comestible",
                 text: "<p>Selecciona el alimento que quieres que aparezca en el escenario. Esta elección solo afecta al aspecto visual y no modifica la jugabilidad.</p>"
+            },
+            playerName: {
+                title: "Nombre del Jugador",
+                text: "<p>Si deseas registrar a un nuevo jugador, puedes hacerlo desde el menú de configuración de la pantalla de inicio.</p>"
             },
             audioGeneral: {
                 title: "Audio General",
