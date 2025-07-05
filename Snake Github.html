@@ -610,7 +610,7 @@
         }
 
 
-        #difficultySelector, #worldsSelector, #mazeLevelSelector, #audioToggleSelector, #skinSelector, #foodSelector, #gameModeSelector, #playerNameSelector {
+        #difficultySelector, #worldsSelector, #mazeLevelSelector, #audioToggleSelector, #skinSelector, #foodSelector, #playerNameSelector {
             padding: 4px 6px;
             width: calc(100% - 50px);
             font-size: 0.75em;
@@ -629,14 +629,14 @@
             margin-bottom: 0;
         }
         
-        #difficultySelector option, #worldsSelector option, #mazeLevelSelector option, #audioToggleSelector option, #skinSelector option, #foodSelector option, #gameModeSelector option, #playerNameSelector option {
+        #difficultySelector option, #worldsSelector option, #mazeLevelSelector option, #audioToggleSelector option, #skinSelector option, #foodSelector option, #playerNameSelector option {
             background-color: #374151;
             color: #f5f5f5;
             font-family: 'Press Start 2P', sans-serif;
             text-align: left; 
         }
         
-        #difficultySelector, #worldsSelector, #mazeLevelSelector, #audioToggleSelector, #skinSelector, #foodSelector, #gameModeSelector, #playerNameSelector {
+        #difficultySelector, #worldsSelector, #mazeLevelSelector, #audioToggleSelector, #skinSelector, #foodSelector, #playerNameSelector {
             text-align-last: left;
         }
         select option {
@@ -644,11 +644,11 @@
         }
 
 
-        #difficultySelector:focus, #worldsSelector:focus, #mazeLevelSelector:focus, #audioToggleSelector:focus, #skinSelector:focus, #foodSelector:focus, #gameModeSelector:focus, #playerNameSelector:focus {
+        #difficultySelector:focus, #worldsSelector:focus, #mazeLevelSelector:focus, #audioToggleSelector:focus, #skinSelector:focus, #foodSelector:focus, #playerNameSelector:focus {
             outline: 1px solid #8f66af; 
             box-shadow: none; 
         }
-        #difficultySelector:disabled, #worldsSelector:disabled, #mazeLevelSelector:disabled, #audioToggleSelector:disabled, #skinSelector:disabled, #foodSelector:disabled, #gameModeSelector:disabled, #playerNameSelector:disabled, #musicVolumeSlider:disabled {
+        #difficultySelector:disabled, #worldsSelector:disabled, #mazeLevelSelector:disabled, #audioToggleSelector:disabled, #skinSelector:disabled, #foodSelector:disabled, #playerNameSelector:disabled, #musicVolumeSlider:disabled {
             opacity: 0.7;
             cursor: not-allowed;
         }
@@ -712,7 +712,6 @@
         .control-group.interactive-mode:hover #audioToggleSelector,
         .control-group.interactive-mode:hover #skinSelector,
         .control-group.interactive-mode:hover #foodSelector,
-        .control-group.interactive-mode:hover #gameModeSelector,
         .control-group.interactive-mode:hover #musicVolumeSlider {
             cursor: pointer;
         }
@@ -1205,7 +1204,6 @@
              #settings-panel #audioToggleSelector,
              #settings-panel #skinSelector,
              #settings-panel #foodSelector,
-             #settings-panel #gameModeSelector,
              #settings-panel #playerNameSelector,
              #settings-panel #musicVolumeSlider {
                 font-size: 0.65em;
@@ -1288,8 +1286,7 @@
             #settings-panel #mazeLevelSelector,
             #settings-panel #audioToggleSelector,
             #settings-panel #skinSelector,
-            #settings-panel #foodSelector,
-        #settings-panel #gameModeSelector {
+            #settings-panel #foodSelector {
             height: 30px;
             margin-top: 2px;
             margin-bottom: 0;
@@ -1514,21 +1511,6 @@
                         </div>
                         <input id="newPlayerNameInput" type="text" maxlength="10">
                     </div>
-                </div>
-                <div class="control-group" id="game-mode-control-group">
-                    <div class="control-label-icon-row">
-                        <label class="control-label" for="gameModeSelector">Tipo de Juego:</label>
-                        <button class="setting-info-button" data-setting="gameMode" aria-label="Información sobre tipo de juego">
-                            <img class="setting-info-icon" src="https://i.imgur.com/rWe7Ylp.png" alt="info" onerror="this.src='https://placehold.co/24x24/02030D/FFFFFF?text=Err';">
-                        </button>
-                    </div>
-                    <select id="gameModeSelector">
-                        <option value="" disabled hidden selected>Sin seleccionar</option>
-                        <option value="levels">Modo Aventura</option>
-                        <option value="freeMode">Modo Libre</option>
-                        <option value="classification">Modo Clasificación</option>
-                        <option value="maze">Modo Laberinto</option>
-                    </select>
                 </div>
                 <div class="control-group" id="difficulty-control-group">
                      <div class="control-label-icon-row">
@@ -1857,7 +1839,6 @@
         const audioToggleSelector = document.getElementById("audioToggleSelector");
         const skinSelector = document.getElementById("skinSelector");
         const foodSelector = document.getElementById("foodSelector");
-        const gameModeSelector = document.getElementById("gameModeSelector");
         const playerNameSelectors = document.querySelectorAll("#playerNameSelector");
         const confirmAddPlayerButton = document.getElementById("confirm-add-player-button");
         const deletePlayerNameButton = document.getElementById("delete-player-name-button");
@@ -1869,7 +1850,6 @@
         const audioControlGroup = document.getElementById("audio-control-group");
         const skinControlGroup = document.getElementById("skin-control-group");
         const foodControlGroup = document.getElementById("food-control-group");
-        const gameModeControlGroup = document.getElementById("game-mode-control-group");
         const musicVolumeSlider = document.getElementById("musicVolumeSlider");
         const musicVolumeValue = document.getElementById("musicVolumeValue");
         const musicVolumeControlGroup = document.getElementById("music-volume-control-group");
@@ -3377,10 +3357,8 @@ function setupSlider(slider, display) {
                 backButton.disabled = true;
 
                 if (panelElement === settingsPanel && !gameIntervalId) {
-                    gameModeSelector.disabled = false;
                     skinSelector.disabled = false;
                     foodSelector.disabled = false;
-                    gameModeControlGroup.classList.add("interactive-mode");
                     skinControlGroup.classList.add("interactive-mode");
                     foodControlGroup.classList.add("interactive-mode");
                     if (gameMode === 'levels') worldsSelector.disabled = false; else difficultySelector.disabled = false;
@@ -3422,7 +3400,6 @@ function setupSlider(slider, display) {
             settingsPanel.classList.add('centered-panel');
             togglePanel(settingsPanel, settingsPanelContent, true);
             // Show or hide certain settings when accessed from the splash screen
-            gameModeControlGroup.classList.remove('hidden');
             if (!gameMode) difficultyControlGroup.classList.add('hidden');
             else difficultyControlGroup.classList.remove('hidden');
             skinControlGroup.classList.remove('hidden');
@@ -3431,7 +3408,6 @@ function setupSlider(slider, display) {
             if (panelOpenedFromSplash) {
                 playerSelectControlGroup.classList.remove('hidden');
                 addPlayerControlGroup.classList.remove('hidden');
-                gameModeControlGroup.classList.add('hidden');
                 difficultyControlGroup.classList.add('hidden');
                 skinControlGroup.classList.add('hidden');
                 foodControlGroup.classList.add('hidden');
@@ -3779,10 +3755,6 @@ function setupSlider(slider, display) {
 
         // --- Specific Info Panel Logic ---
         const specificHelpTexts = {
-            gameMode: {
-                title: "Tipo de Juego",
-                text: "<p>Define la estructura principal de tus partidas, eligiendo entre:</p><h4>Modo Aventura</h4><p>Embárcate en un viaje progresivo a través de diversos mundos. En este modo:</p><ul><li>Cada mundo presenta un diseño de escenario único y puede introducir nuevos obstáculos o mecánicas.</li><li>Deberás alcanzar una <strong>puntuación objetivo</strong> en cada nivel para superarlo.</li><li>Desbloquea <strong>nuevos mundos</strong> superando todos los niveles del mundo en el que te encuentras.</li><li>La dificultad de los niveles y mundos aumenta gradualmente, ¿Serás capaz de superarlos todos?</li></ul><h4>Modo Libre</h4><p>Disfruta de la experiencia clásica de Snake sin la presión de superar niveles específicos. En este modo:</p><ul><li>El objetivo principal es conseguir la <strong>máxima puntuación</strong> y marcar el mejor <strong>tiempo</strong> posible en una única partida.</li><li>La dificultad que selecciones (Novato, Explorador, Veterano o Legendario) afectará directamente la velocidad inicial de la serpiente y a la clasificación en la que se registran las puntuaciones.</li></ul><h4>Modo Clasificación</h4><p>Un modo similar al Modo Libre donde también competirás por lograr la mejor puntuación posible. Las puntuaciones se almacenan de forma independiente para este modo.</p>"
-            },
             difficulty: { 
                 title: "Dificultad / Mundo", 
                 text_adventure: "<h4> (Solo en Modo Aventura)</h4><p>Cuando juegas en <strong>Modo Aventura</strong>, tendrás disponibles un total de 8 mundos. Cada uno de ellos dispone de 5 niveles de creciente dificultad. Tendrás que superarlos todos para poder avanzar al siguiente mundo. Complétalos todos para finalizar este modo de juego.</p><p>El selector de <strong>Mundos</strong> (que aparece al seleccionar \"Modo Aventura\") te permite elegir en qué mundo específico deseas comenzar tu aventura, siempre y cuando ya lo hayas desbloqueado previamente jugando y superando los anteriores en la dificultad seleccionada. ¡Supera los mundos para acceder a nuevos escenarios y desafíos más emocionantes o volver a jugar a los que ya hayas superado!</p><p>No olvides estar atento a las novedades del juego, ¡Puede que haya nuevos niveles muy pronto!</p>",
@@ -3866,10 +3838,8 @@ function setupSlider(slider, display) {
 
             // Re-enable controls in the settings panel if it's still meant to be open
             if (!settingsPanel.classList.contains("settings-panel-hidden") && !gameIntervalId) {
-                gameModeSelector.disabled = false;
                 skinSelector.disabled = false;
                 foodSelector.disabled = false;
-                gameModeControlGroup.classList.add("interactive-mode");
                 skinControlGroup.classList.add("interactive-mode");
                 foodControlGroup.classList.add("interactive-mode");
 
@@ -5038,10 +5008,8 @@ function setupSlider(slider, display) {
         function updateUIOnGameOver() {
             updateMainButtonStates();
 
-            gameModeSelector.disabled = false;
             skinSelector.disabled = false;
             foodSelector.disabled = false;
-            gameModeControlGroup.classList.add("interactive-mode");
             skinControlGroup.classList.add("interactive-mode");
             foodControlGroup.classList.add("interactive-mode");
 
@@ -6258,7 +6226,6 @@ function setupSlider(slider, display) {
         }
         
         function updateGameModeUI() {
-            gameMode = gameModeSelector.value;
 
             const isGameCurrentlyRunning = !!gameIntervalId;
             const isSettingsPanelCurrentlyOpen = !settingsPanel.classList.contains("settings-panel-hidden");
@@ -6866,14 +6833,12 @@ async function startGame(isRestart = false) {
 
             updateMainButtonStates(); 
             
-            gameModeSelector.disabled = true;
             difficultySelector.disabled = true;
             worldsSelector.disabled = true;
             audioToggleSelector.disabled = true;
             skinSelector.disabled = true;
             foodSelector.disabled = true;
             musicVolumeSlider.disabled = true;
-            gameModeControlGroup.classList.remove("interactive-mode");
             difficultyControlGroup.classList.remove("interactive-mode");
             audioControlGroup.classList.remove("interactive-mode");
             skinControlGroup.classList.remove("interactive-mode");
@@ -7230,121 +7195,6 @@ async function startGame(isRestart = false) {
             }
         });
         
-        gameModeSelector.addEventListener('change', () => {
-            const previousMode = gameMode;
-            gameMode = gameModeSelector.value; // Update gameMode first
-
-            // If a mode is chosen via settings while the mode selection screen
-            // is visible, hide that screen and sync indexes
-            if (showModeSelect) {
-                showModeSelect = false;
-                introOptionAvailable = false;
-                modeTransitionStart = null;
-                modeSelectIndex = MODE_SELECT_ORDER.indexOf(gameMode);
-            }
-
-            if (previousMode === 'maze' && gameMode !== 'maze') {
-                screenState.mazeResultType = '';
-                restartMazeButton.classList.add('hidden');
-                startButtonWrapperEl.classList.remove('split');
-                // Ensure maze level display is synced when leaving maze mode
-                displayMazeLevel = currentMazeLevel;
-            }
-
-            if (gameMode === 'levels') {
-                // Set display variables to current game state for levels mode
-                displayWorld = currentWorld;
-                displayLevelInWorld = currentLevelInWorld;
-                const absoluteDisplayLevelIndex = (displayWorld - 1) * LEVELS_PER_WORLD + (displayLevelInWorld - 1);
-                if (absoluteDisplayLevelIndex >= 0 && absoluteDisplayLevelIndex < TARGET_SCORES_LEVELS.length) {
-                    displayTargetScore = TARGET_SCORES_LEVELS[absoluteDisplayLevelIndex];
-                } else {
-                    displayTargetScore = TARGET_SCORES_LEVELS[0]; // Default or last
-                }
-                
-                screenState.showCoverForWorld = currentWorld;
-                screenState.gameActuallyStarted = false;
-                screenState.showLevelCompleteCover = 0;
-                screenState.showDefeatCoverForWorld = 0;
-                screenState.showTimeoutCover = false;
-                screenState.showWorldCompleteCover = 0;
-                screenState.showFreeModeCover = false;
-                screenState.showFreeModeEnd = false;
-                screenState.showClassificationCover = false;
-                screenState.showMazeCover = false;
-            } else if (gameMode === 'freeMode') {
-                displayTargetScore = 0; // No target score in free mode
-
-                screenState.showCoverForWorld = 0;
-                screenState.showLevelCompleteCover = 0;
-                screenState.showDefeatCoverForWorld = 0;
-                screenState.showTimeoutCover = false;
-                screenState.showWorldCompleteCover = 0;
-                screenState.showFreeModeCover = true; // Show free mode cover
-                screenState.showFreeModeEnd = false;
-                screenState.showClassificationCover = false;
-                screenState.showMazeCover = false;
-                screenState.gameActuallyStarted = false;
-                gameOver = false;
-                snake = [];
-                currentFoodItem = {};
-                if (ctx) {
-                    ctx.fillStyle = "#374151";
-                    ctx.fillRect(0, 0, canvasEl.width, canvasEl.height);
-                }
-                openFreeSettingsPanel();
-            } else if (gameMode === 'classification') {
-                displayTargetScore = 0;
-
-                screenState.showCoverForWorld = 0;
-                screenState.showLevelCompleteCover = 0;
-                screenState.showDefeatCoverForWorld = 0;
-                screenState.showTimeoutCover = false;
-                screenState.showWorldCompleteCover = 0;
-                screenState.showFreeModeCover = false;
-                screenState.showClassificationCover = true;
-                screenState.showMazeCover = false;
-                screenState.gameActuallyStarted = false;
-                gameOver = false;
-                snake = [];
-                currentFoodItem = {};
-                if (ctx) {
-                    ctx.fillStyle = "#374151";
-                    ctx.fillRect(0, 0, canvasEl.width, canvasEl.height);
-                }
-            } else { // maze mode
-                // Sync displayed level with actual progress when entering maze mode
-                displayMazeLevel = currentMazeLevel;
-                mazePreviousStars = mazeLevelStars[displayMazeLevel - 1] || 0;
-                mazeStarsEarned = mazePreviousStars;
-                if (mazePreviousStars < MAZE_STAR_TARGETS.length) {
-                    displayTargetScore = MAZE_STAR_TARGETS[mazePreviousStars];
-                } else {
-                    displayTargetScore = MAZE_STAR_TARGETS[MAZE_STAR_TARGETS.length - 1];
-                }
-
-                screenState.showCoverForWorld = 0;
-                screenState.showLevelCompleteCover = 0;
-                screenState.showDefeatCoverForWorld = 0;
-                screenState.showTimeoutCover = false;
-                screenState.showWorldCompleteCover = 0;
-                screenState.showFreeModeCover = false;
-                screenState.showClassificationCover = false;
-                screenState.showMazeCover = true;
-                screenState.gameActuallyStarted = false;
-                gameOver = false;
-                snake = [];
-                currentFoodItem = {};
-                if (ctx) {
-                    ctx.fillStyle = "#374151";
-                    ctx.fillRect(0, 0, canvasEl.width, canvasEl.height);
-                }
-            }
-            updateGameModeUI(); // This will now use the correct display variables
-            updateMainButtonStates();
-            requestAnimationFrame(draw);
-            saveGameSettings();
-        });
 
         function handleStartClick() {
             if (showModeSelect) {
@@ -7352,7 +7202,6 @@ async function startGame(isRestart = false) {
                 introOptionAvailable = false; // remove intro option after selecting a mode
                 if (areSfxEnabled) playSound('modeSelect');
                 const selectedMode = MODE_SELECT_ORDER[modeSelectIndex];
-                gameModeSelector.value = selectedMode;
                 gameMode = selectedMode;
                 showModeSelect = false;
                 modeTransitionStart = null;
@@ -7398,7 +7247,6 @@ async function startGame(isRestart = false) {
                 introOptionAvailable = true;
                 modeTransitionStart = null;
                 gameMode = '';
-                gameModeSelector.value = '';
                 if (gameContainer) gameContainer.classList.add('hidden');
                 if (splashScreen) splashScreen.classList.remove('hidden');
             } else {
@@ -7408,7 +7256,6 @@ async function startGame(isRestart = false) {
                 introOptionAvailable = true;
                 modeSelectIndex = 0;
                 gameMode = '';
-                gameModeSelector.value = '';
 
                 // Cancel any in-progress transitions
                 worldTransitionStart = null;
@@ -7677,7 +7524,7 @@ async function startGame(isRestart = false) {
             profile.food = foodSelector.value;
             profile.audioGeneral = audioToggleSelector.value;
             profile.musicVolume = musicVolumeSlider.value;
-            profile.gameMode = gameModeSelector.value;
+            profile.gameMode = gameMode;
             profile.currentWorld = currentWorld;
             profile.currentLevelInWorld = currentLevelInWorld;
             profile.maxUnlockedWorld = maxUnlockedWorld;
@@ -7709,7 +7556,6 @@ async function startGame(isRestart = false) {
             totalCoins = Number.isFinite(savedCoins) && savedCoins >= 0 ? savedCoins : 0;
 
             // Always start with no mode selected
-            gameModeSelector.value = '';
             gameMode = '';
 
             displayWorld = currentWorld;
