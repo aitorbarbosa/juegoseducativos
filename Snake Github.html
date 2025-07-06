@@ -1612,6 +1612,18 @@
                     <button id="close-free-settings-button" aria-label="Cerrar ajustes">&times;</button>
                 </div>
                 <div class="panel-content">
+                <div class="control-group" id="free-difficulty-control-group">
+                    <div class="control-label-icon-row">
+                        <label class="control-label" for="free-difficulty-selector">Dificultad:</label>
+                    </div>
+                    <select id="free-difficulty-selector">
+                        <option value="personalizado" selected>Personalizado</option>
+                        <option value="principiante">Novato</option>
+                        <option value="explorador">Explorador</option>
+                        <option value="veterano">Veterano</option>
+                        <option value="legendario">Legendario</option>
+                    </select>
+                </div>
                 <div class="control-group">
                     <div class="control-label-icon-row">
                         <label class="control-label" for="playerNameSelector">Jugador:</label>
@@ -1887,6 +1899,7 @@
         const closeSettingsButton = document.getElementById("close-settings-button");
         const closeFreeSettingsButton = document.getElementById("close-free-settings-button");
         const applyFreeSettingsBottomButton = document.getElementById("apply-free-settings-bottom");
+        const freeDifficultySelector = document.getElementById("free-difficulty-selector");
 
         const backButton = document.getElementById("backButton");
         const backButtonIcon = document.getElementById("backButtonIcon");
@@ -2173,6 +2186,7 @@ function setupSlider(slider, display) {
         
         // Mapping for difficulty display names
         const DIFFICULTY_DISPLAY_NAMES = {
+            personalizado: "Personalizado",
             principiante: "Novato",
             explorador: "Explorador",
             veterano: "Veterano",
@@ -2632,6 +2646,7 @@ function setupSlider(slider, display) {
         };
 
         let difficulty = 'principiante';
+        let freeDifficulty = 'personalizado';
         let snakeSpeed = 150; 
         let foodTimeRemaining = 0; 
         let foodDisappearTimeoutId; 
@@ -3519,10 +3534,14 @@ function setupSlider(slider, display) {
         }
 
        function openFreeSettingsPanel() {
-            freeSettingsPanel.classList.add('centered-panel');
-            togglePanel(freeSettingsPanel, freeSettingsPanelContent, true);
-            populateFreeSettingsInputs();
-        }
+           freeSettingsPanel.classList.add('centered-panel');
+           togglePanel(freeSettingsPanel, freeSettingsPanelContent, true);
+           if (freeDifficultySelector) {
+               freeDifficultySelector.value = freeDifficulty;
+           }
+           populateFreeSettingsInputs();
+            displayHighScoreInPanel();
+       }
 
         function closeFreeSettingsPanel() {
             togglePanel(freeSettingsPanel, freeSettingsPanelContent, false);
@@ -3727,6 +3746,25 @@ function setupSlider(slider, display) {
             else openSettingsPanel();
         });
         if (applyFreeSettingsBottomButton) applyFreeSettingsBottomButton.addEventListener('click', applyFreeSettings);
+        if (freeDifficultySelector) freeDifficultySelector.addEventListener('change', () => {
+            freeDifficulty = freeDifficultySelector.value;
+            if (freeDifficulty === 'personalizado') {
+                if (playerProfiles[currentPlayerName] && playerProfiles[currentPlayerName].freeModeSettings) {
+                    freeModeSettings = { ...FREE_MODE_DEFAULTS, ...playerProfiles[currentPlayerName].freeModeSettings };
+                } else {
+                    freeModeSettings = { ...FREE_MODE_DEFAULTS };
+                }
+            } else {
+                freeModeSettings = { ...FREE_MODE_DEFAULTS, ...DIFFICULTY_SETTINGS[freeDifficulty] };
+            }
+            difficulty = freeDifficulty;
+            if (!gameIntervalId) {
+                snakeSpeed = freeModeSettings.speed;
+                initialSnakeLength = freeModeSettings.initialLength;
+            }
+            populateFreeSettingsInputs();
+            displayHighScoreInPanel();
+        });
         closeFreeSettingsButton.addEventListener('click', closeFreeSettingsPanel);
         closeSettingsButton.addEventListener('click', closeSettingsPanel);
         backButton.addEventListener('click', () => {
@@ -6220,7 +6258,7 @@ function setupSlider(slider, display) {
         }
 
         function displayHighScoreInPanel() {
-            const selectedDifficulty = difficultySelector.value; // Esto es para el modo libre
+            const selectedDifficulty = (gameMode === 'freeMode') ? freeDifficulty : difficultySelector.value;
             const highScores = loadHighScores(selectedDifficulty);
             const hsSkinValueDisplay = document.getElementById("hs-skin-value");
 
@@ -6301,7 +6339,7 @@ function setupSlider(slider, display) {
 
                 // Actualizamos la dificultad aunque no se muestre actualmente
                 progressPanelLeftLabel.textContent = "Dificultad:";
-                progressPanelLeftValue.textContent = DIFFICULTY_DISPLAY_NAMES[difficultySelector.value] || difficultySelector.value;
+                progressPanelLeftValue.textContent = DIFFICULTY_DISPLAY_NAMES[freeDifficulty] || freeDifficulty;
 
                 difficultyLabel.textContent = "Dificultad:";
                 difficultySelector.classList.remove('hidden');
