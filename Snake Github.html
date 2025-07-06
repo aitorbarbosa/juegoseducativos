@@ -4006,6 +4006,20 @@ function setupSlider(slider, display) {
             closeSpecificInfoButton.addEventListener('click', closeSpecificInfoPanel);
         }
 
+        function maybeShowInitialHelpForMode(mode) {
+            const storageKey = `snakeHelpShown_${mode}`;
+            if (!localStorage.getItem(storageKey)) {
+                let settingKey = null;
+                if (mode == 'levels') settingKey = 'world';
+                else if (mode == 'freeMode') settingKey = 'freeDifficulty';
+                else if (mode == 'classification') settingKey = 'difficulty';
+                else if (mode == 'maze') settingKey = 'mazeLevel';
+                if (settingKey) {
+                    openSpecificInfoPanel(settingKey);
+                    localStorage.setItem(storageKey, 'true');
+                }
+            }
+        }
         document.querySelectorAll('.setting-info-button').forEach(button => {
             const icon = button.querySelector('.setting-info-icon');
             const settingKey = button.dataset.setting;
@@ -7365,6 +7379,7 @@ async function startGame(isRestart = false) {
                     screenState.showMazeCover = true;
                 }
                 updateGameModeUI();
+                maybeShowInitialHelpForMode(selectedMode);
                 draw();
                 updateMainButtonStates();
             } else {
