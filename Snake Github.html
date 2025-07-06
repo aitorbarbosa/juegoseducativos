@@ -218,7 +218,8 @@
             max-width: 90%;
         }
 
-        #main-info-title img {
+        #main-info-title img,
+        #specific-info-title img {
             max-height: 45px;
             width: auto;
             max-width: 90%;
@@ -3866,18 +3867,22 @@ function setupSlider(slider, display) {
         const specificHelpTexts = {
             difficulty: {
                 title: "Modo Clasificación",
+                image: "https://i.imgur.com/19iGpfZ.png",
                 text_classification: "<p>¡Demuestra de lo que eres capaz y compite por lo más alto!</p> <p><strong>Selecciona la dificultad</strong> que prefieras y trata de superar tus propios récords.</p><p>También puedes <strong>compartir el juego</strong> con amigos y familia. Solo asegúrate de que seleccionan su perfil antes de empezar, ¡y que intenten superarte si pueden!</p> <p>¿Estás listo para luchar por la <strong>primera posición</strong> del ranking?</p>"
             },
             freeDifficulty: {
                 title: "Modo Libre",
+                image: "https://i.imgur.com/qvL4cd8.png",
                 text: "<p>Disfruta de una experiencia <strong>totalmente personalizada</strong>.</p> <p>Elige el nivel de dificultad que prefieras para <strong>ajustar automáticamente</strong> la configuración de la partida.</p> <p>También puedes seleccionar la opción <strong>Personalizado</strong> para ajustar tu propia configuración de partida.</p><p>Cada jugador puede tener su configuración individual: Elige las opciones que prefieras, pulsa el botón <strong>Guardar</strong>, y podrás reutilizarla en futuras partidas.</p><p>¡Juega a tu ritmo y desafíate como quieras!</p>"
             },
             world: {
                 title: "Modo Aventura",
+                image: "https://i.imgur.com/tLBeddL.png",
                 text: "<p>¡Supera todos los Mundos y completa la aventura!</p> <p>Explora <strong>10 escenarios únicos</strong>, cada uno con nuevos elementos de juego y <strong>5 niveles</strong> de dificultad progresiva que pondrán a prueba tus habilidades.</p> <p>Avanza superando desafíos y <strong>desbloquea nuevos mundos</strong> en tu recorrido.</p> <p><strong>Continúa</strong> donde lo dejaste o <strong>regresa</strong> a niveles ya completados para volver a disfrutar de la experiencia.</p> <p>¡Y esto es solo el comienzo! Muy pronto llegarán actualizaciones con <strong>nuevas aventuras</strong>.</p>"
             },
             mazeLevel: {
                 title: "Modo Laberinto",
+                image: "https://i.imgur.com/XLdIK3D.png",
                 text: "<p>¡Pon a prueba tu ingenio y reflejos en <strong>10 laberintos únicos</strong>!</p> <p>La distribución de bloques en cada nivel cambia la forma de jugar, conviertiendo cada partida en una experiencia diferente.</p> <p>Acumula puntos para conseguir al menos <strong>3 estrellas</strong> y desbloquear nuevos laberintos, o trata de lograr las <strong>5 estrellas</strong> en todos para desbloquear increíbles sorpresas.</p> <p>¿Tendrás lo que hace falta para <strong>completar todos los niveles</strong> y alcanzar la <strong>puntuación perfecta</strong> en cada uno?</p>"
             },
             skin: {
@@ -3915,12 +3920,16 @@ function setupSlider(slider, display) {
                 return;
             }
 
+            const imgTag = helpData.image ?
+                `<img src="${helpData.image}" alt="${helpData.title}" onerror="this.src='https://placehold.co/300x80/02030D/FFFFFF?text=Title+Error'; console.error('Error loading specific-info-title image');">` :
+                helpData.title;
+
             if (settingKey === 'difficulty') {
                 // In classification mode show the dedicated title
-                specificInfoTitle.textContent = helpData.title;
+                specificInfoTitle.innerHTML = imgTag;
                 specificInfoContent.innerHTML = helpData.text_classification;
             } else {
-                specificInfoTitle.textContent = helpData.title;
+                specificInfoTitle.innerHTML = imgTag;
                 specificInfoContent.innerHTML = helpData.text;
             }
             
