@@ -1515,12 +1515,19 @@
                 <div class="control-group" id="difficulty-control-group">
                      <div class="control-label-icon-row">
                         <label class="control-label" id="difficulty-label" for="difficultySelector">Dificultad:</label>
-                        <button class="setting-info-button" data-setting="difficulty" aria-label="Información sobre dificultad/mundo">
+                        <button id="difficulty-info-button" class="setting-info-button" data-setting="difficulty" aria-label="Información sobre dificultad">
+                            <img class="setting-info-icon" src="https://i.imgur.com/rWe7Ylp.png" alt="info" onerror="this.src='https://placehold.co/24x24/02030D/FFFFFF?text=Err';">
+                        </button>
+                        <button id="world-info-button" class="setting-info-button hidden" data-setting="world" aria-label="Información sobre mundos">
+                            <img class="setting-info-icon" src="https://i.imgur.com/rWe7Ylp.png" alt="info" onerror="this.src='https://placehold.co/24x24/02030D/FFFFFF?text=Err';">
+                        </button>
+                        <button id="maze-info-button" class="setting-info-button hidden" data-setting="mazeLevel" aria-label="Información sobre niveles">
                             <img class="setting-info-icon" src="https://i.imgur.com/rWe7Ylp.png" alt="info" onerror="this.src='https://placehold.co/24x24/02030D/FFFFFF?text=Err';">
                         </button>
                     </div>
                     <select id="difficultySelector">
-                        <option value="principiante" selected>Novato</option>
+                        <option value="personalizado" selected>Personalizado</option>
+                        <option value="principiante">Novato</option>
                         <option value="explorador">Explorador</option>
                         <option value="veterano">Veterano</option>
                         <option value="legendario">Legendario</option>
@@ -1853,6 +1860,10 @@
         const musicVolumeSlider = document.getElementById("musicVolumeSlider");
         const musicVolumeValue = document.getElementById("musicVolumeValue");
         const musicVolumeControlGroup = document.getElementById("music-volume-control-group");
+
+        const difficultyInfoButton = document.getElementById("difficulty-info-button");
+        const worldInfoButton = document.getElementById("world-info-button");
+        const mazeInfoButton = document.getElementById("maze-info-button");
         
         const progressPanel = document.getElementById("progress-panel");
         const titlePanel = document.getElementById("title-panel"); 
@@ -2163,6 +2174,7 @@ function setupSlider(slider, display) {
         
         // Mapping for difficulty display names
         const DIFFICULTY_DISPLAY_NAMES = {
+            personalizado: "Personalizado",
             principiante: "Novato",
             explorador: "Explorador",
             veterano: "Veterano",
@@ -2740,6 +2752,10 @@ function setupSlider(slider, display) {
                 obstacleCount: 10
             }
         };
+        function getActiveFreeModeConfig() {
+            return difficultySelector.value == "personalizado" ? freeModeSettings : (DIFFICULTY_SETTINGS[difficultySelector.value] || FREE_MODE_DEFAULTS);
+        }
+
         const CLASSIFICATION_RANKS = {
             principiante: 1,
             explorador: 2,
@@ -2826,13 +2842,6 @@ function setupSlider(slider, display) {
             if (!mirrorEffect.active) return;
             let duration = MIRROR_EFFECT_DURATION;
             if (gameMode === 'classification' || gameMode === 'freeMode') {
-                const cfg = (gameMode === 'classification') ? DIFFICULTY_SETTINGS[difficultySelector.value] : freeModeSettings;
-                if (typeof cfg.mirrorEffectDuration === 'number') {
-                    duration = cfg.mirrorEffectDuration;
-                }
-            }
-            const elapsed = Date.now() - mirrorEffect.startTime;
-            if (elapsed >= duration) {
                 mirrorEffect.active = false;
                 controlsInverted = false;
             }
@@ -2948,13 +2957,6 @@ function setupSlider(slider, display) {
                             (gameMode === 'levels' && (screenState.showCoverForWorld > 0 || screenState.showLevelCompleteCover > 0 || screenState.showDefeatCoverForWorld > 0) && !screenState.gameActuallyStarted) || 
                             screenState.showWorldCompleteCover > 0 ||
                             (gameMode === 'freeMode' && screenState.showFreeModeCover && !screenState.gameActuallyStarted) ||
-                            (gameMode === 'classification' && screenState.showClassificationCover && !screenState.gameActuallyStarted) ||
-                            (gameMode === 'maze' && screenState.showMazeCover && !screenState.gameActuallyStarted)
-                            )) {
-                           requestAnimationFrame(draw);
-                        }
-                    }
-                };
                  img.onerror = () => {
                     console.error(`Error al cargar imagen: ${img.src}`);
                     worldImagesLoaded++; 
@@ -2964,13 +2966,6 @@ function setupSlider(slider, display) {
                             (gameMode === 'levels' && (screenState.showCoverForWorld > 0 || screenState.showLevelCompleteCover > 0 || screenState.showDefeatCoverForWorld > 0) && !screenState.gameActuallyStarted) || 
                             screenState.showWorldCompleteCover > 0 ||
                             (gameMode === 'freeMode' && screenState.showFreeModeCover && !screenState.gameActuallyStarted) ||
-                            (gameMode === 'classification' && screenState.showClassificationCover && !screenState.gameActuallyStarted) ||
-                            (gameMode === 'maze' && screenState.showMazeCover && !screenState.gameActuallyStarted)
-                            )) {
-                            requestAnimationFrame(draw);
-                        }
-                    }
-                };
             });
         }
 
@@ -3268,13 +3263,6 @@ function setupSlider(slider, display) {
                 } else if (isWorldIntroCover || isFreeModeCoverActive || isClassificationCoverActive || isMazeCoverActive) {
                     startButton.textContent = "Empezar";
                 } else if (gameOver && (gameMode === 'freeMode' || gameMode === 'classification')) {
-                    startButton.textContent = "Empezar";
-                } else if (gameOver && gameMode === 'levels') {
-                    // finalizeGameOver (via handleLevelsModeEnd) sets the text
-                    // If we are here after closing settings, it should be "Empezar"
-                     if (!isWorldIntroCover && !isWorldCompleteScreen && !isLevelCompleteScreen && !isDefeatScreen) {
-                        startButton.textContent = "Empezar";
-                    }
                 } else { 
                     startButton.textContent = "Empezar";
                 }
@@ -3440,13 +3428,6 @@ function setupSlider(slider, display) {
                     screenState.showFreeModeEnd = false;
                     screenState.showClassificationCover = false;
                 } else if (gameMode === 'freeMode') {
-                    screenState.showFreeModeCover = true;
-                    screenState.showFreeModeEnd = false;
-                    screenState.gameActuallyStarted = false;
-                    snake = []; // Vaciar la serpiente para que updateTimeLengthDisplay use initialSnakeLength
-                } else if (gameMode === 'classification') {
-                    screenState.showClassificationCover = true;
-                    screenState.gameActuallyStarted = false;
                     snake = [];
                 }
                 resetGameUIDisplays(); // Update UI for score, streak, AND length (if free mode and snake is empty)
@@ -3481,13 +3462,6 @@ function setupSlider(slider, display) {
                     updateScoreDisplay(); // Ensure score 0 is displayed
                     updateTargetScoreDisplay(); // Ensure correct target is displayed
                 } else if (gameMode === 'freeMode') {
-                    screenState.showFreeModeCover = true; // Ensure cover is shown when returning from settings
-                    screenState.showFreeModeEnd = false;
-                    screenState.gameActuallyStarted = false;
-                    // Score, streak and snake length (via snake=[]) reset when settings opened
-                    updateScoreDisplay();
-                    updateTimeLengthDisplay(); // Ensure length is updated based on empty snake array
-                } else if (gameMode === 'classification') {
                     screenState.showClassificationCover = true; // Ensure cover is shown when returning from settings
                     screenState.gameActuallyStarted = false;
                     updateScoreDisplay();
@@ -3656,13 +3630,6 @@ function setupSlider(slider, display) {
                 screenState.showFreeModeEnd = false;
                 screenState.showClassificationCover = false;
             } else if (gameMode === 'freeMode') {
-                screenState.showFreeModeCover = true;
-                screenState.showFreeModeEnd = false;
-                screenState.gameActuallyStarted = false;
-                snake = []; // Vaciar la serpiente
-                } else if (gameMode === 'classification') {
-                    screenState.showClassificationCover = true;
-                    screenState.gameActuallyStarted = false;
                     snake = [];
                 }
                 resetGameUIDisplays(); // Llamar aquí para que la UI se actualice con los valores reseteados
@@ -3714,13 +3681,6 @@ function setupSlider(slider, display) {
         configButton.addEventListener('click', () => {
             if (areSfxEnabled) playSound('modeSwitch');
             if (gameMode === 'freeMode') openFreeSettingsPanel();
-            else openSettingsPanel();
-        });
-        if (applyFreeSettingsBottomButton) applyFreeSettingsBottomButton.addEventListener('click', applyFreeSettings);
-        closeFreeSettingsButton.addEventListener('click', closeFreeSettingsPanel);
-        closeSettingsButton.addEventListener('click', closeSettingsPanel);
-        backButton.addEventListener('click', () => {
-            if (areSfxEnabled) playSound('modeSwitch');
             handleBackButtonClick();
         });
         closeInfoButton.addEventListener('click', closeInfoPanel);
@@ -3755,11 +3715,18 @@ function setupSlider(slider, display) {
 
         // --- Specific Info Panel Logic ---
         const specificHelpTexts = {
-            difficulty: { 
-                title: "Dificultad / Mundo", 
-                text_adventure: "<h4> (Solo en Modo Aventura)</h4><p>Cuando juegas en <strong>Modo Aventura</strong>, tendrás disponibles un total de 8 mundos. Cada uno de ellos dispone de 5 niveles de creciente dificultad. Tendrás que superarlos todos para poder avanzar al siguiente mundo. Complétalos todos para finalizar este modo de juego.</p><p>El selector de <strong>Mundos</strong> (que aparece al seleccionar \"Modo Aventura\") te permite elegir en qué mundo específico deseas comenzar tu aventura, siempre y cuando ya lo hayas desbloqueado previamente jugando y superando los anteriores en la dificultad seleccionada. ¡Supera los mundos para acceder a nuevos escenarios y desafíos más emocionantes o volver a jugar a los que ya hayas superado!</p><p>No olvides estar atento a las novedades del juego, ¡Puede que haya nuevos niveles muy pronto!</p>",
+            difficulty: {
+                title: "Dificultad",
                 text_free: "<h4> (Solo en Modo Libre)</h4><p>Ajusta el nivel de desafío para que se adapte a tu habilidad y preferencias. La dificultad influye principalmente en la velocidad de la serpiente y el tiempo de desaparición de los comestibles.</p><h4>Novato</h4><p>Un modo relajado pensado para quienes se inician. La serpiente avanza despacio y la comida nunca desaparece.</p><h4>Explorador</h4><p>Aumenta ligeramente la velocidad y se introduce la racha junto con la desaparición de la comida y la aparición de rayos.</p><h4>Veterano</h4><p>La velocidad sube un poco más y se añaden obstáculos, espejos y comida falsa que puede restar puntos.</p><h4>Legendario</h4><p>Solo para expertos: la serpiente es muy rápida, la comida dura muy poco y todas las mecánicas combinadas te pondrán a prueba.</p>",
-                text_classification: "<h4> (Solo en Modo Clasificación)</h4><p>Compite por la mejor puntuación al igual que en el Modo Libre, pero con una tabla de récords independiente.</p>"
+                text_classification: "<h4> (Solo en Modo Clasificación)</h4><p>En este modo cada intento cuenta para tu propio ranking. Selecciona la dificultad que prefieras, supera tu récord y escala posiciones en la tabla de clasificación exclusiva.</p>"
+            },
+            world: {
+                title: "Mundo",
+                text: "<h4> (Solo en Modo Aventura)</h4><p>Cuando juegas en <strong>Modo Aventura</strong>, tienes disponibles 8 mundos. Cada uno contiene 5 niveles con dificultad creciente. Debes superar cada mundo para desbloquear el siguiente.</p><p>El selector de <strong>Mundos</strong> te permite comenzar en cualquier mundo que ya hayas desbloqueado para repetir desafíos anteriores o continuar tu progresión.</p><p>¡Supera todos los mundos para completar la aventura y mantente atento a futuras actualizaciones!</p>"
+            },
+            mazeLevel: {
+                title: "Nivel",
+                text: "<h4> (Solo en Modo Laberinto)</h4><p>Enfréntate a 10 laberintos únicos en los que la disposición de bloques dificulta tu avance. Cada nivel otorga hasta 5 estrellas en función de tu puntuación final.</p><p>Obtén suficientes estrellas para desbloquear los siguientes laberintos y trata de alcanzar la puntuación perfecta en cada uno de ellos.</p>"
             },
             skin: {
                 title: "Disfraz",
@@ -3795,16 +3762,11 @@ function setupSlider(slider, display) {
             specificInfoTitle.textContent = helpData.title;
 
             if (settingKey === 'difficulty') {
-                if (gameMode === 'levels') {
-                    specificInfoTitle.textContent = "Mundos";
-                    specificInfoContent.innerHTML = helpData.text_adventure;
+                specificInfoTitle.textContent = 'Dificultad';
+                if (gameMode === 'classification') {
+                    specificInfoContent.innerHTML = helpData.text_classification;
                 } else {
-                    specificInfoTitle.textContent = "Dificultad";
-                    if (gameMode === 'classification') {
-                        specificInfoContent.innerHTML = helpData.text_classification;
-                    } else {
-                        specificInfoContent.innerHTML = helpData.text_free;
-                    }
+                    specificInfoContent.innerHTML = helpData.text_free;
                 }
             } else {
                 specificInfoContent.innerHTML = helpData.text;
@@ -3938,13 +3900,6 @@ function setupSlider(slider, display) {
                     screenState.showClassificationCover = false;
                     screenState.showMazeCover = false;
                 } else if (gameMode === 'freeMode') {
-                    screenState.showFreeModeCover = true;
-                    screenState.showFreeModeEnd = false;
-                    screenState.showCoverForWorld = 0;
-                    screenState.showClassificationCover = false;
-                    screenState.showMazeCover = false;
-                } else if (gameMode === 'classification') {
-                    screenState.showClassificationCover = true;
                     screenState.showCoverForWorld = 0;
                     screenState.showFreeModeCover = false;
                     screenState.showMazeCover = false;
@@ -4059,14 +4014,14 @@ function setupSlider(slider, display) {
             } else if (gameMode === 'classification') {
                 baseLifespan = DIFFICULTY_SETTINGS[difficulty].initialLifespan;
             } else {
-                baseLifespan = freeModeSettings.initialLifespan;
+                baseLifespan = getActiveFreeModeConfig().initialLifespan;
             }
             if (baseLifespan <= 0) return 0;
             let streakReduction = 0;
             const effectiveStreak = Math.min(streakMultiplier, MAX_STREAK);
             if (effectiveStreak > 1) {
                 // Reduce food lifespan by 0.5 s per 0.5 streak increase
-                const reductionPerStep = (gameMode === 'classification' ? DIFFICULTY_SETTINGS[difficulty].streakReduction : freeModeSettings.streakReduction) || 1000;
+                const reductionPerStep = (gameMode === 'classification' ? DIFFICULTY_SETTINGS[difficulty].streakReduction : getActiveFreeModeConfig().streakReduction) || 1000;
                 streakReduction = (effectiveStreak - 1) * reductionPerStep;
             }
             const calculatedLifespan = baseLifespan - streakReduction;
@@ -4092,16 +4047,9 @@ function setupSlider(slider, display) {
             }
 
             const classificationRank = CLASSIFICATION_RANKS[difficulty] || 0;
-            const diffCfg = (gameMode === 'classification') ? (DIFFICULTY_SETTINGS[difficulty] || {}) : freeModeSettings;
+            const diffCfg = (gameMode === 'classification') ? (DIFFICULTY_SETTINGS[difficulty] || {}) : getActiveFreeModeConfig();
             const goldenChance = diffCfg.goldenFoodChance !== undefined ? diffCfg.goldenFoodChance : GOLDEN_FOOD_CHANCE;
             const isGolden = ((gameMode === 'levels' && currentWorld === 5) || (gameMode === 'classification' && classificationRank >= 1) || gameMode === 'freeMode') && Math.random() < goldenChance;
-            let lifespan = calculateNextFoodLifespan();
-            if (isGolden) {
-                if (gameMode === 'classification' && classificationRank === 1 && diffCfg.goldenFoodLifespan === undefined) {
-                    lifespan = GOLDEN_FOOD_LIFESPAN_CLASSIF_RANK1;
-                } else if (gameMode === 'levels') {
-                    lifespan = GOLDEN_FOOD_LIFESPANS_WORLD5[currentLevelInWorld - 1] || lifespan;
-                } else if (gameMode === 'freeMode' && diffCfg.goldenFoodLifespan !== undefined) {
                     lifespan = diffCfg.goldenFoodLifespan;
                 } else if (diffCfg.goldenFoodLifespan !== undefined) {
                     lifespan = diffCfg.goldenFoodLifespan;
@@ -4290,13 +4238,6 @@ function setupSlider(slider, display) {
             if (attempts >= 100) return;
             let lifespan = FALSE_FOOD_LIFESPAN;
             if (gameMode === 'classification' || gameMode === 'freeMode') {
-                const cfg = (gameMode === 'classification') ? (DIFFICULTY_SETTINGS[difficultySelector.value] || {}) : freeModeSettings;
-                if (typeof cfg.falseFoodLifespan === 'number') {
-                    lifespan = cfg.falseFoodLifespan;
-                }
-            }
-            const item = { x: pos.x, y: pos.y, remaining: lifespan, lifespan };
-            item.timeoutId = setTimeout(() => removeFalseFoodItem(item), lifespan);
             item.intervalId = setInterval(() => { item.remaining -= 100; if (item.remaining <= 0) removeFalseFoodItem(item); }, 100);
             falseFoodItems.push(item);
         }
@@ -4305,13 +4246,6 @@ function setupSlider(slider, display) {
             if (gameOver) return;
             let range;
             if (gameMode === 'classification' || gameMode === 'freeMode') {
-                const cfg = (gameMode === 'classification') ? (DIFFICULTY_SETTINGS[difficultySelector.value] || {}) : freeModeSettings;
-                if (!cfg.falseFoodSpawnRange) return;
-                range = cfg.falseFoodSpawnRange;
-            } else if (gameMode === "levels" && (currentWorld === 7 || currentWorld === 8 || currentWorld === 10)) {
-                if (currentWorld === 7) {
-                    range = FALSE_FOOD_SPAWN_RANGES_WORLD4[currentLevelInWorld - 1] || [5000,8000];
-                } else if (currentWorld === 10) {
                     range = FALSE_FOOD_SPAWN_RANGES_WORLD8[currentLevelInWorld - 1] || [5000,7000];
                 } else {
                     range = FALSE_FOOD_SPAWN_RANGE_WORLD5;
@@ -4444,21 +4378,7 @@ function setupSlider(slider, display) {
             if (attempts >= 100) return;
             let redChance = 0.25;
             if (gameMode === 'classification' || gameMode === 'freeMode') {
-                const cfg = (gameMode === 'classification') ? (DIFFICULTY_SETTINGS[difficultySelector.value] || {}) : freeModeSettings;
-                if (typeof cfg.redLightningChance === 'number') {
-                    redChance = cfg.redLightningChance;
-                }
-            }
-            const color = Math.random() < redChance ? 'red' : 'yellow';
-            let lifespan = LIGHTNING_LIFESPAN;
             if (gameMode === 'classification' || gameMode === 'freeMode') {
-                const cfg = (gameMode === 'classification') ? (DIFFICULTY_SETTINGS[difficultySelector.value] || {}) : freeModeSettings;
-                if (typeof cfg.lightningLifespan === 'number') {
-                    lifespan = cfg.lightningLifespan;
-                }
-            }
-            const item = { x: pos.x, y: pos.y, color, remaining: lifespan, lifespan };
-            item.timeoutId = setTimeout(() => removeLightningItem(item), lifespan);
             item.intervalId = setInterval(() => { item.remaining -= 100; if (item.remaining <= 0) removeLightningItem(item); }, 100);
             lightningItems.push(item);
         }
@@ -4467,13 +4387,6 @@ function setupSlider(slider, display) {
             if (gameOver) return;
             let range;
             if (gameMode === "classification" || gameMode === 'freeMode') {
-                const cfg = (gameMode === 'classification') ? (DIFFICULTY_SETTINGS[difficultySelector.value] || {}) : freeModeSettings;
-                if (!cfg.lightningSpawnRange) return;
-                range = cfg.lightningSpawnRange;
-            } else if (gameMode === "levels" && (currentWorld === 3 || currentWorld === 4 || currentWorld === 9 || currentWorld === 10)) {
-                if (currentWorld === 3) {
-                    range = LIGHTNING_SPAWN_RANGES_WORLD6[currentLevelInWorld - 1] || [5000, 7000];
-                } else if (currentWorld === 4) {
                     range = LIGHTNING_SPAWN_RANGE_WORLD4;
                 } else if (currentWorld === 10) {
                     range = LIGHTNING_SPAWN_RANGES_WORLD8[currentLevelInWorld - 1] || [5000, 7000];
@@ -4583,13 +4496,6 @@ function setupSlider(slider, display) {
             if (attempts >= 100) return;
             let lifespan = FALSE_FOOD_LIFESPAN;
             if (gameMode === 'classification' || gameMode === 'freeMode') {
-                const cfg = (gameMode === 'classification') ? (DIFFICULTY_SETTINGS[difficultySelector.value] || {}) : freeModeSettings;
-                if (typeof cfg.mirrorLifespan === 'number') {
-                    lifespan = cfg.mirrorLifespan;
-                }
-            }
-            const item = { x: pos.x, y: pos.y, remaining: lifespan, lifespan };
-            item.timeoutId = setTimeout(() => removeMirrorItem(item), lifespan);
             item.intervalId = setInterval(() => { item.remaining -= 100; if (item.remaining <= 0) removeMirrorItem(item); }, 100);
             mirrorItems.push(item);
         }
@@ -4598,13 +4504,6 @@ function setupSlider(slider, display) {
             if (gameOver) return;
             let range;
             if (gameMode === 'classification' || gameMode === 'freeMode') {
-                const cfg = (gameMode === 'classification') ? (DIFFICULTY_SETTINGS[difficultySelector.value] || {}) : freeModeSettings;
-                if (!cfg.mirrorSpawnRange) return;
-                range = cfg.mirrorSpawnRange;
-            } else if (gameMode === "levels" && (currentWorld === 9 || currentWorld === 10)) {
-                range = currentWorld === 9 ?
-                    (MIRROR_SPAWN_RANGES_WORLD7[currentLevelInWorld - 1] || [5000, 7000]) :
-                    (MIRROR_SPAWN_RANGES_WORLD8[currentLevelInWorld - 1] || [5000, 7000]);
             } else {
                 return;
             }
@@ -4961,13 +4860,6 @@ function setupSlider(slider, display) {
             if (!areSfxEnabled) return;
 
             if (gameMode === 'freeMode') {
-                if (gameOverByInactivity) {
-                    playSound('gameOver');
-                } else {
-                    playSound('win');
-                }
-                return;
-            }
 
             if (levelWon) {
                 playSound('win');
@@ -5063,13 +4955,6 @@ function setupSlider(slider, display) {
 
             // Crucial for Free Mode: Ensure cover is not shown when game ends, so classification appears
             if (gameMode === 'freeMode') {
-                screenState.showFreeModeCover = false; // Ensure no cover is shown
-                screenState.showCoverForWorld = 0;
-                screenState.showLevelCompleteCover = 0;
-                screenState.showWorldCompleteCover = 0;
-                screenState.showDefeatCoverForWorld = 0;
-                screenState.showTimeoutCover = false;
-                screenState.showFreeModeEnd = false;
             } else if (gameMode === 'classification') {
                 screenState.showClassificationCover = false;
                 screenState.showCoverForWorld = 0;
@@ -5093,13 +4978,6 @@ function setupSlider(slider, display) {
             isNewHighScore = false; 
 
             if (gameMode === 'freeMode') {
-                if (gameOverByInactivity) {
-                    screenState.showTimeoutCover = true;
-                } else {
-                    screenState.showFreeModeEnd = true;
-                }
-                isNewHighScore = false;
-                levelEffectivelyWon = false;
             } else if (gameMode === 'classification') {
                 const classificationResult = handleClassificationModeEnd(score, Math.floor(gameTimeElapsed / 1000), difficulty);
                 isNewHighScore = classificationResult.isNewRecord;
@@ -5129,13 +5007,6 @@ function setupSlider(slider, display) {
 
             let earnedCoins;
             if (gameMode === 'freeMode') {
-                // In free mode coins are earned based on time played
-                earnedCoins = Math.floor(gameTimeElapsed / 1000);
-            } else {
-                earnedCoins = Math.floor(score / POINTS_PER_COIN);
-            }
-            const previousCoins = totalCoins;
-
             const soundDelay = levelEffectivelyWon ? WIN_SOUND_DURATION : GAME_OVER_SOUND_DURATION;
             setTimeout(() => {
                 showEarnedCoinsMessage(earnedCoins);
@@ -5256,13 +5127,6 @@ function setupSlider(slider, display) {
             ctx.fillRect(0, 0, canvasEl.width, canvasEl.height);
 
             const img = (gameMode === 'freeMode') ? freeModeInactivityImg : timeoutImg;
-            if (img && img.complete && img.naturalHeight !== 0) {
-                ctx.drawImage(img, 0, 0, canvasEl.width, canvasEl.height);
-            } else {
-                ctx.fillStyle = "white";
-                ctx.textAlign = "center";
-                ctx.font = `${Math.floor(canvasEl.width / 15)}px 'Press Start 2P'`;
-                ctx.fillText('¡Tiempo agotado!', canvasEl.width / 2, canvasEl.height / 2);
             }
         }
         function drawFreeModeCover() { // New function for free mode cover
@@ -5793,13 +5657,6 @@ function setupSlider(slider, display) {
                         mainTitle = `Nivel ${displayWorld}.${displayLevelInWorld} Fallido`; // Use display variables
                         subTitle = "Inténtalo de nuevo";
                     } else if (gameMode === 'freeMode' || gameMode === 'classification') {
-                        mainTitle = isNewHighScore ? "¡Nuevo Récord!" : "Game Over";
-                         if (isNewHighScore) titleColor = "rgba(76, 175, 80, 1)";
-                    }
-
-
-                    const targetWidthForEndMessage = canvasEl.width * 0.9;
-                    let optimalSizeForEndMessage = Math.floor(canvasEl.height / 5); 
                     if (optimalSizeForEndMessage < 15) optimalSizeForEndMessage = 15;
                     ctx.font = `${optimalSizeForEndMessage}px 'Press Start 2P'`;
                     while(ctx.measureText(mainTitle).width > targetWidthForEndMessage && optimalSizeForEndMessage > 10) {
@@ -5844,13 +5701,6 @@ function setupSlider(slider, display) {
                     currentY += 10;
 
                     if (gameMode === 'freeMode' || gameMode === 'classification') {
-                        const tableOuterTopPadding = 30; 
-                        const tableBottomPadding = 10; 
-                        const tableSidePadding = canvasEl.width * 0.05;
-                        const tableRectX = tableSidePadding;
-                        const tableRectWidth = canvasEl.width - (2 * tableSidePadding);
-                        const tableCornerRadius = 10; 
-                        const tableBorderWidth = 2;
                         const tableBorderColor = "#4B5563";
                         const internalLineWidth = tableBorderWidth; 
 
@@ -5925,13 +5775,6 @@ function setupSlider(slider, display) {
                         ctx.fillText("Nº", rankX, headerTextY);
                         ctx.fillText("PUNTOS", scoreX, headerTextY);
                         const secondaryHeader = (gameMode === 'classification' || gameMode === 'freeMode') ? 'TIEMPO' : 'LONG.';
-                        ctx.fillText(secondaryHeader, lengthX, headerTextY);
-                        ctx.fillText("JUGADOR", skinX, headerTextY); // Usar el texto "JUGADOR"
-                        currentDrawingYForTable = headerRowActualY + headerRowHeight;
-
-                        const highScores = gameMode === 'freeMode' ? loadHighScores(difficulty) : loadClassificationHighScores(difficulty);
-                        const entryFont = `${highScoreEntryFontSize}px 'Press Start 2P'`;
-                        const defaultEntryColor = "#F5F5F5";
                         const highlightEntryColor = "#8f66af"; 
                         const blinkOffColor = "#5A6578"; 
                         
@@ -5959,13 +5802,6 @@ function setupSlider(slider, display) {
                                 let isThisTheNewRecordFromThisGame = isNewHighScore &&
                                                                 entry.score === score &&
                                                                 ((gameMode === 'classification' || gameMode === 'freeMode')
-                                                                     ? entry.time === Math.floor(gameTimeElapsed / 1000)
-                                                                     : entry.length === snake.length) &&
-                                                                i === blinkAnimation.rowIndex &&
-                                                                !newHighScoreEntryProcessedForVisuals;
-
-
-                                if (blinkAnimation.active && isThisTheNewRecordFromThisGame) {
                                     const visible = Math.floor((Date.now() - blinkAnimation.startTime) / blinkAnimation.interval) % 2 === 0;
                                     currentEntryColor = visible ? highlightEntryColor : blinkOffColor;
                                 } else if (isThisTheNewRecordFromThisGame && !blinkAnimation.active) { 
@@ -5980,13 +5816,6 @@ function setupSlider(slider, display) {
                                 ctx.fillText(`${i + 1}.`, rankX, rowTextY);
                                 ctx.fillText(`${entry.score}`, scoreX, rowTextY);
                                 const secondaryValue = (gameMode === 'classification' || gameMode === 'freeMode') ? formatTime(entry.time) : entry.length;
-                                ctx.fillText(`${secondaryValue}`, lengthX, rowTextY);
-                                // Mostrar el nombre del jugador si está disponible, si no el nombre del skin
-                                const playerDisplay = entry.playerName || SKIN_DISPLAY_NAMES[entry.skin] || entry.skin || '-';
-                                ctx.fillText(playerDisplay, skinX, rowTextY);
-                            } else {
-                                ctx.fillStyle = defaultEntryColor;
-                                ctx.font = entryFont;
                                 ctx.fillText(`${i + 1}.`, rankX, rowTextY);
                                 ctx.fillText("---", scoreX, rowTextY);
                                 ctx.fillText("---", lengthX, rowTextY);
@@ -6130,13 +5959,6 @@ function setupSlider(slider, display) {
 
             updateScoreDisplay(); 
             if (gameMode === 'freeMode' || gameMode === 'levels') { 
-                updateTimeLengthDisplay(); 
-            }
-            draw();
-        }
-        
-        function updateScoreDisplay() {
-            scoreValueDisplay.textContent = score;
         }
 
         function updateCoinDisplay() {
@@ -6199,13 +6021,6 @@ function setupSlider(slider, display) {
                 timeLengthLabelEl.textContent = "Tiempo:";
                 timeLengthValueEl.textContent = Math.max(0, Math.ceil(gameTimeRemaining / 1000));
             } else if (gameMode === 'classification' || gameMode === 'freeMode') {
-                timeLengthLabelEl.textContent = "Tiempo:";
-                timeLengthValueEl.textContent = formatTime(Math.floor(gameTimeElapsed / 1000));
-            } else { // other modes (currently none)
-                timeLengthLabelEl.textContent = "Tiempo:";
-                timeLengthValueEl.textContent = 0;
-            }
-        }
 
         function displayHighScoreInPanel() {
             const selectedDifficulty = difficultySelector.value; // Esto es para el modo libre
@@ -6243,6 +6058,9 @@ function setupSlider(slider, display) {
                 difficultySelector.classList.add('hidden');
                 worldsSelector.classList.add('hidden');
                 mazeLevelSelector.classList.add('hidden');
+                difficultyInfoButton.classList.add('hidden');
+                worldInfoButton.classList.add('hidden');
+                mazeInfoButton.classList.add('hidden');
 
                 if (isSettingsPanelCurrentlyOpen) {
                     difficultySelector.disabled = true;
@@ -6262,8 +6080,11 @@ function setupSlider(slider, display) {
                 difficultySelector.classList.add('hidden');
                 worldsSelector.classList.remove('hidden');
                 mazeLevelSelector.classList.add('hidden');
+                difficultyInfoButton.classList.add('hidden');
+                worldInfoButton.classList.remove('hidden');
+                mazeInfoButton.classList.add('hidden');
                 populateWorldsSelector();
-                drawStarProgress(); 
+                drawStarProgress();
 
                 if (isSettingsPanelCurrentlyOpen && !isGameCurrentlyRunning) {
                     worldsSelector.disabled = false;
@@ -6274,14 +6095,11 @@ function setupSlider(slider, display) {
                      else difficultyControlGroup.classList.remove("interactive-mode");
                 }
             } else if (gameMode === 'freeMode') {
-                // En el modo libre mantendremos visible el título del juego y ocultaremos
-                // el panel de progreso con la dificultad y la máxima puntuación.
-                titlePanel.classList.remove('hidden');
-                progressPanel.classList.add('hidden');
-                starProgressContainer.classList.add('hidden');
-                highScoreDisplay.classList.add('hidden');
-
                 // Actualizamos la dificultad aunque no se muestre actualmente
+                titlePanel.classList.add("hidden");
+                progressPanel.classList.remove("hidden");
+                starProgressContainer.classList.add("hidden");
+                highScoreDisplay.classList.add("hidden");
                 progressPanelLeftLabel.textContent = "Dificultad:";
                 progressPanelLeftValue.textContent = DIFFICULTY_DISPLAY_NAMES[difficultySelector.value] || difficultySelector.value;
 
@@ -6289,6 +6107,9 @@ function setupSlider(slider, display) {
                 difficultySelector.classList.remove('hidden');
                 worldsSelector.classList.add('hidden');
                 mazeLevelSelector.classList.add('hidden');
+                worldInfoButton.classList.add('hidden');
+                difficultyInfoButton.classList.remove('hidden');
+                mazeInfoButton.classList.add('hidden');
 
                 if (isSettingsPanelCurrentlyOpen && !isGameCurrentlyRunning) {
                     difficultySelector.disabled = false;
@@ -6314,6 +6135,9 @@ function setupSlider(slider, display) {
                 difficultySelector.classList.remove('hidden');
                 worldsSelector.classList.add('hidden');
                 mazeLevelSelector.classList.add('hidden');
+                worldInfoButton.classList.add('hidden');
+                difficultyInfoButton.classList.remove('hidden');
+                mazeInfoButton.classList.add('hidden');
 
                 if (isSettingsPanelCurrentlyOpen && !isGameCurrentlyRunning) {
                     difficultySelector.disabled = false;
@@ -6336,6 +6160,9 @@ function setupSlider(slider, display) {
                 difficultySelector.classList.add('hidden');
                 worldsSelector.classList.add('hidden');
                 mazeLevelSelector.classList.remove('hidden');
+                worldInfoButton.classList.add('hidden');
+                difficultyInfoButton.classList.add('hidden');
+                mazeInfoButton.classList.remove('hidden');
                 populateMazeLevelSelector();
 
                 if (isSettingsPanelCurrentlyOpen && !isGameCurrentlyRunning) {
@@ -6353,6 +6180,9 @@ function setupSlider(slider, display) {
                 difficultySelector.classList.remove('hidden');
                 worldsSelector.classList.add('hidden');
                 mazeLevelSelector.classList.add('hidden');
+                worldInfoButton.classList.add('hidden');
+                difficultyInfoButton.classList.remove('hidden');
+                mazeInfoButton.classList.add('hidden');
                 if (isSettingsPanelCurrentlyOpen && !isGameCurrentlyRunning) {
                     difficultySelector.disabled = false;
                     difficultyControlGroup.classList.add("interactive-mode");
@@ -6634,13 +6464,6 @@ async function startGame(isRestart = false) {
             } else if (progressPanelLeftValue && gameMode === 'maze') {
                 progressPanelLeftValue.textContent = displayMazeLevel;
             } else if (progressPanelLeftValue && (gameMode === 'freeMode' || gameMode === 'classification')) {
-                // El panel de #high-score-display ahora se encarga de su propio label.
-                // progressPanelLeftValue.textContent = DIFFICULTY_DISPLAY_NAMES[difficultySelector.value] || difficultySelector.value;
-            }
-            drawStarProgress(); // Update stars for the current world being played
-
-
-            const audioContextStarted = await ensureAudioContextRunning(); // Ensures context is running and synths are initialized
             if (audioContextStarted && areSfxEnabled) {
                  playSound('startGame');
             }
@@ -6651,13 +6474,6 @@ async function startGame(isRestart = false) {
             } else if (gameMode === 'maze') {
                 desiredMusic = MODE_MUSIC_URLS.maze;
             } else if (gameMode === 'freeMode') {
-                desiredMusic = MODE_MUSIC_URLS.freeMode;
-            } else if (gameMode === 'classification') {
-                desiredMusic = MODE_MUSIC_URLS.classification;
-            }
-            let sourceChanged = false;
-            if (inGameBackgroundMusic && inGameBackgroundMusic.src !== desiredMusic) {
-                inGameBackgroundMusic.src = desiredMusic;
                 sourceChanged = true;
             }
 
@@ -6682,13 +6498,6 @@ async function startGame(isRestart = false) {
                 initialSnakeLength = levelCfg.initialLength;
                 MIRROR_EFFECT_DURATION = DEFAULT_MIRROR_EFFECT_DURATION;
             } else if (gameMode === 'freeMode') {
-                const cfg = freeModeSettings;
-                snakeSpeed = cfg.speed;
-                initialSnakeLength = cfg.initialLength;
-                MIRROR_EFFECT_DURATION = cfg.mirrorEffectDuration || DEFAULT_MIRROR_EFFECT_DURATION;
-            } else if (gameMode === 'classification') {
-                const cfg = DIFFICULTY_SETTINGS[difficultySelector.value];
-                snakeSpeed = cfg.speed;
                 initialSnakeLength = cfg.initialLength;
                 MIRROR_EFFECT_DURATION = cfg.mirrorEffectDuration || DEFAULT_MIRROR_EFFECT_DURATION;
             } else { // maze
@@ -6749,13 +6558,6 @@ async function startGame(isRestart = false) {
                     }
                 }, 1000);
             } else if (gameMode === 'classification' || gameMode === 'freeMode') {
-                gameTimeElapsed = 0;
-                if (gameMode === 'freeMode') {
-                    gameTimeRemaining = Infinity;
-                }
-                updateTimeLengthDisplay();
-                clearInterval(gameTimerIntervalId);
-                gameTimerIntervalId = setInterval(() => {
                     if (gameOver) { clearInterval(gameTimerIntervalId); return; }
                     gameTimeElapsed += 1000;
                     updateTimeLengthDisplay();
@@ -6820,10 +6622,10 @@ async function startGame(isRestart = false) {
                 stopWorld7MirrorMechanics();
                 stopWorld8Obstacles();
                 stopWorld4FalseFoodMechanics();
-                if (freeModeSettings.obstacleCount > 0) startWorld6Obstacles(freeModeSettings.obstacleCount);
-                if (freeModeSettings.lightningSpawnRange) startWorld6LightningMechanics();
-                if (freeModeSettings.falseFoodSpawnRange) startWorld4FalseFoodMechanics();
-                if (freeModeSettings.mirrorSpawnRange) startWorld7MirrorMechanics();
+                if (getActiveFreeModeConfig().obstacleCount > 0) startWorld6Obstacles(getActiveFreeModeConfig().obstacleCount);
+                if (getActiveFreeModeConfig().lightningSpawnRange) startWorld6LightningMechanics();
+                if (getActiveFreeModeConfig().falseFoodSpawnRange) startWorld4FalseFoodMechanics();
+                if (getActiveFreeModeConfig().mirrorSpawnRange) startWorld7MirrorMechanics();
             }
             
             generateFood(); 
@@ -6845,13 +6647,6 @@ async function startGame(isRestart = false) {
             foodControlGroup.classList.remove("interactive-mode");
             musicVolumeControlGroup.classList.remove("interactive-mode");
             if (gameMode === 'freeMode') {
-                lastMovementTime = Date.now();
-                clearInterval(inactivityIntervalId);
-                inactivityIntervalId = setInterval(() => {
-                    if (gameMode === 'freeMode' && gameIntervalId && !gameOver && Date.now() - lastMovementTime >= FREE_MODE_INACTIVITY_LIMIT) {
-                        gameOverByInactivity = true;
-                        finalizeGameOver();
-                    }
                 }, 1000);
             }
             draw();
@@ -6860,13 +6655,6 @@ async function startGame(isRestart = false) {
         function changeDirection(newDirectionCmd) { // Renamed parameter for clarity
             if (gameOver) return;
             if (gameMode === 'freeMode') {
-                lastMovementTime = Date.now();
-            }
-            // Invert controls if mirror effect active
-            if (controlsInverted) {
-                switch (newDirectionCmd) {
-                    case "up": newDirectionCmd = "down"; break;
-                    case "down": newDirectionCmd = "up"; break;
                     case "left": newDirectionCmd = "right"; break;
                     case "right": newDirectionCmd = "left"; break;
                 }
@@ -7014,13 +6802,6 @@ async function startGame(isRestart = false) {
 
             if (!gameIntervalId) {
                 if (gameMode === 'freeMode') {
-                    screenState.showFreeModeCover = true;
-                } else if (gameMode === 'levels') {
-                    screenState.showCoverForWorld = currentWorld;
-                    screenState.showWorldCompleteCover = 0;
-                    screenState.showLevelCompleteCover = 0;
-                    screenState.showDefeatCoverForWorld = 0;
-                    screenState.showTimeoutCover = false;
                     drawStarProgress();
                 }
             }
@@ -7081,14 +6862,7 @@ async function startGame(isRestart = false) {
             difficulty = this.value;
             classificationDifficultyIndex = CLASSIFICATION_DIFFICULTY_ORDER.indexOf(this.value);
             if (!gameIntervalId) {
-                const cfg = (gameMode === 'freeMode') ? freeModeSettings : DIFFICULTY_SETTINGS[difficulty];
-                snakeSpeed = cfg.speed;
-                initialSnakeLength = cfg.initialLength;
-            }
-            // updateTargetScoreDisplay(); // No target score in free mode based on difficulty
-            if (gameMode === 'freeMode') { // Update high score display if difficulty changes in free mode
-                displayHighScoreInPanel();
-            } else if (gameMode === 'classification') {
+                const cfg = (gameMode === 'freeMode') ? getActiveFreeModeConfig() : DIFFICULTY_SETTINGS[difficulty];
                 displayClassificationHighScoreInPanel();
                 // También actualizamos la dificultad mostrada en pantalla
                 if (progressPanelLeftValue) {
@@ -7223,6 +6997,8 @@ async function startGame(isRestart = false) {
                     screenState.showFreeModeCover = true;
                     screenState.showFreeModeEnd = false;
                     openFreeSettingsPanel();
+                    difficultySelector.value = "personalizado";
+                    difficultySelector.dispatchEvent(new Event("change"));
                 } else if (selectedMode === 'classification') {
                     screenState.showClassificationCover = true;
                     classificationDifficultyIndex = 0;
@@ -7660,13 +7436,6 @@ async function startGame(isRestart = false) {
             if (gameMode === 'levels') {
                 screenState.showCoverForWorld = currentWorld; // currentWorld from loaded settings
             } else if (gameMode === 'freeMode') {
-                screenState.showFreeModeCover = true;
-                screenState.showFreeModeEnd = false;
-                // Ensure gameOver is false if free mode cover is shown before first game
-                if (snake.length === 0) gameOver = false;
-            } else if (gameMode === 'classification') {
-                screenState.showClassificationCover = true;
-                // Ensure gameOver is false if free mode cover is shown before first game
                 if (snake.length === 0) gameOver = false;
             } else if (gameMode === 'maze') {
                 screenState.showMazeCover = true;
