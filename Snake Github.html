@@ -3852,7 +3852,6 @@ function setupSlider(slider, display) {
         const specificHelpTexts = {
             difficulty: {
                 title: "Dificultad",
-                text_free: "<h4> (Solo en Modo Libre)</h4><p>Ajusta el nivel de desafío para que se adapte a tu habilidad y preferencias. La dificultad influye principalmente en la velocidad de la serpiente y el tiempo de desaparición de los comestibles.</p><h4>Novato</h4><p>Un modo relajado pensado para quienes se inician. La serpiente avanza despacio y la comida nunca desaparece.</p><h4>Explorador</h4><p>Aumenta ligeramente la velocidad y se introduce la racha junto con la desaparición de la comida y la aparición de rayos.</p><h4>Veterano</h4><p>La velocidad sube un poco más y se añaden obstáculos, espejos y comida falsa que puede restar puntos.</p><h4>Legendario</h4><p>Solo para expertos: la serpiente es muy rápida, la comida dura muy poco y todas las mecánicas combinadas te pondrán a prueba.</p>",
                 text_classification: "<h4> (Solo en Modo Clasificación)</h4><p>En este modo cada intento cuenta para tu propio ranking. Selecciona la dificultad que prefieras, supera tu récord y escala posiciones en la tabla de clasificación exclusiva.</p>"
             },
             freeDifficulty: {
@@ -3892,6 +3891,10 @@ function setupSlider(slider, display) {
         function openSpecificInfoPanel(settingKey) {
             if (!specificInfoPanel || !specificInfoTitle || !specificInfoContent) return;
 
+            if (settingKey === 'difficulty' && gameMode !== 'classification') {
+                settingKey = 'freeDifficulty';
+            }
+
             let helpData = specificHelpTexts[settingKey];
             if (!helpData) {
                 console.error(`No help text found for setting: ${settingKey}`);
@@ -3902,11 +3905,7 @@ function setupSlider(slider, display) {
 
             if (settingKey === 'difficulty') {
                 specificInfoTitle.textContent = 'Dificultad';
-                if (gameMode === 'classification') {
-                    specificInfoContent.innerHTML = helpData.text_classification;
-                } else {
-                    specificInfoContent.innerHTML = helpData.text_free;
-                }
+                specificInfoContent.innerHTML = helpData.text_classification;
             } else {
                 specificInfoContent.innerHTML = helpData.text;
             }
