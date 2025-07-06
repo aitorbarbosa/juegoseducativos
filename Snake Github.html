@@ -1515,7 +1515,13 @@
                 <div class="control-group" id="difficulty-control-group">
                      <div class="control-label-icon-row">
                         <label class="control-label" id="difficulty-label" for="difficultySelector">Dificultad:</label>
-                        <button class="setting-info-button" data-setting="difficulty" aria-label="Información sobre dificultad/mundo">
+                        <button id="difficulty-info-button" class="setting-info-button" data-setting="difficulty" aria-label="Información sobre dificultad">
+                            <img class="setting-info-icon" src="https://i.imgur.com/rWe7Ylp.png" alt="info" onerror="this.src='https://placehold.co/24x24/02030D/FFFFFF?text=Err';">
+                        </button>
+                        <button id="world-info-button" class="setting-info-button hidden" data-setting="world" aria-label="Información sobre mundos">
+                            <img class="setting-info-icon" src="https://i.imgur.com/rWe7Ylp.png" alt="info" onerror="this.src='https://placehold.co/24x24/02030D/FFFFFF?text=Err';">
+                        </button>
+                        <button id="maze-info-button" class="setting-info-button hidden" data-setting="mazeLevel" aria-label="Información sobre niveles">
                             <img class="setting-info-icon" src="https://i.imgur.com/rWe7Ylp.png" alt="info" onerror="this.src='https://placehold.co/24x24/02030D/FFFFFF?text=Err';">
                         </button>
                     </div>
@@ -1853,6 +1859,10 @@
         const musicVolumeSlider = document.getElementById("musicVolumeSlider");
         const musicVolumeValue = document.getElementById("musicVolumeValue");
         const musicVolumeControlGroup = document.getElementById("music-volume-control-group");
+
+        const difficultyInfoButton = document.getElementById("difficulty-info-button");
+        const worldInfoButton = document.getElementById("world-info-button");
+        const mazeInfoButton = document.getElementById("maze-info-button");
         
         const progressPanel = document.getElementById("progress-panel");
         const titlePanel = document.getElementById("title-panel"); 
@@ -3755,11 +3765,18 @@ function setupSlider(slider, display) {
 
         // --- Specific Info Panel Logic ---
         const specificHelpTexts = {
-            difficulty: { 
-                title: "Dificultad / Mundo", 
-                text_adventure: "<h4> (Solo en Modo Aventura)</h4><p>Cuando juegas en <strong>Modo Aventura</strong>, tendrás disponibles un total de 8 mundos. Cada uno de ellos dispone de 5 niveles de creciente dificultad. Tendrás que superarlos todos para poder avanzar al siguiente mundo. Complétalos todos para finalizar este modo de juego.</p><p>El selector de <strong>Mundos</strong> (que aparece al seleccionar \"Modo Aventura\") te permite elegir en qué mundo específico deseas comenzar tu aventura, siempre y cuando ya lo hayas desbloqueado previamente jugando y superando los anteriores en la dificultad seleccionada. ¡Supera los mundos para acceder a nuevos escenarios y desafíos más emocionantes o volver a jugar a los que ya hayas superado!</p><p>No olvides estar atento a las novedades del juego, ¡Puede que haya nuevos niveles muy pronto!</p>",
+            difficulty: {
+                title: "Dificultad",
                 text_free: "<h4> (Solo en Modo Libre)</h4><p>Ajusta el nivel de desafío para que se adapte a tu habilidad y preferencias. La dificultad influye principalmente en la velocidad de la serpiente y el tiempo de desaparición de los comestibles.</p><h4>Novato</h4><p>Un modo relajado pensado para quienes se inician. La serpiente avanza despacio y la comida nunca desaparece.</p><h4>Explorador</h4><p>Aumenta ligeramente la velocidad y se introduce la racha junto con la desaparición de la comida y la aparición de rayos.</p><h4>Veterano</h4><p>La velocidad sube un poco más y se añaden obstáculos, espejos y comida falsa que puede restar puntos.</p><h4>Legendario</h4><p>Solo para expertos: la serpiente es muy rápida, la comida dura muy poco y todas las mecánicas combinadas te pondrán a prueba.</p>",
-                text_classification: "<h4> (Solo en Modo Clasificación)</h4><p>Compite por la mejor puntuación al igual que en el Modo Libre, pero con una tabla de récords independiente.</p>"
+                text_classification: "<h4> (Solo en Modo Clasificación)</h4><p>En este modo cada intento cuenta para tu propio ranking. Selecciona la dificultad que prefieras, supera tu récord y escala posiciones en la tabla de clasificación exclusiva.</p>"
+            },
+            world: {
+                title: "Mundo",
+                text: "<h4> (Solo en Modo Aventura)</h4><p>Cuando juegas en <strong>Modo Aventura</strong>, tienes disponibles 8 mundos. Cada uno contiene 5 niveles con dificultad creciente. Debes superar cada mundo para desbloquear el siguiente.</p><p>El selector de <strong>Mundos</strong> te permite comenzar en cualquier mundo que ya hayas desbloqueado para repetir desafíos anteriores o continuar tu progresión.</p><p>¡Supera todos los mundos para completar la aventura y mantente atento a futuras actualizaciones!</p>"
+            },
+            mazeLevel: {
+                title: "Nivel",
+                text: "<h4> (Solo en Modo Laberinto)</h4><p>Enfréntate a 10 laberintos únicos en los que la disposición de bloques dificulta tu avance. Cada nivel otorga hasta 5 estrellas en función de tu puntuación final.</p><p>Obtén suficientes estrellas para desbloquear los siguientes laberintos y trata de alcanzar la puntuación perfecta en cada uno de ellos.</p>"
             },
             skin: {
                 title: "Disfraz",
@@ -3795,16 +3812,11 @@ function setupSlider(slider, display) {
             specificInfoTitle.textContent = helpData.title;
 
             if (settingKey === 'difficulty') {
-                if (gameMode === 'levels') {
-                    specificInfoTitle.textContent = "Mundos";
-                    specificInfoContent.innerHTML = helpData.text_adventure;
+                specificInfoTitle.textContent = 'Dificultad';
+                if (gameMode === 'classification') {
+                    specificInfoContent.innerHTML = helpData.text_classification;
                 } else {
-                    specificInfoTitle.textContent = "Dificultad";
-                    if (gameMode === 'classification') {
-                        specificInfoContent.innerHTML = helpData.text_classification;
-                    } else {
-                        specificInfoContent.innerHTML = helpData.text_free;
-                    }
+                    specificInfoContent.innerHTML = helpData.text_free;
                 }
             } else {
                 specificInfoContent.innerHTML = helpData.text;
@@ -6243,6 +6255,9 @@ function setupSlider(slider, display) {
                 difficultySelector.classList.add('hidden');
                 worldsSelector.classList.add('hidden');
                 mazeLevelSelector.classList.add('hidden');
+                difficultyInfoButton.classList.add('hidden');
+                worldInfoButton.classList.add('hidden');
+                mazeInfoButton.classList.add('hidden');
 
                 if (isSettingsPanelCurrentlyOpen) {
                     difficultySelector.disabled = true;
@@ -6262,8 +6277,11 @@ function setupSlider(slider, display) {
                 difficultySelector.classList.add('hidden');
                 worldsSelector.classList.remove('hidden');
                 mazeLevelSelector.classList.add('hidden');
+                difficultyInfoButton.classList.add('hidden');
+                worldInfoButton.classList.remove('hidden');
+                mazeInfoButton.classList.add('hidden');
                 populateWorldsSelector();
-                drawStarProgress(); 
+                drawStarProgress();
 
                 if (isSettingsPanelCurrentlyOpen && !isGameCurrentlyRunning) {
                     worldsSelector.disabled = false;
@@ -6289,6 +6307,9 @@ function setupSlider(slider, display) {
                 difficultySelector.classList.remove('hidden');
                 worldsSelector.classList.add('hidden');
                 mazeLevelSelector.classList.add('hidden');
+                worldInfoButton.classList.add('hidden');
+                difficultyInfoButton.classList.remove('hidden');
+                mazeInfoButton.classList.add('hidden');
 
                 if (isSettingsPanelCurrentlyOpen && !isGameCurrentlyRunning) {
                     difficultySelector.disabled = false;
@@ -6314,6 +6335,9 @@ function setupSlider(slider, display) {
                 difficultySelector.classList.remove('hidden');
                 worldsSelector.classList.add('hidden');
                 mazeLevelSelector.classList.add('hidden');
+                worldInfoButton.classList.add('hidden');
+                difficultyInfoButton.classList.remove('hidden');
+                mazeInfoButton.classList.add('hidden');
 
                 if (isSettingsPanelCurrentlyOpen && !isGameCurrentlyRunning) {
                     difficultySelector.disabled = false;
@@ -6336,6 +6360,9 @@ function setupSlider(slider, display) {
                 difficultySelector.classList.add('hidden');
                 worldsSelector.classList.add('hidden');
                 mazeLevelSelector.classList.remove('hidden');
+                worldInfoButton.classList.add('hidden');
+                difficultyInfoButton.classList.add('hidden');
+                mazeInfoButton.classList.remove('hidden');
                 populateMazeLevelSelector();
 
                 if (isSettingsPanelCurrentlyOpen && !isGameCurrentlyRunning) {
@@ -6353,6 +6380,9 @@ function setupSlider(slider, display) {
                 difficultySelector.classList.remove('hidden');
                 worldsSelector.classList.add('hidden');
                 mazeLevelSelector.classList.add('hidden');
+                worldInfoButton.classList.add('hidden');
+                difficultyInfoButton.classList.remove('hidden');
+                mazeInfoButton.classList.add('hidden');
                 if (isSettingsPanelCurrentlyOpen && !isGameCurrentlyRunning) {
                     difficultySelector.disabled = false;
                     difficultyControlGroup.classList.add("interactive-mode");
