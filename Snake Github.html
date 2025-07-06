@@ -2306,8 +2306,8 @@ function setupSlider(slider, display) {
             // Nivel 4 - dos muros verticales con hueco central
             4: (() => {
                 const res = [];
-                for (let y = 0; y < 20; y++) { if (y !== 9 && y !== 10) res.push({ x: 6, y }); }
-                for (let y = 0; y < 20; y++) { if (y !== 9 && y !== 10) res.push({ x: 13, y }); }
+                for (let y = 1; y < 19; y++) { if (y !== 9 && y !== 10) res.push({ x: 6, y }); }
+                for (let y = 1; y < 19; y++) { if (y !== 9 && y !== 10) res.push({ x: 13, y }); }
                 return res;
             })(),
             // Nivel 5 - rectángulo interior con aperturas en cruz
@@ -2322,8 +2322,12 @@ function setupSlider(slider, display) {
             // Nivel 6 - muro vertical con bordes izquierdo e inferior
             6: (() => {
                 const res = [];
-                for (let x = 0; x < 20; x++) res.push({ x, y: 19 });
-                for (let y = 0; y < 20; y++) res.push({ x: 0, y });
+                for (let x = 0; x < 20; x++) {
+    if (x !== 10) res.push({ x, y: 19 });  // bordes inferior, omite x=10
+};
+                for (let y = 0; y < 20; y++) {
+    if (y !== 10) res.push({ x: 0, y });   // borde izquierdo, omite y=10
+};
                 for (let y = 5; y <= 9; y++) res.push({ x: 10, y });
                 for (let y = 11; y <= 15; y++) res.push({ x: 10, y });
                 return res;
@@ -2331,10 +2335,17 @@ function setupSlider(slider, display) {
             // Nivel 7 - marco alrededor de los bordes con dos líneas horizontales
             7: (() => {
                 const res = [];
-                for (let i=0;i<20;i++) { res.push({x:i,y:0}); res.push({x:i,y:19}); }
-                for (let i=1;i<19;i++) { res.push({x:0,y:i}); res.push({x:19,y:i}); }
-                for (let i=0;i<12;i++) res.push({x:i+4,y:8});
-                for (let i=0;i<12;i++) res.push({x:i+4,y:12});
+                for (let i=0;i<20;i++) {
+                    if (i !== 10) {
+                        res.push({ x: i, y: 0 });
+                        res.push({ x: i, y: 19 });
+                    }
+                }
+                for (let i=1;i<19;i++) {
+                    if (i !== 10) { res.push({x:0,y:i}); res.push({x:19,y:i}); }
+                }
+                for (let i=0;i<12;i++) { const x = i+4; if (x !== 10) res.push({ x, y: 8 }); }
+                for (let i=0;i<12;i++) { const x = i+4; if (x !== 10) res.push({ x, y: 12 }); }
                 return res;
             })(),
             // Nivel 8 - líneas horizontales y verticales desplazadas
@@ -2355,15 +2366,18 @@ function setupSlider(slider, display) {
                 for (let i = 0; i < 14; i++) res.push({ x: i + 3, y: 16 });
                 return res;
             })(),
-            // Nivel 10 - franjas horizontales con paredes laterales
+            // Nivel 10 - franjas horizontales con Marco exterior con huecos
             10: (() => {
                 const res = [];
                 for (let i = 0; i < 16; i++) res.push({ x: i + 2, y: 4 });
                 for (let i = 0; i < 16; i++) res.push({ x: i + 2, y: 8 });
                 for (let i = 0; i < 16; i++) res.push({ x: i + 2, y: 12 });
                 for (let i = 0; i < 16; i++) res.push({ x: i + 2, y: 16 });
-                for (let y = 0; y < 20; y++) res.push({ x: 0, y });
-                for (let y = 0; y < 20; y++) res.push({ x: 19, y });
+            // Marco exterior con huecos
+                for (let i = 0; i < 20; i++) { if (i !== 1 && i !== 18)  res.push({ x: i,  y: 0  }); }  // arriba
+                for (let i = 0; i < 20; i++) { if (i !== 1 && i !== 18) res.push({ x: i,  y: 19 }); }  // abajo
+                for (let i = 1; i < 19; i++) { if (i !== 10) res.push({ x: 0,  y: i  }); }  // izquierda
+                for (let i = 1; i < 19; i++) { if (i !== 10) res.push({ x: 19, y: i  }); }  // derecha
                 return res;
             })()
         };
