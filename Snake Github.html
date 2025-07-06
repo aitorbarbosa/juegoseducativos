@@ -610,7 +610,7 @@
         }
 
 
-        #difficultySelector, #worldsSelector, #mazeLevelSelector, #audioToggleSelector, #skinSelector, #foodSelector, #playerNameSelector {
+        #difficultySelector, #worldsSelector, #mazeLevelSelector, #audioToggleSelector, #skinSelector, #foodSelector, #playerNameSelector, #free-difficulty-selector {
             padding: 4px 6px;
             width: calc(100% - 50px);
             font-size: 0.75em;
@@ -629,14 +629,14 @@
             margin-bottom: 0;
         }
         
-        #difficultySelector option, #worldsSelector option, #mazeLevelSelector option, #audioToggleSelector option, #skinSelector option, #foodSelector option, #playerNameSelector option {
+        #difficultySelector option, #worldsSelector option, #mazeLevelSelector option, #audioToggleSelector option, #skinSelector option, #foodSelector option, #playerNameSelector option, #free-difficulty-selector option {
             background-color: #374151;
             color: #f5f5f5;
             font-family: 'Press Start 2P', sans-serif;
             text-align: left; 
         }
         
-        #difficultySelector, #worldsSelector, #mazeLevelSelector, #audioToggleSelector, #skinSelector, #foodSelector, #playerNameSelector {
+        #difficultySelector, #worldsSelector, #mazeLevelSelector, #audioToggleSelector, #skinSelector, #foodSelector, #playerNameSelector, #free-difficulty-selector {
             text-align-last: left;
         }
         select option {
@@ -644,11 +644,11 @@
         }
 
 
-        #difficultySelector:focus, #worldsSelector:focus, #mazeLevelSelector:focus, #audioToggleSelector:focus, #skinSelector:focus, #foodSelector:focus, #playerNameSelector:focus {
+        #difficultySelector:focus, #worldsSelector:focus, #mazeLevelSelector:focus, #audioToggleSelector:focus, #skinSelector:focus, #foodSelector:focus, #playerNameSelector:focus, #free-difficulty-selector:focus {
             outline: 1px solid #8f66af; 
             box-shadow: none; 
         }
-        #difficultySelector:disabled, #worldsSelector:disabled, #mazeLevelSelector:disabled, #audioToggleSelector:disabled, #skinSelector:disabled, #foodSelector:disabled, #playerNameSelector:disabled, #musicVolumeSlider:disabled {
+        #difficultySelector:disabled, #worldsSelector:disabled, #mazeLevelSelector:disabled, #audioToggleSelector:disabled, #skinSelector:disabled, #foodSelector:disabled, #playerNameSelector:disabled, #free-difficulty-selector:disabled, #musicVolumeSlider:disabled {
             opacity: 0.7;
             cursor: not-allowed;
         }
@@ -1612,6 +1612,21 @@
                     <button id="close-free-settings-button" aria-label="Cerrar ajustes">&times;</button>
                 </div>
                 <div class="panel-content">
+                <div class="control-group" id="free-difficulty-control-group">
+                    <div class="control-label-icon-row">
+                        <label class="control-label" for="free-difficulty-selector">Dificultad:</label>
+                        <button id="free-difficulty-info-button" class="setting-info-button" data-setting="freeDifficulty" aria-label="Información sobre dificultad libre">
+                            <img class="setting-info-icon" src="https://i.imgur.com/rWe7Ylp.png" alt="info" onerror="this.src='https://placehold.co/24x24/02030D/FFFFFF?text=Err';">
+                        </button>
+                    </div>
+                    <select id="free-difficulty-selector">
+                        <option value="personalizado" selected>Personalizado</option>
+                        <option value="principiante">Novato</option>
+                        <option value="explorador">Explorador</option>
+                        <option value="veterano">Veterano</option>
+                        <option value="legendario">Legendario</option>
+                    </select>
+                </div>
                 <div class="control-group">
                     <div class="control-label-icon-row">
                         <label class="control-label" for="playerNameSelector">Jugador:</label>
@@ -1887,6 +1902,7 @@
         const closeSettingsButton = document.getElementById("close-settings-button");
         const closeFreeSettingsButton = document.getElementById("close-free-settings-button");
         const applyFreeSettingsBottomButton = document.getElementById("apply-free-settings-bottom");
+        const freeDifficultySelector = document.getElementById("free-difficulty-selector");
 
         const backButton = document.getElementById("backButton");
         const backButtonIcon = document.getElementById("backButtonIcon");
@@ -2173,6 +2189,7 @@ function setupSlider(slider, display) {
         
         // Mapping for difficulty display names
         const DIFFICULTY_DISPLAY_NAMES = {
+            personalizado: "Personalizado",
             principiante: "Novato",
             explorador: "Explorador",
             veterano: "Veterano",
@@ -2632,6 +2649,7 @@ function setupSlider(slider, display) {
         };
 
         let difficulty = 'principiante';
+        let freeDifficulty = 'personalizado';
         let snakeSpeed = 150; 
         let foodTimeRemaining = 0; 
         let foodDisappearTimeoutId; 
@@ -2701,8 +2719,18 @@ function setupSlider(slider, display) {
                 speed: 180,
                 initialLifespan: 0,
                 initialLength: 4,
-                goldenFoodChance: 0.15,
-                goldenFoodLifespan: 4000
+                goldenFoodChance: 0,
+                goldenFoodLifespan: 0,
+                lightningSpawnRange: null,
+                lightningLifespan: 0,
+                redLightningChance: 0,
+                streakReduction: 0,
+                falseFoodSpawnRange: null,
+                falseFoodLifespan: 0,
+                mirrorSpawnRange: null,
+                mirrorLifespan: 0,
+                mirrorEffectDuration: 0,
+                obstacleCount: 0
             },
             explorador:   {
                 speed: 160,
@@ -2713,7 +2741,13 @@ function setupSlider(slider, display) {
                 lightningSpawnRange: [6000, 10000],
                 lightningLifespan: 5000,
                 redLightningChance: 0.25,
-                streakReduction: 800
+                streakReduction: 800,
+                falseFoodSpawnRange: null,
+                falseFoodLifespan: 0,
+                mirrorSpawnRange: null,
+                mirrorLifespan: 0,
+                mirrorEffectDuration: 0,
+                obstacleCount: 0
             },
             veterano:     {
                 speed: 140,
@@ -3519,10 +3553,14 @@ function setupSlider(slider, display) {
         }
 
        function openFreeSettingsPanel() {
-            freeSettingsPanel.classList.add('centered-panel');
-            togglePanel(freeSettingsPanel, freeSettingsPanelContent, true);
-            populateFreeSettingsInputs();
-        }
+           freeSettingsPanel.classList.add('centered-panel');
+           togglePanel(freeSettingsPanel, freeSettingsPanelContent, true);
+           if (freeDifficultySelector) {
+               freeDifficultySelector.value = freeDifficulty;
+           }
+           populateFreeSettingsInputs();
+            displayHighScoreInPanel();
+       }
 
         function closeFreeSettingsPanel() {
             togglePanel(freeSettingsPanel, freeSettingsPanelContent, false);
@@ -3727,6 +3765,25 @@ function setupSlider(slider, display) {
             else openSettingsPanel();
         });
         if (applyFreeSettingsBottomButton) applyFreeSettingsBottomButton.addEventListener('click', applyFreeSettings);
+        if (freeDifficultySelector) freeDifficultySelector.addEventListener('change', () => {
+            freeDifficulty = freeDifficultySelector.value;
+            if (freeDifficulty === 'personalizado') {
+                if (playerProfiles[currentPlayerName] && playerProfiles[currentPlayerName].freeModeSettings) {
+                    freeModeSettings = { ...FREE_MODE_DEFAULTS, ...playerProfiles[currentPlayerName].freeModeSettings };
+                } else {
+                    freeModeSettings = { ...FREE_MODE_DEFAULTS };
+                }
+            } else {
+                freeModeSettings = { ...FREE_MODE_DEFAULTS, ...DIFFICULTY_SETTINGS[freeDifficulty] };
+            }
+            difficulty = freeDifficulty;
+            if (!gameIntervalId) {
+                snakeSpeed = freeModeSettings.speed;
+                initialSnakeLength = freeModeSettings.initialLength;
+            }
+            populateFreeSettingsInputs();
+            displayHighScoreInPanel();
+        });
         closeFreeSettingsButton.addEventListener('click', closeFreeSettingsPanel);
         closeSettingsButton.addEventListener('click', closeSettingsPanel);
         backButton.addEventListener('click', () => {
@@ -3769,6 +3826,10 @@ function setupSlider(slider, display) {
                 title: "Dificultad",
                 text_free: "<h4> (Solo en Modo Libre)</h4><p>Ajusta el nivel de desafío para que se adapte a tu habilidad y preferencias. La dificultad influye principalmente en la velocidad de la serpiente y el tiempo de desaparición de los comestibles.</p><h4>Novato</h4><p>Un modo relajado pensado para quienes se inician. La serpiente avanza despacio y la comida nunca desaparece.</p><h4>Explorador</h4><p>Aumenta ligeramente la velocidad y se introduce la racha junto con la desaparición de la comida y la aparición de rayos.</p><h4>Veterano</h4><p>La velocidad sube un poco más y se añaden obstáculos, espejos y comida falsa que puede restar puntos.</p><h4>Legendario</h4><p>Solo para expertos: la serpiente es muy rápida, la comida dura muy poco y todas las mecánicas combinadas te pondrán a prueba.</p>",
                 text_classification: "<h4> (Solo en Modo Clasificación)</h4><p>En este modo cada intento cuenta para tu propio ranking. Selecciona la dificultad que prefieras, supera tu récord y escala posiciones en la tabla de clasificación exclusiva.</p>"
+            },
+            freeDifficulty: {
+                title: "Dificultad en Modo Libre",
+                text: "<p>Usa <strong>Personalizado</strong> para cargar la configuración guardada del jugador actual. Elige cualquier otro nivel para aplicar sus valores predeterminados de velocidad y tamaño inicial. Cambiar la dificultad ajustará estos parámetros automáticamente.</p>"
             },
             world: {
                 title: "Mundo",
@@ -6220,7 +6281,7 @@ function setupSlider(slider, display) {
         }
 
         function displayHighScoreInPanel() {
-            const selectedDifficulty = difficultySelector.value; // Esto es para el modo libre
+            const selectedDifficulty = (gameMode === 'freeMode') ? freeDifficulty : difficultySelector.value;
             const highScores = loadHighScores(selectedDifficulty);
             const hsSkinValueDisplay = document.getElementById("hs-skin-value");
 
@@ -6301,7 +6362,7 @@ function setupSlider(slider, display) {
 
                 // Actualizamos la dificultad aunque no se muestre actualmente
                 progressPanelLeftLabel.textContent = "Dificultad:";
-                progressPanelLeftValue.textContent = DIFFICULTY_DISPLAY_NAMES[difficultySelector.value] || difficultySelector.value;
+                progressPanelLeftValue.textContent = DIFFICULTY_DISPLAY_NAMES[freeDifficulty] || freeDifficulty;
 
                 difficultyLabel.textContent = "Dificultad:";
                 difficultySelector.classList.remove('hidden');
