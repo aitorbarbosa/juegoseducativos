@@ -3933,19 +3933,20 @@ function setupSlider(slider, display) {
                 specificInfoContent.innerHTML = helpData.text;
             }
             
-            // Disable controls in the settings panel before showing specific info
-            Array.from(settingsPanel.querySelectorAll('select, input[type="range"], .setting-info-button')).forEach(el => el.disabled = true);
-            Array.from(settingsPanel.querySelectorAll('.control-group.interactive-mode')).forEach(el => el.classList.remove("interactive-mode")); // Visually indicate disabled state
-
-            specificInfoPanel.classList.add('centered-panel');
-            togglePanel(specificInfoPanel, specificInfoContent, true);
-
+            // Determine which configuration panel is open and disable its controls
             let sourcePanel = null;
             if (!settingsPanel.classList.contains('settings-panel-hidden')) {
                 sourcePanel = settingsPanel;
             } else if (freeSettingsPanel && !freeSettingsPanel.classList.contains('free-settings-panel-hidden')) {
                 sourcePanel = freeSettingsPanel;
             }
+            if (sourcePanel) {
+                Array.from(sourcePanel.querySelectorAll('select, input[type="range"], .setting-info-button')).forEach(el => el.disabled = true);
+                Array.from(sourcePanel.querySelectorAll('.control-group.interactive-mode')).forEach(el => el.classList.remove("interactive-mode")); // Visually indicate disabled state
+            }
+
+            specificInfoPanel.classList.add('centered-panel');
+            togglePanel(specificInfoPanel, specificInfoContent, true);
             if (sourcePanel) {
                 requestAnimationFrame(() => {
                     matchPanelSizeWithElement(sourcePanel, specificInfoPanel);
@@ -3959,53 +3960,65 @@ function setupSlider(slider, display) {
             togglePanel(specificInfoPanel, specificInfoContent, false); // Hide specific info panel
             specificInfoPanel.classList.remove('centered-panel');
 
-            // Re-enable controls in the settings panel if it's still meant to be open
+            // Re-enable controls depending on which configuration panel is visible
+            let targetPanel = null;
             if (!settingsPanel.classList.contains("settings-panel-hidden") && !gameIntervalId) {
-                skinSelector.disabled = false;
-                foodSelector.disabled = false;
-                skinControlGroup.classList.add("interactive-mode");
-                foodControlGroup.classList.add("interactive-mode");
+                targetPanel = settingsPanel;
+            } else if (freeSettingsPanel && !freeSettingsPanel.classList.contains("free-settings-panel-hidden") && !gameIntervalId) {
+                targetPanel = freeSettingsPanel;
+            }
 
-                if (gameMode === 'levels') {
-                    worldsSelector.disabled = false;
-                } else if (gameMode === 'maze') {
-                    mazeLevelSelector.disabled = false;
-                } else {
-                    difficultySelector.disabled = false;
-                }
-                difficultyControlGroup.classList.add("interactive-mode");
+            if (targetPanel) {
+                targetPanel.querySelectorAll('select, input[type="range"], .setting-info-button').forEach(el => el.disabled = false);
 
-                if (typeof Tone !== 'undefined') {
-                    if (panelOpenedFromSplash) {
-                        audioControlGroup.classList.remove('hidden');
-                        musicVolumeControlGroup.classList.remove('hidden');
-                        audioToggleSelector.disabled = false;
-                        audioControlGroup.classList.add("interactive-mode");
-                        musicVolumeSlider.disabled = (audioToggleSelector.value === 'off' || audioToggleSelector.value === 'sfx_only');
-                        if (!musicVolumeSlider.disabled) musicVolumeControlGroup.classList.add("interactive-mode");
-                        else musicVolumeControlGroup.classList.remove("interactive-mode");
+                if (targetPanel === settingsPanel) {
+                    skinControlGroup.classList.add("interactive-mode");
+                    foodControlGroup.classList.add("interactive-mode");
+
+                    if (gameMode === 'levels') {
+                        worldsSelector.disabled = false;
+                    } else if (gameMode === 'maze') {
+                        mazeLevelSelector.disabled = false;
                     } else {
-                        audioToggleSelector.disabled = true;
-                        musicVolumeSlider.disabled = true;
-                        audioControlGroup.classList.add('hidden');
-                        musicVolumeControlGroup.classList.add('hidden');
-                        audioControlGroup.classList.remove("interactive-mode");
-                        musicVolumeControlGroup.classList.remove("interactive-mode");
+                        difficultySelector.disabled = false;
                     }
+                    difficultyControlGroup.classList.add("interactive-mode");
+
+                    if (typeof Tone !== 'undefined') {
+                        if (panelOpenedFromSplash) {
+                            audioControlGroup.classList.remove('hidden');
+                            musicVolumeControlGroup.classList.remove('hidden');
+                            audioToggleSelector.disabled = false;
+                            audioControlGroup.classList.add("interactive-mode");
+                            musicVolumeSlider.disabled = (audioToggleSelector.value === 'off' || audioToggleSelector.value === 'sfx_only');
+                            if (!musicVolumeSlider.disabled) musicVolumeControlGroup.classList.add("interactive-mode");
+                            else musicVolumeControlGroup.classList.remove("interactive-mode");
+                        } else {
+                            audioToggleSelector.disabled = true;
+                            musicVolumeSlider.disabled = true;
+                            audioControlGroup.classList.add('hidden');
+                            musicVolumeControlGroup.classList.add('hidden');
+                            audioControlGroup.classList.remove("interactive-mode");
+                            musicVolumeControlGroup.classList.remove("interactive-mode");
+                        }
+                    }
+                    playerNameSelectors.forEach(sel => sel.disabled = false);
+                    if (panelOpenedFromSplash) {
+                        if (playerSelectControlGroup) playerSelectControlGroup.classList.add("interactive-mode");
+                        if (addPlayerControlGroup) addPlayerControlGroup.classList.add("interactive-mode");
+                    }
+                    settingsPanel.querySelectorAll('.setting-info-button').forEach(btn => btn.disabled = false);
+                } else {
+                    // Free settings panel - restore inputs based on difficulty selection
+                    updateFreeSettingsLockState();
                 }
-                playerNameSelectors.forEach(sel => sel.disabled = false);
-                if (panelOpenedFromSplash) {
-                    if (playerSelectControlGroup) playerSelectControlGroup.classList.add("interactive-mode");
-                    if (addPlayerControlGroup) addPlayerControlGroup.classList.add("interactive-mode");
-                }
-                settingsPanel.querySelectorAll('.setting-info-button').forEach(btn => btn.disabled = false);
-                
-                // Ensure main action buttons reflect that settings panel is still the context
+
+                // Ensure main action buttons reflect that a configuration panel is still the context
                 startButton.disabled = true;
                 configButton.disabled = true;
                 backButton.disabled = true;
             } else {
-                // If settings panel was not open, or game is running, update main buttons normally
+                // If no configuration panel was open, update main buttons normally
                 updateMainButtonStates();
             }
         }
