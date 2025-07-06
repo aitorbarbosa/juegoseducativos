@@ -3900,13 +3900,13 @@ function setupSlider(slider, display) {
                 console.error(`No help text found for setting: ${settingKey}`);
                 return;
             }
-            
-            specificInfoTitle.textContent = helpData.title;
 
             if (settingKey === 'difficulty') {
-                specificInfoTitle.textContent = 'Dificultad';
+                // In classification mode show the dedicated title
+                specificInfoTitle.textContent = helpData.title;
                 specificInfoContent.innerHTML = helpData.text_classification;
             } else {
+                specificInfoTitle.textContent = helpData.title;
                 specificInfoContent.innerHTML = helpData.text;
             }
             
