@@ -1061,7 +1061,7 @@
             gap: 12px;
             padding-right: 0;
         }
-        #info-panel-content h3#main-info-title,
+        .info-header h2#main-info-title,
         #info-panel-content h4,
         #specific-info-content h4 {
             font-size: 1em;
@@ -1224,7 +1224,7 @@
              }
 
 
-            #info-panel-content h3#main-info-title, #specific-info-content h3 { font-size: 0.95em; }
+            .info-header h2#main-info-title, #specific-info-content h3 { font-size: 0.95em; }
             #info-panel-content h4, #specific-info-content h4 { font-size: 0.95em; }
             #info-panel-content p, #info-panel-content ul, #specific-info-content p, #specific-info-content ul { font-size: 0.75em; }
         }
@@ -1275,7 +1275,7 @@
             #settings-panel, #info-panel, #specific-info-panel, #free-settings-panel {
                 padding: 15px;
             }
-            #info-panel-content h3#main-info-title, #specific-info-content h3 { font-size: 0.85em; }
+            .info-header h2#main-info-title, #specific-info-content h3 { font-size: 0.85em; }
             #info-panel-content h4, #specific-info-content h4 { font-size: 0.85em; }
             #info-panel-content p, #info-panel-content ul, #specific-info-content p, #specific-info-content ul { font-size: 0.7em; }
         }
@@ -1712,24 +1712,17 @@
 
             <div id="info-panel" class="info-panel-hidden">
                 <div class="info-header">
-                    <h2>Información</h2> 
+                    <h2 id="main-info-title"><img src="https://i.imgur.com/CZa88Hk.png" alt="Snake Mobile" onerror="this.src='https://placehold.co/300x80/02030D/FFFFFF?text=Title+Error'; console.error('Error loading main-info-title image');"></h2>
                     <button id="close-info-button" aria-label="Cerrar información">&times;</button>
                 </div>
                 <div id="info-panel-content">
-                    <h3 id="main-info-title"><img src="https://i.imgur.com/CZa88Hk.png" alt="Snake Mobile" onerror="this.src='https://placehold.co/300x80/02030D/FFFFFF?text=Title+Error'; console.error('Error loading main-info-title image');"></h3>
-                    <p>¡Prepárate para la clásica diversión de la serpiente con un toque moderno y desafiante! Guía a tu serpiente para que devore la comida, crezca lo más posible y acumule puntos. ¡Pero cuidado! No choques contra los bordes del escenario ni contra tu propio cuerpo o la partida terminará. ¡No te rindas! Cada partida es una nueva oportunidad para superar tu récord.</p>
-                    
-                    <h4>Cómo Jugar</h4>
-                    <p>Usa los controles en pantalla (o las teclas de flecha en escritorio) para dirigir a la serpiente. Come la comida que aparece para crecer y sumar puntos.</p>
-                    <ul>
-                        <li><strong>Puntos:</strong> Aumentan 10 puntos con cada comida.</li>
-                        <li><strong>Racha:</strong> Consigue comida consecutivamente sin fallar para multiplicar tus puntos. La racha máxima es de x5</li>
-                        <li><strong>Tiempo:</strong> En el Modo Aventura, dispones de un máximo de 60 segundos para completar cada nivel. En el Modo libre tienes tiempo ilimitado.</li>
-                        <li><strong>Tiempo de partida:</strong> Tanto en Modo Libre como en Clasificación se registra el tiempo total jugado.</li>
-                    </ul>
+                    <p>¡Prepárate para la clásica diversión de la serpiente con un toque moderno y desafiante!¡Cada partida es una nueva oportunidad para superarte!</p>
 
-                    <h4>Más información</h4>
-                    <p>Para más detalles sobre cada tipo de juego u opciones de configuración o personalización, accede al menú de ajustes y pulsa sobre el icono de información del elemento sobre el que te interese obtener más información.</p>
+                    <h4>Cómo Jugar</h4>
+                    <p>Tan fácil como utilizar los controles en pantalla (En PC las flechas de dirección o "WASD") para guiar a tu serpiente. Devora comida, crece lo máximo posible, suma puntos y acumula monedas que te permitirán desbloquear increíbles recompensas. ¡Pero cuidado! No choques contra tu propio cuerpo o la partida terminará. </p>
+
+                    <h4>Tipos de juego</h4>
+                    <p>Accede a la pantalla principal para conocer los diferentes tipos de juego: <strong>Aventura</strong>, <strong>Laberinto</strong>, <strong>Clasificación</strong> y <strong>Libre</strong>. Para más información, puedes pulsar sobre los iconos que te irás encontrando durante el juego.</p>
                     <p style="text-align: center; margin-top: 6px;"><strong>¡Diviértete y que crezca la serpiente!</strong></p>
                 </div>
             </div>
