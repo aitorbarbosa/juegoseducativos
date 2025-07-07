@@ -1466,11 +1466,12 @@
           background-position: center;
           position: relative;
           cursor: pointer;
-          transition: transform 0.2s ease;
+          transition: transform 0.2s ease, filter 0.05s ease-out;
         }
 
         .maze-level-button:hover {
           transform: scale(1.05);
+          filter: brightness(0.95);
         }
 
         .maze-level-button.disabled {
@@ -1488,8 +1489,8 @@
           top: 50%;
           left: 50%;
           transform: translate(-50%, -50%);
-          font-size: 0.85rem;
-          color: white;
+          font-size: 1.2rem;
+          color: #C084FC;
           text-shadow: 1px 1px 2px black;
           font-family: 'Press Start 2P', sans-serif;
         }
@@ -6812,6 +6813,9 @@ function populateMazeLevelButtons() {
 
                     requestAnimationFrame(draw);
                 });
+
+                // Press feedback similar to start button
+                addIconPressEvents(button, button);
 
                 mazeLevelButtonsContainer.appendChild(button);
             }
