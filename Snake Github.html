@@ -517,8 +517,9 @@
             min-height: 50px;
         }
 
-        /* Extra space below the music volume slider */
-        #music-volume-control-group {
+        /* Extra space below the music and SFX volume sliders */
+        #music-volume-control-group,
+        #sfx-volume-control-group {
             padding-bottom: 12px;
         }
 
@@ -649,7 +650,7 @@
             outline: 1px solid #8f66af; 
             box-shadow: none; 
         }
-        #difficultySelector:disabled, #worldsSelector:disabled, #mazeLevelSelector:disabled, #audioToggleSelector:disabled, #skinSelector:disabled, #foodSelector:disabled, #playerNameSelector:disabled, #free-difficulty-selector:disabled, #musicVolumeSlider:disabled {
+        #difficultySelector:disabled, #worldsSelector:disabled, #mazeLevelSelector:disabled, #audioToggleSelector:disabled, #skinSelector:disabled, #foodSelector:disabled, #playerNameSelector:disabled, #free-difficulty-selector:disabled, #musicVolumeSlider:disabled, #sfxVolumeSlider:disabled {
             opacity: 0.7;
             cursor: not-allowed;
         }
@@ -713,7 +714,8 @@
         .control-group.interactive-mode:hover #audioToggleSelector,
         .control-group.interactive-mode:hover #skinSelector,
         .control-group.interactive-mode:hover #foodSelector,
-        .control-group.interactive-mode:hover #musicVolumeSlider {
+        .control-group.interactive-mode:hover #musicVolumeSlider,
+        .control-group.interactive-mode:hover #sfxVolumeSlider {
             cursor: pointer;
         }
 
@@ -722,6 +724,18 @@
         }
 
         #musicVolumeSlider {
+            -webkit-appearance: none;
+            appearance: none;
+            width: calc(100% - 50px);
+            height: 8px;
+            background: #4B5563;
+            border-radius: 5px;
+            outline: none;
+            transition: opacity .2s;
+            margin-top: 4px;
+            margin-bottom: 0;
+        }
+        #sfxVolumeSlider {
             -webkit-appearance: none;
             appearance: none;
             width: calc(100% - 50px);
@@ -742,7 +756,24 @@
             cursor: pointer;
             border-radius: 50%;
         }
+        #sfxVolumeSlider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            background: #8f66af;
+            cursor: pointer;
+            border-radius: 50%;
+        }
         #musicVolumeSlider::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
+            background: #8f66af;
+            cursor: pointer;
+            border-radius: 50%;
+            border: none;
+        }
+        #sfxVolumeSlider::-moz-range-thumb {
             width: 20px;
             height: 20px;
             background: #8f66af;
@@ -1589,10 +1620,19 @@
                         </button>
                     </div>
                     <select id="audioToggleSelector">
-                        <option value="all" selected>Activado (Música y FX)</option> 
-                        <option value="sfx_only">Sólo SFX</option> 
-                        <option value="off">Desactivado</option> 
+                        <option value="all" selected>Activado (Música y FX)</option>
+                        <option value="sfx_only">Sólo SFX</option>
+                        <option value="off">Desactivado</option>
                     </select>
+                </div>
+                <div class="control-group" id="sfx-volume-control-group">
+                    <div class="control-label-icon-row">
+                        <label class="control-label" for="sfxVolumeSlider">Volumen Efectos: <span id="sfxVolumeValue">75</span>%</label>
+                        <button class="setting-info-button" data-setting="sfxVolume" aria-label="Información sobre volumen de efectos">
+                            <img class="setting-info-icon" src="https://i.imgur.com/rWe7Ylp.png" alt="info" onerror="this.src='https://placehold.co/24x24/02030D/FFFFFF?text=Err';">
+                        </button>
+                    </div>
+                    <input type="range" id="sfxVolumeSlider" min="0" max="100" value="75">
                 </div>
                 <div class="control-group" id="music-volume-control-group">
                     <div class="control-label-icon-row">
@@ -1865,6 +1905,9 @@
         const audioControlGroup = document.getElementById("audio-control-group");
         const skinControlGroup = document.getElementById("skin-control-group");
         const foodControlGroup = document.getElementById("food-control-group");
+        const sfxVolumeSlider = document.getElementById("sfxVolumeSlider");
+        const sfxVolumeValue = document.getElementById("sfxVolumeValue");
+        const sfxVolumeControlGroup = document.getElementById("sfx-volume-control-group");
         const musicVolumeSlider = document.getElementById("musicVolumeSlider");
         const musicVolumeValue = document.getElementById("musicVolumeValue");
         const musicVolumeControlGroup = document.getElementById("music-volume-control-group");
@@ -2534,6 +2577,7 @@ function setupSlider(slider, display) {
                 difficulty: 'principiante',
                 audioGeneral: 'all',
                 musicVolume: 75,
+                sfxVolume: 75,
                 gameMode: '',
                 currentWorld: 1,
                 currentLevelInWorld: 1,
@@ -2595,6 +2639,8 @@ function setupSlider(slider, display) {
             audioToggleSelector.value = profile.audioGeneral || 'all';
             musicVolumeSlider.value = profile.musicVolume || 75;
             if (musicVolumeValue) musicVolumeValue.textContent = musicVolumeSlider.value;
+            sfxVolumeSlider.value = profile.sfxVolume || 75;
+            if (sfxVolumeValue) sfxVolumeValue.textContent = sfxVolumeSlider.value;
             currentWorld = profile.currentWorld || 1;
             currentLevelInWorld = profile.currentLevelInWorld || 1;
             maxUnlockedWorld = profile.maxUnlockedWorld || 1;
@@ -2928,6 +2974,7 @@ function setupSlider(slider, display) {
         let synthsInitialized = false; // Flag to track synth initialization
         let synthEat, synthEatNoise, synthBadEat, synthWarning, synthTimeout, synthGameOver, synthStartGame, synthWin, synthCoinNoise, synthCoinChime;
         let synthModeSwitch, synthModeSelect;
+        let sfxGain;
 
 
         // --- Configuración para la animación de parpadeo del high score ---
@@ -3446,21 +3493,28 @@ function setupSlider(slider, display) {
                     if (gameMode === 'levels') worldsSelector.disabled = false; else difficultySelector.disabled = false;
                     difficultyControlGroup.classList.add("interactive-mode");
                     if (typeof Tone !== 'undefined') {
-                        if (panelOpenedFromSplash) {
+                        if (panelOpenedFromSplash || (!gameIntervalId && !screenState.gameActuallyStarted)) {
                             audioControlGroup.classList.remove('hidden');
                             musicVolumeControlGroup.classList.remove('hidden');
+                            sfxVolumeControlGroup.classList.remove('hidden');
                             audioToggleSelector.disabled = false;
                             audioControlGroup.classList.add("interactive-mode");
                             musicVolumeSlider.disabled = (audioToggleSelector.value === 'off' || audioToggleSelector.value === 'sfx_only');
+                            sfxVolumeSlider.disabled = (audioToggleSelector.value === 'off');
                             if (!musicVolumeSlider.disabled) musicVolumeControlGroup.classList.add("interactive-mode");
                             else musicVolumeControlGroup.classList.remove("interactive-mode");
+                            if (!sfxVolumeSlider.disabled) sfxVolumeControlGroup.classList.add("interactive-mode");
+                            else sfxVolumeControlGroup.classList.remove("interactive-mode");
                         } else {
                             audioToggleSelector.disabled = true;
                             musicVolumeSlider.disabled = true;
+                            sfxVolumeSlider.disabled = true;
                             audioControlGroup.classList.add('hidden');
                             musicVolumeControlGroup.classList.add('hidden');
+                            sfxVolumeControlGroup.classList.add('hidden');
                             audioControlGroup.classList.remove("interactive-mode");
                             musicVolumeControlGroup.classList.remove("interactive-mode");
+                            sfxVolumeControlGroup.classList.remove("interactive-mode");
                         }
                     }
                     settingsPanel.querySelectorAll('.setting-info-button').forEach(btn => btn.disabled = false);
@@ -3481,6 +3535,7 @@ function setupSlider(slider, display) {
         function openSettingsPanel() {
             settingsPanel.classList.add('centered-panel');
             togglePanel(settingsPanel, settingsPanelContent, true);
+            updateSfxVolume();
             // Show or hide certain settings when accessed from the splash screen
             if (!gameMode) difficultyControlGroup.classList.add('hidden');
             else difficultyControlGroup.classList.remove('hidden');
@@ -3904,6 +3959,10 @@ function setupSlider(slider, display) {
             musicVolume: {
                 title: "Volumen Música",
                 text: "<p>Ajusta con precisión qué tan fuerte o suave quieres que suene la música de fondo del juego, siempre que la tengas activada.</p><p>Mueve el deslizador hacia la derecha para aumentar el volumen, y hacia la izquierda para disminuirlo.</p>"
+            },
+            sfxVolume: {
+                title: "Volumen Efectos",
+                text: "<p>Controla la intensidad de los efectos de sonido del juego. Desliza hacia la derecha para escucharlos con más fuerza o hacia la izquierda para suavizarlos.</p>"
             }
         };
 
@@ -3985,21 +4044,28 @@ function setupSlider(slider, display) {
                     difficultyControlGroup.classList.add("interactive-mode");
 
                     if (typeof Tone !== 'undefined') {
-                        if (panelOpenedFromSplash) {
+                        if (panelOpenedFromSplash || (!gameIntervalId && !screenState.gameActuallyStarted)) {
                             audioControlGroup.classList.remove('hidden');
                             musicVolumeControlGroup.classList.remove('hidden');
+                            sfxVolumeControlGroup.classList.remove('hidden');
                             audioToggleSelector.disabled = false;
                             audioControlGroup.classList.add("interactive-mode");
                             musicVolumeSlider.disabled = (audioToggleSelector.value === 'off' || audioToggleSelector.value === 'sfx_only');
+                            sfxVolumeSlider.disabled = (audioToggleSelector.value === 'off');
                             if (!musicVolumeSlider.disabled) musicVolumeControlGroup.classList.add("interactive-mode");
                             else musicVolumeControlGroup.classList.remove("interactive-mode");
+                            if (!sfxVolumeSlider.disabled) sfxVolumeControlGroup.classList.add("interactive-mode");
+                            else sfxVolumeControlGroup.classList.remove("interactive-mode");
                         } else {
                             audioToggleSelector.disabled = true;
                             musicVolumeSlider.disabled = true;
+                            sfxVolumeSlider.disabled = true;
                             audioControlGroup.classList.add('hidden');
                             musicVolumeControlGroup.classList.add('hidden');
+                            sfxVolumeControlGroup.classList.add('hidden');
                             audioControlGroup.classList.remove("interactive-mode");
                             musicVolumeControlGroup.classList.remove("interactive-mode");
+                            sfxVolumeControlGroup.classList.remove("interactive-mode");
                         }
                     }
                     playerNameSelectors.forEach(sel => sel.disabled = false);
@@ -5171,29 +5237,39 @@ function setupSlider(slider, display) {
             difficultyControlGroup.classList.add("interactive-mode");
 
             if (typeof Tone !== 'undefined') {
-                 if (panelOpenedFromSplash) {
+                 if (panelOpenedFromSplash || (!gameIntervalId && !screenState.gameActuallyStarted)) {
                      audioControlGroup.classList.remove('hidden');
                      musicVolumeControlGroup.classList.remove('hidden');
+                     sfxVolumeControlGroup.classList.remove('hidden');
                      audioToggleSelector.disabled = false;
                      audioControlGroup.classList.add("interactive-mode");
                      musicVolumeSlider.disabled = (audioToggleSelector.value === 'off' || audioToggleSelector.value === 'sfx_only');
+                     sfxVolumeSlider.disabled = (audioToggleSelector.value === 'off');
                      if (!musicVolumeSlider.disabled) musicVolumeControlGroup.classList.add("interactive-mode");
                      else musicVolumeControlGroup.classList.remove("interactive-mode");
+                     if (!sfxVolumeSlider.disabled) sfxVolumeControlGroup.classList.add("interactive-mode");
+                     else sfxVolumeControlGroup.classList.remove("interactive-mode");
                  } else {
                      audioToggleSelector.disabled = true;
                      musicVolumeSlider.disabled = true;
+                     sfxVolumeSlider.disabled = true;
                      audioControlGroup.classList.add('hidden');
                      musicVolumeControlGroup.classList.add('hidden');
+                     sfxVolumeControlGroup.classList.add('hidden');
                      audioControlGroup.classList.remove("interactive-mode");
                      musicVolumeControlGroup.classList.remove("interactive-mode");
+                     sfxVolumeControlGroup.classList.remove("interactive-mode");
                  }
             } else {
                  audioToggleSelector.disabled = true;
                  musicVolumeSlider.disabled = true;
+                 sfxVolumeSlider.disabled = true;
                  audioControlGroup.classList.add('hidden');
                  musicVolumeControlGroup.classList.add('hidden');
+                 sfxVolumeControlGroup.classList.add('hidden');
                  audioControlGroup.classList.remove("interactive-mode");
                  musicVolumeControlGroup.classList.remove("interactive-mode");
+                 sfxVolumeControlGroup.classList.remove("interactive-mode");
             }
 
             resetDataButton.classList.add('hidden');
@@ -6656,31 +6732,42 @@ function setupSlider(slider, display) {
             if (synthsInitialized) return; 
 
             console.log("Initializing Tone.js Synths...");
-            synthEat = new Tone.MonoSynth({ oscillator: { type: 'triangle' }, envelope: { attack: 0.005, decay: 0.04, sustain: 0.01, release: 0.08 }, filterEnvelope: { attack: 0.002, decay: 0.01, sustain: 0, release: 0.02, baseFrequency: 1500, octaves: 1.5, exponent: 2 } }).toDestination();
+            sfxGain = new Tone.Gain(1).toDestination();
+            synthEat = new Tone.MonoSynth({ oscillator: { type: 'triangle' }, envelope: { attack: 0.005, decay: 0.04, sustain: 0.01, release: 0.08 }, filterEnvelope: { attack: 0.002, decay: 0.01, sustain: 0, release: 0.02, baseFrequency: 1500, octaves: 1.5, exponent: 2 } }).connect(sfxGain);
             synthEat.volume.value = 0;
-            synthEatNoise = new Tone.NoiseSynth({ noise: { type: 'white' }, envelope: { attack: 0.001, decay: 0.02, sustain: 0, release: 0.01 } }).toDestination();
+            synthEatNoise = new Tone.NoiseSynth({ noise: { type: 'white' }, envelope: { attack: 0.001, decay: 0.02, sustain: 0, release: 0.01 } }).connect(sfxGain);
             synthEatNoise.volume.value = -10;
-            synthBadEat = new Tone.MonoSynth({ oscillator: { type: 'triangle' }, envelope: { attack: 0.005, decay: 0.1, sustain: 0.01, release: 0.15 }, filterEnvelope: { attack: 0.002, decay: 0.02, sustain: 0, release: 0.05, baseFrequency: 500, octaves: 1.2, exponent: 2 } }).toDestination();
+            synthBadEat = new Tone.MonoSynth({ oscillator: { type: 'triangle' }, envelope: { attack: 0.005, decay: 0.1, sustain: 0.01, release: 0.15 }, filterEnvelope: { attack: 0.002, decay: 0.02, sustain: 0, release: 0.05, baseFrequency: 500, octaves: 1.2, exponent: 2 } }).connect(sfxGain);
             synthBadEat.volume.value = 0;
-            synthWarning = new Tone.Synth({ oscillator: { type: 'sine' }, envelope: { attack: 0.01, decay: 0.05, sustain: 0, release: 0.1 } }).toDestination();
+            synthWarning = new Tone.Synth({ oscillator: { type: 'sine' }, envelope: { attack: 0.01, decay: 0.05, sustain: 0, release: 0.1 } }).connect(sfxGain);
             synthWarning.volume.value = 0;
-            synthTimeout = new Tone.Synth({ oscillator: { type: 'square' }, envelope: { attack: 0.01, decay: 0.2, sustain: 0, release: 0.1 } }).toDestination();
-            synthTimeout.volume.value = 0; 
-            synthGameOver = new Tone.Synth({ oscillator: { type: 'triangle' }, envelope: { attack: 0.01, decay: 0.1, sustain: 0.2, release: 0.3 } }).toDestination();
-            synthGameOver.volume.value = 0; 
-            synthStartGame = new Tone.Synth({ oscillator: {type: 'triangle'}, envelope: { attack: 0.005, decay: 0.1, sustain: 0.05, release: 0.1 } }).toDestination();
+            synthTimeout = new Tone.Synth({ oscillator: { type: 'square' }, envelope: { attack: 0.01, decay: 0.2, sustain: 0, release: 0.1 } }).connect(sfxGain);
+            synthTimeout.volume.value = 0;
+            synthGameOver = new Tone.Synth({ oscillator: { type: 'triangle' }, envelope: { attack: 0.01, decay: 0.1, sustain: 0.2, release: 0.3 } }).connect(sfxGain);
+            synthGameOver.volume.value = 0;
+            synthStartGame = new Tone.Synth({ oscillator: {type: 'triangle'}, envelope: { attack: 0.005, decay: 0.1, sustain: 0.05, release: 0.1 } }).connect(sfxGain);
             synthStartGame.volume.value = 0;
-            synthWin = new Tone.Synth({ oscillator: { type: 'square' }, envelope: { attack: 0.01, decay: 0.2, sustain: 0.1, release: 0.4 } }).toDestination();
+            synthWin = new Tone.Synth({ oscillator: { type: 'square' }, envelope: { attack: 0.01, decay: 0.2, sustain: 0.1, release: 0.4 } }).connect(sfxGain);
             synthWin.volume.value = -4; // lower victory sound volume
-            synthCoinNoise = new Tone.NoiseSynth({ noise: { type: 'brown' }, envelope: { attack: 0.001, decay: 0.3, sustain: 0, release: 0.2 } }).toDestination();
+            synthCoinNoise = new Tone.NoiseSynth({ noise: { type: 'brown' }, envelope: { attack: 0.001, decay: 0.3, sustain: 0, release: 0.2 } }).connect(sfxGain);
             synthCoinNoise.volume.value = -8;
-            synthCoinChime = new Tone.Synth({ oscillator: { type: 'triangle' }, envelope: { attack: 0.01, decay: 0.1, sustain: 0, release: 0.1 } }).toDestination();
+            synthCoinChime = new Tone.Synth({ oscillator: { type: 'triangle' }, envelope: { attack: 0.01, decay: 0.1, sustain: 0, release: 0.1 } }).connect(sfxGain);
             synthCoinChime.volume.value = -2;
-            synthModeSwitch = new Tone.Synth({ oscillator: { type: 'square' }, envelope: { attack: 0.005, decay: 0.1, sustain: 0, release: 0.05 } }).toDestination();
+            synthModeSwitch = new Tone.Synth({ oscillator: { type: 'square' }, envelope: { attack: 0.005, decay: 0.1, sustain: 0, release: 0.05 } }).connect(sfxGain);
             synthModeSwitch.volume.value = -2;
-            synthModeSelect = new Tone.Synth({ oscillator: { type: 'triangle' }, envelope: { attack: 0.005, decay: 0.15, sustain: 0, release: 0.05 } }).toDestination();
+            synthModeSelect = new Tone.Synth({ oscillator: { type: 'triangle' }, envelope: { attack: 0.005, decay: 0.15, sustain: 0, release: 0.05 } }).connect(sfxGain);
             synthModeSelect.volume.value = -2;
             // synthSplashStart is initialized in window.onload
+            if (synthSplashStart) {
+                try {
+                    synthSplashStart.disconnect();
+                    synthSplashStart.connect(sfxGain);
+                } catch (e) {
+                    console.warn('Could not route splash start sound through sfxGain:', e);
+                }
+            }
+
+            updateSfxVolume();
 
             synthsInitialized = true;
             console.log("Tone.js Synths initialized.");
@@ -7007,11 +7094,13 @@ async function startGame(isRestart = false) {
             skinSelector.disabled = true;
             foodSelector.disabled = true;
             musicVolumeSlider.disabled = true;
+            sfxVolumeSlider.disabled = true;
             difficultyControlGroup.classList.remove("interactive-mode");
             audioControlGroup.classList.remove("interactive-mode");
             skinControlGroup.classList.remove("interactive-mode");
             foodControlGroup.classList.remove("interactive-mode");
             musicVolumeControlGroup.classList.remove("interactive-mode");
+            sfxVolumeControlGroup.classList.remove("interactive-mode");
             if (gameMode === 'freeMode') {
                 lastMovementTime = Date.now();
                 clearInterval(inactivityIntervalId);
@@ -7105,17 +7194,29 @@ async function startGame(isRestart = false) {
                 musicVolumeValue.textContent = sliderValue;
             }
             // For HTML5 Audio, volume is 0.0 to 1.0
-            const actualVolume = (sliderValue / 100) * MAX_ACTUAL_SLIDER_MAPPED_VOLUME; 
+            const actualVolume = (sliderValue / 100) * MAX_ACTUAL_SLIDER_MAPPED_VOLUME;
             if (generalBackgroundMusic) {
                 generalBackgroundMusic.volume = actualVolume;
             }
             if (inGameBackgroundMusic) {
                 inGameBackgroundMusic.volume = actualVolume;
             }
-            saveGameSettings(); 
+            saveGameSettings();
+        }
+
+        function updateSfxVolume() {
+            const sliderValue = parseInt(sfxVolumeSlider.value);
+            if (sfxVolumeValue) {
+                sfxVolumeValue.textContent = sliderValue;
+            }
+            if (sfxGain) {
+                sfxGain.gain.value = sliderValue / 100;
+            }
+            saveGameSettings();
         }
 
         musicVolumeSlider.addEventListener('input', updateMusicVolume);
+        sfxVolumeSlider.addEventListener('input', updateSfxVolume);
 
         audioToggleSelector.addEventListener('change', async function() { 
             const audioSetting = this.value;
@@ -7123,10 +7224,16 @@ async function startGame(isRestart = false) {
             areSfxEnabled = (audioSetting === 'all' || audioSetting === 'sfx_only');
 
             musicVolumeSlider.disabled = !isMusicEnabled;
-            if (isMusicEnabled && !gameIntervalId) { 
+            sfxVolumeSlider.disabled = !areSfxEnabled;
+            if (isMusicEnabled && !gameIntervalId) {
                 musicVolumeControlGroup.classList.add("interactive-mode");
             } else {
                 musicVolumeControlGroup.classList.remove("interactive-mode");
+            }
+            if (areSfxEnabled && !gameIntervalId) {
+                sfxVolumeControlGroup.classList.add("interactive-mode");
+            } else {
+                sfxVolumeControlGroup.classList.remove("interactive-mode");
             }
 
             const audioContextStarted = await ensureAudioContextRunning(); // Ensures context is running and synths are initialized
@@ -7138,7 +7245,9 @@ async function startGame(isRestart = false) {
 
 
             if (isMusicEnabled) { // Using HTML5 Audio
-                updateMusicVolume(); 
+                updateMusicVolume();
+                updateSfxVolume();
+                updateSfxVolume();
                 if (gameIntervalId) { // Game is active
                     if (generalBackgroundMusic) generalBackgroundMusic.pause();
                     if (inGameBackgroundMusic && inGameBackgroundMusic.paused) {
@@ -7150,11 +7259,12 @@ async function startGame(isRestart = false) {
                          generalBackgroundMusic.play().catch(e => console.error("Error al reproducir música general (toggle ON):", e));
                     }
                 }
-            } else { 
+            } else {
                 if (generalBackgroundMusic) generalBackgroundMusic.pause();
                 if (inGameBackgroundMusic) inGameBackgroundMusic.pause();
             }
-            saveGameSettings(); 
+            if (!isMusicEnabled) updateSfxVolume();
+            saveGameSettings();
         });
 
 
@@ -7693,6 +7803,7 @@ async function startGame(isRestart = false) {
             profile.food = foodSelector.value;
             profile.audioGeneral = audioToggleSelector.value;
             profile.musicVolume = musicVolumeSlider.value;
+            profile.sfxVolume = sfxVolumeSlider.value;
             profile.gameMode = gameMode;
             profile.currentWorld = currentWorld;
             profile.currentLevelInWorld = currentLevelInWorld;
@@ -7721,6 +7832,7 @@ async function startGame(isRestart = false) {
             }
             updatePlayerNameSelectors(currentPlayerName);
             applyProfile(playerProfiles[currentPlayerName]);
+            updateSfxVolume();
             const savedCoins = parseInt(localStorage.getItem('snakeGameCoins'), 10);
             totalCoins = Number.isFinite(savedCoins) && savedCoins >= 0 ? savedCoins : 0;
 
@@ -7864,7 +7976,8 @@ async function startGame(isRestart = false) {
                 }
                 // Apply loaded volume settings. updateMusicVolume is safe to call.
                 // It reads from musicVolumeSlider.value which is set by loadGameSettings.
-                updateMusicVolume(); 
+                updateMusicVolume();
+                updateSfxVolume();
             } else {
                 console.warn("HTML5 Audio no soportado, música de fondo desactivada (chequeo en window.onload).");
                 isMusicEnabled = false; // Ensure this is set if Audio is not supported
@@ -7877,6 +7990,8 @@ async function startGame(isRestart = false) {
                 });
                 musicVolumeSlider.disabled = true;
                 if (musicVolumeControlGroup) musicVolumeControlGroup.classList.remove("interactive-mode");
+                sfxVolumeSlider.disabled = true;
+                if (sfxVolumeControlGroup) sfxVolumeControlGroup.classList.remove("interactive-mode");
             }
 
             const splashStartButtonEl = document.getElementById('splash-start-button');
