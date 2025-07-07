@@ -273,15 +273,17 @@
             font-size: 0.7em;
         }
 
-        #star-progress-wrapper { 
-            grid-column: 2 / 4; 
+        #star-progress-wrapper {
+            grid-column: 2 / 4;
             display: flex;
-            justify-content: center; 
+            justify-content: center;
             align-items: center;
-            background-color: #374151; 
-            border-radius: 8px; 
-            padding: 8px 10px; 
-            min-height: 55px; 
+            background-image: url('https://i.imgur.com/DYZjAz4.png');
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+            padding: 8px 10px;
+            min-height: 55px;
             box-sizing: border-box;
             text-align: center;
         }
@@ -1013,6 +1015,21 @@
             height: 100%;
             object-fit: contain;
         }
+        #world-info-button {
+            position: static;
+            top: auto;
+            right: auto;
+            transform: none;
+            background-color: transparent;
+            width: 48px;
+            height: 48px;
+            margin-right:30px;
+        }
+        #world-info-button .setting-info-icon {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
         #free-settings-panel {
             max-height: 90vh;
             box-sizing: border-box;
@@ -1484,7 +1501,33 @@
           filter: grayscale(100%);
         }
 
+        /* --- Estilo de botones para selección de mundos en modo aventura --- */
+        .world-button {
+          width: 100px;
+          height: 100px;
+          background-image: url('https://i.imgur.com/DYZjAz4.png');
+          background-size: contain;
+          background-repeat: no-repeat;
+          background-position: center;
+          position: relative;
+          cursor: pointer;
+          transition: transform 0.05s ease-out, filter 0.05s ease-out;
+        }
+
+        .world-button:hover { filter: brightness(0.95); }
+        .world-button.icon-button-pressed { filter: brightness(0.5); }
+        .world-button.disabled {
+          pointer-events: none;
+          opacity: 0.7;
+          filter: grayscale(100%);
+        }
+
         #mazeLevelButtonsContainer.disabled {
+          pointer-events: none;
+          opacity: 0.7;
+        }
+
+        #worldButtonsContainer.disabled {
           pointer-events: none;
           opacity: 0.7;
         }
@@ -1616,10 +1659,14 @@
                         <button id="maze-info-button" class="setting-info-button hidden" data-setting="mazeLevel" aria-label="Información del modo laberinto">
                             <img class="setting-info-icon" src="https://i.imgur.com/rWe7Ylp.png" alt="info" onerror="this.src='https://placehold.co/24x24/02030D/FFFFFF?text=Err';">
                         </button>
+                        <button id="world-info-button" class="setting-info-button hidden" aria-label="Información del mundo">
+                            <img class="setting-info-icon" src="https://i.imgur.com/rWe7Ylp.png" alt="info" onerror="this.src='https://placehold.co/24x24/02030D/FFFFFF?text=Err';">
+                        </button>
                     </div>
                     <button id="close-settings-button" aria-label="Cerrar configuración">&times;</button>
                 </div>
                 <div class="panel-content">
+                <div id="worldButtonsContainer" class="hidden flex flex-wrap justify-center gap-4"></div>
                 <div id="mazeLevelButtonsContainer" class="hidden flex flex-wrap justify-center gap-4"></div>
                 <div class="control-row" id="player-row">
                     <div id="player-select-control-group" class="control-group hidden">
@@ -1648,9 +1695,6 @@
                      <div class="control-label-icon-row">
                         <label class="control-label" id="difficulty-label" for="difficultySelector">Dificultad:</label>
                         <button id="difficulty-info-button" class="setting-info-button" data-setting="difficulty" aria-label="Información sobre dificultad">
-                            <img class="setting-info-icon" src="https://i.imgur.com/rWe7Ylp.png" alt="info" onerror="this.src='https://placehold.co/24x24/02030D/FFFFFF?text=Err';">
-                        </button>
-                        <button id="world-info-button" class="setting-info-button hidden" data-setting="world" aria-label="Información sobre mundos">
                             <img class="setting-info-icon" src="https://i.imgur.com/rWe7Ylp.png" alt="info" onerror="this.src='https://placehold.co/24x24/02030D/FFFFFF?text=Err';">
                         </button>
                     </div>
@@ -1985,6 +2029,7 @@
         const startButtonWrapperEl = document.getElementById("start-button-wrapper");
         const difficultySelector = document.getElementById("difficultySelector");
         const worldsSelector = document.getElementById("worldsSelector");
+        const worldButtonsContainer = document.getElementById("worldButtonsContainer");
         const mazeLevelButtonsContainer = document.getElementById("mazeLevelButtonsContainer");
         const difficultyLabel = document.getElementById("difficulty-label");
         const settingsTitleImg = document.getElementById("settings-title-img");
@@ -2011,6 +2056,7 @@
 
         const difficultyInfoButton = document.getElementById("difficulty-info-button");
         const worldInfoButton = document.getElementById("world-info-button");
+        if (worldInfoButton) worldInfoButton.removeAttribute('data-setting');
         const mazeInfoButton = document.getElementById("maze-info-button");
         
         const progressPanel = document.getElementById("progress-panel");
@@ -4227,6 +4273,13 @@ function setupSlider(slider, display) {
                 button.addEventListener('touchcancel', () => icon.classList.remove('icon-button-pressed'));
             }
         });
+
+        if (worldInfoButton) {
+            worldInfoButton.addEventListener('click', () => {
+                if (areSfxEnabled) playSound('modeSwitch');
+                openSpecificInfoPanel('world');
+            });
+        }
 
         if (currentWorldInfoGroup) {
             currentWorldInfoGroup.addEventListener('click', () => {
@@ -6572,6 +6625,7 @@ function setupSlider(slider, display) {
                 difficultyLabel.textContent = "Nivel:";
                 difficultySelector.classList.add('hidden');
                 worldsSelector.classList.add('hidden');
+                worldButtonsContainer.classList.add('hidden');
                 mazeLevelButtonsContainer.classList.add('hidden');
                 difficultyInfoButton.classList.add('hidden');
                 worldInfoButton.classList.add('hidden');
@@ -6593,21 +6647,26 @@ function setupSlider(slider, display) {
                 
                 difficultyLabel.textContent = "Mundo Actual:";
                 difficultySelector.classList.add('hidden');
-                worldsSelector.classList.remove('hidden');
+                worldsSelector.classList.add('hidden');
+                worldButtonsContainer.classList.remove('hidden');
                 mazeLevelButtonsContainer.classList.add('hidden');
                 difficultyInfoButton.classList.add('hidden');
                 worldInfoButton.classList.remove('hidden');
                 mazeInfoButton.classList.add('hidden');
-                populateWorldsSelector();
+                populateWorldButtons();
                 drawStarProgress();
 
                 if (isSettingsPanelCurrentlyOpen && !isGameCurrentlyRunning) {
-                    worldsSelector.disabled = false;
+                    worldButtonsContainer.classList.remove('disabled');
                     difficultyControlGroup.classList.add("interactive-mode");
                 } else {
-                    worldsSelector.disabled = true;
-                     if (!isGameCurrentlyRunning) difficultyControlGroup.classList.add("interactive-mode"); 
+                    worldButtonsContainer.classList.add('disabled');
+                     if (!isGameCurrentlyRunning) difficultyControlGroup.classList.add("interactive-mode");
                      else difficultyControlGroup.classList.remove("interactive-mode");
+                }
+                if (settingsTitleImg) {
+                    settingsTitleImg.src = 'https://i.imgur.com/tLBeddL.png';
+                    settingsTitleImg.alt = 'Modo Aventura';
                 }
             } else if (gameMode === 'freeMode') {
                 // En el modo libre mantendremos visible el título del juego y ocultaremos
@@ -6624,6 +6683,7 @@ function setupSlider(slider, display) {
                 difficultyLabel.textContent = "Dificultad:";
                 difficultySelector.classList.remove('hidden');
                 worldsSelector.classList.add('hidden');
+                worldButtonsContainer.classList.add('hidden');
                 mazeLevelButtonsContainer.classList.add('hidden');
                 worldInfoButton.classList.add('hidden');
                 difficultyInfoButton.classList.remove('hidden');
@@ -6652,6 +6712,7 @@ function setupSlider(slider, display) {
                 difficultyLabel.textContent = "Dificultad:";
                 difficultySelector.classList.remove('hidden');
                 worldsSelector.classList.add('hidden');
+                worldButtonsContainer.classList.add('hidden');
                 mazeLevelButtonsContainer.classList.add('hidden');
                 worldInfoButton.classList.add('hidden');
                 difficultyInfoButton.classList.remove('hidden');
@@ -6676,6 +6737,7 @@ function setupSlider(slider, display) {
 
                 difficultySelector.classList.add('hidden');
                 worldsSelector.classList.add('hidden');
+                worldButtonsContainer.classList.add('hidden');
                 difficultyControlGroup.classList.add('hidden');
                 if (playerNameControlGroup) playerNameControlGroup.classList.add('hidden');
                 skinControlGroup.classList.add('hidden');
@@ -6702,6 +6764,7 @@ function setupSlider(slider, display) {
                 difficultyLabel.textContent = "Dificultad:";
                 difficultySelector.classList.remove('hidden');
                 worldsSelector.classList.add('hidden');
+                worldButtonsContainer.classList.add('hidden');
                 mazeLevelButtonsContainer.classList.add('hidden');
                 worldInfoButton.classList.add('hidden');
                 difficultyInfoButton.classList.remove('hidden');
@@ -6747,7 +6810,7 @@ function setupSlider(slider, display) {
             }
         }
 
-        function populateWorldsSelector() {
+function populateWorldsSelector() {
             worldsSelector.innerHTML = '';
             for (let i = 1; i <= TOTAL_WORLDS; i++) {
                 const option = document.createElement('option');
@@ -6759,6 +6822,69 @@ function setupSlider(slider, display) {
                     option.selected = true;
                 }
                 worldsSelector.appendChild(option);
+            }
+        }
+
+function populateWorldButtons() {
+            worldButtonsContainer.innerHTML = '';
+            for (let i = 1; i <= TOTAL_WORLDS; i++) {
+                const button = document.createElement('div');
+                button.className = 'world-button';
+                const worldImg = worldImagesConfig[i]?.cover || '';
+                button.style.backgroundImage = `url('${worldImg}'), url('https://i.imgur.com/DYZjAz4.png')`;
+                button.style.backgroundSize = 'cover, contain';
+                button.style.backgroundRepeat = 'no-repeat';
+                button.style.backgroundPosition = 'center';
+
+                const starsContainer = document.createElement('div');
+                starsContainer.className = 'maze-stars';
+
+                const completedLevels = levelsProgress.slice((i - 1) * LEVELS_PER_WORLD, i * LEVELS_PER_WORLD).filter(Boolean).length;
+                for (let j = 0; j < LEVELS_PER_WORLD; j++) {
+                    const star = document.createElement('div');
+                    star.className = 'star ' + (j < completedLevels ? 'full' : 'empty');
+                    starsContainer.appendChild(star);
+                }
+
+                button.appendChild(starsContainer);
+
+                if (i > maxUnlockedWorld) {
+                    button.classList.add('disabled');
+                }
+
+                button.addEventListener('click', () => {
+                    if (i > maxUnlockedWorld) return;
+
+                    currentWorld = i;
+                    currentLevelInWorld = worldCurrentLevels[i - 1] || 1;
+                    displayWorld = currentWorld;
+                    displayLevelInWorld = currentLevelInWorld;
+                    const absoluteDisplayLevelIndex = (displayWorld - 1) * LEVELS_PER_WORLD + (displayLevelInWorld - 1);
+                    displayTargetScore = TARGET_SCORES_LEVELS[absoluteDisplayLevelIndex] || 0;
+                    updateTargetScoreDisplay();
+                    if (progressPanelLeftValue) {
+                        progressPanelLeftValue.textContent = `${displayWorld}.${displayLevelInWorld}`;
+                    }
+                    drawStarProgress();
+
+                    screenState.showCoverForWorld = currentWorld;
+                    screenState.gameActuallyStarted = false;
+                    screenState.showWorldCompleteCover = 0;
+                    screenState.showLevelCompleteCover = 0;
+                    screenState.showDefeatCoverForWorld = 0;
+                    screenState.showTimeoutCover = false;
+                    screenState.showFreeModeCover = false;
+
+                    saveGameSettings();
+
+                    closeSettingsPanel();
+
+                    requestAnimationFrame(draw);
+                });
+
+                addIconPressEvents(button, button);
+
+                worldButtonsContainer.appendChild(button);
             }
         }
 
