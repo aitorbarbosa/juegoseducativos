@@ -1589,6 +1589,7 @@
                     <button id="close-settings-button" aria-label="Cerrar configuración">&times;</button>
                 </div>
                 <div class="panel-content">
+                <div id="mazeLevelButtonsContainer" class="hidden flex flex-wrap justify-center gap-4"></div>
                 <div class="control-row" id="player-row">
                     <div id="player-select-control-group" class="control-group hidden">
                         <div class="control-label-icon-row">
@@ -1633,7 +1634,6 @@
                     </select>
                     <select id="worldsSelector" class="hidden">
                     </select>
-                    <div id="mazeLevelButtonsContainer" class="hidden flex flex-wrap justify-center gap-4"></div>
                 </div>
                 <div class="control-group" id="player-name-control-group">
                     <div class="control-label-icon-row">
@@ -6638,9 +6638,12 @@ function setupSlider(slider, display) {
                 progressPanelLeftValue.textContent = displayMazeLevel;
                 drawStarProgress();
 
-                difficultyLabel.textContent = "Nivel Actual:";
                 difficultySelector.classList.add('hidden');
                 worldsSelector.classList.add('hidden');
+                difficultyControlGroup.classList.add('hidden');
+                if (playerNameControlGroup) playerNameControlGroup.classList.add('hidden');
+                skinControlGroup.classList.add('hidden');
+                foodControlGroup.classList.add('hidden');
                 mazeLevelButtonsContainer.classList.remove('hidden');
                 worldInfoButton.classList.add('hidden');
                 difficultyInfoButton.classList.add('hidden');
@@ -6649,11 +6652,8 @@ function setupSlider(slider, display) {
 
                 if (isSettingsPanelCurrentlyOpen && !isGameCurrentlyRunning) {
                     mazeLevelButtonsContainer.classList.remove('disabled');
-                    difficultyControlGroup.classList.add("interactive-mode");
                 } else {
                     mazeLevelButtonsContainer.classList.add('disabled');
-                    if (!isGameCurrentlyRunning) difficultyControlGroup.classList.add("interactive-mode");
-                    else difficultyControlGroup.classList.remove("interactive-mode");
                 }
             } else {
                 titlePanel.classList.add('hidden');
