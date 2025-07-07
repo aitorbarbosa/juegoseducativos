@@ -14,7 +14,7 @@ Open `Snake Github.html` directly in your favorite web browser. You can either d
 
 - **Levels and Worlds** – Progress through a series of worlds, each containing multiple levels.
 - **Skins** – Change the appearance of your snake with different skins.
-- **Audio** – Toggle music and sound effects, and adjust volume.
+- **Audio** – Toggle music and sound effects, and adjust both music and SFX volume levels.
 - **Maze Stars** – Each maze level tracks the stars you've earned so you can work toward a perfect 5-star score over multiple attempts.
 - **Coins** – Earn coins at the end of every game. Your total coins accumulate across all game modes and sessions.
 
