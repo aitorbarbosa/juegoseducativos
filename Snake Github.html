@@ -958,10 +958,10 @@
             display: block;
         }
 
-        .settings-panel-hidden, .info-panel-hidden, .specific-info-panel-hidden, .free-settings-panel-hidden, .reset-panel-hidden {
+        .settings-panel-hidden, .info-panel-hidden, .specific-info-panel-hidden, .free-settings-panel-hidden, .reset-panel-hidden, .maze-level-panel-hidden {
             display: none !important;
         }
-        #settings-panel, #info-panel, #specific-info-panel, #free-settings-panel, #reset-confirmation-panel {
+        #settings-panel, #info-panel, #specific-info-panel, #free-settings-panel, #reset-confirmation-panel, #maze-level-panel {
             position: fixed;
             left: 50%;
             transform: translateX(-50%) scale(0.95);
@@ -1011,21 +1011,24 @@
         #info-panel.centered-panel,
         #specific-info-panel.centered-panel,
         #free-settings-panel.centered-panel,
-        #reset-confirmation-panel.centered-panel {
+        #reset-confirmation-panel.centered-panel,
+        #maze-level-panel.centered-panel {
             transform: translate(-50%, -50%) scale(0.95);
         }
         #settings-panel.centered-panel.panel-visible,
         #info-panel.centered-panel.panel-visible,
         #specific-info-panel.centered-panel.panel-visible,
         #free-settings-panel.centered-panel.panel-visible,
-        #reset-confirmation-panel.centered-panel.panel-visible {
+        #reset-confirmation-panel.centered-panel.panel-visible,
+        #maze-level-panel.centered-panel.panel-visible {
             transform: translate(-50%, -50%) scale(1);
         }
         #settings-panel.panel-visible,
         #info-panel.panel-visible,
         #specific-info-panel.panel-visible,
         #free-settings-panel.panel-visible,
-        #reset-confirmation-panel.panel-visible {
+        #reset-confirmation-panel.panel-visible,
+        #maze-level-panel.panel-visible {
             opacity: 1;
             transform: translateX(-50%) scale(1);
         }
@@ -1134,7 +1137,8 @@
         #info-panel .panel-content::-webkit-scrollbar,
         #specific-info-panel .panel-content::-webkit-scrollbar,
         #free-settings-panel .panel-content::-webkit-scrollbar,
-        #reset-confirmation-panel .panel-content::-webkit-scrollbar {
+        #reset-confirmation-panel .panel-content::-webkit-scrollbar,
+        #maze-level-panel .panel-content::-webkit-scrollbar {
             width: 8px;
         }
         #info-panel-content::-webkit-scrollbar-track,
@@ -1143,7 +1147,8 @@
         #info-panel .panel-content::-webkit-scrollbar-track,
         #specific-info-panel .panel-content::-webkit-scrollbar-track,
         #free-settings-panel .panel-content::-webkit-scrollbar-track,
-        #reset-confirmation-panel .panel-content::-webkit-scrollbar-track {
+        #reset-confirmation-panel .panel-content::-webkit-scrollbar-track,
+        #maze-level-panel .panel-content::-webkit-scrollbar-track {
             background: #2d1d3a;
             border-radius: 4px;
         }
@@ -1153,7 +1158,8 @@
         #info-panel .panel-content::-webkit-scrollbar-thumb,
         #specific-info-panel .panel-content::-webkit-scrollbar-thumb,
         #free-settings-panel .panel-content::-webkit-scrollbar-thumb,
-        #reset-confirmation-panel .panel-content::-webkit-scrollbar-thumb {
+        #reset-confirmation-panel .panel-content::-webkit-scrollbar-thumb,
+        #maze-level-panel .panel-content::-webkit-scrollbar-thumb {
             background: #442F58;
             border-radius: 4px;
         }
@@ -1170,7 +1176,9 @@
         #free-settings-panel .panel-content::-webkit-scrollbar-thumb:hover,
         #free-settings-panel .panel-content::-webkit-scrollbar-thumb:active,
         #reset-confirmation-panel .panel-content::-webkit-scrollbar-thumb:hover,
-        #reset-confirmation-panel .panel-content::-webkit-scrollbar-thumb:active {
+        #reset-confirmation-panel .panel-content::-webkit-scrollbar-thumb:active,
+        #maze-level-panel .panel-content::-webkit-scrollbar-thumb:hover,
+        #maze-level-panel .panel-content::-webkit-scrollbar-thumb:active {
             background: #8f66af;
         }
 
@@ -1396,6 +1404,14 @@
         #reset-confirmation-panel { z-index: 2102; }
 
         .reset-panel-hidden { display: none !important; }
+
+        /* Maze level selection panel */
+        #maze-level-panel { z-index: 2101; }
+        #maze-level-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+        .maze-level-cell { background-image: url('https://i.imgur.com/PBaUVn6.png'); background-size: cover; position: relative; aspect-ratio: 1 / 1; cursor: pointer; }
+        .maze-level-number { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); pointer-events: none; color: #f5f5f5; font-size: 1.2em; }
+        .maze-level-stars { position: absolute; bottom: 4px; left: 50%; transform: translateX(-50%); display: flex; gap: 2px; pointer-events: none; }
+        .maze-level-stars .star-svg { width: 20px; height: 20px; }
 
         #reset-confirmation-panel p { text-align: center; margin: 0 0 10px 0; }
         #reset-confirmation-panel .reset-buttons { display: flex; gap: 15px; }
@@ -1783,6 +1799,10 @@
                 <div id="specific-info-content">
                  </div>
             </div>
+            <div id="maze-level-panel" class="maze-level-panel-hidden">
+                <button id="close-maze-level-button" aria-label="Cerrar selector">&times;</button>
+                <div id="maze-level-grid"></div>
+            </div>
             <div id="reset-confirmation-panel" class="reset-panel-hidden">
                 <div class="reset-header">
                     <h2>Reiniciar</h2>
@@ -1976,6 +1996,10 @@
         const specificInfoTitle = document.getElementById("specific-info-title");
         const specificInfoContent = document.getElementById("specific-info-content");
         const closeSpecificInfoButton = document.getElementById("close-specific-info-button");
+
+        const mazeLevelPanel = document.getElementById("maze-level-panel");
+        const mazeLevelGrid = document.getElementById("maze-level-grid");
+        const closeMazeLevelButton = document.getElementById("close-maze-level-button");
 
         const freeSpeedInput = document.getElementById("free-speed-input");
         const freeSpeedValue = document.getElementById("free-speed-value");
@@ -3343,7 +3367,8 @@ function setupSlider(slider, display) {
             const isSettingsVisible = !settingsPanel.classList.contains("settings-panel-hidden") && settingsPanel.classList.contains("panel-visible");
             const isInfoVisible = !infoPanel.classList.contains("info-panel-hidden") && infoPanel.classList.contains("panel-visible");
             const isFreeSettingsVisible = freeSettingsPanel && !freeSettingsPanel.classList.contains("free-settings-panel-hidden") && freeSettingsPanel.classList.contains("panel-visible");
-            const isAnyMainPanelEffectivelyOpen = isSettingsVisible || isInfoVisible || isFreeSettingsVisible;
+            const isMazePanelVisible = mazeLevelPanel && !mazeLevelPanel.classList.contains("maze-level-panel-hidden") && mazeLevelPanel.classList.contains("panel-visible");
+            const isAnyMainPanelEffectivelyOpen = isSettingsVisible || isInfoVisible || isFreeSettingsVisible || isMazePanelVisible;
 
             if (isAnyMainPanelEffectivelyOpen) {
                 startButton.disabled = true;
@@ -3542,6 +3567,11 @@ function setupSlider(slider, display) {
         function openSettingsPanel() {
             settingsPanel.classList.add('centered-panel');
             togglePanel(settingsPanel, settingsPanelContent, true);
+            if (gameMode === 'maze') {
+                mazeLevelPanel.classList.add('centered-panel');
+                populateMazeLevelGrid();
+                togglePanel(mazeLevelPanel, mazeLevelGrid, true);
+            }
             updateSfxVolume();
             // Show or hide certain settings when accessed from the splash screen
             if (!gameMode) difficultyControlGroup.classList.add('hidden');
@@ -3603,8 +3633,9 @@ function setupSlider(slider, display) {
 
         function closeSettingsPanel() {
             const wasSpecificInfoOpen = specificInfoPanel && !specificInfoPanel.classList.contains("specific-info-panel-hidden");
-            
+
             togglePanel(settingsPanel, settingsPanelContent, false); // Hides panel
+            if (mazeLevelPanel) togglePanel(mazeLevelPanel, mazeLevelGrid, false);
 
             if (wasSpecificInfoOpen) {
                 togglePanel(specificInfoPanel, specificInfoContent, false); // Hides specific info
@@ -3645,6 +3676,7 @@ function setupSlider(slider, display) {
                 updateMainButtonStates();
             }, 0);
             settingsPanel.classList.remove('centered-panel');
+            if (mazeLevelPanel) mazeLevelPanel.classList.remove('centered-panel');
 
             if (panelOpenedFromSplash && splashScreen && !splashScreen.classList.contains('hidden')) {
                 if (gameContainer) gameContainer.classList.add('hidden');
@@ -3891,6 +3923,7 @@ function setupSlider(slider, display) {
         });
         closeFreeSettingsButton.addEventListener('click', closeFreeSettingsPanel);
         closeSettingsButton.addEventListener('click', closeSettingsPanel);
+        if (closeMazeLevelButton) closeMazeLevelButton.addEventListener('click', () => togglePanel(mazeLevelPanel, mazeLevelGrid, false));
         backButton.addEventListener('click', () => {
             if (areSfxEnabled) playSound('modeSwitch');
             handleBackButtonClick();
@@ -5155,6 +5188,9 @@ function setupSlider(slider, display) {
 
             if (levelIndex >= 0 && levelIndex < MAZE_LEVEL_COUNT && mazeStarsEarned > mazePreviousStars) {
                 mazeLevelStars[levelIndex] = mazeStarsEarned;
+                if (mazeLevelPanel && !mazeLevelPanel.classList.contains('maze-level-panel-hidden')) {
+                    populateMazeLevelGrid();
+                }
             }
 
             saveGameSettings();
@@ -6673,6 +6709,48 @@ function setupSlider(slider, display) {
                     option.selected = true;
                 }
                 mazeLevelSelector.appendChild(option);
+            }
+        }
+
+        function populateMazeLevelGrid() {
+            if (!mazeLevelGrid) return;
+            mazeLevelGrid.innerHTML = '';
+            for (let i = 1; i <= MAZE_LEVEL_COUNT; i++) {
+                const cell = document.createElement('div');
+                cell.className = 'maze-level-cell';
+                cell.dataset.level = i;
+
+                const number = document.createElement('div');
+                number.className = 'maze-level-number';
+                number.textContent = i;
+                cell.appendChild(number);
+
+                const starsDiv = document.createElement('div');
+                starsDiv.className = 'maze-level-stars';
+                const earned = mazeLevelStars[i - 1] || 0;
+                for (let j = 0; j < MAZE_STAR_TARGETS.length; j++) {
+                    const starSvg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+                    starSvg.setAttribute('class', 'star-svg');
+                    starSvg.setAttribute('viewBox', '0 0 24 24');
+                    const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+                    path.setAttribute('d', 'M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z');
+                    starSvg.appendChild(path);
+                    starSvg.setAttribute('fill', j < earned ? '#FACC15' : '#6B7280');
+                    starsDiv.appendChild(starSvg);
+                }
+                cell.appendChild(starsDiv);
+
+                cell.addEventListener('click', () => {
+                    if (i > currentMazeLevel) return;
+                    displayMazeLevel = i;
+                    mazePreviousStars = mazeLevelStars[i - 1] || 0;
+                    mazeStarsEarned = mazePreviousStars;
+                    progressPanelLeftValue.textContent = displayMazeLevel;
+                    drawStarProgress();
+                    togglePanel(mazeLevelPanel, mazeLevelGrid, false);
+                });
+
+                mazeLevelGrid.appendChild(cell);
             }
         }
 
