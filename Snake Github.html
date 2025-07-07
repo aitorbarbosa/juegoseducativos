@@ -716,7 +716,6 @@
         }
         .control-group.interactive-mode:hover #difficultySelector,
         .control-group.interactive-mode:hover #worldsSelector,
-        .control-group.interactive-mode:hover #mazeLevelButtonsContainer,
         .control-group.interactive-mode:hover #audioToggleSelector,
         .control-group.interactive-mode:hover #skinSelector,
         .control-group.interactive-mode:hover #foodSelector,
@@ -999,7 +998,20 @@
             max-height: 90vh;
             box-sizing: border-box;
         }
+        #maze-info-button {
+            position: static;
+            top: auto;
+            right: auto;
+            transform: none;
+            background-color: transparent;
+            width: 32px;
+            height: 32px;
+        }
         #free-settings-panel {
+            max-height: 90vh;
+            box-sizing: border-box;
+        }
+        #settings-panel {
             max-height: 90vh;
             box-sizing: border-box;
         }
@@ -1043,6 +1055,11 @@
         .settings-header h2, .info-header h2, .specific-info-header h2, .reset-header h2 {
             font-size: 1.4em;
             margin: 0;
+        }
+        .settings-header .header-title-group {
+            display: flex;
+            align-items: center;
+            gap: 2px;
         }
         #free-settings-panel .settings-header h2 {
             font-size: 1.1em;
@@ -1238,7 +1255,6 @@
             }
              #settings-panel #difficultySelector,
              #settings-panel #worldsSelector,
-             #settings-panel #mazeLevelButtonsContainer,
              #settings-panel #audioToggleSelector,
              #settings-panel #skinSelector,
              #settings-panel #foodSelector,
@@ -1321,7 +1337,6 @@
         @media screen and (min-width: 600px) {
             #settings-panel #difficultySelector,
             #settings-panel #worldsSelector,
-            #settings-panel #mazeLevelButtonsContainer,
             #settings-panel #audioToggleSelector,
             #settings-panel #skinSelector,
             #settings-panel #foodSelector {
@@ -1465,7 +1480,7 @@
 
         .maze-level-number {
           position: absolute;
-          top: 28%;
+          top: 50%;
           left: 50%;
           transform: translate(-50%, -50%);
           font-size: 0.85rem;
@@ -1476,7 +1491,7 @@
 
         .maze-stars {
           position: absolute;
-          bottom: 8px;
+          bottom: 12px;
           left: 0;
           right: 0;
           display: flex;
@@ -1585,10 +1600,16 @@
         <div id="setup-controls"> 
         <div id="settings-panel" class="settings-panel-hidden">
                 <div class="settings-header">
-                    <h2 id="settings-title"><img src="https://i.imgur.com/IAfhEaH.png" alt="Configuración"></h2>
+                    <div class="header-title-group">
+                        <h2 id="settings-title"><img id="settings-title-img" src="https://i.imgur.com/IAfhEaH.png" alt="Configuración"></h2>
+                        <button id="maze-info-button" class="setting-info-button hidden" data-setting="mazeLevel" aria-label="Información del modo laberinto">
+                            <img class="setting-info-icon" src="https://i.imgur.com/rWe7Ylp.png" alt="info" onerror="this.src='https://placehold.co/24x24/02030D/FFFFFF?text=Err';">
+                        </button>
+                    </div>
                     <button id="close-settings-button" aria-label="Cerrar configuración">&times;</button>
                 </div>
                 <div class="panel-content">
+                <div id="mazeLevelButtonsContainer" class="hidden flex flex-wrap justify-center gap-4"></div>
                 <div class="control-row" id="player-row">
                     <div id="player-select-control-group" class="control-group hidden">
                         <div class="control-label-icon-row">
@@ -1621,9 +1642,6 @@
                         <button id="world-info-button" class="setting-info-button hidden" data-setting="world" aria-label="Información sobre mundos">
                             <img class="setting-info-icon" src="https://i.imgur.com/rWe7Ylp.png" alt="info" onerror="this.src='https://placehold.co/24x24/02030D/FFFFFF?text=Err';">
                         </button>
-                        <button id="maze-info-button" class="setting-info-button hidden" data-setting="mazeLevel" aria-label="Información sobre niveles">
-                            <img class="setting-info-icon" src="https://i.imgur.com/rWe7Ylp.png" alt="info" onerror="this.src='https://placehold.co/24x24/02030D/FFFFFF?text=Err';">
-                        </button>
                     </div>
                     <select id="difficultySelector">
                         <option value="principiante" selected>Novato</option>
@@ -1633,7 +1651,6 @@
                     </select>
                     <select id="worldsSelector" class="hidden">
                     </select>
-                    <div id="mazeLevelButtonsContainer" class="hidden flex flex-wrap justify-center gap-4"></div>
                 </div>
                 <div class="control-group" id="player-name-control-group">
                     <div class="control-label-icon-row">
@@ -1958,7 +1975,8 @@
         const difficultySelector = document.getElementById("difficultySelector");
         const worldsSelector = document.getElementById("worldsSelector");
         const mazeLevelButtonsContainer = document.getElementById("mazeLevelButtonsContainer");
-        const difficultyLabel = document.getElementById("difficulty-label"); 
+        const difficultyLabel = document.getElementById("difficulty-label");
+        const settingsTitleImg = document.getElementById("settings-title-img");
         const audioToggleSelector = document.getElementById("audioToggleSelector");
         const skinSelector = document.getElementById("skinSelector");
         const foodSelector = document.getElementById("foodSelector");
@@ -6525,6 +6543,13 @@ function setupSlider(slider, display) {
             const isSettingsPanelCurrentlyOpen = !settingsPanel.classList.contains("settings-panel-hidden");
             progressPanel.classList.remove('classification-mode');
 
+            // Set default settings header appearance
+            if (settingsTitleImg) {
+                settingsTitleImg.src = 'https://i.imgur.com/IAfhEaH.png';
+                settingsTitleImg.alt = 'Configuración';
+            }
+            if (mazeInfoButton) mazeInfoButton.classList.add('hidden');
+
             if (!gameMode) {
                 titlePanel.classList.remove('hidden');
                 progressPanel.classList.add('hidden');
@@ -6638,22 +6663,27 @@ function setupSlider(slider, display) {
                 progressPanelLeftValue.textContent = displayMazeLevel;
                 drawStarProgress();
 
-                difficultyLabel.textContent = "Nivel Actual:";
                 difficultySelector.classList.add('hidden');
                 worldsSelector.classList.add('hidden');
+                difficultyControlGroup.classList.add('hidden');
+                if (playerNameControlGroup) playerNameControlGroup.classList.add('hidden');
+                skinControlGroup.classList.add('hidden');
+                foodControlGroup.classList.add('hidden');
                 mazeLevelButtonsContainer.classList.remove('hidden');
                 worldInfoButton.classList.add('hidden');
                 difficultyInfoButton.classList.add('hidden');
                 mazeInfoButton.classList.remove('hidden');
                 populateMazeLevelButtons();
 
+                if (settingsTitleImg) {
+                    settingsTitleImg.src = 'https://i.imgur.com/XLdIK3D.png';
+                    settingsTitleImg.alt = 'Modo Laberinto';
+                }
+
                 if (isSettingsPanelCurrentlyOpen && !isGameCurrentlyRunning) {
                     mazeLevelButtonsContainer.classList.remove('disabled');
-                    difficultyControlGroup.classList.add("interactive-mode");
                 } else {
                     mazeLevelButtonsContainer.classList.add('disabled');
-                    if (!isGameCurrentlyRunning) difficultyControlGroup.classList.add("interactive-mode");
-                    else difficultyControlGroup.classList.remove("interactive-mode");
                 }
             } else {
                 titlePanel.classList.add('hidden');
