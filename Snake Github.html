@@ -1557,8 +1557,8 @@
         }
 
         .maze-stars .star {
-          width: 14px;
-          height: 14px;
+          width: 20px;
+          height: 20px;
           background-size: cover;
         }
 
@@ -6839,7 +6839,7 @@ function populateWorldButtons() {
                 button.className = 'world-button';
                 const worldImg = worldImagesConfig[i]?.cover || '';
                 button.style.backgroundImage = `url('https://i.imgur.com/DYZjAz4.png'), url('${worldImg}')`;
-                button.style.backgroundSize = 'contain, cover';
+                button.style.backgroundSize = 'contain, 80%';
                 button.style.backgroundRepeat = 'no-repeat';
                 button.style.backgroundPosition = 'center';
 
