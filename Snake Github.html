@@ -1552,7 +1552,7 @@
         }
 
         .world-button .maze-stars {
-          bottom: 19px;
+          bottom: 13px;
           gap: 2px;
         }
 
@@ -1560,6 +1560,11 @@
           width: 14px;
           height: 14px;
           background-size: cover;
+        }
+
+        .world-button .maze-stars .star {
+          width: 20px;
+          height: 20px;
         }
 
         .maze-stars .star.full {
@@ -6839,9 +6844,9 @@ function populateWorldButtons() {
                 button.className = 'world-button';
                 const worldImg = worldImagesConfig[i]?.cover || '';
                 button.style.backgroundImage = `url('https://i.imgur.com/DYZjAz4.png'), url('${worldImg}')`;
-                button.style.backgroundSize = 'contain, cover';
+                button.style.backgroundSize = 'contain, 65%';
                 button.style.backgroundRepeat = 'no-repeat';
-                button.style.backgroundPosition = 'center';
+                button.style.backgroundPosition = 'center, center 40%';
 
                 const starsContainer = document.createElement('div');
                 starsContainer.className = 'maze-stars';
