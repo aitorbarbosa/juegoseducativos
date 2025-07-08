@@ -296,9 +296,16 @@
             width: 100%; 
             max-width: 260px; 
         }
-        .star-svg {
-            width: 38px; 
-            height: 38px; 
+        .progress-star {
+            width: 38px;
+            height: 38px;
+            background-size: cover;
+        }
+        .progress-star.full {
+            background-image: url('https://i.imgur.com/mJU2iIm.png');
+        }
+        .progress-star.empty {
+            background-image: url('https://i.imgur.com/M4FDVgp.png');
         }
 
         /* --- INICIO DE CSS CORREGIDO PARA #high-score-display --- */
@@ -1279,7 +1286,7 @@
             #current-world-info-group .info-value { font-size: 0.8em; }
             #progress-panel.classification-mode #current-world-info-group .info-value { font-size: 0.7em; }
             #star-progress-wrapper { min-height: 50px; padding: 6px;}
-            .star-svg { width: 30px; height: 30px; }
+            .progress-star { width: 30px; height: 30px; }
             #star-progress-container { max-width: 200px; gap: 10px;}
 
 
@@ -1366,7 +1373,7 @@
             #current-world-info-group .info-value { font-size: 0.7em; }
             #progress-panel.classification-mode #current-world-info-group .info-value { font-size: 0.6em; }
             #current-world-info-group { min-width: 60px; cursor: pointer;}
-            .star-svg { width: 24px; height: 24px; }
+            .progress-star { width: 24px; height: 24px; }
             #star-progress-container { max-width: 170px; gap: 8px;}
 
 
@@ -2350,6 +2357,8 @@ function setupSlider(slider, display) {
         const mazeFinalImg = new Image();
         const mazeAllStarsImg = new Image();
         const timeoutImg = new Image();
+        const starFullImg = new Image();
+        const starEmptyImg = new Image();
 
         const worldCoverImages = {
             1: new Image(),
@@ -2429,7 +2438,7 @@ function setupSlider(slider, display) {
         };
 
         let worldImagesLoaded = 0;
-        const totalWorldImagesToLoad = Object.keys(worldImagesConfig).length * 4 + 15;
+        const totalWorldImagesToLoad = Object.keys(worldImagesConfig).length * 4 + 17;
         // --- FIN: Declaración de Objetos Image ---
 
         // --- Música de fondo y SFX ---
@@ -3271,6 +3280,8 @@ function setupSlider(slider, display) {
             mazeFinalImg.src = 'https://i.imgur.com/dga8Z3q.png';
             mazeAllStarsImg.src = 'https://i.imgur.com/grMD2kr.png';
             timeoutImg.src = 'https://i.imgur.com/uEjzFbY.png';
+            starFullImg.src = 'https://i.imgur.com/mJU2iIm.png';
+            starEmptyImg.src = 'https://i.imgur.com/M4FDVgp.png';
 
 
             const allWorldImages = [
@@ -3282,7 +3293,8 @@ function setupSlider(slider, display) {
                 ...Object.values(classificationDifficultyImages),
                 mazeModeCoverImg, mazeLevelCoverImg,
                 mazeFailImg, mazePartialImg, mazePerfectImg,
-                mazeCompleteImg, mazeFinalImg, mazeAllStarsImg, timeoutImg
+                mazeCompleteImg, mazeFinalImg, mazeAllStarsImg, timeoutImg,
+                starFullImg, starEmptyImg
             ];
 
             allWorldImages.forEach(img => {
@@ -5849,20 +5861,26 @@ function setupSlider(slider, display) {
             const startX = (canvasEl.width - rowWidth) / 2 + starSize / 2;
             const starY = canvasEl.height - starSize / 2 - marginBottom;
             for (let i = 0; i < totalStars; i++) {
-                const color = levelNumber > currentMazeLevel ? '#6B7280' : (i < starsEarned ? '#FACC15' : '#6B7280');
-                drawStarShape(startX + i * (starSize + gap), starY, starSize, color);
+                const filled = levelNumber <= currentMazeLevel && i < starsEarned;
+                drawStarShape(startX + i * (starSize + gap), starY, starSize, filled);
             }
         }
 
-        function drawStarShape(cx, cy, size, color) {
-            const path = new Path2D('M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z');
-            const scale = size / 24;
-            ctx.save();
-            ctx.translate(cx - size / 2, cy - size / 2);
-            ctx.scale(scale, scale);
-            ctx.fillStyle = color;
-            ctx.fill(path);
-            ctx.restore();
+        function drawStarShape(cx, cy, size, filled) {
+            if (starFullImg.complete && starEmptyImg.complete && starFullImg.naturalHeight !== 0 && starEmptyImg.naturalHeight !== 0) {
+                const img = filled ? starFullImg : starEmptyImg;
+                ctx.drawImage(img, cx - size / 2, cy - size / 2, size, size);
+            } else {
+                const path = new Path2D('M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z');
+                const scale = size / 24;
+                const color = filled ? '#FACC15' : '#6B7280';
+                ctx.save();
+                ctx.translate(cx - size / 2, cy - size / 2);
+                ctx.scale(scale, scale);
+                ctx.fillStyle = color;
+                ctx.fill(path);
+                ctx.restore();
+            }
         }
 
         function drawWorldCover() {
@@ -7071,26 +7089,16 @@ function populateMazeLevelButtons() {
                 for (let i = 0; i < LEVELS_PER_WORLD; i++) {
                     const levelIndexInTotal = worldLevelStartIndex + i;
                     const isCompleted = levelsProgress[levelIndexInTotal];
-                    const starSvg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-                    starSvg.setAttribute("class", "star-svg");
-                    starSvg.setAttribute("viewBox", "0 0 24 24");
-                    const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
-                    path.setAttribute("d", "M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z");
-                    starSvg.appendChild(path);
-                    starSvg.setAttribute("fill", isCompleted ? "#FACC15" : "#6B7280");
-                    starProgressContainer.appendChild(starSvg);
+                    const star = document.createElement('div');
+                    star.className = 'progress-star ' + (isCompleted ? 'full' : 'empty');
+                    starProgressContainer.appendChild(star);
                 }
             } else if (gameMode === 'maze') {
                 for (let i = 0; i < MAZE_STAR_TARGETS.length; i++) {
                     const isEarned = i < mazeStarsEarned;
-                    const starSvg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-                    starSvg.setAttribute("class", "star-svg");
-                    starSvg.setAttribute("viewBox", "0 0 24 24");
-                    const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
-                    path.setAttribute("d", "M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z");
-                    starSvg.appendChild(path);
-                    starSvg.setAttribute("fill", isEarned ? "#FACC15" : "#6B7280");
-                    starProgressContainer.appendChild(starSvg);
+                    const star = document.createElement('div');
+                    star.className = 'progress-star ' + (isEarned ? 'full' : 'empty');
+                    starProgressContainer.appendChild(star);
                 }
             }
         }
