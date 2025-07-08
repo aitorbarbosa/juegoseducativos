@@ -827,6 +827,8 @@
             border-collapse: collapse;
             font-size: 0.6rem;
             color: #f5f5f5;
+            border-radius: 8px;
+            overflow: hidden;
         }
         #classification-ranking-table th,
         #classification-ranking-table td {
@@ -1123,6 +1125,9 @@
             background-color: #374151;
             min-width: unset;
             width:100%;
+        }
+        #settings-panel #classification-ranking-group {
+            background-color: transparent;
         }
         #free-settings-panel .control-group {
             flex: none;
@@ -1721,21 +1726,32 @@
                         <input id="newPlayerNameInput" type="text" maxlength="10">
                     </div>
                 </div>
-                <div class="control-group" id="difficulty-control-group">
-                     <div class="control-label-icon-row">
-                        <label class="control-label" id="difficulty-label" for="difficultySelector">Dificultad:</label>
-                        <button id="difficulty-info-button" class="setting-info-button" data-setting="difficulty" aria-label="Información sobre dificultad">
-                            <img class="setting-info-icon" src="https://i.imgur.com/rWe7Ylp.png" alt="info" onerror="this.src='https://placehold.co/24x24/02030D/FFFFFF?text=Err';">
-                        </button>
+                <div class="control-row" id="classification-select-row">
+                    <div class="control-group" id="player-name-control-group">
+                        <div class="control-label-icon-row">
+                            <label class="control-label" for="playerNameSelector">Jugador:</label>
+                            <button class="setting-info-button" data-setting="playerName" aria-label="Información sobre nombre del jugador">
+                                <img class="setting-info-icon" src="https://i.imgur.com/rWe7Ylp.png" alt="info" onerror="this.src='https://placehold.co/24x24/02030D/FFFFFF?text=Err';">
+                            </button>
+                        </div>
+                        <select id="playerNameSelector"></select>
                     </div>
-                <select id="difficultySelector">
-                        <option value="principiante" selected>Novato</option>
-                        <option value="explorador">Explorador</option>
-                        <option value="veterano">Veterano</option>
-                        <option value="legendario">Legendario</option>
-                    </select>
-                    <select id="worldsSelector" class="hidden">
-                    </select>
+                    <div class="control-group" id="difficulty-control-group">
+                        <div class="control-label-icon-row">
+                            <label class="control-label" id="difficulty-label" for="difficultySelector">Dificultad:</label>
+                            <button id="difficulty-info-button" class="setting-info-button" data-setting="difficulty" aria-label="Información sobre dificultad">
+                                <img class="setting-info-icon" src="https://i.imgur.com/rWe7Ylp.png" alt="info" onerror="this.src='https://placehold.co/24x24/02030D/FFFFFF?text=Err';">
+                            </button>
+                        </div>
+                        <select id="difficultySelector">
+                            <option value="principiante" selected>Novato</option>
+                            <option value="explorador">Explorador</option>
+                            <option value="veterano">Veterano</option>
+                            <option value="legendario">Legendario</option>
+                        </select>
+                        <select id="worldsSelector" class="hidden">
+                        </select>
+                    </div>
                 </div>
                 <div class="control-group hidden" id="classification-ranking-group">
                     <table id="classification-ranking-table">
@@ -1752,15 +1768,6 @@
                         </thead>
                         <tbody id="classification-ranking-list"></tbody>
                     </table>
-                </div>
-                <div class="control-group" id="player-name-control-group">
-                    <div class="control-label-icon-row">
-                        <label class="control-label" for="playerNameSelector">Jugador:</label>
-                        <button class="setting-info-button" data-setting="playerName" aria-label="Información sobre nombre del jugador">
-                            <img class="setting-info-icon" src="https://i.imgur.com/rWe7Ylp.png" alt="info" onerror="this.src='https://placehold.co/24x24/02030D/FFFFFF?text=Err';">
-                        </button>
-                    </div>
-                    <select id="playerNameSelector"></select>
                 </div>
                 <div class="control-group" id="skin-control-group">
                     <div class="control-label-icon-row">
@@ -3754,7 +3761,6 @@ function setupSlider(slider, display) {
                     classificationRankingGroup.classList.remove('hidden');
                     populateClassificationRanking();
                 }
-                if (playerNameControlGroup) playerNameControlGroup.classList.add('hidden');
                 skinControlGroup.classList.add('hidden');
                 foodControlGroup.classList.add('hidden');
                 audioControlGroup.classList.add('hidden');
@@ -6802,7 +6808,6 @@ function setupSlider(slider, display) {
                     if (!isGameCurrentlyRunning) difficultyControlGroup.classList.add("interactive-mode");
                     else difficultyControlGroup.classList.remove("interactive-mode");
                 }
-                if (playerNameControlGroup) playerNameControlGroup.classList.add('hidden');
                 skinControlGroup.classList.add('hidden');
                 foodControlGroup.classList.add('hidden');
                 audioControlGroup.classList.add('hidden');
