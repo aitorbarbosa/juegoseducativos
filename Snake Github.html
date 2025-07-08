@@ -818,6 +818,26 @@
             border-radius: 50%;
             border: none;
         }
+
+        #classification-ranking-group {
+            max-height: 140px;
+            overflow-y: auto;
+        }
+        #classification-ranking-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.6rem;
+            color: #f5f5f5;
+        }
+        #classification-ranking-table th,
+        #classification-ranking-table td {
+            padding: 2px 4px;
+            border: 1px solid #4B5563;
+            text-align: center;
+        }
+        #classification-ranking-table th {
+            background-color: #1F2937;
+        }
         .switch {
             position: relative;
             display: inline-block;
@@ -1706,7 +1726,7 @@
                             <img class="setting-info-icon" src="https://i.imgur.com/rWe7Ylp.png" alt="info" onerror="this.src='https://placehold.co/24x24/02030D/FFFFFF?text=Err';">
                         </button>
                     </div>
-                    <select id="difficultySelector">
+                <select id="difficultySelector">
                         <option value="principiante" selected>Novato</option>
                         <option value="explorador">Explorador</option>
                         <option value="veterano">Veterano</option>
@@ -1714,6 +1734,22 @@
                     </select>
                     <select id="worldsSelector" class="hidden">
                     </select>
+                </div>
+                <div class="control-group hidden" id="classification-ranking-group">
+                    <div class="control-label-icon-row">
+                        <label class="control-label">Ranking</label>
+                    </div>
+                    <table id="classification-ranking-table">
+                        <thead>
+                            <tr>
+                                <th>Nº</th>
+                                <th>PUNTOS</th>
+                                <th>TIEMPO</th>
+                                <th>JUGADOR</th>
+                            </tr>
+                        </thead>
+                        <tbody id="classification-ranking-list"></tbody>
+                    </table>
                 </div>
                 <div class="control-group" id="player-name-control-group">
                     <div class="control-label-icon-row">
@@ -2061,6 +2097,8 @@
         const musicVolumeSlider = document.getElementById("musicVolumeSlider");
         const musicVolumeValue = document.getElementById("musicVolumeValue");
         const musicVolumeControlGroup = document.getElementById("music-volume-control-group");
+        const classificationRankingGroup = document.getElementById("classification-ranking-group");
+        const classificationRankingList = document.getElementById("classification-ranking-list");
 
         const difficultyInfoButton = document.getElementById("difficulty-info-button");
         const worldInfoButton = document.getElementById("world-info-button");
@@ -3707,6 +3745,21 @@ function setupSlider(slider, display) {
                 addPlayerControlGroup.classList.add('hidden');
                 resetDataButton.classList.add('hidden');
                 resetDataButton.classList.remove('interactive-mode');
+            }
+
+            if (gameMode === 'classification' && !panelOpenedFromSplash) {
+                if (classificationRankingGroup) {
+                    classificationRankingGroup.classList.remove('hidden');
+                    populateClassificationRanking();
+                }
+                if (playerNameControlGroup) playerNameControlGroup.classList.add('hidden');
+                skinControlGroup.classList.add('hidden');
+                foodControlGroup.classList.add('hidden');
+                audioControlGroup.classList.add('hidden');
+                musicVolumeControlGroup.classList.add('hidden');
+                sfxVolumeControlGroup.classList.add('hidden');
+            } else if (classificationRankingGroup) {
+                classificationRankingGroup.classList.add('hidden');
             }
             if (gameOver && !gameIntervalId) { // Game is over and not running
                 if (ctx && canvasEl) {
@@ -6614,6 +6667,7 @@ function setupSlider(slider, display) {
             const isGameCurrentlyRunning = !!gameIntervalId;
             const isSettingsPanelCurrentlyOpen = !settingsPanel.classList.contains("settings-panel-hidden");
             progressPanel.classList.remove('classification-mode');
+            if (classificationRankingGroup) classificationRankingGroup.classList.add('hidden');
 
             // Set default settings header appearance
             if (settingsTitleImg) {
@@ -6720,6 +6774,10 @@ function setupSlider(slider, display) {
                 progressPanelLeftValue.textContent = DIFFICULTY_DISPLAY_NAMES[difficultySelector.value] || difficultySelector.value;
 
                 displayClassificationHighScoreInPanel();
+                if (classificationRankingGroup) {
+                    classificationRankingGroup.classList.remove('hidden');
+                    populateClassificationRanking();
+                }
 
                 difficultyLabel.textContent = "Dificultad:";
                 difficultySelector.classList.remove('hidden');
@@ -6729,6 +6787,10 @@ function setupSlider(slider, display) {
                 worldInfoButton.classList.add('hidden');
                 difficultyInfoButton.classList.remove('hidden');
                 mazeInfoButton.classList.add('hidden');
+                if (settingsTitleImg) {
+                    settingsTitleImg.src = specificHelpTexts.difficulty.image;
+                    settingsTitleImg.alt = specificHelpTexts.difficulty.title;
+                }
 
                 if (isSettingsPanelCurrentlyOpen && !isGameCurrentlyRunning) {
                     difficultySelector.disabled = false;
@@ -6738,6 +6800,13 @@ function setupSlider(slider, display) {
                     if (!isGameCurrentlyRunning) difficultyControlGroup.classList.add("interactive-mode");
                     else difficultyControlGroup.classList.remove("interactive-mode");
                 }
+                if (playerNameControlGroup) playerNameControlGroup.classList.add('hidden');
+                skinControlGroup.classList.add('hidden');
+                foodControlGroup.classList.add('hidden');
+                audioControlGroup.classList.add('hidden');
+                musicVolumeControlGroup.classList.add('hidden');
+                sfxVolumeControlGroup.classList.add('hidden');
+                resetDataButton.classList.add('hidden');
             } else if (gameMode === 'maze') {
                 titlePanel.classList.add('hidden');
                 progressPanel.classList.remove('hidden');
@@ -7663,6 +7732,7 @@ async function startGame(isRestart = false) {
                 displayHighScoreInPanel();
             } else if (gameMode === 'classification') {
                 displayClassificationHighScoreInPanel();
+                populateClassificationRanking();
                 // También actualizamos la dificultad mostrada en pantalla
                 if (progressPanelLeftValue) {
                     progressPanelLeftValue.textContent = DIFFICULTY_DISPLAY_NAMES[difficulty] || difficulty;
@@ -7842,6 +7912,23 @@ async function startGame(isRestart = false) {
                 if (hsSkinValueDisplay) {
                     hsSkinValueDisplay.textContent = "-";
                 }
+            }
+        }
+
+        function populateClassificationRanking() {
+            if (!classificationRankingList) return;
+            const selectedDifficulty = difficultySelector.value;
+            const scores = loadClassificationHighScores(selectedDifficulty);
+            classificationRankingList.innerHTML = '';
+
+            for (let i = 0; i < MAX_HIGH_SCORES; i++) {
+                const entry = scores[i];
+                const row = document.createElement('tr');
+                const playerDisplay = entry ? (entry.playerName || SKIN_DISPLAY_NAMES[entry.skin] || entry.skin || '-') : '---';
+                const scoreVal = entry ? entry.score : '---';
+                const timeVal = entry ? formatTime(entry.time) : '---';
+                row.innerHTML = `<td>${i + 1}.</td><td>${scoreVal}</td><td>${timeVal}</td><td>${playerDisplay}</td>`;
+                classificationRankingList.appendChild(row);
             }
         }
 
