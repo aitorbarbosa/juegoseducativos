@@ -193,32 +193,6 @@
             line-height: 1.3;
         }
 
-        #top-info-bar.selector-mode .info-group {
-            background-color: transparent;
-            background-size: contain;
-            background-repeat: no-repeat;
-            background-position: center;
-        }
-        #top-info-bar.selector-mode #coins-info-group {
-            background-image: url('https://i.imgur.com/lQ4ltzt.png');
-            position: relative;
-        }
-        #top-info-bar.selector-mode #points-info-group {
-            background-image: url('https://i.imgur.com/vPzvx4U.png');
-        }
-        #top-info-bar.selector-mode #time-info-group {
-            background-image: url('https://i.imgur.com/P16YAd1.png');
-        }
-        #top-info-bar.selector-mode #coins-info-group .flex {
-            position: absolute;
-            top: 50%;
-            left: 60%;
-            transform: translate(-50%, -50%);
-        }
-        #top-info-bar.selector-mode .info-label,
-        #top-info-bar.selector-mode .coin-icon {
-            display: none;
-        }
 
         #title-panel {
             display: flex;
@@ -661,8 +635,64 @@
             transform: translateY(-50%);
         }
 
-        #livesValue { right: 5px; }
+        #livesValue { left: 5px; }
         #lifeTimerValue { left: -16px; text-align: right; }
+
+        #mode-select-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 20;
+        }
+
+        #mode-select-info-bar {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 8px;
+            width: 100%;
+            margin: 0 auto 5px auto;
+            pointer-events: none;
+        }
+
+        #mode-select-info-bar .info-group {
+            pointer-events: auto;
+            background-color: transparent;
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+        }
+
+        #mode-select-info-bar #select-coins-info-group {
+            background-image: url('https://i.imgur.com/lQ4ltzt.png');
+            position: relative;
+        }
+        #mode-select-info-bar #select-lives-info-group {
+            background-image: url('https://i.imgur.com/vPzvx4U.png');
+        }
+        #mode-select-info-bar #select-gems-info-group {
+            background-image: url('https://i.imgur.com/P16YAd1.png');
+        }
+        #mode-select-info-bar #select-coins-info-group .flex {
+            position: absolute;
+            top: 50%;
+            left: 60%;
+            transform: translate(-50%, -50%);
+        }
+        #mode-select-info-bar .info-label,
+        #mode-select-info-bar .coin-icon {
+            display: none;
+        }
+
+        #selectLivesValue,
+        #selectLifeTimerValue {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        #selectLivesValue { left: 5px; }
+        #selectLifeTimerValue { left: -16px; text-align: right; }
 
 
         #difficultySelector, #worldsSelector, #audioToggleSelector, #skinSelector, #foodSelector, #playerNameSelector, #free-difficulty-selector {
@@ -1729,11 +1759,11 @@
             <div id="points-info-group" class="info-group">
                 <span class="info-label">Puntos:</span>
                 <div class="flex items-center justify-center relative">
-        <span id="livesValue" class="info-value absolute hidden" style="left:5px;">5</span>
+        <span id="livesValue" class="info-value absolute hidden">5</span>
                     <span id="scoreValue" class="info-value">0</span>
                     <span id="target-score-divider" class="info-value mx-1 hidden">/</span>
                     <span id="targetScoreValue" class="info-value hidden">0</span>
-                    <span id="lifeTimerValue" class="info-value hidden absolute" style="right:10px;">Lleno</span>
+                    <span id="lifeTimerValue" class="info-value hidden absolute">Lleno</span>
                 </div>
             </div>
             <div id="time-info-group" class="info-group">
@@ -1741,7 +1771,37 @@
                 <span id="timeLengthValue" class="info-value">60</span>
             </div>
         </div>
-        
+
+        <div id="mode-select-overlay" class="hidden">
+            <div id="mode-select-info-bar">
+                <div class="info-group" id="select-coins-info-group">
+                    <span class="info-label">Monedas:</span>
+                    <div class="flex items-center justify-center relative">
+                        <svg class="coin-icon" viewBox="0 0 24 24" fill="none">
+                            <circle cx="12" cy="12" r="9" fill="#FCD34D" stroke="#D97706" stroke-width="2" />
+                        </svg>
+                        <span id="selectCoinValue" class="info-value">0</span>
+                    </div>
+                </div>
+                <div class="info-group" id="select-lives-info-group">
+                    <span class="info-label">Vidas:</span>
+                    <div class="flex items-center justify-center relative">
+                        <span id="selectLivesValue" class="info-value absolute">5</span>
+                        <span id="selectLifeTimerValue" class="info-value absolute">Lleno</span>
+                    </div>
+                </div>
+                <div class="info-group" id="select-gems-info-group">
+                    <span class="info-label">Gemas:</span>
+                    <div class="flex items-center justify-center relative">
+                        <svg class="coin-icon" viewBox="0 0 24 24" fill="none">
+                            <path d="M12 2l7 7-7 13-7-13z" fill="#9CA3AF" stroke="#6B7280" stroke-width="2" />
+                        </svg>
+                        <span id="selectGemValue" class="info-value">0</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <canvas id="gameCanvas"></canvas>
         <button id="mode-left-button" class="mode-nav-button hidden" aria-label="Modo anterior">
             <img id="mode-left-button-icon" class="arrow-icon" src="https://i.imgur.com/pDjzolV.png" alt="Anterior" onerror="this.src='https://placehold.co/50x50/02030D/FFFFFF?text=Err';">
@@ -2215,6 +2275,11 @@
         const infoPanelContent = document.getElementById("info-panel-content");
         const closeInfoButton = document.getElementById("close-info-button");
         const topInfoBar = document.getElementById('top-info-bar');
+        const modeSelectOverlay = document.getElementById('mode-select-overlay');
+        const selectCoinValueDisplay = document.getElementById('selectCoinValue');
+        const selectLivesValueDisplay = document.getElementById('selectLivesValue');
+        const selectLifeTimerValueDisplay = document.getElementById('selectLifeTimerValue');
+        const selectGemValueDisplay = document.getElementById('selectGemValue');
         const setupControls = document.getElementById('setup-controls');
         const actionButtonsRow = document.getElementById('action-buttons-row');
 
@@ -6675,6 +6740,7 @@ function setupSlider(slider, display) {
 
         function updateCoinDisplay() {
             coinValueDisplay.textContent = totalCoins;
+            if (selectCoinValueDisplay) selectCoinValueDisplay.textContent = totalCoins;
         }
 
         function animateCoinGain(oldTotal, newTotal) {
@@ -6690,6 +6756,7 @@ function setupSlider(slider, display) {
                 const progress = Math.min(1, (now - start) / duration);
                 const value = Math.floor(oldTotal + diff * progress);
                 coinValueDisplay.textContent = value;
+                if (selectCoinValueDisplay) selectCoinValueDisplay.textContent = value;
                 if (progress < 1) requestAnimationFrame(step);
             }
             requestAnimationFrame(step);
@@ -6730,15 +6797,20 @@ function setupSlider(slider, display) {
 
         function updateLivesDisplay() {
             if (livesValueDisplay) livesValueDisplay.textContent = playerLives;
+            if (selectLivesValueDisplay) selectLivesValueDisplay.textContent = playerLives;
         }
 
         function updateLifeTimerDisplay() {
-            if (!lifeTimerValueDisplay) return;
-            if (playerLives >= MAX_LIVES || lifeRestoreQueue.length === 0) {
-                lifeTimerValueDisplay.textContent = 'Lleno';
-            } else {
-                const remaining = Math.max(0, Math.ceil((lifeRestoreQueue[0] - Date.now()) / 1000));
-                lifeTimerValueDisplay.textContent = formatTime(remaining);
+            if (lifeTimerValueDisplay || selectLifeTimerValueDisplay) {
+                if (playerLives >= MAX_LIVES || lifeRestoreQueue.length === 0) {
+                    if (lifeTimerValueDisplay) lifeTimerValueDisplay.textContent = 'Lleno';
+                    if (selectLifeTimerValueDisplay) selectLifeTimerValueDisplay.textContent = 'Lleno';
+                } else {
+                    const remaining = Math.max(0, Math.ceil((lifeRestoreQueue[0] - Date.now()) / 1000));
+                    const formatted = formatTime(remaining);
+                    if (lifeTimerValueDisplay) lifeTimerValueDisplay.textContent = formatted;
+                    if (selectLifeTimerValueDisplay) selectLifeTimerValueDisplay.textContent = formatted;
+                }
             }
         }
 
@@ -6813,19 +6885,14 @@ function setupSlider(slider, display) {
         
         function updateGameModeUI() {
 
-            topInfoBar.classList.toggle('selector-mode', showModeSelect);
-
+            topInfoBar.classList.toggle('hidden', showModeSelect);
+            if (modeSelectOverlay) modeSelectOverlay.classList.toggle('hidden', !showModeSelect);
             if (showModeSelect) {
-                if (livesValueDisplay) livesValueDisplay.classList.remove("hidden");
-                if (lifeTimerValueDisplay) lifeTimerValueDisplay.classList.remove('hidden');
-                if (scoreValueDisplay) scoreValueDisplay.classList.add('hidden');
-                if (targetScoreDivider) targetScoreDivider.classList.add('hidden');
-                if (targetScoreValueDisplay) targetScoreValueDisplay.classList.add('hidden');
-            } else {
-                if (livesValueDisplay) livesValueDisplay.classList.add("hidden");
-                if (lifeTimerValueDisplay) lifeTimerValueDisplay.classList.add('hidden');
-                if (scoreValueDisplay) scoreValueDisplay.classList.remove('hidden');
-                if (targetScoreDivider && targetScoreValueDisplay) updateTargetScoreDisplay();
+                updateCoinDisplay();
+                updateLivesDisplay();
+                updateLifeTimerDisplay();
+            } else if (targetScoreDivider && targetScoreValueDisplay) {
+                updateTargetScoreDisplay();
             }
 
             const isGameCurrentlyRunning = !!gameIntervalId;
