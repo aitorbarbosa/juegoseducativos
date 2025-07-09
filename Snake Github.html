@@ -654,6 +654,16 @@
             transform: translateX(-10px) translateY(-50%);
         }
 
+        #livesValue,
+        #lifeTimerValue {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        #livesValue { left: 5px; }
+        #lifeTimerValue { right: 10px; text-align: right; }
+
 
         #difficultySelector, #worldsSelector, #audioToggleSelector, #skinSelector, #foodSelector, #playerNameSelector, #free-difficulty-selector {
             padding: 4px 6px;
@@ -1719,11 +1729,11 @@
             <div id="points-info-group" class="info-group">
                 <span class="info-label">Puntos:</span>
                 <div class="flex items-center justify-center relative">
-        <span id="livesValue" class="info-value absolute left-0 pl-3 hidden">5</span>
+        <span id="livesValue" class="info-value absolute hidden" style="left:5px;">5</span>
                     <span id="scoreValue" class="info-value">0</span>
                     <span id="target-score-divider" class="info-value mx-1 hidden">/</span>
                     <span id="targetScoreValue" class="info-value hidden">0</span>
-                    <span id="lifeTimerValue" class="info-value hidden">Lleno</span>
+                    <span id="lifeTimerValue" class="info-value hidden absolute" style="right:10px;">Lleno</span>
                 </div>
             </div>
             <div id="time-info-group" class="info-group">
