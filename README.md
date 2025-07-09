@@ -23,3 +23,9 @@ For details on the upcoming Classification mode revamp, see [CLASIFICACION.md](C
 ## Local Storage & Dependencies
 
 Game settings, progress, high scores, and maze star achievements are saved using the browser's `localStorage` API. The HTML file loads external resources from CDNs, including Tailwind CSS for styles, Google Fonts for typography, and Tone.js for audio playback.
+
+## Simplified Screen System
+
+`index.html` includes a small demo that uses a `Screen` base class and a `ScreenManager` to change between sections (splash, mode select, and the different game modes). All of this logic is written directly in the HTML file so it runs anywhere without extra JavaScript files.
+
+Open `index.html` in a browser to see the example. The original game remains in `Snake Github.html`.

@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Snake Modular</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div id="splash-screen" class="screen">
+        <button id="start-btn">Start</button>
+    </div>
+    <div id="mode-select-screen" class="screen hidden">
+        <p>Mode Select</p>
+    </div>
+    <div id="adventure-screen" class="screen hidden">
+        <p>Adventure Mode</p>
+    </div>
+    <div id="maze-screen" class="screen hidden">
+        <p>Maze Mode</p>
+    </div>
+    <div id="classification-screen" class="screen hidden">
+        <p>Classification Mode</p>
+    </div>
+    <div id="free-mode-screen" class="screen hidden">
+        <p>Free Mode</p>
+    </div>
+    <script>
+        class Screen {
+            constructor(rootSelector) {
+                this.root = document.querySelector(rootSelector);
+            }
+            show() {
+                this.root.classList.remove('hidden');
+            }
+            hide() {
+                this.root.classList.add('hidden');
+            }
+            update() {}
+        }
+
+        class ScreenManager {
+            constructor() {
+                this.screens = {};
+                this.currentScreen = null;
+            }
+            register(name, screen) {
+                this.screens[name] = screen;
+            }
+            switchTo(name) {
+                if (this.currentScreen) {
+                    this.currentScreen.hide();
+                }
+                this.currentScreen = this.screens[name];
+                if (this.currentScreen) {
+                    this.currentScreen.show();
+                }
+            }
+            getCurrentScreen() {
+                return this.currentScreen;
+            }
+        }
+
+        class SplashScreen extends Screen {
+            constructor() {
+                super('#splash-screen');
+                const btn = this.root.querySelector('#start-btn');
+                if (btn) {
+                    btn.addEventListener('click', () => {
+                        if (this.onStart) this.onStart();
+                    });
+                }
+            }
+        }
+
+        class ModeSelectScreen extends Screen {
+            constructor() {
+                super('#mode-select-screen');
+            }
+        }
+
+        class AdventureScreen extends Screen {
+            constructor() {
+                super('#adventure-screen');
+            }
+        }
+
+        class MazeScreen extends Screen {
+            constructor() {
+                super('#maze-screen');
+            }
+        }
+
+        class ClassificationScreen extends Screen {
+            constructor() {
+                super('#classification-screen');
+            }
+        }
+
+        class FreeModeScreen extends Screen {
+            constructor() {
+                super('#free-mode-screen');
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const manager = new ScreenManager();
+            const splash = new SplashScreen();
+            const select = new ModeSelectScreen();
+            const adventure = new AdventureScreen();
+            const maze = new MazeScreen();
+            const classification = new ClassificationScreen();
+            const freeMode = new FreeModeScreen();
+
+            splash.onStart = () => manager.switchTo('select');
+
+            manager.register('splash', splash);
+            manager.register('select', select);
+            manager.register('adventure', adventure);
+            manager.register('maze', maze);
+            manager.register('classification', classification);
+            manager.register('free', freeMode);
+
+            manager.switchTo('splash');
+        });
+    </script>
+</body>
+</html>
