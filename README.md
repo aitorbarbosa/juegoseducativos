@@ -23,3 +23,13 @@ For details on the upcoming Classification mode revamp, see [CLASIFICACION.md](C
 ## Local Storage & Dependencies
 
 Game settings, progress, high scores, and maze star achievements are saved using the browser's `localStorage` API. The HTML file loads external resources from CDNs, including Tailwind CSS for styles, Google Fonts for typography, and Tone.js for audio playback.
+
+## Modular Screen System
+
+A simplified modular architecture has been added in the `index.html` page. Screens are organized using JavaScript classes in the `js/` directory:
+
+- `screenManager.js` defines a base `Screen` class and a `ScreenManager` to handle transitions.
+- Individual screens like `splash.js` or `modeSelect.js` extend `Screen` and manage their own DOM nodes.
+- Common information panels are encapsulated in small classes inside `js/panels/`.
+
+To try the modular demo, open `index.html` in a browser. The original game remains in `Snake Github.html`.
