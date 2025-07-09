@@ -167,27 +167,38 @@
 
         #top-info-bar .info-group {
             display: flex;
-            flex-direction: column; 
+            flex-direction: column;
             align-items: center;
-            justify-content: center; 
-            background-color: #374151; 
+            justify-content: center;
+            background-color: transparent;
             border-radius: 8px;
-            padding: 8px 10px; 
-            min-width: 80px; 
-            min-height: 55px; 
+            padding: 8px 10px;
+            min-width: 80px;
+            min-height: 55px;
             box-sizing: border-box;
             text-align: center;
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
         }
+
+        #coins-info-group {
+            background-image: url('https://i.imgur.com/lQ4ltzt.png');
+            position: relative;
+        }
+        #points-info-group {
+            background-image: url('https://i.imgur.com/vPzvx4U.png');
+        }
+        #time-info-group {
+            background-image: url('https://i.imgur.com/P16YAd1.png');
+        }
+
+        #coins-info-group .flex { position: absolute; top: 50%; left: 60%; transform: translate(-50%, -50%); }
         #top-info-bar .info-label {
-            font-size: 0.65em; 
-            color: #a0aec0; 
-            margin-bottom: 4px; 
-            display: block; 
-            line-height: 1.1;
-            word-break: break-word; 
+            display: none;
         }
         #top-info-bar .info-value {
-            font-size: 0.85em; 
+            font-size: 0.85em;
             color: #f5f5f5;
             font-family: 'Press Start 2P', sans-serif;
             line-height: 1.3;
@@ -597,11 +608,6 @@
             opacity: 0.6;
         }
 
-        .coin-icon {
-            width: 16px;
-            height: 16px;
-            margin-right: 4px;
-        }
 
         #earnedCoinsMessage {
             position: absolute;
@@ -1278,7 +1284,7 @@
 
 
             #top-info-bar .info-group { min-height: 50px; padding: 6px; min-width: 70px;}
-            #top-info-bar .info-label { font-size: 0.6em; }
+            #top-info-bar .info-label { display: none; }
             #top-info-bar .info-value { font-size: 0.8em; }
 
             #title-panel { min-height: 50px; padding: 6px; }
@@ -1367,7 +1373,7 @@
             /* --- FIN DE MEDIA QUERY CORREGIDA PARA #high-score-display --- */
 
 
-             #top-info-bar .info-label { font-size: 0.55em; }
+             #top-info-bar .info-label { display: none; }
             #top-info-bar .info-value { font-size: 0.7em; }
             #top-info-bar .info-group { min-width: 60px;} 
 
@@ -1678,25 +1684,20 @@
         <div id="play-area">
 
         <div id="top-info-bar">
-            <div class="info-group">
-                <span class="info-label">Monedas:</span>
+            <div id="coins-info-group" class="info-group">
                 <div class="flex items-center justify-center relative">
-                    <svg class="coin-icon" viewBox="0 0 24 24" fill="none">
-                        <circle cx="12" cy="12" r="9" fill="#FCD34D" stroke="#D97706" stroke-width="2" />
-                    </svg>
                     <span id="coinValue" class="info-value">0</span>
                     <span id="earnedCoinsMessage" class="earned-coins-msg hidden">+0</span>
                 </div>
             </div>
-            <div class="info-group">
-                <span class="info-label">Puntos:</span>
+            <div id="points-info-group" class="info-group">
                 <div class="flex items-center justify-center">
                     <span id="scoreValue" class="info-value">0</span>
                     <span id="target-score-divider" class="info-value mx-1 hidden">/</span>
                     <span id="targetScoreValue" class="info-value hidden">0</span>
                 </div>
             </div>
-            <div class="info-group">
+            <div id="time-info-group" class="info-group">
                 <span id="timeLengthLabel" class="info-label">Tiempo:</span>
                 <span id="timeLengthValue" class="info-value">60</span>
             </div>
