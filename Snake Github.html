@@ -167,17 +167,40 @@
 
         #top-info-bar .info-group {
             display: flex;
-            flex-direction: column; 
+            flex-direction: column;
             align-items: center;
-            justify-content: center; 
-            background-color: #374151; 
+            justify-content: center;
+            background-color: #374151;
             border-radius: 8px;
-            padding: 8px 10px; 
-            min-width: 80px; 
-            min-height: 55px; 
+            padding: 8px 10px;
+            min-width: 80px;
+            min-height: 55px;
             box-sizing: border-box;
             text-align: center;
         }
+
+        #coins-info-group {
+            background-image: url('https://i.imgur.com/lQ4ltzt.png');
+            background-size: cover;
+            background-position: center;
+            background-color: transparent;
+            position: relative;
+        }
+        #points-info-group {
+            background-image: url('https://i.imgur.com/vPzvx4U.png');
+            background-size: cover;
+            background-position: center;
+            background-color: transparent;
+        }
+        #time-info-group {
+            background-image: url('https://i.imgur.com/P16YAd1.png');
+            background-size: cover;
+            background-position: center;
+            background-color: transparent;
+        }
+
+        #coins-info-group .info-label { display: none; }
+        #coins-info-group .flex { position: absolute; top: 50%; left: 60%; transform: translate(-50%, -50%); }
         #top-info-bar .info-label {
             font-size: 0.65em; 
             color: #a0aec0; 
@@ -1678,7 +1701,7 @@
         <div id="play-area">
 
         <div id="top-info-bar">
-            <div class="info-group">
+            <div id="coins-info-group" class="info-group">
                 <span class="info-label">Monedas:</span>
                 <div class="flex items-center justify-center relative">
                     <svg class="coin-icon" viewBox="0 0 24 24" fill="none">
@@ -1688,7 +1711,7 @@
                     <span id="earnedCoinsMessage" class="earned-coins-msg hidden">+0</span>
                 </div>
             </div>
-            <div class="info-group">
+            <div id="points-info-group" class="info-group">
                 <span class="info-label">Puntos:</span>
                 <div class="flex items-center justify-center">
                     <span id="scoreValue" class="info-value">0</span>
@@ -1696,7 +1719,7 @@
                     <span id="targetScoreValue" class="info-value hidden">0</span>
                 </div>
             </div>
-            <div class="info-group">
+            <div id="time-info-group" class="info-group">
                 <span id="timeLengthLabel" class="info-label">Tiempo:</span>
                 <span id="timeLengthValue" class="info-value">60</span>
             </div>
