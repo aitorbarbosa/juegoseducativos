@@ -156,13 +156,13 @@
         #play-area { position: relative; }
 
         #top-info-bar {
-            display: grid; 
-            grid-template-columns: 1fr 1fr 1fr; 
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr 1fr;
             gap: 8px;
             width: 100%;
-            margin: 0 auto 5px auto; 
-            position: relative; 
-            z-index: 10; 
+            margin: 0 auto 5px auto;
+            position: relative;
+            z-index: 10;
         }
 
         #top-info-bar .info-group {
@@ -177,6 +177,9 @@
             min-height: 55px;
             box-sizing: border-box;
             text-align: center;
+        }
+        #lives-info-group.lives-padding {
+            padding-left: 14px;
         }
         #top-info-bar .info-label {
             font-size: 0.65em;
@@ -205,6 +208,9 @@
         }
         #top-info-bar.selector-mode #points-info-group {
             background-image: url('https://i.imgur.com/vPzvx4U.png');
+        }
+        #top-info-bar.selector-mode #lives-info-group {
+            background-image: url('https://i.imgur.com/0o5N9Ft.png');
         }
         #top-info-bar.selector-mode #time-info-group {
             background-image: url('https://i.imgur.com/P16YAd1.png');
@@ -1706,6 +1712,10 @@
         <div id="play-area">
 
         <div id="top-info-bar">
+            <div id="lives-info-group" class="info-group lives-padding">
+                <span class="info-label">Vidas:</span>
+                <span id="livesValue" class="info-value">5</span>
+            </div>
             <div id="coins-info-group" class="info-group">
                 <span class="info-label">Monedas:</span>
                 <div class="flex items-center justify-center relative">
@@ -1722,6 +1732,7 @@
                     <span id="scoreValue" class="info-value">0</span>
                     <span id="target-score-divider" class="info-value mx-1 hidden">/</span>
                     <span id="targetScoreValue" class="info-value hidden">0</span>
+                    <span id="lifeTimerValue" class="info-value hidden">Lleno</span>
                 </div>
             </div>
             <div id="time-info-group" class="info-group">
@@ -2127,6 +2138,8 @@
         const coinValueDisplay = document.getElementById("coinValue");
         const earnedCoinsMessage = document.getElementById("earnedCoinsMessage");
         const scoreValueDisplay = document.getElementById("scoreValue");
+        const livesValueDisplay = document.getElementById("livesValue");
+        const lifeTimerValueDisplay = document.getElementById("lifeTimerValue");
         const targetScoreDivider = document.getElementById("target-score-divider");
         const targetScoreValueDisplay = document.getElementById("targetScoreValue");
         const timeLengthLabelEl = document.getElementById("timeLengthLabel");
@@ -2969,6 +2982,10 @@ function setupSlider(slider, display) {
         let nextDirection = "right"; // Buffer para la siguiente dirección (MANTENIDO DE LA VERSIÓN ANTERIOR)
         let score = 0;
         let totalCoins = 0;
+        const MAX_LIVES = 5;
+        const LIFE_RECHARGE_TIME = 5 * 60 * 1000; // 5 minutes in ms
+        let playerLives = MAX_LIVES;
+        let lifeRestoreQueue = [];
         let gameOver = false;
         let gameOverByTimeout = false;
         let gameOverByInactivity = false;
@@ -5633,6 +5650,10 @@ function setupSlider(slider, display) {
             draw();
             managePostGameOverMusicAndAnimation();
 
+            if (!levelEffectivelyWon) {
+                loseLife();
+            }
+
             let earnedCoins;
             if (gameMode === 'freeMode') {
                 // In free mode coins are earned based on time played
@@ -6689,6 +6710,58 @@ function setupSlider(slider, display) {
             }, COIN_MESSAGE_DISPLAY_TIME);
         }
 
+        function saveLives() {
+            localStorage.setItem('snakeGameLives', playerLives.toString());
+            localStorage.setItem('snakeGameLifeQueue', JSON.stringify(lifeRestoreQueue));
+        }
+
+        function loadLives() {
+            const storedLives = parseInt(localStorage.getItem('snakeGameLives'), 10);
+            playerLives = Number.isFinite(storedLives) ? Math.min(MAX_LIVES, storedLives) : MAX_LIVES;
+            try {
+                const queue = JSON.parse(localStorage.getItem('snakeGameLifeQueue') || '[]');
+                if (Array.isArray(queue)) lifeRestoreQueue = queue.map(n => parseInt(n, 10)).filter(n => Number.isFinite(n));
+            } catch (e) {
+                lifeRestoreQueue = [];
+            }
+            checkLifeRecovery(true);
+        }
+
+        function updateLivesDisplay() {
+            if (livesValueDisplay) livesValueDisplay.textContent = playerLives;
+        }
+
+        function updateLifeTimerDisplay() {
+            if (!lifeTimerValueDisplay) return;
+            if (playerLives >= MAX_LIVES || lifeRestoreQueue.length === 0) {
+                lifeTimerValueDisplay.textContent = 'Lleno';
+            } else {
+                const remaining = Math.max(0, Math.ceil((lifeRestoreQueue[0] - Date.now()) / 1000));
+                lifeTimerValueDisplay.textContent = formatTime(remaining);
+            }
+        }
+
+        function checkLifeRecovery(initial = false) {
+            const now = Date.now();
+            while (lifeRestoreQueue.length > 0 && lifeRestoreQueue[0] <= now && playerLives < MAX_LIVES) {
+                lifeRestoreQueue.shift();
+                playerLives++;
+            }
+            if (playerLives > MAX_LIVES) playerLives = MAX_LIVES;
+            if (initial) saveLives();
+            updateLivesDisplay();
+            updateLifeTimerDisplay();
+        }
+
+        function loseLife() {
+            if (playerLives <= 0) return;
+            playerLives--;
+            const lastTime = lifeRestoreQueue.length > 0 ? lifeRestoreQueue[lifeRestoreQueue.length - 1] : Date.now();
+            lifeRestoreQueue.push(lastTime + LIFE_RECHARGE_TIME);
+            saveLives();
+            updateLivesDisplay();
+        }
+
         function updateTargetScoreDisplay() {
             if (targetScoreValueDisplay && targetScoreDivider) {
                  if (gameMode === 'levels' || gameMode === 'maze') { 
@@ -6740,6 +6813,17 @@ function setupSlider(slider, display) {
         function updateGameModeUI() {
 
             topInfoBar.classList.toggle('selector-mode', showModeSelect);
+
+            if (showModeSelect) {
+                if (lifeTimerValueDisplay) lifeTimerValueDisplay.classList.remove('hidden');
+                if (scoreValueDisplay) scoreValueDisplay.classList.add('hidden');
+                if (targetScoreDivider) targetScoreDivider.classList.add('hidden');
+                if (targetScoreValueDisplay) targetScoreValueDisplay.classList.add('hidden');
+            } else {
+                if (lifeTimerValueDisplay) lifeTimerValueDisplay.classList.add('hidden');
+                if (scoreValueDisplay) scoreValueDisplay.classList.remove('hidden');
+                if (targetScoreDivider && targetScoreValueDisplay) updateTargetScoreDisplay();
+            }
 
             const isGameCurrentlyRunning = !!gameIntervalId;
             const isSettingsPanelCurrentlyOpen = !settingsPanel.classList.contains("settings-panel-hidden");
@@ -8392,6 +8476,8 @@ async function startGame(isRestart = false) {
             loadWorldImages();
             loadModeSelectionImages();
             loadGameSettings(); // Loads settings including audio preferences and volume
+            loadLives();
+            setInterval(checkLifeRecovery, 1000);
 
             // Initialize HTML5 Audio Players
             if (typeof Audio !== 'undefined') {
