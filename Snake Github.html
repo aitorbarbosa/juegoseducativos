@@ -1975,6 +1975,27 @@
                 padding-bottom: 20px;
             }
         }
+
+        /* Toast message for insufficient funds */
+        #insufficient-funds-toast {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: rgba(0, 0, 0, 0.8);
+            color: #ffffff;
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-size: 0.85em;
+            pointer-events: none;
+            z-index: 2205;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        #insufficient-funds-toast.show {
+            opacity: 1;
+        }
     </style>
 </head>
 <body>
@@ -2415,6 +2436,8 @@
                 </div>
             </div>
 
+            <div id="insufficient-funds-toast" class="hidden">Monedas insuficientes</div>
+
             <div class="control-row" id="action-buttons-row">
                     <button id="backButton" aria-label="Volver">
                         <img id="backButtonIcon" src="https://i.imgur.com/1WrBpTQ.png" alt="Volver" onerror="this.src='https://placehold.co/24x24/02030D/FFFFFF?text=Err';">
@@ -2615,6 +2638,7 @@
         const confirmPurchaseYesButton = document.getElementById("confirmPurchaseYes");
         const confirmPurchaseNoButton = document.getElementById("confirmPurchaseNo");
         const modalOverlay = document.getElementById("modal-overlay");
+        const insufficientFundsToast = document.getElementById("insufficient-funds-toast");
 
         const settingsPanelContent = settingsPanel.querySelector('.panel-content');
         const freeSettingsPanelContent = freeSettingsPanel.querySelector('.panel-content');
@@ -4708,9 +4732,11 @@ function setupSlider(slider, display) {
                 localStorage.setItem('snakeGameCoins', totalCoins.toString());
                 updateCoinDisplay();
                 updateFoodSelectorAvailability();
+                populateStoreItems();
+                closePurchaseConfirm();
+            } else {
+                showInsufficientFundsToast();
             }
-            populateStoreItems();
-            closePurchaseConfirm();
         }
 
         function closePurchaseConfirm() {
@@ -7272,6 +7298,17 @@ function setupSlider(slider, display) {
                     earnedCoinsMessage.classList.remove('hide');
                 }, 300);
             }, COIN_MESSAGE_DISPLAY_TIME);
+        }
+
+        function showInsufficientFundsToast() {
+            if (!insufficientFundsToast) return;
+            insufficientFundsToast.classList.remove('hidden');
+            void insufficientFundsToast.offsetWidth;
+            insufficientFundsToast.classList.add('show');
+            setTimeout(() => {
+                insufficientFundsToast.classList.remove('show');
+                insufficientFundsToast.classList.add('hidden');
+            }, 1000);
         }
 
         function saveLives() {
