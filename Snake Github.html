@@ -1014,9 +1014,8 @@
 
 
         #startButton, #restartMazeButton, #configButton, #backButton {
-            padding: 10px 15px;
+            padding: 0 15px;
             font-size: 0.85em;
-            color: #f5f5f5;
             border: none;
             border-radius: 8px;
             cursor: pointer;
@@ -1028,18 +1027,54 @@
             align-items: center;
             justify-content: center;
             box-sizing: border-box;
+            color: #f5f5f5;
         }
         #startButton {
-            background-color: #8f66af;
-            color: #F3F3F3;
-            border: 3px solid #2d1d3a;
-            box-shadow:
-                inset 0 10px 6px #D6BCE9,
-                4px 4px 6px #442F58;
-            text-shadow: -1px -1px 0 #2d1d3a,
-                         1px -1px 0 #2d1d3a,
-                        -1px 1px 0 #2d1d3a,
-                         1px 1px 0 #2d1d3a;
+            position: relative;
+            padding: 0 6px;
+            color: #4E3967;
+            border: 2px solid #2B1D3A;
+            border-radius: 10px;
+            box-shadow: 0 2px 0 #422E58;
+            text-shadow:
+                0px 0px 1px #2B1B39,
+               -1px -1px 0 #D0B5E2,
+                1px -1px 0 #D0B5E2,
+               -1px  1px 0 #D0B5E2,
+                1px  1px 0 #D0B5E2;
+            overflow: hidden;
+            background: none;
+            z-index: 0;
+        }
+        #startButton::before {
+            content: '';
+            position: absolute;
+            left: -2px;
+            top: -2px;
+            width: calc(100% + 4px);
+            height: calc(100% + 4px);
+            background: linear-gradient(
+                #D3BAE8 0%,
+                #D3BAE8 50%,
+                #583F7D 50%,
+                #583F7D 100%
+            );
+            border-radius: 10px;
+            pointer-events: none;
+            z-index: -2;
+        }
+        #startButton::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            width: 100%;
+            height: 80%;
+            background-color: #8C64AF;
+            border-radius: 10px;
+            transform: translateY(-50%);
+            pointer-events: none;
+            z-index: -1;
         }
         #restartMazeButton {
             padding: 0;
@@ -3761,27 +3796,27 @@ function setupSlider(slider, display) {
                 }
 
                 if (isModeSelectActive) {
-                    startButton.textContent = "Seleccionar";
+                    startButton.textContent = "SELECCIONAR";
                 } else if (isLevelCompleteScreen) {
                     // Text is set by handleLevelsModeEnd
                 } else if (isWorldCompleteScreen) {
                     // Text is set by handleLevelsModeEnd
                 } else if (isDefeatScreen || isTimeoutScreen || isFreeModeEndScreen) {
-                    startButton.textContent = "Reintentar";
+                    startButton.textContent = "REINTENTAR";
                 } else if (isMazeResultScreen) {
                     // Text already set by handleMazeModeEnd
                 } else if (isWorldIntroCover || isFreeModeCoverActive || isClassificationCoverActive || isMazeCoverActive) {
-                    startButton.textContent = "Empezar";
+                    startButton.textContent = "EMPEZAR";
                 } else if (gameOver && (gameMode === 'freeMode' || gameMode === 'classification')) {
-                    startButton.textContent = "Empezar";
+                    startButton.textContent = "EMPEZAR";
                 } else if (gameOver && gameMode === 'levels') {
                     // finalizeGameOver (via handleLevelsModeEnd) sets the text
                     // If we are here after closing settings, it should be "Empezar"
                      if (!isWorldIntroCover && !isWorldCompleteScreen && !isLevelCompleteScreen && !isDefeatScreen) {
-                        startButton.textContent = "Empezar";
+                        startButton.textContent = "EMPEZAR";
                     }
                 } else { 
-                    startButton.textContent = "Empezar";
+                    startButton.textContent = "EMPEZAR";
                 }
                 
                 const isAnyCoverScreenActive = isWorldIntroCover || isWorldCompleteScreen || isLevelCompleteScreen || isDefeatScreen || isTimeoutScreen || isFreeModeEndScreen || isFreeModeCoverActive || isClassificationCoverActive || isMazeCoverActive || isMazeResultScreen || isModeSelectActive;
@@ -5461,10 +5496,10 @@ function setupSlider(slider, display) {
                     screenState.showWorldCompleteCover = currentWorld;
 
                     if (currentWorld === TOTAL_WORLDS) { // Juego completado
-                        startButton.textContent = "Ajustes";
+                        startButton.textContent = "AJUSTES";
                         // No hay más niveles a los que avanzar. currentWorld y currentLevelInWorld permanecen en el máximo.
                     } else { // Avanzar al siguiente mundo
-                        startButton.textContent = "Nuevo Mundo";
+                        startButton.textContent = "NUEVO MUNDO";
                         worldCurrentLevels[currentWorld - 1] = LEVELS_PER_WORLD;
                         currentWorld++;
                         currentLevelInWorld = worldCurrentLevels[currentWorld - 1] || 1;
@@ -5482,7 +5517,7 @@ function setupSlider(slider, display) {
                 screenState.showDefeatCoverForWorld = 0;
 
             } else { // Nivel perdido
-                startButton.textContent = "Reintentar";
+                startButton.textContent = "REINTENTAR";
                 screenState.showDefeatCoverForWorld = currentWorld;
                 // Limpiamos otros estados de pantalla por si acaso
                 screenState.showCoverForWorld = 0;
@@ -5506,17 +5541,17 @@ function setupSlider(slider, display) {
             if (isLastLevel && improved && mazeStarsEarned >= 3) {
                 levelWon = true;
                 resultType = 'final';
-                startButton.textContent = 'Ajustes';
+                startButton.textContent = 'AJUSTES';
                 restartMazeButton.classList.add('hidden');
                 startButtonWrapperEl.classList.remove('split');
             } else if (improved && mazeStarsEarned >= MAZE_STAR_TARGETS.length) {
                 levelWon = true;
                 if (isLastLevel) {
                     resultType = 'final';
-                    startButton.textContent = 'Ajustes';
+                    startButton.textContent = 'AJUSTES';
                 } else {
                     resultType = 'perfect';
-                    startButton.textContent = 'Continuar';
+                    startButton.textContent = 'CONTINUAR';
                 }
                 restartMazeButton.classList.add('hidden');
                 startButtonWrapperEl.classList.remove('split');
@@ -5524,17 +5559,17 @@ function setupSlider(slider, display) {
                 if (!isLastLevel) {
                     levelWon = true;
                     resultType = 'partial';
-                    startButton.textContent = 'Continuar';
+                    startButton.textContent = 'CONTINUAR';
                     restartMazeButton.classList.remove('hidden');
                     startButtonWrapperEl.classList.add('split');
                 } else {
-                    startButton.textContent = 'Reintentar';
+                    startButton.textContent = 'REINTENTAR';
                     resultType = 'fail';
                     restartMazeButton.classList.add('hidden');
                     startButtonWrapperEl.classList.remove('split');
                 }
             } else {
-                startButton.textContent = 'Reintentar';
+                startButton.textContent = 'REINTENTAR';
                 restartMazeButton.classList.add('hidden');
                 startButtonWrapperEl.classList.remove('split');
             }
