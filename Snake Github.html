@@ -497,10 +497,11 @@
         }
 
         .control-button {
-            background-color: #8f66af;
-            border: 3px solid #2d1d3a;
-            border-radius: 8px;
-            color: #F3F3F3;
+            position: relative;
+            background: none;
+            border: 2px solid #2B1D3A;
+            border-radius: 10px;
+            color: #4E3967;
             cursor: pointer;
             display: flex;
             justify-content: center;
@@ -513,15 +514,43 @@
             width: 100%;
             height: 100%;
             box-sizing: border-box;
-            box-shadow: inset 0 10px 6px #D6BCE9;
-            text-shadow: -1px -1px 0 #2d1d3a,
-                         1px -1px 0 #2d1d3a,
-                        -1px 1px 0 #2d1d3a,
-                         1px 1px 0 #2d1d3a;
+            box-shadow: 0 2px 0 #422E58;
+            overflow: hidden;
+            z-index: 0;
         }
-        .d-pad-button-pressed { 
-            transform: scale(0.95) translateY(1px);
-            filter: brightness(0.8);
+        .control-button::before {
+            content: '';
+            position: absolute;
+            left: -2px;
+            top: -2px;
+            width: calc(100% + 4px);
+            height: calc(100% + 4px);
+            background: linear-gradient(
+                #D3BAE8 0%,
+                #D3BAE8 50%,
+                #583F7D 50%,
+                #583F7D 100%
+            );
+            border-radius: 10px;
+            pointer-events: none;
+            z-index: -2;
+        }
+        .control-button::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            width: 100%;
+            height: 80%;
+            background-color: #8C64AF;
+            border-radius: 10px;
+            transform: translateY(-50%);
+            pointer-events: none;
+            z-index: -1;
+        }
+        .d-pad-button-pressed {
+            transform: scale(0.90) translateY(2px);
+            filter: brightness(0.7);
         }
         
         #up-button    { 
@@ -549,8 +578,8 @@
             fill: currentColor;
         }
         .control-button .arrow-svg path {
-            fill: #47315F;
-            stroke: #C1A4D4;
+            fill: #4E3967;
+            stroke: #D0B5E2;
             stroke-width: .3;
             stroke-linejoin: round;
         }
