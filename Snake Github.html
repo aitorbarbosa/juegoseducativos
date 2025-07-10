@@ -1156,6 +1156,67 @@
         #confirmResetNo.icon-button-pressed {
             filter: brightness(0.5);
         }
+        .menu-option-button {
+            position: relative;
+            padding: 0 6px;
+            font-size: 1em;
+            color: #4E3967;
+            border: 2px solid #2B1D3A;
+            border-radius: 10px;
+            box-shadow: 0 2px 0 #422E58;
+            text-shadow:
+                0px 0px 1px #2B1B39,
+               -1px -1px 0 #D0B5E2,
+                1px -1px 0 #D0B5E2,
+               -1px  1px 0 #D0B5E2,
+                1px  1px 0 #D0B5E2;
+            overflow: hidden;
+            background: none;
+            z-index: 0;
+            width: 100%;
+            height: 65px;
+            font-family: 'Press Start 2P', sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-sizing: border-box;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.05s ease-out, filter 0.05s ease-out;
+            color: #4E3967;
+        }
+        .menu-option-button::before {
+            content: '';
+            position: absolute;
+            left: -2px;
+            top: -2px;
+            width: calc(100% + 4px);
+            height: calc(100% + 4px);
+            background: linear-gradient(
+                #D3BAE8 0%,
+                #D3BAE8 50%,
+                #583F7D 50%,
+                #583F7D 100%
+            );
+            border-radius: 10px;
+            pointer-events: none;
+            z-index: -2;
+        }
+        .menu-option-button::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            width: 100%;
+            height: 80%;
+            background-color: #8C64AF;
+            border-radius: 10px;
+            transform: translateY(-50%);
+            pointer-events: none;
+            z-index: -1;
+        }
+        .menu-option-button:hover { filter: brightness(0.95); }
+        .menu-option-button:disabled { filter: brightness(0.6); cursor: not-allowed; }
+        .menu-option-button.icon-button-pressed { filter: brightness(0.5); }
         .config-svg,
         .info-svg {
             height: 100%;
@@ -1164,10 +1225,10 @@
             display: block;
         }
 
-        .settings-panel-hidden, .info-panel-hidden, .specific-info-panel-hidden, .free-settings-panel-hidden, .reset-panel-hidden {
+        .settings-panel-hidden, .info-panel-hidden, .specific-info-panel-hidden, .free-settings-panel-hidden, .reset-panel-hidden, .config-menu-panel-hidden, .generic-menu-panel-hidden {
             display: none !important;
         }
-        #settings-panel, #info-panel, #specific-info-panel, #free-settings-panel, #reset-confirmation-panel {
+        #settings-panel, #info-panel, #specific-info-panel, #free-settings-panel, #reset-confirmation-panel, #config-menu-panel, #generic-menu-panel {
             position: fixed;
             left: 50%;
             transform: translateX(-50%) scale(0.95);
@@ -1266,21 +1327,27 @@
         #info-panel.centered-panel,
         #specific-info-panel.centered-panel,
         #free-settings-panel.centered-panel,
-        #reset-confirmation-panel.centered-panel {
+        #reset-confirmation-panel.centered-panel,
+        #config-menu-panel.centered-panel,
+        #generic-menu-panel.centered-panel {
             transform: translate(-50%, -50%) scale(0.95);
         }
         #settings-panel.centered-panel.panel-visible,
         #info-panel.centered-panel.panel-visible,
         #specific-info-panel.centered-panel.panel-visible,
         #free-settings-panel.centered-panel.panel-visible,
-        #reset-confirmation-panel.centered-panel.panel-visible {
+        #reset-confirmation-panel.centered-panel.panel-visible,
+        #config-menu-panel.centered-panel.panel-visible,
+        #generic-menu-panel.centered-panel.panel-visible {
             transform: translate(-50%, -50%) scale(1);
         }
         #settings-panel.panel-visible,
         #info-panel.panel-visible,
         #specific-info-panel.panel-visible,
         #free-settings-panel.panel-visible,
-        #reset-confirmation-panel.panel-visible {
+        #reset-confirmation-panel.panel-visible,
+        #config-menu-panel.panel-visible,
+        #generic-menu-panel.panel-visible {
             opacity: 1;
             transform: translateX(-50%) scale(1);
         }
@@ -2236,6 +2303,30 @@
                     </div>
                 </div>
             </div>
+            <div id="config-menu-panel" class="config-menu-panel-hidden">
+                <div class="settings-header">
+                    <h2>Menú</h2>
+                    <button id="close-config-menu-button" aria-label="Cerrar menú">&times;</button>
+                </div>
+                <div class="panel-content">
+                    <button class="menu-option-button" id="profile-menu-button">Perfil</button>
+                    <button class="menu-option-button" id="customization-menu-button">Personalización</button>
+                    <button class="menu-option-button" id="store-menu-button">Tienda</button>
+                    <button class="menu-option-button" id="achievements-menu-button">Logros</button>
+                    <button class="menu-option-button" id="bonuses-menu-button">Bonificaciones</button>
+                    <button class="menu-option-button" id="daily-menu-button">Premios diarios</button>
+                    <button class="menu-option-button" id="wheel-menu-button">Ruleta de premios</button>
+                </div>
+            </div>
+            <div id="generic-menu-panel" class="generic-menu-panel-hidden">
+                <div class="settings-header">
+                    <h2 id="generic-menu-title"></h2>
+                    <button id="close-generic-menu-button" aria-label="Cerrar">&times;</button>
+                </div>
+                <div class="panel-content">
+                    <p>Contenido no disponible todavía</p>
+                </div>
+            </div>
 
             <div class="control-row" id="action-buttons-row">
                     <button id="backButton" aria-label="Volver">
@@ -2414,6 +2505,19 @@
         const resetConfirmPanel = document.getElementById("reset-confirmation-panel");
         const confirmResetYesButton = document.getElementById("confirmResetYes");
         const confirmResetNoButton = document.getElementById("confirmResetNo");
+
+        const configMenuPanel = document.getElementById("config-menu-panel");
+        const genericMenuPanel = document.getElementById("generic-menu-panel");
+        const genericMenuTitle = document.getElementById("generic-menu-title");
+        const closeConfigMenuButton = document.getElementById("close-config-menu-button");
+        const closeGenericMenuButton = document.getElementById("close-generic-menu-button");
+        const profileMenuButton = document.getElementById("profile-menu-button");
+        const customizationMenuButton = document.getElementById("customization-menu-button");
+        const storeMenuButton = document.getElementById("store-menu-button");
+        const achievementsMenuButton = document.getElementById("achievements-menu-button");
+        const bonusesMenuButton = document.getElementById("bonuses-menu-button");
+        const dailyMenuButton = document.getElementById("daily-menu-button");
+        const wheelMenuButton = document.getElementById("wheel-menu-button");
 
         const settingsPanelContent = settingsPanel.querySelector('.panel-content');
         const freeSettingsPanelContent = freeSettingsPanel.querySelector('.panel-content');
@@ -3916,6 +4020,8 @@ function setupSlider(slider, display) {
             else if (panelId === "specific-info-panel") hiddenClassName = "specific-info-panel-hidden";
             else if (panelId === "free-settings-panel") hiddenClassName = "free-settings-panel-hidden";
             else if (panelId === "reset-confirmation-panel") hiddenClassName = "reset-panel-hidden";
+            else if (panelId === "config-menu-panel") hiddenClassName = "config-menu-panel-hidden";
+            else if (panelId === "generic-menu-panel") hiddenClassName = "generic-menu-panel-hidden";
             else {
                 console.error("togglePanel: Clase oculta no definida para el panel:", panelId);
                 return;
@@ -4341,9 +4447,17 @@ function setupSlider(slider, display) {
         
         configButton.addEventListener('click', () => {
             if (areSfxEnabled) playSound('modeSwitch');
-            if (gameMode === 'freeMode') openFreeSettingsPanel();
-            else openSettingsPanel();
+            openConfigMenuPanel();
         });
+        if (closeConfigMenuButton) closeConfigMenuButton.addEventListener('click', closeConfigMenuPanel);
+        if (closeGenericMenuButton) closeGenericMenuButton.addEventListener('click', closeGenericMenuPanel);
+        if (profileMenuButton) profileMenuButton.addEventListener('click', openProfileMenu);
+        if (customizationMenuButton) customizationMenuButton.addEventListener('click', openCustomizationMenu);
+        if (storeMenuButton) storeMenuButton.addEventListener('click', () => { closeConfigMenuPanel(); openGenericMenuPanel('Tienda'); });
+        if (achievementsMenuButton) achievementsMenuButton.addEventListener('click', () => { closeConfigMenuPanel(); openGenericMenuPanel('Logros'); });
+        if (bonusesMenuButton) bonusesMenuButton.addEventListener('click', () => { closeConfigMenuPanel(); openGenericMenuPanel('Bonificaciones'); });
+        if (dailyMenuButton) dailyMenuButton.addEventListener('click', () => { closeConfigMenuPanel(); openGenericMenuPanel('Premios diarios'); });
+        if (wheelMenuButton) wheelMenuButton.addEventListener('click', () => { closeConfigMenuPanel(); openGenericMenuPanel('Ruleta de premios'); });
         if (applyFreeSettingsBottomButton) applyFreeSettingsBottomButton.addEventListener('click', applyFreeSettings);
         if (freeDifficultySelector) freeDifficultySelector.addEventListener('change', () => {
             freeDifficulty = freeDifficultySelector.value;
@@ -4383,6 +4497,57 @@ function setupSlider(slider, display) {
         function closeResetConfirmPanel() {
             togglePanel(resetConfirmPanel, resetConfirmPanelContent, false);
             resetConfirmPanel.classList.remove('centered-panel');
+        }
+
+        function openConfigMenuPanel() {
+            configMenuPanel.classList.add('centered-panel');
+            togglePanel(configMenuPanel, configMenuPanel.querySelector('.panel-content'), true);
+        }
+
+        function closeConfigMenuPanel() {
+            togglePanel(configMenuPanel, configMenuPanel.querySelector('.panel-content'), false);
+            configMenuPanel.classList.remove('centered-panel');
+            setTimeout(updateMainButtonStates, 0);
+        }
+
+        function openGenericMenuPanel(title) {
+            if (genericMenuTitle) genericMenuTitle.textContent = title || '';
+            genericMenuPanel.classList.add('centered-panel');
+            togglePanel(genericMenuPanel, genericMenuPanel.querySelector('.panel-content'), true);
+        }
+
+        function closeGenericMenuPanel() {
+            togglePanel(genericMenuPanel, genericMenuPanel.querySelector('.panel-content'), false);
+            genericMenuPanel.classList.remove('centered-panel');
+            setTimeout(updateMainButtonStates, 0);
+        }
+
+        function openProfileMenu() {
+            closeConfigMenuPanel();
+            openSettingsPanel();
+            if (playerSelectControlGroup) playerSelectControlGroup.classList.remove('hidden');
+            if (addPlayerControlGroup) addPlayerControlGroup.classList.remove('hidden');
+            if (playerNameControlGroup) playerNameControlGroup.classList.remove('hidden');
+            skinControlGroup.classList.add('hidden');
+            foodControlGroup.classList.add('hidden');
+            difficultyControlGroup.classList.add('hidden');
+            audioControlGroup.classList.add('hidden');
+            musicVolumeControlGroup.classList.add('hidden');
+            sfxVolumeControlGroup.classList.add('hidden');
+        }
+
+        function openCustomizationMenu() {
+            closeConfigMenuPanel();
+            openSettingsPanel();
+            if (playerSelectControlGroup) playerSelectControlGroup.classList.add('hidden');
+            if (addPlayerControlGroup) addPlayerControlGroup.classList.add('hidden');
+            if (playerNameControlGroup) playerNameControlGroup.classList.remove('hidden');
+            skinControlGroup.classList.remove('hidden');
+            foodControlGroup.classList.remove('hidden');
+            difficultyControlGroup.classList.add('hidden');
+            audioControlGroup.classList.add('hidden');
+            musicVolumeControlGroup.classList.add('hidden');
+            sfxVolumeControlGroup.classList.add('hidden');
         }
 
         if (resetDataButton) {
