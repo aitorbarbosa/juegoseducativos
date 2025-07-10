@@ -565,10 +565,15 @@
             grid-column: 3; 
             grid-row: 1 / span 2; 
         } 
-        #down-button  { 
-            grid-column: 2; 
-            grid-row: 2; 
-        } 
+        #down-button  {
+            grid-column: 2;
+            grid-row: 2;
+        }
+
+        #left-button::after,
+        #right-button::after {
+            height: 95%;
+        }
 
         .control-button:hover { filter: brightness(0.95); }
         
