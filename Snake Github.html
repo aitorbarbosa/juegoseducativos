@@ -8521,12 +8521,19 @@ async function startGame(isRestart = false) {
         // Icon Button Press Feedback
         function addIconPressEvents(btn, icon) {
             if (!btn || !icon) return;
-            btn.addEventListener('mousedown', () => icon.classList.add('icon-button-pressed'));
-            btn.addEventListener('mouseup', () => icon.classList.remove('icon-button-pressed'));
-            btn.addEventListener('mouseleave', () => icon.classList.remove('icon-button-pressed'));
-            btn.addEventListener('touchstart', () => icon.classList.add('icon-button-pressed'));
-            btn.addEventListener('touchend', () => icon.classList.remove('icon-button-pressed'));
-            btn.addEventListener('touchcancel', () => icon.classList.remove('icon-button-pressed'));
+
+            const shouldIgnore = () => btn.disabled || btn.classList.contains('disabled');
+            const addPressed = () => {
+                if (!shouldIgnore()) icon.classList.add('icon-button-pressed');
+            };
+            const removePressed = () => icon.classList.remove('icon-button-pressed');
+
+            btn.addEventListener('mousedown', addPressed);
+            btn.addEventListener('mouseup', removePressed);
+            btn.addEventListener('mouseleave', removePressed);
+            btn.addEventListener('touchstart', addPressed);
+            btn.addEventListener('touchend', removePressed);
+            btn.addEventListener('touchcancel', removePressed);
         }
 
         addIconPressEvents(configButton, configButtonIcon);
