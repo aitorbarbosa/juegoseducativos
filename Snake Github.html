@@ -2043,6 +2043,10 @@
         #purchase-item-preview {
           margin: 0 auto 8px;
         }
+        #purchase-item-preview.store-item {
+          width: 140px;
+          height: 140px;
+        }
 
         #mazeLevelButtonsContainer.disabled {
           pointer-events: none;
@@ -4831,7 +4835,7 @@ function setupSlider(slider, display) {
                     status.textContent = '';
                     item.classList.add('purchased');
                 } else {
-                    status.textContent = '100 \uD83D\uDCB0';
+                    status.textContent = '100';
                     item.classList.add('locked');
                     item.addEventListener('click', () => openPurchaseConfirm(key));
                     addIconPressEvents(item, item);
@@ -4851,10 +4855,6 @@ function setupSlider(slider, display) {
                 img.className = 'store-item-img';
                 img.src = FOODS[key]?.asset?.src || '';
                 purchaseItemPreview.appendChild(img);
-                const status = document.createElement('div');
-                status.className = 'store-item-status';
-                status.textContent = '100 \uD83D\uDCB0';
-                purchaseItemPreview.appendChild(status);
             }
             if (purchaseConfirmationText) purchaseConfirmationText.innerHTML = `¿Comprar ${FOOD_DISPLAY_NAMES[key]} por <strong>100</strong> monedas?`;
             purchaseConfirmationPanel.classList.add('centered-panel');
