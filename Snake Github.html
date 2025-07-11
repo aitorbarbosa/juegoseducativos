@@ -167,7 +167,7 @@
 
         #selector-info-bar {
             display: grid;
-            grid-template-columns: repeat(3, minmax(0, 1fr));
+            grid-template-columns: repeat(3, 1fr);
             gap: 15px;
             width: 100%;
             margin: 0 auto 5px auto;
@@ -238,6 +238,7 @@
             padding: 8px 10px 8px 26px;
             width: 100%;
             text-align: center;
+            box-sizing: border-box;
         }
         #selector-info-bar .info-icon-wrapper {
             position: absolute;
@@ -795,7 +796,13 @@
         #livesValue { left: -56px; right: auto; text-align: left; }
         #lifeTimerValue { left: -13px; }
 
-        #selectorLivesValue,
+        #selectorLivesValue {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
         #selectorLifeTimerValue {
             position: static;
             transform: none;
