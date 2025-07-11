@@ -1153,7 +1153,9 @@
         #startButton.icon-button-pressed,
         #resetDataButton.icon-button-pressed,
         #confirmResetYes.icon-button-pressed,
-        #confirmResetNo.icon-button-pressed {
+        #confirmResetNo.icon-button-pressed,
+        #confirmPurchaseYes.icon-button-pressed,
+        #confirmPurchaseNo.icon-button-pressed {
             filter: brightness(0.5);
         }
         .menu-option-button {
@@ -1772,43 +1774,180 @@
         .reset-panel-hidden { display: none !important; }
 
         #reset-confirmation-panel p { text-align: center; margin: 0 0 10px 0; }
-        #reset-confirmation-panel .reset-buttons { display: flex; gap: 15px; }
+        #reset-confirmation-panel .reset-buttons,
+        #purchase-confirmation-panel .reset-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+        }
         #reset-confirmation-panel .reset-buttons button {
-            flex: 1;
-            padding: 10px 15px;
-            font-size: 0.85em;
-            color: #F3F3F3;
-            border-radius: 8px;
+            flex: 0 0 auto;
+            min-width: 130px;
+            position: relative;
+            padding: 0 6px;
+            font-size: 1em;
+            border-radius: 10px;
+            box-shadow: 0 2px 0 #422E58;
+            overflow: hidden;
+            background: none;
+            color: #ffffff;
             font-family: "Press Start 2P", sans-serif;
             cursor: pointer;
             transition: background-color 0.3s ease, transform 0.05s ease-out, filter 0.05s ease-out;
             height: 65px;
             box-sizing: border-box;
         }
+        #confirmResetYes::before,
+        #confirmResetNo::before {
+            content: '';
+            position: absolute;
+            left: -2px;
+            top: -2px;
+            width: calc(100% + 4px);
+            height: calc(100% + 4px);
+            border-radius: 10px;
+            pointer-events: none;
+            z-index: -2;
+        }
+        #confirmResetYes::after,
+        #confirmResetNo::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            width: 100%;
+            height: 80%;
+            border-radius: 10px;
+            transform: translateY(-50%);
+            pointer-events: none;
+            z-index: -1;
+        }
         #confirmResetYes {
-            background-color: #b91c1c;
-            border: 3px solid #7f1d1d;
-            box-shadow:
-                inset 0 10px 6px #f87171,
-                4px 4px 6px #7f1d1d;
+            border: 2px solid #7f1d1d;
             text-shadow: -1px -1px 0 #7f1d1d,
                          1px -1px 0 #7f1d1d,
                         -1px 1px 0 #7f1d1d,
                          1px 1px 0 #7f1d1d;
         }
-        #confirmResetYes:hover { filter: brightness(0.95); }
+        #confirmResetYes::before {
+            background: linear-gradient(
+                #fecaca 0%,
+                #fecaca 50%,
+                #b91c1c 50%,
+                #b91c1c 100%
+            );
+        }
+        #confirmResetYes::after {
+            background-color: #f87171;
+        }
         #confirmResetNo {
-            background-color: #4CAF50;
-            border: 3px solid #1b5e20;
-            box-shadow:
-                inset 0 10px 6px #81c784,
-                4px 4px 6px #1b5e20;
+            border: 2px solid #1b5e20;
             text-shadow: -1px -1px 0 #1b5e20,
                          1px -1px 0 #1b5e20,
                         -1px 1px 0 #1b5e20,
                          1px 1px 0 #1b5e20;
         }
+        #confirmResetNo::before {
+            background: linear-gradient(
+                #d1fae5 0%,
+                #d1fae5 50%,
+                #4CAF50 50%,
+                #4CAF50 100%
+            );
+        }
+        #confirmResetNo::after {
+            background-color: #81c784;
+        }
+        #confirmResetYes:hover,
         #confirmResetNo:hover { filter: brightness(0.95); }
+
+        /* Estilos de botones para confirmar compra */
+        #confirmPurchaseYes,
+        #confirmPurchaseNo {
+            flex: 0 0 auto;
+            min-width: 130px;
+            position: relative;
+            padding: 0 6px;
+            font-size: 1em;
+            border: 2px solid #2B1D3A;
+            border-radius: 10px;
+            box-shadow: 0 2px 0 #422E58;
+            overflow: hidden;
+            background: none;
+            color: #ffffff;
+            font-family: 'Press Start 2P', sans-serif;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.05s ease-out, filter 0.05s ease-out;
+            height: 65px;
+            box-sizing: border-box;
+        }
+        #confirmPurchaseYes::before,
+        #confirmPurchaseNo::before {
+            content: '';
+            position: absolute;
+            left: -2px;
+            top: -2px;
+            width: calc(100% + 4px);
+            height: calc(100% + 4px);
+            border-radius: 10px;
+            pointer-events: none;
+            z-index: -2;
+        }
+        #confirmPurchaseYes::after,
+        #confirmPurchaseNo::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            width: 100%;
+            height: 80%;
+            border-radius: 10px;
+            transform: translateY(-50%);
+            pointer-events: none;
+            z-index: -1;
+        }
+        #confirmPurchaseYes {
+            border: 2px solid #1b5e20;
+            text-shadow: 0px 0px 1px #2B1B39,
+                         -1px -1px 0 #1b5e20,
+                          1px -1px 0 #1b5e20,
+                         -1px 1px 0 #1b5e20,
+                          1px 1px 0 #1b5e20;
+        }
+        #confirmPurchaseYes::before {
+            background: linear-gradient(
+                #d1fae5 0%,
+                #d1fae5 50%,
+                #4CAF50 50%,
+                #4CAF50 100%
+            );
+        }
+        #confirmPurchaseYes::after {
+            background-color: #81c784;
+        }
+        #confirmPurchaseNo {
+            border: 2px solid #7f1d1d;
+            text-shadow: 0px 0px 1px #2B1B39,
+                         -1px -1px 0 #7f1d1d,
+                          1px -1px 0 #7f1d1d,
+                         -1px 1px 0 #7f1d1d,
+                          1px 1px 0 #7f1d1d;
+        }
+        #confirmPurchaseNo::before {
+            background: linear-gradient(
+                #fecaca 0%,
+                #fecaca 50%,
+                #b91c1c 50%,
+                #b91c1c 100%
+            );
+        }
+        #confirmPurchaseNo::after {
+            background-color: #f87171;
+        }
+        #confirmPurchaseYes:hover,
+        #confirmPurchaseNo:hover { filter: brightness(0.95); }
+        #confirmPurchaseYes:disabled,
+        #confirmPurchaseNo:disabled { filter: brightness(0.6); cursor: not-allowed; }
 
         /* --- Estilo de botones para selección de niveles en modo laberinto --- */
         .maze-level-button {
@@ -1974,6 +2113,27 @@
                 padding-top: 30px;
                 padding-bottom: 20px;
             }
+        }
+
+        /* Toast message for insufficient funds */
+        #insufficient-funds-toast {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: rgba(0, 0, 0, 0.8);
+            color: #ffffff;
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-size: 0.85em;
+            pointer-events: none;
+            z-index: 2205;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        #insufficient-funds-toast.show {
+            opacity: 1;
         }
     </style>
 </head>
@@ -2409,11 +2569,13 @@
                     <div id="purchase-item-preview" class="store-item locked"></div>
                     <p id="purchase-confirmation-text">¿Comprar por <strong>100</strong> monedas?</p>
                     <div class="reset-buttons">
-                        <button id="confirmPurchaseYes">Sí</button>
-                        <button id="confirmPurchaseNo">No</button>
+                        <button id="confirmPurchaseYes">SI</button>
+                        <button id="confirmPurchaseNo">NO</button>
                     </div>
                 </div>
             </div>
+
+            <div id="insufficient-funds-toast" class="hidden">Monedas insuficientes</div>
 
             <div class="control-row" id="action-buttons-row">
                     <button id="backButton" aria-label="Volver">
@@ -2615,6 +2777,7 @@
         const confirmPurchaseYesButton = document.getElementById("confirmPurchaseYes");
         const confirmPurchaseNoButton = document.getElementById("confirmPurchaseNo");
         const modalOverlay = document.getElementById("modal-overlay");
+        const insufficientFundsToast = document.getElementById("insufficient-funds-toast");
 
         const settingsPanelContent = settingsPanel.querySelector('.panel-content');
         const freeSettingsPanelContent = freeSettingsPanel.querySelector('.panel-content');
@@ -4708,9 +4871,11 @@ function setupSlider(slider, display) {
                 localStorage.setItem('snakeGameCoins', totalCoins.toString());
                 updateCoinDisplay();
                 updateFoodSelectorAvailability();
+                populateStoreItems();
+                closePurchaseConfirm();
+            } else {
+                showInsufficientFundsToast();
             }
-            populateStoreItems();
-            closePurchaseConfirm();
         }
 
         function closePurchaseConfirm() {
@@ -7272,6 +7437,17 @@ function setupSlider(slider, display) {
                     earnedCoinsMessage.classList.remove('hide');
                 }, 300);
             }, COIN_MESSAGE_DISPLAY_TIME);
+        }
+
+        function showInsufficientFundsToast() {
+            if (!insufficientFundsToast) return;
+            insufficientFundsToast.classList.remove('hidden');
+            void insufficientFundsToast.offsetWidth;
+            insufficientFundsToast.classList.add('show');
+            setTimeout(() => {
+                insufficientFundsToast.classList.remove('show');
+                insufficientFundsToast.classList.add('hidden');
+            }, 1000);
         }
 
         function saveLives() {
