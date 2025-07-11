@@ -800,6 +800,10 @@
             position: static;
             transform: none;
         }
+        /* Allow individual value positioning on desktop */
+        #selectorLifeTimerValue {
+            margin-left: 6px;
+        }
 
 
         #difficultySelector, #worldsSelector, #audioToggleSelector, #skinSelector, #foodSelector, #playerNameSelector, #free-difficulty-selector {
@@ -1576,6 +1580,16 @@
             /* Slightly shift lives and recovery timer to the right on mobile */
             #livesValue { left: -42px; }
             #lifeTimerValue { left: -12px; }
+
+            /* Shift coin and gem values slightly left */
+            #selectorCoinValue,
+            #selectorGemsValue {
+                margin-left: -4px;
+            }
+            /* Reset desktop offset for recovery timer */
+            #selectorLifeTimerValue {
+                margin-left: 0;
+            }
           
             #title-panel { min-height: 50px; padding: 6px; }
 
@@ -1675,6 +1689,15 @@
              #selector-info-bar .info-group { min-width: 80px; min-height: 48px; padding: 5px 5px 5px 26px; }
              #selector-info-bar .value-box { padding: 5px 6px 5px 26px; }
              #selector-info-bar .info-icon-wrapper { width: 40px; height: 40px; transform: translate(15%, -50%); }
+
+            /* Adjust value positioning on smaller screens */
+            #selectorCoinValue,
+            #selectorGemsValue {
+                margin-left: -3px;
+            }
+            #selectorLifeTimerValue {
+                margin-left: 0;
+            }
 
             #current-world-info-group .info-label { font-size: 0.55em; }
             #current-world-info-group .info-value { font-size: 0.7em; }
