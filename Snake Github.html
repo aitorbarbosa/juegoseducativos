@@ -9080,7 +9080,9 @@ async function startGame(isRestart = false) {
             startGame(true);
         });
         
-        window.addEventListener('resize', resizeGameElements); 
+        window.addEventListener('resize', resizeGameElements);
+        window.addEventListener('beforeunload', saveGameSettings);
+        window.addEventListener('pagehide', saveGameSettings);
         
         function saveGameSettings() {
             const profile = playerProfiles[currentPlayerName] || createDefaultProfile(currentPlayerName);
