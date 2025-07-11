@@ -316,7 +316,7 @@
         }
         #top-info-bar .info-value {
             font-size: 0.85em;
-            color: #f5f5f5;
+            color: #00ff00;
             font-family: 'Press Start 2P', sans-serif;
             line-height: 1.3;
         }
@@ -334,7 +334,7 @@
         }
         #selector-info-bar .info-value {
             font-size: 0.85em;
-            color: #f5f5f5;
+            color: #00ff00;
             font-family: 'Press Start 2P', sans-serif;
             line-height: 1.3;
         }
@@ -439,7 +439,7 @@
         }
         #current-world-info-group .info-value {
             font-size: 0.85em;
-            color: #f5f5f5;
+            color: #00ff00;
             font-family: 'Press Start 2P', sans-serif;
         }
         #progress-panel.classification-mode #current-world-info-group .info-value {
@@ -831,6 +831,29 @@
         }
 
         #earnedCoinsMessage.hide {
+            opacity: 0;
+            transform: translateX(-10px) translateY(-50%);
+        }
+
+        #earnedScoreMessage {
+            position: absolute;
+            top: 50%;
+            left: 100%;
+            transform: translateX(10px) translateY(-50%);
+            color: #00ff00;
+            font-size: 0.7em;
+            white-space: nowrap;
+            opacity: 0;
+            transition: opacity 0.3s, transform 0.3s;
+            pointer-events: none;
+        }
+
+        #earnedScoreMessage.show {
+            opacity: 1;
+            transform: translateX(0) translateY(-50%);
+        }
+
+        #earnedScoreMessage.hide {
             opacity: 0;
             transform: translateX(-10px) translateY(-50%);
         }
@@ -2327,6 +2350,7 @@
                 <div class="value-box">
                     <span id="lifeTimerValue" class="info-value hidden absolute">Lleno</span>
                     <span id="scoreValue" class="info-value">0</span><span id="target-score-divider" class="info-value mx-1 hidden">/</span><span id="targetScoreValue" class="info-value hidden">0</span>
+                    <span id="earnedScoreMessage" class="earned-score-msg hidden">+0</span>
                     <span id="livesValue" class="info-value absolute hidden">5</span>
                 </div>
             </div>
@@ -2787,6 +2811,7 @@
         const coinValueDisplay = document.getElementById("coinValue");
         const selectorCoinValueDisplay = document.getElementById("selectorCoinValue");
         const earnedCoinsMessage = document.getElementById("earnedCoinsMessage");
+        const earnedScoreMessage = document.getElementById("earnedScoreMessage");
         const scoreValueDisplay = document.getElementById("scoreValue");
         const livesValueDisplay = document.getElementById("livesValue");
         const selectorLivesValueDisplay = document.getElementById("selectorLivesValue");
@@ -7440,6 +7465,7 @@ function setupSlider(slider, display) {
                 }
                 if (currentFoodItem.isGolden) gained *= 2;
                 score += gained;
+                showEarnedScoreMessage(gained);
                 if(areSfxEnabled) playSound('eat');
 
                 growth = 1;
@@ -7476,6 +7502,7 @@ function setupSlider(slider, display) {
                 const ff = falseFoodItems[i];
                 if (nextHead.x === ff.x && nextHead.y === ff.y) {
                     score = Math.max(0, score - 30);
+                    showEarnedScoreMessage(-30);
                     streakMultiplier = 1;
                     const rank = CLASSIFICATION_RANKS[difficulty] || 0;
                     if ((gameMode === 'levels' && currentWorld >= 6) || (gameMode === 'classification' && rank >= 2)) startStreakAnimation(streakMultiplier);
@@ -7562,6 +7589,22 @@ function setupSlider(slider, display) {
                 setTimeout(() => {
                     earnedCoinsMessage.classList.add('hidden');
                     earnedCoinsMessage.classList.remove('hide');
+                }, 300);
+            }, COIN_MESSAGE_DISPLAY_TIME);
+        }
+
+        function showEarnedScoreMessage(amount) {
+            if (!earnedScoreMessage) return;
+            earnedScoreMessage.textContent = `+${amount}`;
+            earnedScoreMessage.classList.remove('hidden', 'hide');
+            void earnedScoreMessage.offsetWidth;
+            earnedScoreMessage.classList.add('show');
+            setTimeout(() => {
+                earnedScoreMessage.classList.remove('show');
+                earnedScoreMessage.classList.add('hide');
+                setTimeout(() => {
+                    earnedScoreMessage.classList.add('hidden');
+                    earnedScoreMessage.classList.remove('hide');
                 }, 300);
             }, COIN_MESSAGE_DISPLAY_TIME);
         }
