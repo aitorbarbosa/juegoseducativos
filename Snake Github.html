@@ -795,7 +795,13 @@
         #livesValue { left: -56px; right: auto; text-align: left; }
         #lifeTimerValue { left: -13px; }
 
-        #selectorLivesValue,
+        #selectorLivesValue {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
         #selectorLifeTimerValue {
             position: static;
             transform: none;
