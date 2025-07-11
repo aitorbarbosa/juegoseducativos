@@ -168,11 +168,43 @@
         #selector-info-bar {
             display: grid;
             grid-template-columns: 1fr 1fr 1fr;
-            gap: 8px;
+            gap: 25px;
             width: 100%;
             margin: 0 auto 5px auto;
             position: relative;
             z-index: 10;
+            padding: 6px;
+            border: 2px solid #2B1D3A;
+            border-radius: 10px;
+            box-shadow: 0 2px 0 #422E58;
+        }
+        #selector-info-bar::before {
+            content: '';
+            position: absolute;
+            width: calc(100%);
+            height: calc(100%);
+            background: linear-gradient(
+                #D3BAE8 0%,
+                #D3BAE8 50%,
+                #583F7D 50%,
+                #583F7D 100%
+            );
+            border-radius: 10px;
+            pointer-events: none;
+            z-index: -2;
+        }
+        #selector-info-bar::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            width: 100%;
+            height: 90%;
+            background-color: #8C64AF;
+            border-radius: 10px;
+            transform: translateY(-50%);
+            pointer-events: none;
+            z-index: -1;
         }
 
         #top-info-bar .info-group {
@@ -189,20 +221,43 @@
             text-align: center;
         }
         #selector-info-bar .info-group {
+            position: relative;
             display: flex;
-            flex-direction: column;
             align-items: center;
-            justify-content: center;
-            background-color: transparent;
-            background-size: contain;
-            background-repeat: no-repeat;
-            background-position: center;
+            justify-content: flex-start;
             border-radius: 8px;
-            padding: 8px 10px;
+            padding: 8px 10px 8px 26px;
             min-width: 80px;
             min-height: 55px;
             box-sizing: border-box;
+        }
+        #selector-info-bar .value-box {
+            background-color: #422E58;
+            border-radius: 8px;
+            padding: 8px 10px 8px 26px;
+            width: 100%;
             text-align: center;
+        }
+        #selector-info-bar .info-icon-wrapper {
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translate(20%, -50%);
+            width: 48px;
+            height: 48px;
+        }
+        #selector-info-bar .info-icon-wrapper img {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+        #selector-info-bar .life-number {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 1em;
+            color: #f5f5f5;
         }
         #top-info-bar .info-label {
             font-size: 0.65em;
@@ -261,21 +316,6 @@
             display: none;
         }
 
-        #selector-info-bar #selector-coins-info { background-image: url('https://i.imgur.com/lQ4ltzt.png'); position: relative; }
-        #selector-info-bar #selector-lives-info { background-image: url('https://i.imgur.com/vPzvx4U.png'); }
-        #selector-info-bar #selector-gems-info { background-image: url('https://i.imgur.com/P16YAd1.png'); position: relative; }
-        #selector-info-bar #selector-coins-info .flex {
-            position: absolute;
-            top: 53%;
-            left: 60%;
-            transform: translate(-50%, -50%);
-        }
-        #selector-info-bar #selector-gems-info .flex {
-            position: absolute;
-            top: 53%;
-            left: 60%;
-            transform: translate(-50%, -50%);
-        }
 
         #title-panel {
             display: flex;
@@ -746,23 +786,19 @@
         }
 
         #livesValue,
-        #lifeTimerValue,
-        #selectorLivesValue,
-        #selectorLifeTimerValue {
+        #lifeTimerValue {
             position: absolute;
             top: 50%;
             transform: translateY(-45%);
         }
+        #livesValue { left: -56px; right: auto; text-align: left; }
+        #lifeTimerValue { left: -13px; }
 
-        #livesValue,
-        #selectorLivesValue {
-            left: -56px;
-            right: auto;
-            text-align: left;
+        #selectorLivesValue,
+        #selectorLifeTimerValue {
+            position: static;
+            transform: none;
         }
-
-        #lifeTimerValue,
-        #selectorLifeTimerValue { left: -13px; }
 
 
         #difficultySelector, #worldsSelector, #audioToggleSelector, #skinSelector, #foodSelector, #playerNameSelector, #free-difficulty-selector {
@@ -1533,17 +1569,9 @@
             #selector-info-bar .info-label { font-size: 0.6em; }
             #selector-info-bar .info-value { font-size: 0.8em; }
 
-            /* Move coins and gems slightly right on mobile */
-            #selector-info-bar #selector-coins-info .flex,
-            #selector-info-bar #selector-gems-info .flex {
-                left: 62%;
-            }
-
-          /* Slightly shift lives and recovery timer to the right on mobile */
-            #livesValue,
-            #selectorLivesValue { left: -42px; }
-            #lifeTimerValue,
-            #selectorLifeTimerValue { left: -12px; }
+            /* Slightly shift lives and recovery timer to the right on mobile */
+            #livesValue { left: -42px; }
+            #lifeTimerValue { left: -12px; }
           
             #title-panel { min-height: 50px; padding: 6px; }
 
@@ -1639,11 +1667,6 @@
              #top-info-bar .info-group { min-width: 60px;}
              #selector-info-bar .info-label { font-size: 0.55em; }
              #selector-info-bar .info-value { font-size: 0.7em; }
-             /* Move coins and gems slightly right on mobile */
-             #selector-info-bar #selector-coins-info .flex,
-             #selector-info-bar #selector-gems-info .flex {
-                 left: 62%;
-             }
              #selector-info-bar .info-group { min-width: 60px;}
 
             #current-world-info-group .info-label { font-size: 0.55em; }
@@ -2177,21 +2200,27 @@
 
         <div id="selector-info-bar" class="hidden">
             <div id="selector-coins-info" class="info-group">
-                <span class="info-label">Monedas:</span>
-                <div class="flex items-center justify-center relative">
+                <div class="info-icon-wrapper">
+                    <img src="https://i.imgur.com/Vrci2mu.png" alt="Monedas" class="info-icon">
+                </div>
+                <div class="value-box">
                     <span id="selectorCoinValue" class="info-value">0</span>
                 </div>
             </div>
-            <div id="selector-lives-info" class="info-group relative">
-                <span class="info-label">Vidas:</span>
-                <div class="flex items-center justify-center relative">
-                    <span id="selectorLifeTimerValue" class="info-value absolute">Lleno</span>
-                    <span id="selectorLivesValue" class="info-value absolute">5</span>
+            <div id="selector-lives-info" class="info-group">
+                <div class="info-icon-wrapper">
+                    <img src="https://i.imgur.com/QGcJpte.png" alt="Vidas" class="info-icon">
+                    <span id="selectorLivesValue" class="life-number">5</span>
+                </div>
+                <div class="value-box">
+                    <span id="selectorLifeTimerValue" class="info-value">Lleno</span>
                 </div>
             </div>
             <div id="selector-gems-info" class="info-group">
-                <span class="info-label">Gemas:</span>
-                <div class="flex items-center justify-center relative">
+                <div class="info-icon-wrapper">
+                    <img src="https://i.imgur.com/cKWB7y4.png" alt="Gemas" class="info-icon">
+                </div>
+                <div class="value-box">
                     <span id="selectorGemsValue" class="info-value">0</span>
                 </div>
             </div>
