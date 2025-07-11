@@ -2043,6 +2043,10 @@
         #purchase-item-preview {
           margin: 0 auto 8px;
         }
+        #purchase-item-preview.store-item {
+          width: 140px;
+          height: 140px;
+        }
 
         #mazeLevelButtonsContainer.disabled {
           pointer-events: none;
@@ -2567,7 +2571,7 @@
                 </div>
                 <div class="panel-content">
                     <div id="purchase-item-preview" class="store-item locked"></div>
-                    <p id="purchase-confirmation-text">¿Comprar por <strong>100</strong> monedas?</p>
+                    <p id="purchase-confirmation-text">¿Comprar por <strong>10</strong> monedas?</p>
                     <div class="reset-buttons">
                         <button id="confirmPurchaseYes">SI</button>
                         <button id="confirmPurchaseNo">NO</button>
@@ -4831,7 +4835,7 @@ function setupSlider(slider, display) {
                     status.textContent = '';
                     item.classList.add('purchased');
                 } else {
-                    status.textContent = '100 \uD83D\uDCB0';
+                    status.textContent = '10';
                     item.classList.add('locked');
                     item.addEventListener('click', () => openPurchaseConfirm(key));
                     addIconPressEvents(item, item);
@@ -4851,12 +4855,8 @@ function setupSlider(slider, display) {
                 img.className = 'store-item-img';
                 img.src = FOODS[key]?.asset?.src || '';
                 purchaseItemPreview.appendChild(img);
-                const status = document.createElement('div');
-                status.className = 'store-item-status';
-                status.textContent = '100 \uD83D\uDCB0';
-                purchaseItemPreview.appendChild(status);
             }
-            if (purchaseConfirmationText) purchaseConfirmationText.innerHTML = `¿Comprar ${FOOD_DISPLAY_NAMES[key]} por <strong>100</strong> monedas?`;
+            if (purchaseConfirmationText) purchaseConfirmationText.innerHTML = `¿Comprar ${FOOD_DISPLAY_NAMES[key]} por <strong>10</strong> monedas?`;
             purchaseConfirmationPanel.classList.add('centered-panel');
             togglePanel(purchaseConfirmationPanel, purchaseConfirmationPanel.querySelector('.panel-content'), true);
             if (modalOverlay) modalOverlay.classList.remove('hidden');
@@ -4864,8 +4864,8 @@ function setupSlider(slider, display) {
 
         function confirmPurchase() {
             if (!foodToPurchase) { closePurchaseConfirm(); return; }
-            if (totalCoins >= 100) {
-                totalCoins -= 100;
+            if (totalCoins >= 10) {
+                totalCoins -= 10;
                 unlockedFoods[foodToPurchase] = true;
                 saveUnlockedFoods();
                 localStorage.setItem('snakeGameCoins', totalCoins.toString());
