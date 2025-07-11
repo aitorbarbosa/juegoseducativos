@@ -9137,11 +9137,12 @@ async function startGame(isRestart = false) {
             } else {
                 currentPlayerName = Object.keys(playerProfiles)[0];
             }
+            loadUnlockedFoods(); // Load foods before applying profile
             updatePlayerNameSelectors(currentPlayerName);
             applyProfile(playerProfiles[currentPlayerName]);
             updateSfxVolume();
-            loadUnlockedFoods();
             updateFoodSelectorAvailability();
+            populateStoreItems();
             const savedCoins = parseInt(localStorage.getItem('snakeGameCoins'), 10);
             totalCoins = Number.isFinite(savedCoins) && savedCoins >= 0 ? savedCoins : 0;
 
