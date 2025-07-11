@@ -4720,7 +4720,24 @@ function setupSlider(slider, display) {
         
         configButton.addEventListener('click', () => {
             if (areSfxEnabled) playSound('modeSwitch');
-            openConfigMenuPanel();
+            if (showModeSelect) {
+                // When browsing game modes, open the general configuration menu
+                openConfigMenuPanel();
+            } else {
+                // Inside a game mode, open the corresponding settings menu
+                switch (gameMode) {
+                    case 'levels':
+                    case 'maze':
+                    case 'classification':
+                        openSettingsPanel();
+                        break;
+                    case 'freeMode':
+                        openFreeSettingsPanel();
+                        break;
+                    default:
+                        openConfigMenuPanel();
+                }
+            }
         });
         if (closeConfigMenuButton) closeConfigMenuButton.addEventListener('click', closeConfigMenuPanel);
         if (closeGenericMenuButton) closeGenericMenuButton.addEventListener('click', closeGenericMenuPanel);
