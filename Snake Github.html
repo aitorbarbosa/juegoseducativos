@@ -8008,8 +8008,12 @@ function setupSlider(slider, display) {
                 starProgressContainer.classList.add('hidden');
                 highScoreDisplay.classList.remove('hidden');
                 progressPanel.classList.add('classification-mode');
-                if (progressLivesInfoGroup) progressLivesInfoGroup.classList.add('hidden');
-                if (currentWorldInfoGroup) currentWorldInfoGroup.classList.remove('hidden');
+                if (progressLivesInfoGroup) {
+                    progressLivesInfoGroup.classList.remove('hidden');
+                    updateLivesDisplay();
+                    updateLifeTimerDisplay();
+                }
+                if (currentWorldInfoGroup) currentWorldInfoGroup.classList.add('hidden');
 
                 progressPanelLeftLabel.textContent = "Dificultad:";
                 progressPanelLeftValue.textContent = DIFFICULTY_DISPLAY_NAMES[difficultySelector.value] || difficultySelector.value;
@@ -8053,8 +8057,12 @@ function setupSlider(slider, display) {
                 progressPanel.classList.remove('hidden');
                 starProgressContainer.classList.remove('hidden');
                 highScoreDisplay.classList.add('hidden');
-                if (progressLivesInfoGroup) progressLivesInfoGroup.classList.add('hidden');
-                if (currentWorldInfoGroup) currentWorldInfoGroup.classList.remove('hidden');
+                if (progressLivesInfoGroup) {
+                    progressLivesInfoGroup.classList.remove('hidden');
+                    updateLivesDisplay();
+                    updateLifeTimerDisplay();
+                }
+                if (currentWorldInfoGroup) currentWorldInfoGroup.classList.add('hidden');
                 progressPanelLeftLabel.textContent = "Nivel:";
                 progressPanelLeftValue.textContent = displayMazeLevel;
                 drawStarProgress();
