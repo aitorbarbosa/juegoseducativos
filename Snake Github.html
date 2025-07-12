@@ -307,8 +307,8 @@
             position: absolute;
             top: 50%;
             left: 50%;
-            transform: translate(-50%, -50%);
-            font-size: 1em;
+            transform: translate(-45%, -50%);
+            font-size: 0.9em;
             color: #f5f5f5;
         }
         #top-info-bar .info-label {
@@ -835,23 +835,27 @@
             transform: translateX(-100px) translateY(-50%);
         }
 
-        #livesValue,
-        #lifeTimerValue {
+        #livesValue {
             position: absolute;
             top: 50%;
-            transform: translateY(-45%);
+            left: 50%;
+            transform: translate(-45%, -50%);
+            font-size: 0.9em;
+            color: #f5f5f5;
         }
-        #livesValue { left: -56px; right: auto; text-align: left; }
-        #lifeTimerValue { left: -13px; }
+        #lifeTimerValue {
+            position: static;
+            transform: none;
+        }
 
         #selectorLivesValue,
         #selectorLifeTimerValue {
             position: static;
             transform: none;
         }
-        /* Allow individual value positioning on desktop */
+        /* Align recovery timer like in free mode */
         #selectorLifeTimerValue {
-            margin-left: 14px;
+            margin-left: 0;
         }
 
 
@@ -1641,9 +1645,7 @@
             #selector-info-bar .info-value { font-size: 0.8em; }
             #selector-info-bar .info-icon-wrapper { width: 26px; height: 26px; transform: translate(10%, -50%); }
 
-            /* Slightly shift lives and recovery timer to the right on mobile */
-            #livesValue { left: -42px; }
-            #lifeTimerValue { left: -12px; }
+
 
             /* Shift coin and gem values slightly left */
             #selectorCoinValue,
@@ -2346,12 +2348,12 @@
             </div>
             <div id="points-info-group" class="info-group">
                 <div class="info-icon-wrapper">
-                    <img src="https://i.imgur.com/GLYt7PU.png" alt="Puntos" class="info-icon">
+                    <img id="points-icon-img" src="https://i.imgur.com/GLYt7PU.png" alt="Puntos" class="info-icon">
+                    <span id="livesValue" class="life-number hidden">5</span>
                 </div>
                 <div class="value-box">
-                    <span id="lifeTimerValue" class="info-value hidden absolute">Lleno</span>
+                    <span id="lifeTimerValue" class="info-value hidden">Lleno</span>
                     <span id="scoreValue" class="info-value">0</span><span id="target-score-divider" class="info-value mx-1 hidden">/</span><span id="targetScoreValue" class="info-value hidden">0</span>
-                    <span id="livesValue" class="info-value absolute hidden">5</span>
                 </div>
             </div>
             <div id="time-info-group" class="info-group">
@@ -2813,6 +2815,7 @@
         const earnedCoinsMessage = document.getElementById("earnedCoinsMessage");
         const scoreValueDisplay = document.getElementById("scoreValue");
         const livesValueDisplay = document.getElementById("livesValue");
+        const pointsIconImg = document.getElementById("points-icon-img");
         const selectorLivesValueDisplay = document.getElementById("selectorLivesValue");
         const lifeTimerValueDisplay = document.getElementById("lifeTimerValue");
         const selectorLifeTimerValueDisplay = document.getElementById("selectorLifeTimerValue");
@@ -7717,8 +7720,28 @@ function setupSlider(slider, display) {
                 updateLivesDisplay();
                 updateLifeTimerDisplay();
             } else {
-                if (scoreValueDisplay) scoreValueDisplay.classList.remove('hidden');
-                if (targetScoreDivider && targetScoreValueDisplay) updateTargetScoreDisplay();
+                if (gameMode === 'freeMode') {
+                    if (scoreValueDisplay) scoreValueDisplay.classList.add('hidden');
+                    if (targetScoreDivider) targetScoreDivider.classList.add('hidden');
+                    if (targetScoreValueDisplay) targetScoreValueDisplay.classList.add('hidden');
+                    if (lifeTimerValueDisplay) lifeTimerValueDisplay.classList.remove('hidden');
+                    if (livesValueDisplay) livesValueDisplay.classList.remove('hidden');
+                    if (pointsIconImg) {
+                        pointsIconImg.src = 'https://i.imgur.com/QGcJpte.png';
+                        pointsIconImg.alt = 'Vidas';
+                    }
+                    updateLivesDisplay();
+                    updateLifeTimerDisplay();
+                } else {
+                    if (scoreValueDisplay) scoreValueDisplay.classList.remove('hidden');
+                    if (targetScoreDivider && targetScoreValueDisplay) updateTargetScoreDisplay();
+                    if (lifeTimerValueDisplay) lifeTimerValueDisplay.classList.add('hidden');
+                    if (livesValueDisplay) livesValueDisplay.classList.add('hidden');
+                    if (pointsIconImg) {
+                        pointsIconImg.src = 'https://i.imgur.com/GLYt7PU.png';
+                        pointsIconImg.alt = 'Puntos';
+                    }
+                }
             }
 
             const isGameCurrentlyRunning = !!gameIntervalId;
