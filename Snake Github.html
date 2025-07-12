@@ -3259,10 +3259,11 @@ function setupSlider(slider, display) {
 
 
         // --- INICIO: Declaración de Objetos Image ---
-        const classicSnakeHeadLeftImg = new Image(); 
-        const classicSnakeHeadDownImg = new Image(); 
+        const classicSnakeHeadLeftImg = new Image();
+        const classicSnakeHeadDownImg = new Image();
         const classicFoodImg = new Image();
-        const snakeBodyTexture = new Image(); 
+        const snakeBodyTexture = new Image();
+        const snakeTailTexture = new Image();
 
         const rubiSnakeHeadUpDownImg = new Image();
         const rubiSnakeHeadLeftImg = new Image();
@@ -4409,10 +4410,11 @@ function setupSlider(slider, display) {
         }
 
         function loadSkinImages() {
-            classicSnakeHeadLeftImg.src = 'https://i.imgur.com/x3Wrabg.png';
-            classicSnakeHeadDownImg.src = 'https://i.imgur.com/lapIn2F.png';
+            classicSnakeHeadLeftImg.src = 'https://i.imgur.com/7bMXkcb.png';
+            classicSnakeHeadDownImg.src = 'https://i.imgur.com/7bMXkcb.png';
             classicFoodImg.src = 'https://i.imgur.com/fOSSwUX.png';
-            snakeBodyTexture.src = 'https://i.imgur.com/qWefd22.png'; 
+            snakeBodyTexture.src = 'https://i.imgur.com/uJQ5TXv.png';
+            snakeTailTexture.src = 'https://i.imgur.com/DFw5YoI.png';
 
             rubiSnakeHeadUpDownImg.src = 'https://i.imgur.com/XQzDVMk.png';
             rubiSnakeHeadLeftImg.src = 'https://i.imgur.com/XQzDVMk.png'; 
@@ -4445,8 +4447,8 @@ function setupSlider(slider, display) {
             lightningYellowImg.src = 'https://i.imgur.com/AJL2p3j.png';
             lightningRedImg.src = 'https://i.imgur.com/4sNOTpi.png';
             
-            const allImageObjects = [ 
-                classicSnakeHeadLeftImg, classicSnakeHeadDownImg, classicFoodImg, snakeBodyTexture,
+            const allImageObjects = [
+                classicSnakeHeadLeftImg, classicSnakeHeadDownImg, classicFoodImg, snakeBodyTexture, snakeTailTexture,
                 rubiSnakeHeadUpDownImg, rubiSnakeHeadLeftImg, rubiSnakeFoodImg,
                 aitorSnakeHeadUpDownImg, aitorSnakeHeadLeftImg, aitorSnakeFoodImg,
                 noemiSnakeHeadUpDownImg, noemiSnakeHeadLeftImg, noemiSnakeFoodImg,
@@ -7370,42 +7372,55 @@ function setupSlider(slider, display) {
                 for (let i = 1; i < snake.length; i++) {
                     const segmentX = snake[i].x * GRID_SIZE;
                     const segmentY = snake[i].y * GRID_SIZE;
-                    const skinData = SKINS[currentSkin]; 
+                    const skinData = SKINS[currentSkin];
+                    const isTail = i === snake.length - 1;
+                    const texture = isTail ? snakeTailTexture : snakeBodyTexture;
 
-                    if (snakeBodyTexture && snakeBodyTexture.complete && snakeBodyTexture.naturalHeight !== 0) {
-                        ctx.drawImage(snakeBodyTexture, segmentX, segmentY, GRID_SIZE - 1, GRID_SIZE - 1);
+                    const prevSeg = snake[i - 1];
+                    const horizontal = prevSeg.y === snake[i].y;
+
+                    if (texture && texture.complete && texture.naturalHeight !== 0) {
+                        ctx.save();
+                        ctx.translate(segmentX + GRID_SIZE / 2, segmentY + GRID_SIZE / 2);
+                        let angle = 0;
+                        if (isTail) {
+                            if (prevSeg.x < snake[i].x) angle = 0; // moving left
+                            else if (prevSeg.x > snake[i].x) angle = Math.PI;
+                            else if (prevSeg.y < snake[i].y) angle = -Math.PI / 2; // moving up
+                            else if (prevSeg.y > snake[i].y) angle = Math.PI / 2; // moving down
+                        } else if (!horizontal) {
+                            angle = Math.PI / 2;
+                        }
+                        ctx.rotate(angle);
+                        ctx.drawImage(texture, -GRID_SIZE / 2, -GRID_SIZE / 2, GRID_SIZE, GRID_SIZE);
                         if (skinData.bodyTintColor) {
                             ctx.globalCompositeOperation = 'multiply';
                             ctx.fillStyle = skinData.bodyTintColor;
-                            ctx.fillRect(segmentX, segmentY, GRID_SIZE - 1, GRID_SIZE - 1);
+                            ctx.fillRect(-GRID_SIZE / 2, -GRID_SIZE / 2, GRID_SIZE, GRID_SIZE);
                             ctx.globalCompositeOperation = 'source-over';
                         }
                         if (speedBoostVisible) {
-                            drawImageWithTint(ctx, snakeBodyTexture, segmentX, segmentY, GRID_SIZE - 1, GRID_SIZE - 1, speedBoostOverlayColor);
+                            drawImageWithTint(ctx, texture, -GRID_SIZE / 2, -GRID_SIZE / 2, GRID_SIZE, GRID_SIZE, speedBoostOverlayColor);
                         }
                         if (mirrorVisible) {
-                            drawImageWithTint(ctx, snakeBodyTexture, segmentX, segmentY, GRID_SIZE - 1, GRID_SIZE - 1, mirrorOverlayColor);
+                            drawImageWithTint(ctx, texture, -GRID_SIZE / 2, -GRID_SIZE / 2, GRID_SIZE, GRID_SIZE, mirrorOverlayColor);
                         }
+                        ctx.restore();
                     } else {
                         ctx.fillStyle = skinData.bodyTintColor || '#A8F031';
-                        ctx.fillRect(segmentX, segmentY, GRID_SIZE - 1, GRID_SIZE - 1);
+                        ctx.fillRect(segmentX, segmentY, GRID_SIZE, GRID_SIZE);
                         if (speedBoostVisible) {
                             ctx.globalCompositeOperation = 'multiply';
                             ctx.fillStyle = speedBoostOverlayColor;
-                            ctx.fillRect(segmentX, segmentY, GRID_SIZE - 1, GRID_SIZE - 1);
+                            ctx.fillRect(segmentX, segmentY, GRID_SIZE, GRID_SIZE);
                             ctx.globalCompositeOperation = 'source-over';
                         }
                         if (mirrorVisible) {
                             ctx.globalCompositeOperation = 'multiply';
                             ctx.fillStyle = mirrorOverlayColor;
-                            ctx.fillRect(segmentX, segmentY, GRID_SIZE - 1, GRID_SIZE - 1);
+                            ctx.fillRect(segmentX, segmentY, GRID_SIZE, GRID_SIZE);
                             ctx.globalCompositeOperation = 'source-over';
                         }
-                    }
-                    if (skinData.bodyStrokeColor) {
-                        ctx.strokeStyle = skinData.bodyStrokeColor;
-                        ctx.lineWidth = 1; 
-                        ctx.strokeRect(segmentX, segmentY, GRID_SIZE - 1, GRID_SIZE - 1);
                     }
                 }
 
@@ -7428,17 +7443,26 @@ function setupSlider(slider, display) {
                     const head = snake[0];
                     if (currentSkinData && currentSkinData.snakeHeadAsset) {
                         let imgToDraw;
+                        let rotation = 0;
                         let baseImageForUp = currentSkinData.snakeHeadAsset.upDown;
                         let baseImageForDown = currentSkinData.snakeHeadAsset.upDown;
                         let baseImageForLeft = currentSkinData.snakeHeadAsset.left;
-                        let baseImageForRight = currentSkinData.snakeHeadAsset.left; 
+                        let baseImageForRight = currentSkinData.snakeHeadAsset.left;
                         let flipHorizontal = false;
                         let flipVertical = false;
 
-                        if (direction === 'up') { imgToDraw = baseImageForUp; flipVertical = true; }
-                        else if (direction === 'down') { imgToDraw = baseImageForDown; }
-                        else if (direction === 'left') { imgToDraw = baseImageForLeft; }
-                        else if (direction === 'right') { imgToDraw = baseImageForRight; flipHorizontal = true; }
+                        if (currentSkin === 'snake') {
+                            imgToDraw = baseImageForDown;
+                            if (direction === 'up') rotation = -Math.PI / 2;
+                            else if (direction === 'down') rotation = Math.PI / 2;
+                            else if (direction === 'left') rotation = Math.PI;
+                            else rotation = 0; // right
+                        } else {
+                            if (direction === 'up') { imgToDraw = baseImageForUp; flipVertical = true; }
+                            else if (direction === 'down') { imgToDraw = baseImageForDown; }
+                            else if (direction === 'left') { imgToDraw = baseImageForLeft; }
+                            else if (direction === 'right') { imgToDraw = baseImageForRight; flipHorizontal = true; }
+                        }
 
                         if (imgToDraw && imgToDraw.complete && imgToDraw.naturalHeight !== 0) {
                             const drawSize = GRID_SIZE * currentSkinData.snakeHeadScale;
@@ -7449,6 +7473,7 @@ function setupSlider(slider, display) {
                             ctx.translate(drawX + drawSize / 2, drawY + drawSize / 2);
                             let scaleX = 1; let scaleY = 1;
                             if (flipHorizontal) scaleX = -1; if (flipVertical) scaleY = -1;
+                            ctx.rotate(rotation);
                             ctx.scale(scaleX, scaleY);
                             ctx.drawImage(imgToDraw, -drawSize / 2, -drawSize / 2, drawSize, drawSize);
                             if (speedBoostVisible) {
@@ -7460,35 +7485,33 @@ function setupSlider(slider, display) {
                             ctx.restore();
                         } else {
                             ctx.fillStyle = "#a7f3d0";
-                            ctx.fillRect(head.x * GRID_SIZE, head.y * GRID_SIZE, GRID_SIZE - 1, GRID_SIZE - 1);
+                            ctx.fillRect(head.x * GRID_SIZE, head.y * GRID_SIZE, GRID_SIZE, GRID_SIZE);
                             if (speedBoostVisible) {
                                 ctx.globalCompositeOperation = 'multiply';
                                 ctx.fillStyle = speedBoostOverlayColor;
-                                ctx.fillRect(head.x * GRID_SIZE, head.y * GRID_SIZE, GRID_SIZE -1, GRID_SIZE -1);
+                                  ctx.fillRect(head.x * GRID_SIZE, head.y * GRID_SIZE, GRID_SIZE, GRID_SIZE);
                                 ctx.globalCompositeOperation = 'source-over';
                             }
                             if (mirrorVisible) {
                                 ctx.globalCompositeOperation = 'multiply';
                                 ctx.fillStyle = mirrorOverlayColor;
-                                ctx.fillRect(head.x * GRID_SIZE, head.y * GRID_SIZE, GRID_SIZE -1, GRID_SIZE -1);
+                                  ctx.fillRect(head.x * GRID_SIZE, head.y * GRID_SIZE, GRID_SIZE, GRID_SIZE);
                                 ctx.globalCompositeOperation = 'source-over';
                             }
                         }
                     } else {
                         ctx.fillStyle = "#a7f3d0";
-                        ctx.fillRect(head.x * GRID_SIZE, head.y * GRID_SIZE, GRID_SIZE - 1, GRID_SIZE - 1);
-                        ctx.strokeStyle = "#065f46";
-                        ctx.strokeRect(head.x * GRID_SIZE, head.y * GRID_SIZE, GRID_SIZE -1, GRID_SIZE -1);
+                        ctx.fillRect(head.x * GRID_SIZE, head.y * GRID_SIZE, GRID_SIZE, GRID_SIZE);
                         if (speedBoostVisible) {
                             ctx.globalCompositeOperation = 'multiply';
                             ctx.fillStyle = speedBoostOverlayColor;
-                            ctx.fillRect(head.x * GRID_SIZE, head.y * GRID_SIZE, GRID_SIZE -1, GRID_SIZE -1);
+                              ctx.fillRect(head.x * GRID_SIZE, head.y * GRID_SIZE, GRID_SIZE, GRID_SIZE);
                             ctx.globalCompositeOperation = 'source-over';
                         }
                         if (mirrorVisible) {
                             ctx.globalCompositeOperation = 'multiply';
                             ctx.fillStyle = mirrorOverlayColor;
-                            ctx.fillRect(head.x * GRID_SIZE, head.y * GRID_SIZE, GRID_SIZE -1, GRID_SIZE -1);
+                              ctx.fillRect(head.x * GRID_SIZE, head.y * GRID_SIZE, GRID_SIZE, GRID_SIZE);
                             ctx.globalCompositeOperation = 'source-over';
                         }
                     }
