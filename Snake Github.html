@@ -406,13 +406,54 @@
 }
 
         #progress-panel {
-            display: grid; 
-            grid-template-columns: 1fr 1fr 1fr; 
+            display: grid;
+            grid-template-columns: 1.01fr 1.99fr;
             gap: 8px;
             width: 100%;
-            margin: 0 auto 5px auto; 
+            margin: 0 auto 5px auto;
             position: relative;
-            z-index: 10; 
+            z-index: 10;
+        }
+
+        #progress-panel .panel-card {
+            position: relative;
+            padding: 4px;
+            border: 2px solid #2B1D3A;
+            border-radius: 10px;
+            box-shadow: 0 2px 0 #422E58;
+            box-sizing: border-box;
+        }
+
+        #progress-panel .panel-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                #D3BAE8 0%,
+                #D3BAE8 50%,
+                #583F7D 50%,
+                #583F7D 100%
+            );
+            border-radius: 10px;
+            pointer-events: none;
+            z-index: -2;
+        }
+
+        #progress-panel .panel-card::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            width: 100%;
+            height: 90%;
+            background-color: #8C64AF;
+            border-radius: 10px;
+            transform: translateY(-50%);
+            pointer-events: none;
+            z-index: -1;
         }
 
         #current-world-info-group {
@@ -448,27 +489,89 @@
         }
 
         #star-progress-wrapper {
-            grid-column: 2 / 4;
+            grid-column: 2 / 3;
             display: flex;
             justify-content: center;
             align-items: center;
-            background-color: #374151;
-            border-radius: 8px;
             padding: 8px 10px;
             min-height: 55px;
             box-sizing: border-box;
             text-align: center;
         }
 
+        #star-progress-wrapper .value-box {
+            background-color: #422E58;
+            border-radius: 8px;
+            padding: 6px 8px;
+            width: 100%;
+        }
+
+        #progress-lives-info-group {
+            grid-column: 1 / 2;
+        }
+
+        #progress-lives-info-group .info-group {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            border-radius: 8px;
+            padding: 6px 8px 6px 22px;
+            min-width: 90px;
+            min-height: 48px;
+            box-sizing: border-box;
+            width: 100%;
+        }
+
+        #progress-lives-info-group .value-box {
+            background-color: #422E58;
+            border-radius: 8px;
+            padding: 6px 8px 6px 22px;
+            width: 100%;
+            text-align: center;
+        }
+
+        #progress-lives-info-group .info-icon-wrapper {
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translate(15%, -50%);
+            width: 40px;
+            height: 40px;
+        }
+
+        #progress-lives-info-group .info-icon-wrapper img {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+
+        #progress-lives-info-group .life-number {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-45%, -50%);
+            font-size: 0.9em;
+            color: #f5f5f5;
+        }
+
+        #progress-lives-info-group .info-value {
+            font-size: 0.85em;
+            color: #f5f5f5;
+            font-family: 'Press Start 2P', sans-serif;
+            line-height: 1.3;
+        }
+
         #star-progress-container {
             display: grid;
-            grid-template-columns: repeat(5, 1fr);
-            gap: 12px; 
-            padding: 0; 
+            grid-template-columns: repeat(5, auto);
+            gap: 12px;
+            padding: 0;
             justify-items: center;
             align-items: center;
-            width: 100%; 
-            max-width: 260px; 
+            width: max-content;
+            max-width: 260px;
+            margin: 0 auto;
         }
         .progress-star {
             width: 38px;
@@ -1659,11 +1762,15 @@
           
             #title-panel { min-height: 50px; padding: 6px; }
 
-            #current-world-info-group { min-height: 50px; padding: 6px; min-width: 70px; cursor: pointer;}
+            #current-world-info-group { min-height: 30px; padding: 1px 4px 1px 14px; min-width: 70px; cursor: pointer;}
             #current-world-info-group .info-label { font-size: 0.6em; }
             #current-world-info-group .info-value { font-size: 0.8em; }
             #progress-panel.classification-mode #current-world-info-group .info-value { font-size: 0.7em; }
-            #star-progress-wrapper { min-height: 50px; padding: 6px;}
+            #star-progress-wrapper { min-height: 30px; padding: 1px 4px; }
+            #star-progress-wrapper .value-box { padding: 1px 4px; }
+            #progress-lives-info-group .info-group { min-height: 30px; padding: 1px 4px 1px 14px; }
+            #progress-lives-info-group .value-box { padding: 1px 6px 1px 14px; }
+            #progress-lives-info-group .info-icon-wrapper { width: 26px; height: 26px; transform: translate(10%, -50%); }
             .progress-star { width: 30px; height: 30px; }
             #star-progress-container { max-width: 200px; gap: 10px;}
 
@@ -1782,7 +1889,12 @@
             #current-world-info-group .info-label { font-size: 0.55em; }
             #current-world-info-group .info-value { font-size: 0.7em; }
             #progress-panel.classification-mode #current-world-info-group .info-value { font-size: 0.6em; }
-            #current-world-info-group { min-width: 60px; cursor: pointer;}
+            #current-world-info-group { min-width: 60px; min-height: 34px; padding: 2px 4px 2px 20px; cursor: pointer;}
+            #star-progress-wrapper { min-height: 34px; padding: 2px 4px; }
+            #star-progress-wrapper .value-box { padding: 2px 4px; }
+            #progress-lives-info-group .info-group { min-height: 34px; padding: 2px 4px 2px 20px; }
+            #progress-lives-info-group .value-box { padding: 2px 5px 2px 20px; }
+            #progress-lives-info-group .info-icon-wrapper { width: 32px; height: 32px; transform: translate(12%, -50%); }
             .progress-star { width: 24px; height: 24px; }
             #star-progress-container { max-width: 170px; gap: 8px;}
 
@@ -2291,17 +2403,32 @@
         <div id="title-panel" class="hidden"><img id="title-image" src="https://i.imgur.com/CZa88Hk.png" alt="Snake Mobile" onerror="this.src='https://placehold.co/300x80/02030D/FFFFFF?text=Title+Error'; console.error('Error loading title-image');"></div>
         <div id="progress-panel" class="hidden">
             <div id="current-world-info-group">
-                <span id="progress-panel-left-label" class="info-label">Nivel:</span> <span id="progress-panel-left-value" class="info-value">1</span> </div>
-            <div id="star-progress-wrapper">
-                 <div id="star-progress-container" class="hidden">
-                 </div>
-                 <div id="high-score-display" class="hidden">
-                    <span id="hs-main-label" class="info-label">Máxima puntuación</span>
-                    <div id="hs-values-container">
-                        <span id="hs-score-value" class="hs-value">-</span>
-                        <span class="hs-label-unit">Puntos</span>
-                        <span class="hs-separator hs-value">|</span>
-                        <span id="hs-skin-value" class="hs-value">-</span>
+                <span id="progress-panel-left-label" class="info-label">Nivel:</span>
+                <span id="progress-panel-left-value" class="info-value">1</span>
+            </div>
+            <div id="progress-lives-info-group" class="panel-card hidden">
+                <div class="info-group">
+                    <div class="info-icon-wrapper">
+                        <img src="https://i.imgur.com/QGcJpte.png" alt="Vidas" class="info-icon">
+                        <span id="progressLivesValue" class="life-number">5</span>
+                    </div>
+                    <div class="value-box">
+                        <span id="progressLifeTimerValue" class="info-value">Lleno</span>
+                    </div>
+                </div>
+            </div>
+            <div id="star-progress-wrapper" class="panel-card">
+                <div class="value-box">
+                    <div id="star-progress-container" class="hidden">
+                    </div>
+                    <div id="high-score-display" class="hidden">
+                        <span id="hs-main-label" class="info-label">Máxima puntuación</span>
+                        <div id="hs-values-container">
+                            <span id="hs-score-value" class="hs-value">-</span>
+                            <span class="hs-label-unit">Puntos</span>
+                            <span class="hs-separator hs-value">|</span>
+                            <span id="hs-skin-value" class="hs-value">-</span>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -2867,6 +2994,9 @@
         const titlePanel = document.getElementById("title-panel"); 
         const progressPanelLeftLabel = document.getElementById("progress-panel-left-label");
         const progressPanelLeftValue = document.getElementById("progress-panel-left-value");
+        const progressLivesValueDisplay = document.getElementById("progressLivesValue");
+        const progressLifeTimerValueDisplay = document.getElementById("progressLifeTimerValue");
+        const progressLivesInfoGroup = document.getElementById("progress-lives-info-group");
         const starProgressContainer = document.getElementById("star-progress-container");
         const highScoreDisplay = document.getElementById("high-score-display");
         const hsScoreValue = document.getElementById("hs-score-value");
@@ -7624,17 +7754,20 @@ function setupSlider(slider, display) {
         function updateLivesDisplay() {
             if (livesValueDisplay) livesValueDisplay.textContent = playerLives;
             if (selectorLivesValueDisplay) selectorLivesValueDisplay.textContent = playerLives;
+            if (progressLivesValueDisplay) progressLivesValueDisplay.textContent = playerLives;
         }
 
         function updateLifeTimerDisplay() {
-            if (!(lifeTimerValueDisplay || selectorLifeTimerValueDisplay)) return;
+            if (!(lifeTimerValueDisplay || selectorLifeTimerValueDisplay || progressLifeTimerValueDisplay)) return;
             if (playerLives >= MAX_LIVES || lifeRestoreQueue.length === 0) {
                 if (lifeTimerValueDisplay) lifeTimerValueDisplay.textContent = 'Lleno';
                 if (selectorLifeTimerValueDisplay) selectorLifeTimerValueDisplay.textContent = 'Lleno';
+                if (progressLifeTimerValueDisplay) progressLifeTimerValueDisplay.textContent = 'Lleno';
             } else {
                 const remaining = Math.max(0, Math.ceil((lifeRestoreQueue[0] - Date.now()) / 1000));
                 if (lifeTimerValueDisplay) lifeTimerValueDisplay.textContent = formatTime(remaining);
                 if (selectorLifeTimerValueDisplay) selectorLifeTimerValueDisplay.textContent = formatTime(remaining);
+                if (progressLifeTimerValueDisplay) progressLifeTimerValueDisplay.textContent = formatTime(remaining);
             }
         }
 
@@ -7762,6 +7895,8 @@ function setupSlider(slider, display) {
                 progressPanel.classList.add('hidden');
                 starProgressContainer.classList.add('hidden');
                 highScoreDisplay.classList.add('hidden');
+                if (progressLivesInfoGroup) progressLivesInfoGroup.classList.add('hidden');
+                if (currentWorldInfoGroup) currentWorldInfoGroup.classList.remove('hidden');
                 progressPanelLeftLabel.textContent = "Nivel:";
                 progressPanelLeftValue.textContent = "No disponible";
 
@@ -7787,6 +7922,10 @@ function setupSlider(slider, display) {
                 highScoreDisplay.classList.add('hidden');
                 progressPanelLeftLabel.textContent = "Mundo:";
                 progressPanelLeftValue.textContent = `${displayWorld}.${displayLevelInWorld}`;
+                if (progressLivesInfoGroup) progressLivesInfoGroup.classList.remove('hidden');
+                if (currentWorldInfoGroup) currentWorldInfoGroup.classList.add('hidden');
+                updateLivesDisplay();
+                updateLifeTimerDisplay();
                 
                 difficultyLabel.textContent = "Mundo Actual:";
                 difficultySelector.classList.add('hidden');
@@ -7822,6 +7961,8 @@ function setupSlider(slider, display) {
                 progressPanel.classList.add('hidden');
                 starProgressContainer.classList.add('hidden');
                 highScoreDisplay.classList.add('hidden');
+                if (progressLivesInfoGroup) progressLivesInfoGroup.classList.add('hidden');
+                if (currentWorldInfoGroup) currentWorldInfoGroup.classList.remove('hidden');
 
                 // Actualizamos la dificultad aunque no se muestre actualmente
                 progressPanelLeftLabel.textContent = "Dificultad:";
@@ -7850,6 +7991,8 @@ function setupSlider(slider, display) {
                 starProgressContainer.classList.add('hidden');
                 highScoreDisplay.classList.remove('hidden');
                 progressPanel.classList.add('classification-mode');
+                if (progressLivesInfoGroup) progressLivesInfoGroup.classList.add('hidden');
+                if (currentWorldInfoGroup) currentWorldInfoGroup.classList.remove('hidden');
 
                 progressPanelLeftLabel.textContent = "Dificultad:";
                 progressPanelLeftValue.textContent = DIFFICULTY_DISPLAY_NAMES[difficultySelector.value] || difficultySelector.value;
@@ -7893,6 +8036,8 @@ function setupSlider(slider, display) {
                 progressPanel.classList.remove('hidden');
                 starProgressContainer.classList.remove('hidden');
                 highScoreDisplay.classList.add('hidden');
+                if (progressLivesInfoGroup) progressLivesInfoGroup.classList.add('hidden');
+                if (currentWorldInfoGroup) currentWorldInfoGroup.classList.remove('hidden');
                 progressPanelLeftLabel.textContent = "Nivel:";
                 progressPanelLeftValue.textContent = displayMazeLevel;
                 drawStarProgress();
