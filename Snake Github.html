@@ -1434,7 +1434,7 @@
             position: fixed;
             left: 50%;
             transform: translateX(-50%) scale(0.95);
-            background-color: #1F2937;
+            background: none;
             padding: 15px;
             border-radius: 12px;
             box-shadow:
@@ -1450,7 +1450,40 @@
             gap: 10px;
             border: 2px solid #2d1d3a;
             opacity: 0;
+            overflow: hidden;
             transition: opacity 0.3s ease-out, transform 0.3s ease-out;
+        }
+
+        #settings-panel::before, #info-panel::before, #specific-info-panel::before, #free-settings-panel::before, #reset-confirmation-panel::before, #config-menu-panel::before, #generic-menu-panel::before, #store-panel::before, #purchase-confirmation-panel::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                #D3BAE8 0%,
+                #D3BAE8 50%,
+                #583F7D 50%,
+                #583F7D 100%
+            );
+            border-radius: 12px;
+            pointer-events: none;
+            z-index: -2;
+        }
+
+        #settings-panel::after, #info-panel::after, #specific-info-panel::after, #free-settings-panel::after, #reset-confirmation-panel::after, #config-menu-panel::after, #generic-menu-panel::after, #store-panel::after, #purchase-confirmation-panel::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            width: 100%;
+            height: 90%;
+            background-color: #8C64AF;
+            border-radius: 12px;
+            transform: translateY(-50%);
+            pointer-events: none;
+            z-index: -1;
         }
 
 .panel-content {
