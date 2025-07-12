@@ -2417,7 +2417,7 @@
             <div id="progress-lives-info-group" class="panel-card hidden">
                 <div class="info-group">
                     <div class="info-icon-wrapper">
-                        <img src="https://i.imgur.com/QGcJpte.png" alt="Vidas" class="info-icon">
+                        <img src="https://i.imgur.com/WrI2XXx.png" alt="Vidas" class="info-icon">
                         <span id="progressLivesValue" class="life-number">5</span>
                     </div>
                     <div class="value-box">
@@ -2446,7 +2446,7 @@
         <div id="selector-info-bar" class="hidden">
             <div id="selector-coins-info" class="info-group">
                 <div class="info-icon-wrapper">
-                    <img src="https://i.imgur.com/Vrci2mu.png" alt="Monedas" class="info-icon">
+                    <img src="https://i.imgur.com/lnc1Mwu.png" alt="Monedas" class="info-icon">
                 </div>
                 <div class="value-box">
                     <span id="selectorCoinValue" class="info-value">0</span>
@@ -2454,7 +2454,7 @@
             </div>
             <div id="selector-lives-info" class="info-group">
                 <div class="info-icon-wrapper">
-                    <img src="https://i.imgur.com/QGcJpte.png" alt="Vidas" class="info-icon">
+                    <img src="https://i.imgur.com/WrI2XXx.png" alt="Vidas" class="info-icon">
                     <span id="selectorLivesValue" class="life-number">5</span>
                 </div>
                 <div class="value-box">
@@ -2463,7 +2463,7 @@
             </div>
             <div id="selector-gems-info" class="info-group">
                 <div class="info-icon-wrapper">
-                    <img src="https://i.imgur.com/sxk0mWZ.png" alt="Gemas" class="info-icon">
+                    <img src="https://i.imgur.com/gPGsaCO.png" alt="Gemas" class="info-icon">
                 </div>
                 <div class="value-box">
                     <span id="selectorGemsValue" class="info-value">0</span>
@@ -2474,7 +2474,7 @@
         <div id="top-info-bar">
             <div id="coins-info-group" class="info-group">
                 <div class="info-icon-wrapper">
-                    <img src="https://i.imgur.com/Vrci2mu.png" alt="Monedas" class="info-icon">
+                    <img src="https://i.imgur.com/lnc1Mwu.png" alt="Monedas" class="info-icon">
                 </div>
                 <div class="value-box">
                     <span id="coinValue" class="info-value">0</span>
@@ -2483,7 +2483,7 @@
             </div>
             <div id="points-info-group" class="info-group">
                 <div class="info-icon-wrapper">
-                    <img id="points-icon-img" src="https://i.imgur.com/GLYt7PU.png" alt="Puntos" class="info-icon">
+                    <img id="points-icon-img" src="https://i.imgur.com/COqXj9s.png" alt="Puntos" class="info-icon">
                     <span id="livesValue" class="life-number hidden">5</span>
                 </div>
                 <div class="value-box">
@@ -2493,7 +2493,7 @@
             </div>
             <div id="time-info-group" class="info-group">
                 <div class="info-icon-wrapper">
-                    <img src="https://i.imgur.com/7Z1CJGl.png" alt="Tiempo" class="info-icon">
+                    <img src="https://i.imgur.com/s0pteDj.png" alt="Tiempo" class="info-icon">
                 </div>
                 <div class="value-box">
                     <span id="timeLengthLabel" class="info-label hidden">Tiempo:</span>
@@ -7867,10 +7867,10 @@ function setupSlider(slider, display) {
                     if (targetScoreValueDisplay) targetScoreValueDisplay.classList.add('hidden');
                     if (lifeTimerValueDisplay) lifeTimerValueDisplay.classList.remove('hidden');
                     if (livesValueDisplay) livesValueDisplay.classList.remove('hidden');
-                    if (pointsIconImg) {
-                        pointsIconImg.src = 'https://i.imgur.com/QGcJpte.png';
-                        pointsIconImg.alt = 'Vidas';
-                    }
+                        if (pointsIconImg) {
+                            pointsIconImg.src = 'https://i.imgur.com/WrI2XXx.png';
+                            pointsIconImg.alt = 'Vidas';
+                        }
                     updateLivesDisplay();
                     updateLifeTimerDisplay();
                 } else {
@@ -7878,10 +7878,10 @@ function setupSlider(slider, display) {
                     if (targetScoreDivider && targetScoreValueDisplay) updateTargetScoreDisplay();
                     if (lifeTimerValueDisplay) lifeTimerValueDisplay.classList.add('hidden');
                     if (livesValueDisplay) livesValueDisplay.classList.add('hidden');
-                    if (pointsIconImg) {
-                        pointsIconImg.src = 'https://i.imgur.com/GLYt7PU.png';
-                        pointsIconImg.alt = 'Puntos';
-                    }
+                        if (pointsIconImg) {
+                            pointsIconImg.src = 'https://i.imgur.com/COqXj9s.png';
+                            pointsIconImg.alt = 'Puntos';
+                        }
                 }
             }
 
