@@ -2400,15 +2400,60 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            background-color: rgba(0, 0, 0, 0.8);
-            color: #ffffff;
-            padding: 8px 12px;
-            border-radius: 8px;
+            padding: 4px;
             font-size: 0.85em;
+            color: #ffffff;
             pointer-events: none;
             z-index: 2205;
             opacity: 0;
             transition: opacity 0.3s ease;
+
+            /* Visual style matching the progress stars panel */
+            border: 2px solid #2B1D3A;
+            border-radius: 10px;
+            box-shadow: 0 2px 0 #422E58;
+            box-sizing: border-box;
+        }
+
+        #insufficient-funds-toast::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                #D3BAE8 0%,
+                #D3BAE8 50%,
+                #583F7D 50%,
+                #583F7D 100%
+            );
+            border-radius: 10px;
+            pointer-events: none;
+            z-index: -2;
+        }
+
+        #insufficient-funds-toast::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            width: 100%;
+            height: 90%;
+            background-color: #8C64AF;
+            border-radius: 10px;
+            transform: translateY(-50%);
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        #insufficient-funds-toast .value-box {
+            background-color: #422E58;
+            border-radius: 8px;
+            padding: 6px 8px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
 
         #insufficient-funds-toast.show {
@@ -2870,7 +2915,9 @@
                 </div>
             </div>
 
-            <div id="insufficient-funds-toast" class="hidden">Monedas insuficientes</div>
+            <div id="insufficient-funds-toast" class="panel-card hidden">
+                <div class="value-box">Monedas insuficientes</div>
+            </div>
 
             <div class="control-row" id="action-buttons-row">
                     <button id="backButton" aria-label="Volver">
