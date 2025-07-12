@@ -499,14 +499,19 @@
             text-align: center;
         }
 
-        #star-progress-wrapper .value-box {
+        /* Dark container for star progress */
+        #star-progress-container {
             background-color: #422E58;
             border-radius: 8px;
             padding: 6px 8px;
-            width: 100%;
-            display: flex;
-            justify-content: center;
+            display: grid;
+            grid-template-columns: repeat(5, auto);
+            gap: 25px;
+            justify-items: center;
             align-items: center;
+            width: max-content;
+            max-width: 290px;
+            margin: 0 auto;
         }
 
         #progress-lives-info-group {
@@ -565,17 +570,8 @@
             line-height: 1.3;
         }
 
-        #star-progress-container {
-            display: grid;
-            grid-template-columns: repeat(5, auto);
-            gap: 25px;
-            padding: 0;
-            justify-items: center;
-            align-items: center;
-            width: max-content;
-            max-width: 290px;
-            margin: 0 auto;
-        }
+        /* grid layout for the stars */
+        /* (properties merged above) */
         .progress-star {
             width: 38px;
             height: 38px;
@@ -592,24 +588,46 @@
 
         /* --- INICIO DE CSS CORREGIDO PARA #high-score-display --- */
         #high-score-display {
+            position: relative;
             display: flex;
-            flex-direction: column; 
-            align-items: center; 
-            justify-content: center;
-            gap: 2px;
+            align-items: center;
+            justify-content: flex-start;
+            border-radius: 8px;
+            padding: 6px 8px 6px 22px;
+            min-width: 90px;
+            min-height: 48px;
+            box-sizing: border-box;
             width: 100%;
-            line-height: 1.2;
-            /* font-size: 0.85em; <- Eliminado para usar rem en hijos */
         }
-        #high-score-display #hs-main-label { 
-            font-size: 0.75rem;  /* Cambiado a rem */
-            color: #a0aec0; 
-            margin-bottom: 5px;
-            display: block; 
-            line-height: 1.1;
+        #high-score-display .value-box {
+            background-color: #422E58;
+            border-radius: 8px;
+            padding: 6px 8px 6px 22px;
+            width: 100%;
             text-align: center;
         }
-        #hs-values-container { 
+        #high-score-display .info-icon-wrapper {
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translate(15%, -50%);
+            width: 40px;
+            height: 40px;
+        }
+        #high-score-display .info-icon-wrapper img {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+        #high-score-display .max-label {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-45%, -50%);
+            font-size: 0.9em;
+            color: #FFD700;
+        }
+        #hs-values-container {
             display: flex;
             flex-direction: row;
             align-items: baseline;
@@ -1729,8 +1747,7 @@
             /* --- INICIO DE MEDIA QUERY CORREGIDA PARA #high-score-display --- */
             /* Ya no necesitamos reducir el font-size base del contenedor #high-score-display */
             
-            #high-score-display #hs-main-label { font-size: 0.7rem; }
-            #hs-values-container { gap: 3px; } 
+            #hs-values-container { gap: 3px; }
             #high-score-display .hs-value { font-size: 0.7rem; }
             #high-score-display .hs-label-unit { font-size: 0.45rem; }
             #high-score-display .hs-separator { font-size: 0.55rem; }
@@ -1782,13 +1799,6 @@
             #current-world-info-group .info-value { font-size: 0.8em; }
             #progress-panel.classification-mode #current-world-info-group .info-value { font-size: 0.7em; }
             #star-progress-wrapper { min-height: 36px; padding: 2px 4px; }
-            #star-progress-wrapper .value-box {
-                padding: 2px 4px;
-                min-height: 32px;
-                display: flex;
-                justify-content: center;
-                align-items: center;
-            }
             #progress-lives-info-group .info-group { min-height: 30px; padding: 1px 4px 1px 14px; }
             #progress-lives-info-group .value-box { padding: 1px 6px 1px 14px; }
             #progress-lives-info-group .info-value { font-size: 0.8em; }
@@ -1866,7 +1876,6 @@
             /* --- INICIO DE MEDIA QUERY CORREGIDA PARA #high-score-display --- */
             /* Tampoco necesitamos tocar el font-size del contenedor */
 
-            #high-score-display #hs-main-label { font-size: 0.6rem; margin-bottom: 2px;}
             #hs-values-container { gap: 2px; }
             #high-score-display .hs-value { font-size: 0.6rem; }
             #high-score-display .hs-label-unit { font-size: 0.4rem; }
@@ -1913,13 +1922,6 @@
             #progress-panel.classification-mode #current-world-info-group .info-value { font-size: 0.6em; }
             #current-world-info-group { min-width: 60px; min-height: 34px; padding: 2px 4px 2px 20px; cursor: pointer;}
             #star-progress-wrapper { min-height: 40px; padding: 3px 4px; }
-            #star-progress-wrapper .value-box {
-                padding: 3px 4px;
-                min-height: 34px;
-                display: flex;
-                justify-content: center;
-                align-items: center;
-            }
             #progress-lives-info-group .info-group { min-height: 34px; padding: 2px 4px 2px 20px; }
             #progress-lives-info-group .value-box { padding: 2px 5px 2px 20px; }
             #progress-lives-info-group .info-value { font-size: 0.7em; }
@@ -2492,11 +2494,14 @@
                 </div>
             </div>
             <div id="star-progress-wrapper" class="panel-card">
-                <div class="value-box">
-                    <div id="star-progress-container" class="hidden">
+                <div id="star-progress-container" class="value-box hidden">
+                </div>
+                <div id="high-score-display" class="info-group hidden">
+                    <div class="info-icon-wrapper">
+                        <img src="https://i.imgur.com/fOSSwUX.png" alt="Máxima puntuación" class="info-icon">
+                        <span id="hs-max-label" class="life-number max-label">MAX</span>
                     </div>
-                    <div id="high-score-display" class="hidden">
-                        <span id="hs-main-label" class="info-label">Máxima puntuación</span>
+                    <div class="value-box">
                         <div id="hs-values-container">
                             <span id="hs-score-value" class="hs-value">-</span>
                             <span class="hs-label-unit">Puntos</span>
