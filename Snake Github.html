@@ -816,23 +816,23 @@
             position: absolute;
             top: 50%;
             left: 100%;
-            transform: translateX(10px) translateY(-50%);
-            color: #8f66af;
-            font-size: 0.7em;
+            transform: translateX(-50px) translateY(-50%);
+            color: #4ade80;
+            font-size: 1em;
             white-space: nowrap;
             opacity: 0;
-            transition: opacity 0.3s, transform 0.3s;
+            transition: opacity 0.3s, transform 0.5s;
             pointer-events: none;
         }
 
         #earnedCoinsMessage.show {
             opacity: 1;
-            transform: translateX(0) translateY(-50%);
+            transform: translateX(-55px) translateY(-50%);
         }
 
         #earnedCoinsMessage.hide {
             opacity: 0;
-            transform: translateX(-10px) translateY(-50%);
+            transform: translateX(-100px) translateY(-50%);
         }
 
         #livesValue,
