@@ -1463,6 +1463,14 @@
         }
         .scroll-padding { padding-right: 4px; }
 
+        #store-panel {
+            max-height: 90vh;
+            box-sizing: border-box;
+        }
+        #store-panel .panel-content {
+            padding-right: 10px;
+        }
+
         #info-panel,
         #specific-info-panel {
             max-height: 90vh;
@@ -1672,7 +1680,8 @@
         #info-panel .panel-content::-webkit-scrollbar,
         #specific-info-panel .panel-content::-webkit-scrollbar,
         #free-settings-panel .panel-content::-webkit-scrollbar,
-        #reset-confirmation-panel .panel-content::-webkit-scrollbar {
+        #reset-confirmation-panel .panel-content::-webkit-scrollbar,
+        #store-panel .panel-content::-webkit-scrollbar {
             width: 8px;
         }
         #info-panel-content::-webkit-scrollbar-track,
@@ -1681,7 +1690,8 @@
         #info-panel .panel-content::-webkit-scrollbar-track,
         #specific-info-panel .panel-content::-webkit-scrollbar-track,
         #free-settings-panel .panel-content::-webkit-scrollbar-track,
-        #reset-confirmation-panel .panel-content::-webkit-scrollbar-track {
+        #reset-confirmation-panel .panel-content::-webkit-scrollbar-track,
+        #store-panel .panel-content::-webkit-scrollbar-track {
             background: #2d1d3a;
             border-radius: 4px;
         }
@@ -1691,7 +1701,8 @@
         #info-panel .panel-content::-webkit-scrollbar-thumb,
         #specific-info-panel .panel-content::-webkit-scrollbar-thumb,
         #free-settings-panel .panel-content::-webkit-scrollbar-thumb,
-        #reset-confirmation-panel .panel-content::-webkit-scrollbar-thumb {
+        #reset-confirmation-panel .panel-content::-webkit-scrollbar-thumb,
+        #store-panel .panel-content::-webkit-scrollbar-thumb {
             background: #442F58;
             border-radius: 4px;
         }
@@ -1708,7 +1719,9 @@
         #free-settings-panel .panel-content::-webkit-scrollbar-thumb:hover,
         #free-settings-panel .panel-content::-webkit-scrollbar-thumb:active,
         #reset-confirmation-panel .panel-content::-webkit-scrollbar-thumb:hover,
-        #reset-confirmation-panel .panel-content::-webkit-scrollbar-thumb:active {
+        #reset-confirmation-panel .panel-content::-webkit-scrollbar-thumb:active,
+        #store-panel .panel-content::-webkit-scrollbar-thumb:hover,
+        #store-panel .panel-content::-webkit-scrollbar-thumb:active {
             background: #8f66af;
         }
 
@@ -2629,16 +2642,7 @@
                             <img class="setting-info-icon" src="https://i.imgur.com/rWe7Ylp.png" alt="info" onerror="this.src='https://placehold.co/24x24/02030D/FFFFFF?text=Err';">
                         </button>
                     </div>
-                    <select id="foodSelector">
-                        <option value="apple" selected>Manzana</option>
-                        <option value="croqueta">Croqueta</option>
-                        <option value="aguacate">Aguacate</option>
-                        <option value="sushi">Sushi</option>
-                        <option value="lotus">Lotus</option>
-                        <option value="cerveza">Cerveza</option>
-                        <option value="pan">Pan</option>
-                        <option value="oreo">Oreo</option>
-                    </select>
+                    <select id="foodSelector"></select>
                 </div>
                 <div class="control-group" id="audio-control-group">
                     <div class="control-label-icon-row">
@@ -2858,7 +2862,7 @@
                 </div>
                 <div class="panel-content">
                     <div id="purchase-item-preview" class="store-item locked"></div>
-                    <p id="purchase-confirmation-text">¿Comprar por <strong>10</strong> monedas?</p>
+                    <p id="purchase-confirmation-text">¿Comprar por <strong>0</strong> monedas?</p>
                     <div class="reset-buttons">
                         <button id="confirmPurchaseYes">SI</button>
                         <button id="confirmPurchaseNo">NO</button>
@@ -3237,8 +3241,6 @@ function setupSlider(slider, display) {
         const mimiSnakeHeadUpDownImg = new Image();
         const mimiSnakeHeadLeftImg = new Image();
         const mimiSnakeFoodImg = new Image();
-
-        const oreoFoodImg = new Image();
         const obstacleImg = new Image();
         const lightningYellowImg = new Image();
         const lightningRedImg = new Image();
@@ -3813,29 +3815,131 @@ function setupSlider(slider, display) {
                 if (selectedName && playerNames.includes(selectedName)) sel.value = selectedName;
             });
         }
+
+        function updateFoodSelectorOptions(selectedFood) {
+            if (!foodSelector) return;
+            foodSelector.innerHTML = '';
+            FOOD_ORDER.forEach(key => {
+                const opt = document.createElement('option');
+                opt.value = key;
+                opt.textContent = FOOD_DISPLAY_NAMES[key];
+                foodSelector.appendChild(opt);
+            });
+            if (selectedFood && FOOD_ORDER.includes(selectedFood)) foodSelector.value = selectedFood;
+        }
         // --- Fin Configuración de Jugadores ---
 
         // --- Configuración de Comestibles ---
         const FOODS = {
-            apple: { asset: classicFoodImg, scale: 1.5 },
-            cerveza: { asset: rubiSnakeFoodImg, scale: 1.5 },
-            croqueta: { asset: aitorSnakeFoodImg, scale: 1.5 },
-            aguacate: { asset: noemiSnakeFoodImg, scale: 1.5 },
-            sushi: { asset: maraSnakeFoodImg, scale: 1.5 },
-            lotus: { asset: almuSnakeFoodImg, scale: 1.5 },
-            pan: { asset: mimiSnakeFoodImg, scale: 1.5 },
-            oreo: { asset: oreoFoodImg, scale: 1.5 }
+            apple: { asset: classicFoodImg, url: 'https://i.imgur.com/fOSSwUX.png', scale: 1.5, price: 0 },
+            cereza: { asset: new Image(), url: 'https://i.imgur.com/s3WYriu.png', scale: 1.5, price: 100 },
+            pera: { asset: new Image(), url: 'https://i.imgur.com/QwJzp1k.png', scale: 1.5, price: 100 },
+            platano: { asset: new Image(), url: 'https://i.imgur.com/tYSI90u.png', scale: 1.5, price: 100 },
+            pina: { asset: new Image(), url: 'https://i.imgur.com/udkmLUq.png', scale: 1.5, price: 100 },
+            naranja: { asset: new Image(), url: 'https://i.imgur.com/W1WDTpC.png', scale: 1.5, price: 100 },
+            kiwi: { asset: new Image(), url: 'https://i.imgur.com/ZixdENw.png', scale: 1.5, price: 200 },
+            aguacate: { asset: new Image(), url: 'https://i.imgur.com/yEHqcAz.png', scale: 1.5, price: 200 },
+            fresa: { asset: new Image(), url: 'https://i.imgur.com/I9jGTrT.png', scale: 1.5, price: 200 },
+            sandia: { asset: new Image(), url: 'https://i.imgur.com/gYOUtji.png', scale: 1.5, price: 200 },
+            cafe: { asset: new Image(), url: 'https://i.imgur.com/2iuZzZQ.png', scale: 1.5, price: 300 },
+            batidoFresa: { asset: new Image(), url: 'https://i.imgur.com/AJf2LOK.png', scale: 1.5, price: 300 },
+            soda: { asset: new Image(), url: 'https://i.imgur.com/PoEzKvA.png', scale: 1.5, price: 300 },
+            zumoNaranja: { asset: new Image(), url: 'https://i.imgur.com/D1ZryCw.png', scale: 1.5, price: 300 },
+            batidoChocolate: { asset: new Image(), url: 'https://i.imgur.com/uyBQXKX.png', scale: 1.5, price: 300 },
+            chocolateCaliente: { asset: new Image(), url: 'https://i.imgur.com/QwHWdN9.png', scale: 1.5, price: 300 },
+            cerveza: { asset: new Image(), url: 'https://i.imgur.com/LKcF2tT.png', scale: 1.5, price: 400 },
+            vinoBlanco: { asset: new Image(), url: 'https://i.imgur.com/1S0Qvnn.png', scale: 1.5, price: 400 },
+            vinoTinto: { asset: new Image(), url: 'https://i.imgur.com/FfXlbU8.png', scale: 1.5, price: 400 },
+            kebap: { asset: new Image(), url: 'https://i.imgur.com/NpgCRUg.png', scale: 1.5, price: 500 },
+            burrito: { asset: new Image(), url: 'https://i.imgur.com/dSa3rSL.png', scale: 1.5, price: 500 },
+            patatas: { asset: new Image(), url: 'https://i.imgur.com/SCzeVKi.png', scale: 1.5, price: 500 },
+            polloFrito: { asset: new Image(), url: 'https://i.imgur.com/0kfGi0C.png', scale: 1.5, price: 500 },
+            salchicha: { asset: new Image(), url: 'https://i.imgur.com/wHPKEW4.png', scale: 1.5, price: 500 },
+            huevoFrito: { asset: new Image(), url: 'https://i.imgur.com/UBMaN50.png', scale: 1.5, price: 500 },
+            croqueta: { asset: new Image(), url: 'https://i.imgur.com/4psebHZ.png', scale: 1.5, price: 500 },
+            hamburguesa: { asset: new Image(), url: 'https://i.imgur.com/oQVdXFq.png', scale: 1.5, price: 750 },
+            pizza: { asset: new Image(), url: 'https://i.imgur.com/D7HV0O4.png', scale: 1.5, price: 750 },
+            hotDog: { asset: new Image(), url: 'https://i.imgur.com/v8Tng9s.png', scale: 1.5, price: 750 },
+            lasana: { asset: new Image(), url: 'https://i.imgur.com/uO5z1tZ.png', scale: 1.5, price: 750 },
+            sushi: { asset: new Image(), url: 'https://i.imgur.com/uccnlBy.png', scale: 1.5, price: 750 },
+            caramelo: { asset: new Image(), url: 'https://i.imgur.com/wg4aGv9.png', scale: 1.5, price: 1000 },
+            ensaimada: { asset: new Image(), url: 'https://i.imgur.com/6CxTo6I.png', scale: 1.5, price: 1000 },
+            muffin: { asset: new Image(), url: 'https://i.imgur.com/1qw2SLR.png', scale: 1.5, price: 1000 },
+            croissant: { asset: new Image(), url: 'https://i.imgur.com/rTctItm.png', scale: 1.5, price: 1000 },
+            macarrons: { asset: new Image(), url: 'https://i.imgur.com/eYb36j8.png', scale: 1.5, price: 1000 },
+            heladoFresa: { asset: new Image(), url: 'https://i.imgur.com/DOYtVFR.png', scale: 1.5, price: 1000 },
+            tartaFresa: { asset: new Image(), url: 'https://i.imgur.com/v95HG3r.png', scale: 1.5, price: 1000 },
+            palomitas: { asset: new Image(), url: 'https://i.imgur.com/qiCsIkb.png', scale: 1.5, price: 3000 },
+            algodonAzucar: { asset: new Image(), url: 'https://i.imgur.com/GSov6QD.png', scale: 1.5, price: 3000 },
+            tortitas: { asset: new Image(), url: 'https://i.imgur.com/PGlpQBY.png', scale: 1.5, price: 3000 },
+            helado: { asset: new Image(), url: 'https://i.imgur.com/f7VMyLh.png', scale: 1.5, price: 3000 },
+            tartaFantasia: { asset: new Image(), url: 'https://i.imgur.com/a7uFEuY.png', scale: 1.5, price: 3000 },
+            gofre: { asset: new Image(), url: 'https://i.imgur.com/PD05I19.png', scale: 1.5, price: 3000 },
+            donutsGlaseado: { asset: new Image(), url: 'https://i.imgur.com/ZiGKtUq.png', scale: 1.5, price: 5000 },
+            huevoYoshi: { asset: new Image(), url: 'https://i.imgur.com/Kx68UN2.png', scale: 1.5, price: 5000 },
+            espadaLaser: { asset: new Image(), url: 'https://i.imgur.com/3XIKlOA.png', scale: 1.5, price: 5000 },
+            cuernoUnicornio: { asset: new Image(), url: 'https://i.imgur.com/BFgtJCk.png', scale: 1.5, price: 5000 },
+            cartuchoRetro: { asset: new Image(), url: 'https://i.imgur.com/mSlH5Go.png', scale: 1.5, price: 5000 },
+            setaMario: { asset: new Image(), url: 'https://i.imgur.com/a41hS2U.png', scale: 1.5, price: 5000 },
+            guanteInfinito: { asset: new Image(), url: 'https://i.imgur.com/RD42tWb.png', scale: 1.5, price: 5000 },
+            gorroMagico: { asset: new Image(), url: 'https://i.imgur.com/1Y2w8KB.png', scale: 1.5, price: 5000 },
+            bolaDragon: { asset: new Image(), url: 'https://i.imgur.com/MjDXSXh.png', scale: 1.5, price: 5000 }
         };
-        const FOOD_ORDER = ['apple','croqueta','aguacate','sushi','lotus','cerveza','pan','oreo'];
+        const FOOD_ORDER = ['apple','cereza','pera','platano','pina','naranja','kiwi','aguacate','fresa','sandia','cafe','batidoFresa','soda','zumoNaranja','batidoChocolate','chocolateCaliente','cerveza','vinoBlanco','vinoTinto','kebap','burrito','patatas','polloFrito','salchicha','huevoFrito','croqueta','hamburguesa','pizza','hotDog','lasana','sushi','caramelo','ensaimada','muffin','croissant','macarrons','heladoFresa','tartaFresa','palomitas','algodonAzucar','tortitas','helado','tartaFantasia','gofre','donutsGlaseado','huevoYoshi','espadaLaser','cuernoUnicornio','cartuchoRetro','setaMario','guanteInfinito','gorroMagico','bolaDragon'];
         const FOOD_DISPLAY_NAMES = {
             apple: 'Manzana',
-            croqueta: 'Croqueta',
+            cereza: 'Cereza',
+            pera: 'Pera',
+            platano: 'Plátano',
+            pina: 'Piña',
+            naranja: 'Naranja',
+            kiwi: 'Kiwi',
             aguacate: 'Aguacate',
-            sushi: 'Sushi',
-            lotus: 'Lotus',
+            fresa: 'Fresa',
+            sandia: 'Sandía',
+            cafe: 'Café',
+            batidoFresa: 'Batido de fresa',
+            soda: 'Soda',
+            zumoNaranja: 'Zumo de naranja',
+            batidoChocolate: 'Batido chocolate',
+            chocolateCaliente: 'Chocolate caliente',
             cerveza: 'Cerveza',
-            pan: 'Pan',
-            oreo: 'Oreo'
+            vinoBlanco: 'Vino blanco',
+            vinoTinto: 'Vino tinto',
+            kebap: 'Kebap',
+            burrito: 'Burrito',
+            patatas: 'Patatas',
+            polloFrito: 'Pollo frito',
+            salchicha: 'Salchicha',
+            huevoFrito: 'Huevo frito',
+            croqueta: 'Croqueta',
+            hamburguesa: 'Hamburguesa',
+            pizza: 'Pizza',
+            hotDog: 'HotDog',
+            lasana: 'Lasaña',
+            sushi: 'Sushi',
+            caramelo: 'Caramelo',
+            ensaimada: 'Ensaimada',
+            muffin: 'Muffin',
+            croissant: 'Croissant',
+            macarrons: 'Macarrons',
+            heladoFresa: 'Helado de fresa',
+            tartaFresa: 'Tarta de fresa',
+            palomitas: 'Palomitas',
+            algodonAzucar: 'Algodón de azúcar',
+            tortitas: 'Tortitas',
+            helado: 'Helado',
+            tartaFantasia: 'Tarta fantasía',
+            gofre: 'Gofre',
+            donutsGlaseado: 'Donuts Glaseado',
+            huevoYoshi: 'Huevo Yoshi',
+            espadaLaser: 'Espada Láser',
+            cuernoUnicornio: 'Cuerno de unicornio',
+            cartuchoRetro: 'Cartucho retro',
+            setaMario: 'Seta Mario',
+            guanteInfinito: 'Guante del infinito',
+            gorroMagico: 'Gorro mágico',
+            bolaDragon: 'Bola de dragón'
         };
         let unlockedFoods = { apple: true };
         let currentFood = 'apple';
@@ -4261,7 +4365,7 @@ function setupSlider(slider, display) {
         function loadSkinImages() {
             classicSnakeHeadLeftImg.src = 'https://i.imgur.com/x3Wrabg.png';
             classicSnakeHeadDownImg.src = 'https://i.imgur.com/lapIn2F.png';
-            classicFoodImg.src = 'https://i.imgur.com/Rrvl9Fj.png'; 
+            classicFoodImg.src = 'https://i.imgur.com/fOSSwUX.png';
             snakeBodyTexture.src = 'https://i.imgur.com/qWefd22.png'; 
 
             rubiSnakeHeadUpDownImg.src = 'https://i.imgur.com/XQzDVMk.png';
@@ -4288,7 +4392,9 @@ function setupSlider(slider, display) {
             mimiSnakeHeadLeftImg.src = 'https://i.imgur.com/GjJrvUA.png';
             mimiSnakeFoodImg.src = 'https://i.imgur.com/kgOjgCI.png';
 
-            oreoFoodImg.src = 'https://i.imgur.com/Yv5ioX3.png';
+            Object.values(FOODS).forEach(food => {
+                if (food.url) food.asset.src = food.url;
+            });
             obstacleImg.src = 'https://i.imgur.com/wk1u29m.png';
             lightningYellowImg.src = 'https://i.imgur.com/AJL2p3j.png';
             lightningRedImg.src = 'https://i.imgur.com/4sNOTpi.png';
@@ -4301,7 +4407,8 @@ function setupSlider(slider, display) {
                 maraSnakeHeadUpDownImg, maraSnakeHeadLeftImg, maraSnakeFoodImg,
                 almuSnakeHeadUpDownImg, almuSnakeHeadLeftImg, almuSnakeFoodImg,
                 mimiSnakeHeadUpDownImg, mimiSnakeHeadLeftImg, mimiSnakeFoodImg,
-                oreoFoodImg, obstacleImg, lightningYellowImg, lightningRedImg
+                obstacleImg, lightningYellowImg, lightningRedImg,
+                ...Object.values(FOODS).map(f => f.asset)
             ];
 
             allImageObjects.forEach(imgObj => {
@@ -4393,6 +4500,10 @@ function setupSlider(slider, display) {
             if (resetConfirmPanel && !resetConfirmPanel.classList.contains("reset-panel-hidden")) {
                 positionPanel(resetConfirmPanel);
                 applyScrollbarPadding(resetConfirmPanelContent);
+            }
+            if (storePanel && !storePanel.classList.contains("store-panel-hidden")) {
+                positionPanel(storePanel);
+                applyScrollbarPadding(storePanel.querySelector('.panel-content'));
             }
 
 
@@ -5136,7 +5247,7 @@ function setupSlider(slider, display) {
                     status.textContent = '';
                     item.classList.add('purchased');
                 } else {
-                    status.textContent = '10';
+                    status.textContent = FOODS[key].price.toString();
                     item.classList.add('locked');
                     item.addEventListener('click', () => openPurchaseConfirm(key));
                     addIconPressEvents(item, item);
@@ -5157,7 +5268,7 @@ function setupSlider(slider, display) {
                 img.src = FOODS[key]?.asset?.src || '';
                 purchaseItemPreview.appendChild(img);
             }
-            if (purchaseConfirmationText) purchaseConfirmationText.innerHTML = `¿Comprar ${FOOD_DISPLAY_NAMES[key]} por <strong>10</strong> monedas?`;
+            if (purchaseConfirmationText) purchaseConfirmationText.innerHTML = `¿Comprar ${FOOD_DISPLAY_NAMES[key]} por <strong>${FOODS[key].price}</strong> monedas?`;
             purchaseConfirmationPanel.classList.add('centered-panel');
             togglePanel(purchaseConfirmationPanel, purchaseConfirmationPanel.querySelector('.panel-content'), true);
             if (modalOverlay) modalOverlay.classList.remove('hidden');
@@ -5165,8 +5276,9 @@ function setupSlider(slider, display) {
 
         function confirmPurchase() {
             if (!foodToPurchase) { closePurchaseConfirm(); return; }
-            if (totalCoins >= 10) {
-                totalCoins -= 10;
+            const price = FOODS[foodToPurchase].price;
+            if (totalCoins >= price) {
+                totalCoins -= price;
                 unlockedFoods[foodToPurchase] = true;
                 saveUnlockedFoods();
                 localStorage.setItem('snakeGameCoins', totalCoins.toString());
@@ -9480,6 +9592,7 @@ async function startGame(isRestart = false) {
             const savedCoins = parseInt(localStorage.getItem('snakeGameCoins'), 10);
             totalCoins = Number.isFinite(savedCoins) && savedCoins >= 0 ? savedCoins : 0;
             loadUnlockedFoods(); // Load foods before applying profile
+            updateFoodSelectorOptions(playerProfiles[currentPlayerName]?.food || 'apple');
             updatePlayerNameSelectors(currentPlayerName);
             applyProfile(playerProfiles[currentPlayerName]);
             updateSfxVolume();
