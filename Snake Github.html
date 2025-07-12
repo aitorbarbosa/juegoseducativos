@@ -3263,6 +3263,7 @@ function setupSlider(slider, display) {
         const classicSnakeHeadDownImg = new Image();
         const classicFoodImg = new Image();
         const snakeBodyTexture = new Image();
+        const snakeBodyTextureVertical = new Image();
         const snakeTailTexture = new Image();
 
         const rubiSnakeHeadUpDownImg = new Image();
@@ -3662,9 +3663,9 @@ function setupSlider(slider, display) {
                     left: classicSnakeHeadLeftImg   
                 }, 
                 foodAsset: classicFoodImg, 
-                snakeHeadScale: 2.0, 
+                snakeHeadScale: 1.7,
                 foodScale: 1.5,
-                bodyTintColor: '#90ff00',
+                bodyTintColor: null,
                 bodyStrokeColor: adjustColor('#90ff00', 0.30), 
             },
             rubiSnake: {
@@ -3673,9 +3674,9 @@ function setupSlider(slider, display) {
                     left: rubiSnakeHeadLeftImg, 
                 },
                 foodAsset: rubiSnakeFoodImg,
-                snakeHeadScale: 2.0, 
+                snakeHeadScale: 1.7,
                 foodScale: 1.5,
-                bodyTintColor: '#E74C3C',
+                bodyTintColor: null,
                 bodyStrokeColor: adjustColor('#E74C3C', 0.30), 
             },
             aitorSnake: { 
@@ -3684,9 +3685,9 @@ function setupSlider(slider, display) {
                     left: aitorSnakeHeadLeftImg,
                 },
                 foodAsset: aitorSnakeFoodImg,
-                snakeHeadScale: 2.0, 
+                snakeHeadScale: 1.7,
                 foodScale: 1.5,
-                bodyTintColor: '#772CE8', 
+                bodyTintColor: null,
                 bodyStrokeColor: adjustColor('#772CE8', 0.30), 
             },
             noemiSnake: { 
@@ -3695,9 +3696,9 @@ function setupSlider(slider, display) {
                     left: noemiSnakeHeadLeftImg,
                 },
                 foodAsset: noemiSnakeFoodImg,
-                snakeHeadScale: 2.0, 
+                snakeHeadScale: 1.7,
                 foodScale: 1.5,
-                bodyTintColor: '#FFC0EB', 
+                bodyTintColor: null,
                 bodyStrokeColor: adjustColor('#FFC0EB', 0.30), 
             },
             maraSnake: {
@@ -3706,9 +3707,9 @@ function setupSlider(slider, display) {
                     left: maraSnakeHeadLeftImg,
                 },
                 foodAsset: maraSnakeFoodImg,
-                snakeHeadScale: 2.0,
+                snakeHeadScale: 1.7,
                 foodScale: 1.5,
-                bodyTintColor: '#FCE9BC',
+                bodyTintColor: null,
                 bodyStrokeColor: adjustColor('#FCE9BC', 0.30),
             },
             almuSnake: { 
@@ -3717,9 +3718,9 @@ function setupSlider(slider, display) {
                     left: almuSnakeHeadLeftImg,
                 },
                 foodAsset: almuSnakeFoodImg,
-                snakeHeadScale: 2.0,
+                snakeHeadScale: 1.7,
                 foodScale: 1.5,
-                bodyTintColor: '#C96B20',
+                bodyTintColor: null,
                 bodyStrokeColor: adjustColor('#C96B20', 0.30),
             },
             mimiSnake: { 
@@ -3728,9 +3729,9 @@ function setupSlider(slider, display) {
                     left: mimiSnakeHeadLeftImg,
                 },
                 foodAsset: mimiSnakeFoodImg,
-                snakeHeadScale: 2.0,
+                snakeHeadScale: 1.7,
                 foodScale: 1.5,
-                bodyTintColor: '#FFFFFF',
+                bodyTintColor: null,
                 bodyStrokeColor: adjustColor('#FFFFFF', 0.30),
             }
         };
@@ -4410,11 +4411,12 @@ function setupSlider(slider, display) {
         }
 
         function loadSkinImages() {
-            classicSnakeHeadLeftImg.src = 'https://i.imgur.com/7bMXkcb.png';
+            classicSnakeHeadLeftImg.src = 'https://i.imgur.com/iLzf6B7.png';
             classicSnakeHeadDownImg.src = 'https://i.imgur.com/7bMXkcb.png';
             classicFoodImg.src = 'https://i.imgur.com/fOSSwUX.png';
-            snakeBodyTexture.src = 'https://i.imgur.com/uJQ5TXv.png';
-            snakeTailTexture.src = 'https://i.imgur.com/DFw5YoI.png';
+            snakeBodyTexture.src = 'https://i.imgur.com/WwFEhcO.png';
+            snakeBodyTextureVertical.src = 'https://i.imgur.com/B2RNULt.png';
+            snakeTailTexture.src = 'https://i.imgur.com/avjad8V.png';
 
             rubiSnakeHeadUpDownImg.src = 'https://i.imgur.com/XQzDVMk.png';
             rubiSnakeHeadLeftImg.src = 'https://i.imgur.com/XQzDVMk.png'; 
@@ -4447,8 +4449,8 @@ function setupSlider(slider, display) {
             lightningYellowImg.src = 'https://i.imgur.com/AJL2p3j.png';
             lightningRedImg.src = 'https://i.imgur.com/4sNOTpi.png';
             
-            const allImageObjects = [
-                classicSnakeHeadLeftImg, classicSnakeHeadDownImg, classicFoodImg, snakeBodyTexture, snakeTailTexture,
+                const allImageObjects = [
+                    classicSnakeHeadLeftImg, classicSnakeHeadDownImg, classicFoodImg, snakeBodyTexture, snakeBodyTextureVertical, snakeTailTexture,
                 rubiSnakeHeadUpDownImg, rubiSnakeHeadLeftImg, rubiSnakeFoodImg,
                 aitorSnakeHeadUpDownImg, aitorSnakeHeadLeftImg, aitorSnakeFoodImg,
                 noemiSnakeHeadUpDownImg, noemiSnakeHeadLeftImg, noemiSnakeFoodImg,
@@ -7374,35 +7376,60 @@ function setupSlider(slider, display) {
                     const segmentY = snake[i].y * GRID_SIZE;
                     const skinData = SKINS[currentSkin];
                     const isTail = i === snake.length - 1;
-                    const texture = isTail ? snakeTailTexture : snakeBodyTexture;
+                    let texture = isTail ? snakeTailTexture : snakeBodyTexture;
 
                     if (texture && texture.complete && texture.naturalHeight !== 0) {
-                        ctx.drawImage(texture, segmentX, segmentY, GRID_SIZE - 1, GRID_SIZE - 1);
+                        const prev = snake[i - 1];
+                        const dx = prev.x - snake[i].x;
+                        const dy = prev.y - snake[i].y;
+                        ctx.save();
+                        ctx.translate(segmentX + GRID_SIZE / 2, segmentY + GRID_SIZE / 2);
+                        let rotation = 0;
+                        let scaleX = 1;
+                        if (isTail) {
+                            if (dx === 1 && dy === 0) {
+                                scaleX = -1;
+                            } else if (dx === 0 && dy === -1) {
+                                rotation = Math.PI / 2;
+                            } else if (dx === 0 && dy === 1) {
+                                rotation = -Math.PI / 2;
+                            }
+                        } else {
+                            if (dx === 1 && dy === 0) {
+                                scaleX = -1;
+                            } else if (dx === 0 && Math.abs(dy) === 1) {
+                                texture = snakeBodyTextureVertical;
+                            }
+                        }
+                        ctx.rotate(rotation);
+                        ctx.scale(scaleX, 1);
+                        ctx.drawImage(texture, -GRID_SIZE / 2, -GRID_SIZE / 2, GRID_SIZE, GRID_SIZE);
                         if (skinData.bodyTintColor) {
                             ctx.globalCompositeOperation = 'multiply';
                             ctx.fillStyle = skinData.bodyTintColor;
-                            ctx.fillRect(segmentX, segmentY, GRID_SIZE - 1, GRID_SIZE - 1);
+                            ctx.fillRect(-GRID_SIZE / 2, -GRID_SIZE / 2, GRID_SIZE, GRID_SIZE);
                             ctx.globalCompositeOperation = 'source-over';
                         }
                         if (speedBoostVisible) {
-                            drawImageWithTint(ctx, texture, segmentX, segmentY, GRID_SIZE - 1, GRID_SIZE - 1, speedBoostOverlayColor);
+                            drawImageWithTint(ctx, texture, -GRID_SIZE / 2, -GRID_SIZE / 2, GRID_SIZE, GRID_SIZE, speedBoostOverlayColor);
                         }
                         if (mirrorVisible) {
-                            drawImageWithTint(ctx, texture, segmentX, segmentY, GRID_SIZE - 1, GRID_SIZE - 1, mirrorOverlayColor);
+                            drawImageWithTint(ctx, texture, -GRID_SIZE / 2, -GRID_SIZE / 2, GRID_SIZE, GRID_SIZE, mirrorOverlayColor);
                         }
+                        ctx.restore();
                     } else {
                         ctx.fillStyle = skinData.bodyTintColor || '#A8F031';
-                        ctx.fillRect(segmentX, segmentY, GRID_SIZE - 1, GRID_SIZE - 1);
+                        ctx.fillRect(segmentX, segmentY, GRID_SIZE, GRID_SIZE);
                         if (speedBoostVisible) {
                             ctx.globalCompositeOperation = 'multiply';
                             ctx.fillStyle = speedBoostOverlayColor;
-                            ctx.fillRect(segmentX, segmentY, GRID_SIZE - 1, GRID_SIZE - 1);
+                            ctx.fillRect(segmentX, segmentY, GRID_SIZE, GRID_SIZE);
                             ctx.globalCompositeOperation = 'source-over';
                         }
                         if (mirrorVisible) {
                             ctx.globalCompositeOperation = 'multiply';
                             ctx.fillStyle = mirrorOverlayColor;
-                            ctx.fillRect(segmentX, segmentY, GRID_SIZE - 1, GRID_SIZE - 1);
+                            ctx.fillRect(segmentX, segmentY, GRID_SIZE, GRID_SIZE);
                             ctx.globalCompositeOperation = 'source-over';
                         }
                     }
@@ -7459,33 +7486,33 @@ function setupSlider(slider, display) {
                             ctx.restore();
                         } else {
                             ctx.fillStyle = "#a7f3d0";
-                            ctx.fillRect(head.x * GRID_SIZE, head.y * GRID_SIZE, GRID_SIZE - 1, GRID_SIZE - 1);
+                            ctx.fillRect(head.x * GRID_SIZE, head.y * GRID_SIZE, GRID_SIZE, GRID_SIZE);
                             if (speedBoostVisible) {
                                 ctx.globalCompositeOperation = 'multiply';
                                 ctx.fillStyle = speedBoostOverlayColor;
-                                ctx.fillRect(head.x * GRID_SIZE, head.y * GRID_SIZE, GRID_SIZE -1, GRID_SIZE -1);
+                                ctx.fillRect(head.x * GRID_SIZE, head.y * GRID_SIZE, GRID_SIZE, GRID_SIZE);
                                 ctx.globalCompositeOperation = 'source-over';
                             }
                             if (mirrorVisible) {
                                 ctx.globalCompositeOperation = 'multiply';
                                 ctx.fillStyle = mirrorOverlayColor;
-                                ctx.fillRect(head.x * GRID_SIZE, head.y * GRID_SIZE, GRID_SIZE -1, GRID_SIZE -1);
+                                ctx.fillRect(head.x * GRID_SIZE, head.y * GRID_SIZE, GRID_SIZE, GRID_SIZE);
                                 ctx.globalCompositeOperation = 'source-over';
                             }
                         }
                     } else {
                         ctx.fillStyle = "#a7f3d0";
-                        ctx.fillRect(head.x * GRID_SIZE, head.y * GRID_SIZE, GRID_SIZE - 1, GRID_SIZE - 1);
+                        ctx.fillRect(head.x * GRID_SIZE, head.y * GRID_SIZE, GRID_SIZE, GRID_SIZE);
                         if (speedBoostVisible) {
                             ctx.globalCompositeOperation = 'multiply';
                             ctx.fillStyle = speedBoostOverlayColor;
-                            ctx.fillRect(head.x * GRID_SIZE, head.y * GRID_SIZE, GRID_SIZE -1, GRID_SIZE -1);
+                            ctx.fillRect(head.x * GRID_SIZE, head.y * GRID_SIZE, GRID_SIZE, GRID_SIZE);
                             ctx.globalCompositeOperation = 'source-over';
                         }
                         if (mirrorVisible) {
                             ctx.globalCompositeOperation = 'multiply';
                             ctx.fillStyle = mirrorOverlayColor;
-                            ctx.fillRect(head.x * GRID_SIZE, head.y * GRID_SIZE, GRID_SIZE -1, GRID_SIZE -1);
+                            ctx.fillRect(head.x * GRID_SIZE, head.y * GRID_SIZE, GRID_SIZE, GRID_SIZE);
                             ctx.globalCompositeOperation = 'source-over';
                         }
                     }
