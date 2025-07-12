@@ -2813,6 +2813,7 @@
         const earnedCoinsMessage = document.getElementById("earnedCoinsMessage");
         const scoreValueDisplay = document.getElementById("scoreValue");
         const livesValueDisplay = document.getElementById("livesValue");
+        const pointsInfoIcon = document.querySelector('#points-info-group .info-icon');
         const selectorLivesValueDisplay = document.getElementById("selectorLivesValue");
         const lifeTimerValueDisplay = document.getElementById("lifeTimerValue");
         const selectorLifeTimerValueDisplay = document.getElementById("selectorLifeTimerValue");
@@ -7717,8 +7718,28 @@ function setupSlider(slider, display) {
                 updateLivesDisplay();
                 updateLifeTimerDisplay();
             } else {
-                if (scoreValueDisplay) scoreValueDisplay.classList.remove('hidden');
-                if (targetScoreDivider && targetScoreValueDisplay) updateTargetScoreDisplay();
+                if (gameMode === 'freeMode') {
+                    if (pointsInfoIcon) {
+                        pointsInfoIcon.src = 'https://i.imgur.com/QGcJpte.png';
+                        pointsInfoIcon.alt = 'Vidas';
+                    }
+                    if (scoreValueDisplay) scoreValueDisplay.classList.add('hidden');
+                    if (livesValueDisplay) livesValueDisplay.classList.remove('hidden');
+                    if (lifeTimerValueDisplay) lifeTimerValueDisplay.classList.remove('hidden');
+                    updateLivesDisplay();
+                    updateLifeTimerDisplay();
+                    if (targetScoreDivider) targetScoreDivider.classList.add('hidden');
+                    if (targetScoreValueDisplay) targetScoreValueDisplay.classList.add('hidden');
+                } else {
+                    if (pointsInfoIcon) {
+                        pointsInfoIcon.src = 'https://i.imgur.com/GLYt7PU.png';
+                        pointsInfoIcon.alt = 'Puntos';
+                    }
+                    if (scoreValueDisplay) scoreValueDisplay.classList.remove('hidden');
+                    if (livesValueDisplay) livesValueDisplay.classList.add('hidden');
+                    if (lifeTimerValueDisplay) lifeTimerValueDisplay.classList.add('hidden');
+                    if (targetScoreDivider && targetScoreValueDisplay) updateTargetScoreDisplay();
+                }
             }
 
             const isGameCurrentlyRunning = !!gameIntervalId;
