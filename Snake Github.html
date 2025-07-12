@@ -2400,15 +2400,19 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            background-color: rgba(0, 0, 0, 0.8);
-            color: #ffffff;
             padding: 8px 12px;
-            border-radius: 8px;
             font-size: 0.85em;
+            color: #ffffff;
             pointer-events: none;
             z-index: 2205;
             opacity: 0;
             transition: opacity 0.3s ease;
+
+            /* Visual style similar to the progress stars box */
+            background-color: #422E58;
+            border: 2px solid #2B1D3A;
+            border-radius: 10px;
+            box-shadow: 0 2px 0 #422E58;
         }
 
         #insufficient-funds-toast.show {
