@@ -1436,20 +1436,50 @@
             transform: translateX(-50%) scale(0.95);
             background-color: #1F2937;
             padding: 15px;
-            border-radius: 12px;
-            box-shadow:
-                inset 0 0 0 4px #8f66af,
-                inset 0 4px 6px #D6BCE9,
-                0 2px 0 #422E58;
+            border-radius: 10px;
+            box-shadow: 0 2px 0 #422E58;
             z-index: 2100;
             width: 100%;
             max-width: var(--game-max-width);
             display: flex;
             flex-direction: column;
             gap: 10px;
-            border: 2px solid #2d1d3a;
+            border: 2px solid #2B1D3A;
+            box-sizing: border-box;
             opacity: 0;
             transition: opacity 0.3s ease-out, transform 0.3s ease-out;
+        }
+
+        #settings-panel::before, #info-panel::before, #specific-info-panel::before, #free-settings-panel::before, #reset-confirmation-panel::before, #config-menu-panel::before, #generic-menu-panel::before, #store-panel::before, #purchase-confirmation-panel::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                #D3BAE8 0%,
+                #D3BAE8 50%,
+                #583F7D 50%,
+                #583F7D 100%
+            );
+            border-radius: 10px;
+            pointer-events: none;
+            z-index: -2;
+        }
+
+        #settings-panel::after, #info-panel::after, #specific-info-panel::after, #free-settings-panel::after, #reset-confirmation-panel::after, #config-menu-panel::after, #generic-menu-panel::after, #store-panel::after, #purchase-confirmation-panel::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            width: 100%;
+            height: 90%;
+            background-color: #8C64AF;
+            border-radius: 10px;
+            transform: translateY(-50%);
+            pointer-events: none;
+            z-index: -1;
         }
 
 .panel-content {
