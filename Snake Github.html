@@ -3259,10 +3259,11 @@ function setupSlider(slider, display) {
 
 
         // --- INICIO: Declaración de Objetos Image ---
-        const classicSnakeHeadLeftImg = new Image(); 
-        const classicSnakeHeadDownImg = new Image(); 
+        const classicSnakeHeadLeftImg = new Image();
+        const classicSnakeHeadDownImg = new Image();
         const classicFoodImg = new Image();
-        const snakeBodyTexture = new Image(); 
+        const snakeBodyTexture = new Image();
+        const snakeTailTexture = new Image();
 
         const rubiSnakeHeadUpDownImg = new Image();
         const rubiSnakeHeadLeftImg = new Image();
@@ -4409,10 +4410,11 @@ function setupSlider(slider, display) {
         }
 
         function loadSkinImages() {
-            classicSnakeHeadLeftImg.src = 'https://i.imgur.com/x3Wrabg.png';
-            classicSnakeHeadDownImg.src = 'https://i.imgur.com/lapIn2F.png';
+            classicSnakeHeadLeftImg.src = 'https://i.imgur.com/7bMXkcb.png';
+            classicSnakeHeadDownImg.src = 'https://i.imgur.com/7bMXkcb.png';
             classicFoodImg.src = 'https://i.imgur.com/fOSSwUX.png';
-            snakeBodyTexture.src = 'https://i.imgur.com/qWefd22.png'; 
+            snakeBodyTexture.src = 'https://i.imgur.com/uJQ5TXv.png';
+            snakeTailTexture.src = 'https://i.imgur.com/DFw5YoI.png';
 
             rubiSnakeHeadUpDownImg.src = 'https://i.imgur.com/XQzDVMk.png';
             rubiSnakeHeadLeftImg.src = 'https://i.imgur.com/XQzDVMk.png'; 
@@ -4445,8 +4447,8 @@ function setupSlider(slider, display) {
             lightningYellowImg.src = 'https://i.imgur.com/AJL2p3j.png';
             lightningRedImg.src = 'https://i.imgur.com/4sNOTpi.png';
             
-            const allImageObjects = [ 
-                classicSnakeHeadLeftImg, classicSnakeHeadDownImg, classicFoodImg, snakeBodyTexture,
+            const allImageObjects = [
+                classicSnakeHeadLeftImg, classicSnakeHeadDownImg, classicFoodImg, snakeBodyTexture, snakeTailTexture,
                 rubiSnakeHeadUpDownImg, rubiSnakeHeadLeftImg, rubiSnakeFoodImg,
                 aitorSnakeHeadUpDownImg, aitorSnakeHeadLeftImg, aitorSnakeFoodImg,
                 noemiSnakeHeadUpDownImg, noemiSnakeHeadLeftImg, noemiSnakeFoodImg,
@@ -7370,10 +7372,12 @@ function setupSlider(slider, display) {
                 for (let i = 1; i < snake.length; i++) {
                     const segmentX = snake[i].x * GRID_SIZE;
                     const segmentY = snake[i].y * GRID_SIZE;
-                    const skinData = SKINS[currentSkin]; 
+                    const skinData = SKINS[currentSkin];
+                    const isTail = i === snake.length - 1;
+                    const texture = isTail ? snakeTailTexture : snakeBodyTexture;
 
-                    if (snakeBodyTexture && snakeBodyTexture.complete && snakeBodyTexture.naturalHeight !== 0) {
-                        ctx.drawImage(snakeBodyTexture, segmentX, segmentY, GRID_SIZE - 1, GRID_SIZE - 1);
+                    if (texture && texture.complete && texture.naturalHeight !== 0) {
+                        ctx.drawImage(texture, segmentX, segmentY, GRID_SIZE - 1, GRID_SIZE - 1);
                         if (skinData.bodyTintColor) {
                             ctx.globalCompositeOperation = 'multiply';
                             ctx.fillStyle = skinData.bodyTintColor;
@@ -7381,10 +7385,10 @@ function setupSlider(slider, display) {
                             ctx.globalCompositeOperation = 'source-over';
                         }
                         if (speedBoostVisible) {
-                            drawImageWithTint(ctx, snakeBodyTexture, segmentX, segmentY, GRID_SIZE - 1, GRID_SIZE - 1, speedBoostOverlayColor);
+                            drawImageWithTint(ctx, texture, segmentX, segmentY, GRID_SIZE - 1, GRID_SIZE - 1, speedBoostOverlayColor);
                         }
                         if (mirrorVisible) {
-                            drawImageWithTint(ctx, snakeBodyTexture, segmentX, segmentY, GRID_SIZE - 1, GRID_SIZE - 1, mirrorOverlayColor);
+                            drawImageWithTint(ctx, texture, segmentX, segmentY, GRID_SIZE - 1, GRID_SIZE - 1, mirrorOverlayColor);
                         }
                     } else {
                         ctx.fillStyle = skinData.bodyTintColor || '#A8F031';
@@ -7401,11 +7405,6 @@ function setupSlider(slider, display) {
                             ctx.fillRect(segmentX, segmentY, GRID_SIZE - 1, GRID_SIZE - 1);
                             ctx.globalCompositeOperation = 'source-over';
                         }
-                    }
-                    if (skinData.bodyStrokeColor) {
-                        ctx.strokeStyle = skinData.bodyStrokeColor;
-                        ctx.lineWidth = 1; 
-                        ctx.strokeRect(segmentX, segmentY, GRID_SIZE - 1, GRID_SIZE - 1);
                     }
                 }
 
@@ -7477,8 +7476,6 @@ function setupSlider(slider, display) {
                     } else {
                         ctx.fillStyle = "#a7f3d0";
                         ctx.fillRect(head.x * GRID_SIZE, head.y * GRID_SIZE, GRID_SIZE - 1, GRID_SIZE - 1);
-                        ctx.strokeStyle = "#065f46";
-                        ctx.strokeRect(head.x * GRID_SIZE, head.y * GRID_SIZE, GRID_SIZE -1, GRID_SIZE -1);
                         if (speedBoostVisible) {
                             ctx.globalCompositeOperation = 'multiply';
                             ctx.fillStyle = speedBoostOverlayColor;
