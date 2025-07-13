@@ -372,7 +372,7 @@
             justify-content: center;
             align-items: center;
             padding: 8px 10px;
-            min-height: 55px;
+            min-height: 48px;
             width: 100%;
             margin: 0 auto 5px auto;
             position: relative;
@@ -387,20 +387,20 @@
             text-overflow: ellipsis;
         }
         #title-image {
-            max-height: 45px;
+            max-height: 40px;
             width: auto;
             max-width: 90%;
         }
 
         #main-info-title img,
         #specific-info-title img {
-            max-height: 45px;
+            max-height: 40px;
             width: auto;
             max-width: 90%;
         }
 
 #settings-title img {
-    max-height: 45px;
+    max-height: 40px;
     width: auto;
     max-width: 90%;
 }
@@ -1804,7 +1804,7 @@
                 margin-left: 0;
             }
           
-            #title-panel { min-height: 50px; padding: 6px; }
+            #title-panel { min-height: 30px; padding: 6px; }
 
             #current-world-info-group { min-height: 30px; padding: 1px 4px 1px 14px; min-width: 70px; cursor: pointer;}
             #current-world-info-group .info-label { font-size: 0.6em; }
@@ -1891,7 +1891,7 @@
             #info-panel-content h4, #specific-info-content h4 { font-size: 0.95em; }
             #info-panel-content p, #info-panel-content ul, #specific-info-content p, #specific-info-content ul { font-size: 0.75em; }
         }
-         @media screen and (max-width: 400px) { 
+        @media screen and (max-width: 400px) {
             /* --- INICIO DE MEDIA QUERY CORREGIDA PARA #high-score-display --- */
             /* Tampoco necesitamos tocar el font-size del contenedor */
 
@@ -1919,6 +1919,8 @@
             #earnedCoinsMessage.hide {
                 transform: translateX(-60px) translateY(-40%);
             }
+
+            #title-panel { min-height: 34px; padding: 6px; }
 
 
              #top-info-bar .info-label { font-size: 0.55em; }
