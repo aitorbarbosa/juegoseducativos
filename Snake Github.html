@@ -494,7 +494,7 @@
             justify-content: center;
             align-items: center;
             padding: 8px 10px;
-            min-height: 55px;
+            min-height: 48px;
             box-sizing: border-box;
             text-align: center;
         }
@@ -577,7 +577,6 @@
             display: grid;
             grid-template-columns: repeat(5, auto);
             gap: 25px;
-            padding: 0;
             justify-items: center;
             align-items: center;
             width: max-content;
@@ -628,6 +627,17 @@
             font-size: 0.55em;
             color: #FFD700;
             font-family: 'Press Start 2P', sans-serif;
+        }
+        #high-score-display .value-box {
+            background-color: #422E58;
+            border-radius: 8px;
+            padding: 6px 8px 6px 22px;
+            width: 100%;
+            text-align: center;
+            min-height: 48px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
         #hs-values-container {
             display: flex;
@@ -1755,6 +1765,10 @@
             #high-score-display .hs-label-unit { font-size: 0.45rem; }
             #high-score-display .hs-separator { font-size: 0.55rem; }
             #high-score-display #hs-skin-value.hs-value { max-width: 85px; }
+            #high-score-display .value-box {
+                padding: 1px 6px 1px 14px;
+                min-height: 32px;
+            }
             /* --- FIN DE MEDIA QUERY CORREGIDA PARA #high-score-display --- */
 
             /* Ajustes para mensaje de monedas ganadas en móviles */
@@ -1801,7 +1815,7 @@
             #current-world-info-group .info-label { font-size: 0.6em; }
             #current-world-info-group .info-value { font-size: 0.8em; }
             #progress-panel.classification-mode #current-world-info-group .info-value { font-size: 0.7em; }
-            #star-progress-wrapper { min-height: 36px; padding: 2px 4px; }
+            #star-progress-wrapper { min-height: 30px; padding: 2px 4px; }
             #star-progress-wrapper .value-box {
                 padding: 2px 4px;
                 min-height: 32px;
@@ -1891,6 +1905,10 @@
             #high-score-display .hs-label-unit { font-size: 0.4rem; }
             #high-score-display .hs-separator { font-size: 0.45rem; }
             #high-score-display #hs-skin-value.hs-value { max-width: 70px; }
+            #high-score-display .value-box {
+                padding: 2px 5px 2px 20px;
+                min-height: 34px;
+            }
             /* --- FIN DE MEDIA QUERY CORREGIDA PARA #high-score-display --- */
 
             /* Ajustes para mensaje de monedas ganadas en móviles extra-pequeños */
@@ -1931,7 +1949,7 @@
             #current-world-info-group .info-value { font-size: 0.7em; }
             #progress-panel.classification-mode #current-world-info-group .info-value { font-size: 0.6em; }
             #current-world-info-group { min-width: 60px; min-height: 34px; padding: 2px 4px 2px 20px; cursor: pointer;}
-            #star-progress-wrapper { min-height: 40px; padding: 3px 4px; }
+            #star-progress-wrapper { min-height: 34px; padding: 3px 4px; }
             #star-progress-wrapper .value-box {
                 padding: 3px 4px;
                 min-height: 34px;
@@ -2511,14 +2529,14 @@
                 </div>
             </div>
             <div id="star-progress-wrapper" class="panel-card">
-                <div class="value-box">
-                    <div id="star-progress-container" class="hidden">
+                <div id="star-progress-container" class="value-box hidden">
+                </div>
+                <div id="high-score-display" class="info-group hidden">
+                    <div class="info-icon-wrapper">
+                        <img src="https://i.imgur.com/COqXj9s.png" alt="Puntos" class="info-icon">
+                        <span id="hs-max-label" class="max-label">MAX</span>
                     </div>
-                    <div id="high-score-display" class="info-group hidden">
-                        <div class="info-icon-wrapper">
-                            <img src="https://i.imgur.com/COqXj9s.png" alt="Puntos" class="info-icon">
-                            <span id="hs-max-label" class="max-label">MAX</span>
-                        </div>
+                    <div class="value-box">
                         <div id="hs-values-container">
                             <span id="hs-score-value" class="hs-value">-</span>
                             <span class="hs-label-unit">Puntos</span>
