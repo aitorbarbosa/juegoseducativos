@@ -499,6 +499,11 @@
             text-align: center;
         }
 
+        #progress-panel.classification-mode #star-progress-wrapper,
+        #progress-panel.classification-mode #star-progress-wrapper .value-box {
+            min-height: 48px;
+        }
+
         #star-progress-wrapper .value-box {
             background-color: #422E58;
             border-radius: 8px;
@@ -507,6 +512,18 @@
             display: flex;
             justify-content: center;
             align-items: center;
+        }
+
+        #star-progress-container {
+            display: grid;
+            grid-template-columns: repeat(5, auto);
+            gap: 25px;
+            padding: 0;
+            justify-items: center;
+            align-items: center;
+            width: max-content;
+            max-width: 290px;
+            margin: 0 auto;
         }
 
         #progress-lives-info-group {
@@ -565,17 +582,8 @@
             line-height: 1.3;
         }
 
-        #star-progress-container {
-            display: grid;
-            grid-template-columns: repeat(5, auto);
-            gap: 25px;
-            padding: 0;
-            justify-items: center;
-            align-items: center;
-            width: max-content;
-            max-width: 290px;
-            margin: 0 auto;
-        }
+        /* grid layout for the stars */
+        /* (properties merged above) */
         .progress-star {
             width: 38px;
             height: 38px;
@@ -593,23 +601,23 @@
         /* --- INICIO DE CSS CORREGIDO PARA #high-score-display --- */
         #high-score-display {
             display: flex;
-            flex-direction: column; 
-            align-items: center; 
+            flex-direction: column;
+            align-items: center;
             justify-content: center;
             gap: 2px;
             width: 100%;
             line-height: 1.2;
             /* font-size: 0.85em; <- Eliminado para usar rem en hijos */
         }
-        #high-score-display #hs-main-label { 
+        #high-score-display #hs-main-label {
             font-size: 0.75rem;  /* Cambiado a rem */
-            color: #a0aec0; 
+            color: #a0aec0;
             margin-bottom: 5px;
-            display: block; 
+            display: block;
             line-height: 1.1;
             text-align: center;
         }
-        #hs-values-container { 
+        #hs-values-container {
             display: flex;
             flex-direction: row;
             align-items: baseline;
@@ -1729,8 +1737,7 @@
             /* --- INICIO DE MEDIA QUERY CORREGIDA PARA #high-score-display --- */
             /* Ya no necesitamos reducir el font-size base del contenedor #high-score-display */
             
-            #high-score-display #hs-main-label { font-size: 0.7rem; }
-            #hs-values-container { gap: 3px; } 
+            #hs-values-container { gap: 3px; }
             #high-score-display .hs-value { font-size: 0.7rem; }
             #high-score-display .hs-label-unit { font-size: 0.45rem; }
             #high-score-display .hs-separator { font-size: 0.55rem; }
@@ -1788,6 +1795,10 @@
                 display: flex;
                 justify-content: center;
                 align-items: center;
+            }
+            #progress-panel.classification-mode #star-progress-wrapper,
+            #progress-panel.classification-mode #star-progress-wrapper .value-box {
+                min-height: 30px;
             }
             #progress-lives-info-group .info-group { min-height: 30px; padding: 1px 4px 1px 14px; }
             #progress-lives-info-group .value-box { padding: 1px 6px 1px 14px; }
@@ -1866,7 +1877,6 @@
             /* --- INICIO DE MEDIA QUERY CORREGIDA PARA #high-score-display --- */
             /* Tampoco necesitamos tocar el font-size del contenedor */
 
-            #high-score-display #hs-main-label { font-size: 0.6rem; margin-bottom: 2px;}
             #hs-values-container { gap: 2px; }
             #high-score-display .hs-value { font-size: 0.6rem; }
             #high-score-display .hs-label-unit { font-size: 0.4rem; }
@@ -1919,6 +1929,10 @@
                 display: flex;
                 justify-content: center;
                 align-items: center;
+            }
+            #progress-panel.classification-mode #star-progress-wrapper,
+            #progress-panel.classification-mode #star-progress-wrapper .value-box {
+                min-height: 34px;
             }
             #progress-lives-info-group .info-group { min-height: 34px; padding: 2px 4px 2px 20px; }
             #progress-lives-info-group .value-box { padding: 2px 5px 2px 20px; }
