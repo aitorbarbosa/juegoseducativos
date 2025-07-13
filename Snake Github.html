@@ -592,24 +592,46 @@
 
         /* --- INICIO DE CSS CORREGIDO PARA #high-score-display --- */
         #high-score-display {
+            position: relative;
             display: flex;
-            flex-direction: column; 
-            align-items: center; 
-            justify-content: center;
-            gap: 2px;
+            align-items: center;
+            justify-content: flex-start;
+            border-radius: 8px;
+            padding: 6px 8px 6px 22px;
+            min-width: 90px;
+            min-height: 48px;
+            box-sizing: border-box;
             width: 100%;
-            line-height: 1.2;
-            /* font-size: 0.85em; <- Eliminado para usar rem en hijos */
         }
-        #high-score-display #hs-main-label { 
-            font-size: 0.75rem;  /* Cambiado a rem */
-            color: #a0aec0; 
-            margin-bottom: 5px;
-            display: block; 
-            line-height: 1.1;
+        #high-score-display .value-box {
+            background-color: #422E58;
+            border-radius: 8px;
+            padding: 6px 8px 6px 22px;
+            width: 100%;
             text-align: center;
         }
-        #hs-values-container { 
+        #high-score-display .info-icon-wrapper {
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translate(15%, -50%);
+            width: 40px;
+            height: 40px;
+        }
+        #high-score-display .info-icon-wrapper img {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+        #high-score-display .max-label {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 0.5em;
+            color: #FFFF00;
+        }
+        #hs-values-container {
             display: flex;
             flex-direction: row;
             align-items: baseline;
@@ -1729,8 +1751,7 @@
             /* --- INICIO DE MEDIA QUERY CORREGIDA PARA #high-score-display --- */
             /* Ya no necesitamos reducir el font-size base del contenedor #high-score-display */
             
-            #high-score-display #hs-main-label { font-size: 0.7rem; }
-            #hs-values-container { gap: 3px; } 
+            #hs-values-container { gap: 3px; }
             #high-score-display .hs-value { font-size: 0.7rem; }
             #high-score-display .hs-label-unit { font-size: 0.45rem; }
             #high-score-display .hs-separator { font-size: 0.55rem; }
@@ -1866,7 +1887,6 @@
             /* --- INICIO DE MEDIA QUERY CORREGIDA PARA #high-score-display --- */
             /* Tampoco necesitamos tocar el font-size del contenedor */
 
-            #high-score-display #hs-main-label { font-size: 0.6rem; margin-bottom: 2px;}
             #hs-values-container { gap: 2px; }
             #high-score-display .hs-value { font-size: 0.6rem; }
             #high-score-display .hs-label-unit { font-size: 0.4rem; }
@@ -2495,13 +2515,18 @@
                 <div class="value-box">
                     <div id="star-progress-container" class="hidden">
                     </div>
-                    <div id="high-score-display" class="hidden">
-                        <span id="hs-main-label" class="info-label">Máxima puntuación</span>
-                        <div id="hs-values-container">
-                            <span id="hs-score-value" class="hs-value">-</span>
-                            <span class="hs-label-unit">Puntos</span>
-                            <span class="hs-separator hs-value">|</span>
-                            <span id="hs-skin-value" class="hs-value">-</span>
+                    <div id="high-score-display" class="info-group hidden">
+                        <div class="info-icon-wrapper">
+                            <img src="https://i.imgur.com/COqXj9s.png" alt="Puntos" class="info-icon">
+                            <span id="hs-max-label" class="max-label">MAX</span>
+                        </div>
+                        <div class="value-box">
+                            <div id="hs-values-container">
+                                <span id="hs-score-value" class="hs-value">-</span>
+                                <span class="hs-label-unit">Puntos</span>
+                                <span class="hs-separator hs-value">|</span>
+                                <span id="hs-skin-value" class="hs-value">-</span>
+                            </div>
                         </div>
                     </div>
                 </div>
