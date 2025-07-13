@@ -577,7 +577,6 @@
             display: grid;
             grid-template-columns: repeat(5, auto);
             gap: 25px;
-            padding: 0;
             justify-items: center;
             align-items: center;
             width: max-content;
@@ -628,6 +627,13 @@
             font-size: 0.55em;
             color: #FFD700;
             font-family: 'Press Start 2P', sans-serif;
+        }
+        #high-score-display .value-box {
+            background-color: #422E58;
+            border-radius: 8px;
+            padding: 6px 8px 6px 22px;
+            width: 100%;
+            text-align: center;
         }
         #hs-values-container {
             display: flex;
@@ -1755,6 +1761,7 @@
             #high-score-display .hs-label-unit { font-size: 0.45rem; }
             #high-score-display .hs-separator { font-size: 0.55rem; }
             #high-score-display #hs-skin-value.hs-value { max-width: 85px; }
+            #high-score-display .value-box { padding: 1px 6px 1px 14px; }
             /* --- FIN DE MEDIA QUERY CORREGIDA PARA #high-score-display --- */
 
             /* Ajustes para mensaje de monedas ganadas en móviles */
@@ -1891,6 +1898,7 @@
             #high-score-display .hs-label-unit { font-size: 0.4rem; }
             #high-score-display .hs-separator { font-size: 0.45rem; }
             #high-score-display #hs-skin-value.hs-value { max-width: 70px; }
+            #high-score-display .value-box { padding: 2px 5px 2px 20px; }
             /* --- FIN DE MEDIA QUERY CORREGIDA PARA #high-score-display --- */
 
             /* Ajustes para mensaje de monedas ganadas en móviles extra-pequeños */
@@ -2511,14 +2519,14 @@
                 </div>
             </div>
             <div id="star-progress-wrapper" class="panel-card">
-                <div class="value-box">
-                    <div id="star-progress-container" class="hidden">
+                <div id="star-progress-container" class="value-box hidden">
+                </div>
+                <div id="high-score-display" class="info-group hidden">
+                    <div class="info-icon-wrapper">
+                        <img src="https://i.imgur.com/COqXj9s.png" alt="Puntos" class="info-icon">
+                        <span id="hs-max-label" class="max-label">MAX</span>
                     </div>
-                    <div id="high-score-display" class="info-group hidden">
-                        <div class="info-icon-wrapper">
-                            <img src="https://i.imgur.com/COqXj9s.png" alt="Puntos" class="info-icon">
-                            <span id="hs-max-label" class="max-label">MAX</span>
-                        </div>
+                    <div class="value-box">
                         <div id="hs-values-container">
                             <span id="hs-score-value" class="hs-value">-</span>
                             <span class="hs-label-unit">Puntos</span>
