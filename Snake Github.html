@@ -1792,6 +1792,12 @@
             #selector-info-bar .info-value { font-size: 0.8em; }
             #selector-info-bar .info-icon-wrapper { width: 26px; height: 26px; transform: translate(10%, -50%); }
 
+            /* Reduce ranking table height on mobile */
+            #classification-ranking-group { max-height: 160px; overflow-y: auto; }
+            #classification-ranking-table { font-size: 0.55rem; }
+            #classification-ranking-table th,
+            #classification-ranking-table td { padding: 4px 2px; }
+
 
 
             /* Shift coin and gem values slightly left */
@@ -1932,6 +1938,12 @@
              #selector-info-bar .info-group { min-width: 80px; min-height: 34px; padding: 2px 4px 2px 20px; }
              #selector-info-bar .value-box { padding: 2px 5px 2px 20px; }
              #selector-info-bar .info-icon-wrapper { width: 32px; height: 32px; transform: translate(12%, -50%); }
+
+            /* Reduce ranking table height on very small screens */
+            #classification-ranking-group { max-height: 140px; overflow-y: auto; }
+            #classification-ranking-table { font-size: 0.5rem; }
+            #classification-ranking-table th,
+            #classification-ranking-table td { padding: 3px 1px; }
 
             /* Adjust value positioning on smaller screens */
             #selectorCoinValue,
