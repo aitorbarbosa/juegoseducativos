@@ -605,7 +605,10 @@
             align-items: center;
             justify-content: flex-start;
             width: 100%;
-            padding: 6px 0 4px 22px;
+            padding: 6px 8px 6px 22px;
+            box-sizing: border-box;
+            min-width: 80px;
+            min-height: 48px;
         }
         #high-score-display .info-icon-wrapper {
             position: absolute;
@@ -1809,6 +1812,15 @@
                 justify-content: center;
                 align-items: center;
             }
+            #high-score-display {
+                min-height: 30px;
+                padding: 1px 4px 1px 14px;
+            }
+            #high-score-display .info-icon-wrapper {
+                width: 26px;
+                height: 26px;
+                transform: translate(10%, -50%);
+            }
             #progress-lives-info-group .info-group { min-height: 30px; padding: 1px 4px 1px 14px; }
             #progress-lives-info-group .value-box { padding: 1px 6px 1px 14px; }
             #progress-lives-info-group .info-value { font-size: 0.8em; }
@@ -1938,6 +1950,15 @@
                 display: flex;
                 justify-content: center;
                 align-items: center;
+            }
+            #high-score-display {
+                min-height: 34px;
+                padding: 2px 4px 2px 20px;
+            }
+            #high-score-display .info-icon-wrapper {
+                width: 32px;
+                height: 32px;
+                transform: translate(12%, -50%);
             }
             #progress-lives-info-group .info-group { min-height: 34px; padding: 2px 4px 2px 20px; }
             #progress-lives-info-group .value-box { padding: 2px 5px 2px 20px; }
