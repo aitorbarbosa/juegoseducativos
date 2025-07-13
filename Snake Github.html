@@ -484,7 +484,8 @@
             font-family: 'Press Start 2P', sans-serif;
         }
         #progress-panel.classification-mode #current-world-info-group .info-value {
-            margin-top: 4px;  
+            /* Mantener la misma altura que en el resto de modos */
+            margin-top: 0;
             font-size: 0.7em;
         }
 
@@ -511,6 +512,11 @@
 
         #progress-panel.classification-mode #star-progress-wrapper .value-box {
             width: 97%;
+        }
+
+        #progress-panel.classification-mode #star-progress-wrapper {
+            padding: 6px 10px;
+            min-height: 48px;
         }
 
         #progress-lives-info-group {
@@ -1819,6 +1825,10 @@
                 justify-content: center;
                 align-items: center;
             }
+            #progress-panel.classification-mode #star-progress-wrapper {
+                min-height: 30px;
+                padding: 1px 4px;
+            }
             #progress-lives-info-group .info-group { min-height: 30px; padding: 1px 4px 1px 14px; }
             #progress-lives-info-group .value-box { padding: 1px 6px 1px 14px; }
             #progress-lives-info-group .info-value { font-size: 0.8em; }
@@ -1954,6 +1964,10 @@
                 display: flex;
                 justify-content: center;
                 align-items: center;
+            }
+            #progress-panel.classification-mode #star-progress-wrapper {
+                min-height: 34px;
+                padding: 2px 4px;
             }
             #progress-lives-info-group .info-group { min-height: 34px; padding: 2px 4px 2px 20px; }
             #progress-lives-info-group .value-box { padding: 2px 5px 2px 20px; }
