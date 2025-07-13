@@ -3267,6 +3267,9 @@ function setupSlider(slider, display) {
         const snakeBodyTexture = new Image();
         const snakeBodyTextureVertical = new Image();
         const snakeTailTexture = new Image();
+        const snakeTailTextureUp = new Image();
+        const catTailTextureUp = new Image();
+        const orangeCatTailTextureUp = new Image();
 
         const catHeadLeftImg = new Image();
         const catHeadDownImg = new Image();
@@ -3674,48 +3677,52 @@ function setupSlider(slider, display) {
         // --- Configuración de Jugadores (Skins) ---
         const SKINS = {
             snake: {
-                snakeHeadAsset: { 
-                    upDown: classicSnakeHeadDownImg, 
-                    left: classicSnakeHeadLeftImg   
-                }, 
-                foodAsset: classicFoodImg, 
+                snakeHeadAsset: {
+                    upDown: classicSnakeHeadDownImg,
+                    left: classicSnakeHeadLeftImg
+                },
+                foodAsset: classicFoodImg,
                 snakeHeadScale: 1.7,
                 foodScale: 1.5,
                 bodyTintColor: null,
-                bodyStrokeColor: adjustColor('#90ff00', 0.30), 
+                bodyStrokeColor: adjustColor('#90ff00', 0.30),
+                tailTextureUp: snakeTailTextureUp,
             },
             rubiSnake: {
-                snakeHeadAsset: { 
-                    upDown: rubiSnakeHeadUpDownImg, 
-                    left: rubiSnakeHeadLeftImg, 
+                snakeHeadAsset: {
+                    upDown: rubiSnakeHeadUpDownImg,
+                    left: rubiSnakeHeadLeftImg,
                 },
                 foodAsset: rubiSnakeFoodImg,
                 snakeHeadScale: 1.7,
                 foodScale: 1.5,
                 bodyTintColor: null,
-                bodyStrokeColor: adjustColor('#E74C3C', 0.30), 
+                bodyStrokeColor: adjustColor('#E74C3C', 0.30),
+                tailTextureUp: snakeTailTextureUp,
             },
-            aitorSnake: { 
+            aitorSnake: {
                 snakeHeadAsset: {
-                    upDown: aitorSnakeHeadUpDownImg, 
+                    upDown: aitorSnakeHeadUpDownImg,
                     left: aitorSnakeHeadLeftImg,
                 },
                 foodAsset: aitorSnakeFoodImg,
                 snakeHeadScale: 1.7,
                 foodScale: 1.5,
                 bodyTintColor: null,
-                bodyStrokeColor: adjustColor('#772CE8', 0.30), 
+                bodyStrokeColor: adjustColor('#772CE8', 0.30),
+                tailTextureUp: snakeTailTextureUp,
             },
-            noemiSnake: { 
+            noemiSnake: {
                 snakeHeadAsset: {
-                    upDown: noemiSnakeHeadUpDownImg, 
+                    upDown: noemiSnakeHeadUpDownImg,
                     left: noemiSnakeHeadLeftImg,
                 },
                 foodAsset: noemiSnakeFoodImg,
                 snakeHeadScale: 1.7,
                 foodScale: 1.5,
                 bodyTintColor: null,
-                bodyStrokeColor: adjustColor('#FFC0EB', 0.30), 
+                bodyStrokeColor: adjustColor('#FFC0EB', 0.30),
+                tailTextureUp: snakeTailTextureUp,
             },
             maraSnake: {
                 snakeHeadAsset: {
@@ -3727,8 +3734,9 @@ function setupSlider(slider, display) {
                 foodScale: 1.5,
                 bodyTintColor: null,
                 bodyStrokeColor: adjustColor('#FCE9BC', 0.30),
+                tailTextureUp: snakeTailTextureUp,
             },
-            almuSnake: { 
+            almuSnake: {
                 snakeHeadAsset: {
                     upDown: almuSnakeHeadUpDownImg,
                     left: almuSnakeHeadLeftImg,
@@ -3738,6 +3746,7 @@ function setupSlider(slider, display) {
                 foodScale: 1.5,
                 bodyTintColor: null,
                 bodyStrokeColor: adjustColor('#C96B20', 0.30),
+                tailTextureUp: snakeTailTextureUp,
             },
             mimiSnake: {
                 snakeHeadAsset: {
@@ -3749,6 +3758,7 @@ function setupSlider(slider, display) {
                 foodScale: 1.5,
                 bodyTintColor: null,
                 bodyStrokeColor: adjustColor('#FFFFFF', 0.30),
+                tailTextureUp: snakeTailTextureUp,
             },
             blackCat: {
                 snakeHeadAsset: {
@@ -3763,6 +3773,7 @@ function setupSlider(slider, display) {
                 bodyTexture: catBodyTexture,
                 bodyTextureVertical: catBodyTextureVertical,
                 tailTexture: catTailTexture,
+                tailTextureUp: catTailTextureUp,
             },
             orangeCat: {
                 snakeHeadAsset: {
@@ -3777,6 +3788,7 @@ function setupSlider(slider, display) {
                 bodyTexture: orangeCatBodyTexture,
                 bodyTextureVertical: orangeCatBodyTextureVertical,
                 tailTexture: orangeCatTailTexture,
+                tailTextureUp: orangeCatTailTextureUp,
             }
         };
         let currentSkin = 'snake';
@@ -4461,9 +4473,12 @@ function setupSlider(slider, display) {
             snakeBodyTexture.src = 'https://i.imgur.com/WwFEhcO.png';
             snakeBodyTextureVertical.src = 'https://i.imgur.com/B2RNULt.png';
             snakeTailTexture.src = 'https://i.imgur.com/avjad8V.png';
+            snakeTailTextureUp.src = 'https://i.imgur.com/npkMGwK.png';
+            catTailTextureUp.src = 'https://i.imgur.com/5RSk7Z5.png';
+            orangeCatTailTextureUp.src = 'https://i.imgur.com/IsZT8uP.png';
 
-            catHeadLeftImg.src = 'https://i.imgur.com/cgF7Fh0.png';
-            catHeadDownImg.src = 'https://i.imgur.com/8TnRwDX.png';
+            catHeadLeftImg.src = 'https://i.imgur.com/Em5JdLg.png';
+            catHeadDownImg.src = 'https://i.imgur.com/41vw2Cl.png';
             catBodyTexture.src = 'https://i.imgur.com/uJQ5TXv.png';
             catBodyTextureVertical.src = 'https://i.imgur.com/xoDatQ4.png';
             catTailTexture.src = 'https://i.imgur.com/DFw5YoI.png';
@@ -4506,18 +4521,21 @@ function setupSlider(slider, display) {
             lightningRedImg.src = 'https://i.imgur.com/4sNOTpi.png';
             
                 const allImageObjects = [
-                    classicSnakeHeadLeftImg, classicSnakeHeadDownImg, classicFoodImg, snakeBodyTexture, snakeBodyTextureVertical, snakeTailTexture,
-                rubiSnakeHeadUpDownImg, rubiSnakeHeadLeftImg, rubiSnakeFoodImg,
-                aitorSnakeHeadUpDownImg, aitorSnakeHeadLeftImg, aitorSnakeFoodImg,
-                noemiSnakeHeadUpDownImg, noemiSnakeHeadLeftImg, noemiSnakeFoodImg,
-                maraSnakeHeadUpDownImg, maraSnakeHeadLeftImg, maraSnakeFoodImg,
-                almuSnakeHeadUpDownImg, almuSnakeHeadLeftImg, almuSnakeFoodImg,
-                mimiSnakeHeadUpDownImg, mimiSnakeHeadLeftImg, mimiSnakeFoodImg,
-                catHeadLeftImg, catHeadDownImg, catBodyTexture, catBodyTextureVertical, catTailTexture,
-                orangeCatHeadLeftImg, orangeCatHeadDownImg, orangeCatBodyTexture, orangeCatBodyTextureVertical, orangeCatTailTexture,
-                obstacleImg, lightningYellowImg, lightningRedImg,
-                ...Object.values(FOODS).map(f => f.asset)
-            ];
+                    classicSnakeHeadLeftImg, classicSnakeHeadDownImg, classicFoodImg,
+                    snakeBodyTexture, snakeBodyTextureVertical, snakeTailTexture, snakeTailTextureUp,
+                    rubiSnakeHeadUpDownImg, rubiSnakeHeadLeftImg, rubiSnakeFoodImg,
+                    aitorSnakeHeadUpDownImg, aitorSnakeHeadLeftImg, aitorSnakeFoodImg,
+                    noemiSnakeHeadUpDownImg, noemiSnakeHeadLeftImg, noemiSnakeFoodImg,
+                    maraSnakeHeadUpDownImg, maraSnakeHeadLeftImg, maraSnakeFoodImg,
+                    almuSnakeHeadUpDownImg, almuSnakeHeadLeftImg, almuSnakeFoodImg,
+                    mimiSnakeHeadUpDownImg, mimiSnakeHeadLeftImg, mimiSnakeFoodImg,
+                    catHeadLeftImg, catHeadDownImg, catBodyTexture, catBodyTextureVertical,
+                    catTailTexture, catTailTextureUp,
+                    orangeCatHeadLeftImg, orangeCatHeadDownImg, orangeCatBodyTexture,
+                    orangeCatBodyTextureVertical, orangeCatTailTexture, orangeCatTailTextureUp,
+                    obstacleImg, lightningYellowImg, lightningRedImg,
+                    ...Object.values(FOODS).map(f => f.asset)
+                ];
 
             allImageObjects.forEach(imgObj => {
                 imgObj.onload = () => {
@@ -7447,13 +7465,16 @@ function setupSlider(slider, display) {
                         ctx.translate(segmentX + GRID_SIZE / 2, segmentY + GRID_SIZE / 2);
                         let rotation = 0;
                         let scaleX = 1;
+                        let scaleY = 1;
                         if (isTail) {
+                            const tailUpTex = skinData.tailTextureUp || snakeTailTextureUp;
                             if (dx === 1 && dy === 0) {
                                 scaleX = -1;
                             } else if (dx === 0 && dy === -1) {
-                                rotation = Math.PI / 2;
+                                texture = tailUpTex;
                             } else if (dx === 0 && dy === 1) {
-                                rotation = -Math.PI / 2;
+                                texture = tailUpTex;
+                                scaleY = -1;
                             }
                         } else {
                             if (dx === 1 && dy === 0) {
@@ -7463,7 +7484,7 @@ function setupSlider(slider, display) {
                             }
                         }
                         ctx.rotate(rotation);
-                        ctx.scale(scaleX, 1);
+                        ctx.scale(scaleX, scaleY);
                         ctx.drawImage(texture, -GRID_SIZE / 2, -GRID_SIZE / 2, GRID_SIZE, GRID_SIZE);
                         if (skinData.bodyTintColor) {
                             ctx.globalCompositeOperation = 'multiply';
