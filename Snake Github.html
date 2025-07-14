@@ -41,7 +41,7 @@
 
         /* Color violeta para textos en negrita */
         strong {
-            color: #8f66af;
+            color: #8C64AF;
         }
 
         .hidden {
@@ -381,19 +381,20 @@
         #title-panel h2 {
             font-size: 1.4em;
             margin: 0;
-            color: #8f66af;
+            color: #f3f3f3;
+            font-family: 'Press Start 2P', sans-serif;
+            letter-spacing: 1px;
+            text-shadow:
+                0px 0px 2px #422E58,
+                -2px -2px 0 #422E58,
+                2px -2px 0 #422E58,
+                -2px  2px 0 #422E58,
+                2px  2px 0 #422E58;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
         }
         #title-image {
-            max-height: 48px;
-            width: auto;
-            max-width: 90%;
-        }
-
-        #main-info-title img,
-        #specific-info-title img {
             max-height: 48px;
             width: auto;
             max-width: 90%;
@@ -1296,10 +1297,10 @@
             border-radius: 10px;
             box-shadow: 0 2px 0 #422E58;
             text-shadow:
-                0px 0px 1px #2B1B39,
-               -1px -1px 0 #D0B5E2,
+                0px 0px 1px #422E58,
+                -1px -1px 0 #D0B5E2,
                 1px -1px 0 #D0B5E2,
-               -1px  1px 0 #D0B5E2,
+                -1px  1px 0 #D0B5E2,
                 1px  1px 0 #D0B5E2;
             overflow: hidden;
             background: none;
@@ -1391,10 +1392,10 @@
             border-radius: 10px;
             box-shadow: 0 2px 0 #422E58;
             text-shadow:
-                0px 0px 1px #2B1B39,
-               -1px -1px 0 #D0B5E2,
+                0px 0px 1px #422E58,
+                -1px -1px 0 #D0B5E2,
                 1px -1px 0 #D0B5E2,
-               -1px  1px 0 #D0B5E2,
+                -1px  1px 0 #D0B5E2,
                 1px  1px 0 #D0B5E2;
             overflow: hidden;
             background: none;
@@ -1598,12 +1599,21 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            color: #8f66af;
+            color: #f3f3f3;
             margin-bottom: 3px;
         }
         .settings-header h2, .info-header h2, .specific-info-header h2, .reset-header h2 {
             font-size: 1.4em;
             margin: 0;
+            font-family: 'Press Start 2P', sans-serif;
+            color: #f3f3f3;
+            letter-spacing: 1px;
+            text-shadow:
+                0px 0px 2px #422E58,
+                -2px -2px 0 #422E58,
+                2px -2px 0 #422E58,
+                -2px  2px 0 #422E58,
+                2px  2px 0 #422E58;
         }
         .settings-header .header-title-group {
             display: flex;
@@ -1668,18 +1678,21 @@
             gap: 12px;
             padding-right: 0;
         }
-        .info-header h2#main-info-title,
+        .info-header h2#main-info-title {
+            font-size: 1.4em;
+            color: #f3f3f3;
+        }
         #info-panel-content h4,
         #specific-info-content h4 {
             font-size: 1em;
-            color: #8f66af;
+            color: #8C64AF;
             margin-top: 6px;
             margin-bottom: 3px;
             text-align: left;
         }
          #specific-info-content h3 {
             font-size: 0.8em;
-            color: #f5f5f5;
+            color: #8C64AF;
             margin-bottom: 6px;
             text-align: center;
         }
@@ -1806,9 +1819,9 @@
           
             #title-panel { min-height: 30px; padding: 6px; }
             #title-image,
-            #main-info-title img,
-            #specific-info-title img,
-            #settings-title img { max-height: 30px; }
+            #settings-title,
+            #main-info-title,
+            #specific-info-title { font-size: 0.9em; }
 
             #current-world-info-group { min-height: 30px; padding: 1px 4px 1px 14px; min-width: 70px; cursor: pointer;}
             #current-world-info-group .info-label { font-size: 0.6em; }
@@ -1891,7 +1904,7 @@
              }
 
 
-            .info-header h2#main-info-title, #specific-info-content h3 { font-size: 0.95em; }
+            .info-header h2#main-info-title, #specific-info-content h3 { font-size: 1.1em; }
             #info-panel-content h4, #specific-info-content h4 { font-size: 0.95em; }
             #info-panel-content p, #info-panel-content ul, #specific-info-content p, #specific-info-content ul { font-size: 0.75em; }
         }
@@ -1926,9 +1939,9 @@
 
             #title-panel { min-height: 36px; padding: 6px; }
             #title-image,
-            #main-info-title img,
-            #specific-info-title img,
-            #settings-title img { max-height: 36px; }
+            #settings-title,
+            #main-info-title,
+            #specific-info-title { font-size: 1em; }
 
 
              #top-info-bar .info-label { font-size: 0.55em; }
@@ -1997,7 +2010,7 @@
             #settings-panel, #info-panel, #specific-info-panel, #free-settings-panel {
                 padding: 15px;
             }
-            .info-header h2#main-info-title, #specific-info-content h3 { font-size: 0.85em; }
+            .info-header h2#main-info-title, #specific-info-content h3 { font-size: 1em; }
             #info-panel-content h4, #specific-info-content h4 { font-size: 0.85em; }
             #info-panel-content p, #info-panel-content ul, #specific-info-content p, #specific-info-content ul { font-size: 0.7em; }
         }
@@ -2228,7 +2241,7 @@
         }
         #confirmPurchaseYes {
             border: 2px solid #1b5e20;
-            text-shadow: 0px 0px 1px #2B1B39,
+            text-shadow: 0px 0px 1px #422E58,
                          -1px -1px 0 #1b5e20,
                           1px -1px 0 #1b5e20,
                          -1px 1px 0 #1b5e20,
@@ -2247,7 +2260,7 @@
         }
         #confirmPurchaseNo {
             border: 2px solid #7f1d1d;
-            text-shadow: 0px 0px 1px #2B1B39,
+            text-shadow: 0px 0px 1px #422E58,
                          -1px -1px 0 #7f1d1d,
                           1px -1px 0 #7f1d1d,
                          -1px 1px 0 #7f1d1d,
@@ -2629,7 +2642,7 @@
         <div id="settings-panel" class="settings-panel-hidden">
                 <div class="settings-header">
                     <div class="header-title-group">
-                        <h2 id="settings-title"><img id="settings-title-img" src="https://i.imgur.com/IAfhEaH.png" alt="Configuración"></h2>
+                        <h2 id="settings-title">CONFIGURACION</h2>
                         <button id="maze-info-button" class="setting-info-button hidden" data-setting="mazeLevel" aria-label="Información del modo laberinto">
                             <img class="setting-info-icon" src="https://i.imgur.com/rWe7Ylp.png" alt="info" onerror="this.src='https://placehold.co/24x24/02030D/FFFFFF?text=Err';">
                         </button>
@@ -2699,7 +2712,7 @@
                     <table id="classification-ranking-table">
                         <thead>
                             <tr class="title-row">
-                                <th colspan="4">CLASIFICACIÓN</th>
+                                <th colspan="4">CLASIFICACION</th>
                             </tr>
                             <tr>
                                 <th>Nº</th>
@@ -2755,7 +2768,7 @@
                 </div>
                 <div class="control-group" id="music-volume-control-group">
                     <div class="control-label-icon-row">
-                        <label class="control-label" for="musicVolumeSlider">Volumen Música: <span id="musicVolumeValue">50</span>%</label>
+                        <label class="control-label" for="musicVolumeSlider">Volumen Musica: <span id="musicVolumeValue">50</span>%</label>
                         <button class="setting-info-button" data-setting="musicVolume" aria-label="Información sobre volumen de música">
                             <img class="setting-info-icon" src="https://i.imgur.com/rWe7Ylp.png" alt="info" onerror="this.src='https://placehold.co/24x24/02030D/FFFFFF?text=Err';">
                         </button>
@@ -2771,13 +2784,13 @@
                     </div>
                     <input type="range" id="sfxVolumeSlider" min="0" max="100" value="75">
                 </div>
-                <div class="control-group" id="resetDataButton">Reiniciar datos del juego</div>
+                <div class="control-group" id="resetDataButton">REINICIAR datos del juego</div>
                 </div>
             </div>
 
             <div id="free-settings-panel" class="free-settings-panel-hidden">
                 <div class="settings-header">
-                    <h2>Personaliza tu juego</h2>
+                    <h2>PERSONALIZA TU JUEGO</h2>
                     <button id="close-free-settings-button" aria-label="Cerrar ajustes">&times;</button>
                 </div>
                 <div class="panel-content">
@@ -2881,7 +2894,7 @@
 
             <div id="info-panel" class="info-panel-hidden">
                 <div class="info-header">
-                    <h2 id="main-info-title"><img src="https://i.imgur.com/CZa88Hk.png" alt="Snake Mobile" onerror="this.src='https://placehold.co/300x80/02030D/FFFFFF?text=Title+Error'; console.error('Error loading main-info-title image');"></h2>
+                    <h2 id="main-info-title">INFORMACION</h2>
                     <button id="close-info-button" aria-label="Cerrar información">&times;</button>
                 </div>
                 <div id="info-panel-content">
@@ -2898,7 +2911,7 @@
 
             <div id="specific-info-panel" class="specific-info-panel-hidden">
                 <div class="specific-info-header">
-                    <h2 id="specific-info-title">Detalle del Ajuste</h2>
+                    <h2 id="specific-info-title">DETALLE DEL AJUSTE</h2>
                     <button id="close-specific-info-button" aria-label="Cerrar detalle">&times;</button>
                 </div>
                 <div id="specific-info-content">
@@ -2906,7 +2919,7 @@
             </div>
             <div id="reset-confirmation-panel" class="reset-panel-hidden">
                 <div class="reset-header">
-                    <h2>Reiniciar</h2>
+                    <h2>REINICIAR</h2>
                 </div>
                 <div class="panel-content">
                     <p>Esta decisión eliminará todos tus progresos y puntuaciones</p>
@@ -2919,7 +2932,7 @@
             </div>
             <div id="config-menu-panel" class="config-menu-panel-hidden">
                 <div class="settings-header">
-                    <h2>Menú</h2>
+                    <h2>MENU</h2>
                     <button id="close-config-menu-button" aria-label="Cerrar menú">&times;</button>
                 </div>
                 <div class="panel-content">
@@ -2942,7 +2955,7 @@
             </div>
             <div id="store-panel" class="store-panel-hidden">
                 <div class="settings-header">
-                    <h2>Tienda</h2>
+                    <h2>TIENDA</h2>
                     <button id="close-store-panel" aria-label="Cerrar">&times;</button>
                 </div>
                 <div class="panel-content">
@@ -2952,7 +2965,7 @@
             <div id="modal-overlay" class="hidden"></div>
             <div id="purchase-confirmation-panel" class="purchase-confirmation-panel-hidden">
                 <div class="reset-header">
-                    <h2>Confirmar Compra</h2>
+                    <h2>CONFIRMAR COMPRA</h2>
                 </div>
                 <div class="panel-content">
                     <div id="purchase-item-preview" class="store-item locked"></div>
@@ -2974,8 +2987,8 @@
                     </button>
                 <div class="action-button-wrapper" id="start-button-wrapper">
                     <button id="startButton">Empezar</button>
-                    <button id="restartMazeButton" class="hidden" aria-label="Reiniciar">
-                        <img id="restartMazeButtonIcon" src="https://i.imgur.com/i4m4tSV.png" alt="Reiniciar"
+                    <button id="restartMazeButton" class="hidden" aria-label="REINICIAR">
+                        <img id="restartMazeButtonIcon" src="https://i.imgur.com/i4m4tSV.png" alt="REINICIAR"
                              onerror="this.src='https://placehold.co/24x24/02030D/FFFFFF?text=Err';">
                     </button>
                 </div>
@@ -3077,7 +3090,7 @@
         const worldButtonsContainer = document.getElementById("worldButtonsContainer");
         const mazeLevelButtonsContainer = document.getElementById("mazeLevelButtonsContainer");
         const difficultyLabel = document.getElementById("difficulty-label");
-        const settingsTitleImg = document.getElementById("settings-title-img");
+        const settingsTitle = document.getElementById("settings-title");
         const audioToggleSelector = document.getElementById("audioToggleSelector");
         const skinSelector = document.getElementById("skinSelector");
         const foodSelector = document.getElementById("foodSelector");
@@ -5375,7 +5388,7 @@ function setupSlider(slider, display) {
         }
 
         function openGenericMenuPanel(title) {
-            if (genericMenuTitle) genericMenuTitle.textContent = title || '';
+            if (genericMenuTitle) genericMenuTitle.textContent = (title || '').toUpperCase();
             genericMenuPanel.classList.add('centered-panel');
             togglePanel(genericMenuPanel, genericMenuPanel.querySelector('.panel-content'), true);
             requestAnimationFrame(() => {
@@ -5478,12 +5491,13 @@ function setupSlider(slider, display) {
             foodToPurchase = null;
         }
 
-        function openProfileMenu() {
-            openSettingsPanel();
-            requestAnimationFrame(() => {
-                matchPanelSizeWithElement(configMenuPanel, settingsPanel);
-                settingsPanel.classList.remove('centered-panel');
-            });
+       function openProfileMenu() {
+           openSettingsPanel();
+           requestAnimationFrame(() => {
+               matchPanelSizeWithElement(configMenuPanel, settingsPanel);
+               settingsPanel.classList.remove('centered-panel');
+           });
+            if (settingsTitle) settingsTitle.textContent = 'PERFIL';
             if (playerSelectControlGroup) playerSelectControlGroup.classList.remove('hidden');
             if (addPlayerControlGroup) addPlayerControlGroup.classList.remove('hidden');
             if (playerNameControlGroup) playerNameControlGroup.classList.remove('hidden');
@@ -5515,7 +5529,7 @@ function setupSlider(slider, display) {
         // --- Specific Info Panel Logic ---
         const specificHelpTexts = {
             difficulty: {
-                title: "Modo Clasificación",
+                title: "Modo Clasificacion",
                 image: "https://i.imgur.com/19iGpfZ.png",
                 text_classification: "<p>¡Demuestra de lo que eres capaz y compite por lo más alto!</p> <p><strong>Selecciona la dificultad</strong> que prefieras y trata de superar tus propios récords.</p><p>También puedes <strong>compartir el juego</strong> con amigos y familia. Solo asegúrate de que seleccionan su perfil antes de empezar, ¡y que intenten superarte si pueden!</p> <p>¿Estás listo para luchar por la <strong>primera posición</strong> del ranking?</p>"
             },
@@ -5544,14 +5558,14 @@ function setupSlider(slider, display) {
             },
             playerName: {
                 title: "Jugador",
-                text: "<p>En el <strong>Modo Libre</strong>, se utiliza para guardar los ajustes personalizados de la partida, en el <strong>Modo Clasificación</strong>, tu nombre se mostrará en el ranking para que puedas comparar tu puntuación con otros jugadores y, en el <strong>Modo Aventura</strong> y el <strong>Modo Laberinto</strong>, te permite guardar tus progresos y continuar donde la habías dejado.</p><p>Si deseas <strong>registrar a un nuevo jugador</strong>, puedes hacerlo desde el menú de configuración de la pantalla de inicio.</p>"
+                text: "<p>En el <strong>Modo Libre</strong>, se utiliza para guardar los ajustes personalizados de la partida, en el <strong>Modo Clasificacion</strong>, tu nombre se mostrará en el ranking para que puedas comparar tu puntuación con otros jugadores y, en el <strong>Modo Aventura</strong> y el <strong>Modo Laberinto</strong>, te permite guardar tus progresos y continuar donde la habías dejado.</p><p>Si deseas <strong>registrar a un nuevo jugador</strong>, puedes hacerlo desde el menú de configuración de la pantalla de inicio.</p>"
             },
             audioGeneral: {
                 title: "Audio General",
                 text: "<p>Controla los elementos sonoros del juego para crear la atmósfera perfecta para ti.</p><p>Selecciona <strong>Activado</strong> para disfrutar de música y efectos, <strong>Sólo Música</strong> para escuchar únicamente la banda sonora, <strong>Sólo Efectos</strong> para oír exclusivamente las acciones clave y <strong>Desactivado</strong> para silenciar completamente el juego." 
             },
             musicVolume: {
-                title: "Volumen Música",
+                title: "Volumen Musica",
                 text: "<p>Ajusta con precisión qué tan fuerte o suave quieres que suene la música de fondo del juego, siempre que la tengas activada.</p><p>Mueve el deslizador hacia la derecha para aumentar el volumen, y hacia la izquierda para disminuirlo.</p>"
             },
             sfxVolume: {
@@ -5573,16 +5587,12 @@ function setupSlider(slider, display) {
                 return;
             }
 
-            const imgTag = helpData.image ?
-                `<img src="${helpData.image}" alt="${helpData.title}" onerror="this.src='https://placehold.co/300x80/02030D/FFFFFF?text=Title+Error'; console.error('Error loading specific-info-title image');">` :
-                helpData.title;
-
             if (settingKey === 'difficulty') {
                 // In classification mode show the dedicated title
-                specificInfoTitle.innerHTML = imgTag;
+                specificInfoTitle.textContent = helpData.title.toUpperCase();
                 specificInfoContent.innerHTML = helpData.text_classification;
             } else {
-                specificInfoTitle.innerHTML = imgTag;
+                specificInfoTitle.textContent = helpData.title.toUpperCase();
                 specificInfoContent.innerHTML = helpData.text;
             }
             
@@ -6564,7 +6574,7 @@ function setupSlider(slider, display) {
 
             highScores = highScores.slice(0, MAX_HIGH_SCORES);
             localStorage.setItem(key, JSON.stringify(highScores));
-            console.log(`Puntuaciones Modo Clasificación guardadas para ${difficultyLevel}:`, highScores);
+            console.log(`Puntuaciones Modo Clasificacion guardadas para ${difficultyLevel}:`, highScores);
 
             const isActuallyNewHighScoreThisGame = insertIndex < MAX_HIGH_SCORES;
             const newRecordIndex = isActuallyNewHighScoreThisGame ? insertIndex : -1;
@@ -6644,7 +6654,7 @@ function setupSlider(slider, display) {
         function handleClassificationModeEnd(currentScore, timeElapsedValue, difficultyValue) {
             const highScoreData = saveClassificationHighScore(currentScore, timeElapsedValue, difficultyValue);
 
-            console.log("FinalizeGameOver - Modo Clasificación - isNewRecord:", highScoreData.isNewRecord, "Score:", currentScore, "Time:", timeElapsedValue, "Difficulty:", difficultyValue, "Blink Row Index:", highScoreData.rowIndex);
+            console.log("FinalizeGameOver - Modo Clasificacion - isNewRecord:", highScoreData.isNewRecord, "Score:", currentScore, "Time:", timeElapsedValue, "Difficulty:", difficultyValue, "Blink Row Index:", highScoreData.rowIndex);
 
             if (highScoreData.isNewRecord) {
                 blinkAnimation.startTime = Date.now();
@@ -8205,9 +8215,8 @@ function setupSlider(slider, display) {
             if (classificationRankingGroup) classificationRankingGroup.classList.add('hidden');
 
             // Set default settings header appearance
-            if (settingsTitleImg) {
-                settingsTitleImg.src = 'https://i.imgur.com/IAfhEaH.png';
-                settingsTitleImg.alt = 'Configuración';
+            if (settingsTitle) {
+                settingsTitle.textContent = 'CONFIGURACION';
             }
             if (mazeInfoButton) mazeInfoButton.classList.add('hidden');
             if (classificationInfoButton) classificationInfoButton.classList.add('hidden');
@@ -8272,14 +8281,16 @@ function setupSlider(slider, display) {
                      if (!isGameCurrentlyRunning) difficultyControlGroup.classList.add("interactive-mode");
                      else difficultyControlGroup.classList.remove("interactive-mode");
                 }
-                if (settingsTitleImg) {
-                    settingsTitleImg.src = 'https://i.imgur.com/tLBeddL.png';
-                    settingsTitleImg.alt = 'Modo Aventura';
+                if (settingsTitle) {
+                    settingsTitle.textContent = 'MODO AVENTURA';
                 }
             } else if (gameMode === 'freeMode') {
                 // En el modo libre mantendremos visible el título del juego y ocultaremos
                 // el panel de progreso con la dificultad y la máxima puntuación.
                 titlePanel.classList.remove('hidden');
+                if (settingsTitle) {
+                    settingsTitle.textContent = 'MODO LIBRE';
+                }
                 progressPanel.classList.add('hidden');
                 starProgressContainer.classList.add('hidden');
                 highScoreDisplay.classList.add('hidden');
@@ -8338,9 +8349,8 @@ function setupSlider(slider, display) {
                 difficultyInfoButton.classList.remove('hidden');
                 mazeInfoButton.classList.add('hidden');
                 if (classificationInfoButton) classificationInfoButton.classList.remove('hidden');
-                if (settingsTitleImg) {
-                    settingsTitleImg.src = specificHelpTexts.difficulty.image;
-                    settingsTitleImg.alt = specificHelpTexts.difficulty.title;
+                if (settingsTitle) {
+                    settingsTitle.textContent = 'MODO CLASIFICACION';
                 }
 
                 if (isSettingsPanelCurrentlyOpen && !isGameCurrentlyRunning) {
@@ -8385,9 +8395,8 @@ function setupSlider(slider, display) {
                 mazeInfoButton.classList.remove('hidden');
                 populateMazeLevelButtons();
 
-                if (settingsTitleImg) {
-                    settingsTitleImg.src = 'https://i.imgur.com/XLdIK3D.png';
-                    settingsTitleImg.alt = 'Modo Laberinto';
+                if (settingsTitle) {
+                    settingsTitle.textContent = 'MODO LABERINTO';
                 }
 
                 if (isSettingsPanelCurrentlyOpen && !isGameCurrentlyRunning) {
