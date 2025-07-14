@@ -2077,7 +2077,9 @@
         }
 
         #reset-confirmation-panel { z-index: 2102; }
-        #store-panel { z-index: 2100; }
+        #settings-panel { z-index: 2101; }
+        #generic-menu-panel { z-index: 2101; }
+        #store-panel { z-index: 2101; }
         #purchase-confirmation-panel { z-index: 2103; }
         #modal-overlay {
             position: fixed;
@@ -4728,20 +4730,26 @@ function setupSlider(slider, display) {
             }
 
             const topRefRect = topReferenceElement.getBoundingClientRect();
-            const mobileControlsRect = mobileControlsEl.getBoundingClientRect(); 
+            const mobileControlsRect = mobileControlsEl.getBoundingClientRect();
             const gameContainerRect = gameContainer.getBoundingClientRect();
             const panelVerticalMargin = 5; 
 
-            let panelTopPosition = topRefRect.top - gameContainerRect.top;
-            if (topReferenceElement === gameContainer) panelTopPosition = 0; 
-            
+            let panelTopPosition;
+            if (panelElement === configMenuPanel) {
+                const infoBarRect = topInfoBar.getBoundingClientRect();
+                panelTopPosition = infoBarRect.bottom;
+            } else {
+                panelTopPosition = topRefRect.bottom;
+                if (topReferenceElement === gameContainer) panelTopPosition = gameContainerRect.top;
+            }
+
             panelElement.style.top = panelTopPosition + 'px';
-            
+
             let panelBottomLimit;
             if (mobileControlsEl.offsetParent === null) {
-                panelBottomLimit = gameContainerRect.height - panelVerticalMargin;
+                panelBottomLimit = gameContainerRect.bottom - panelVerticalMargin;
             } else {
-                panelBottomLimit = mobileControlsRect.top - gameContainerRect.top - panelVerticalMargin;
+                panelBottomLimit = mobileControlsRect.top - panelVerticalMargin;
             }
             let availablePanelHeight = panelBottomLimit - panelTopPosition;
 
@@ -4755,7 +4763,10 @@ function setupSlider(slider, display) {
             const isSettingsVisible = !settingsPanel.classList.contains("settings-panel-hidden") && settingsPanel.classList.contains("panel-visible");
             const isInfoVisible = !infoPanel.classList.contains("info-panel-hidden") && infoPanel.classList.contains("panel-visible");
             const isFreeSettingsVisible = freeSettingsPanel && !freeSettingsPanel.classList.contains("free-settings-panel-hidden") && freeSettingsPanel.classList.contains("panel-visible");
-            const isAnyMainPanelEffectivelyOpen = isSettingsVisible || isInfoVisible || isFreeSettingsVisible;
+            const isConfigMenuVisible = !configMenuPanel.classList.contains("config-menu-panel-hidden") && configMenuPanel.classList.contains("panel-visible");
+            const isGenericMenuVisible = !genericMenuPanel.classList.contains("generic-menu-panel-hidden") && genericMenuPanel.classList.contains("panel-visible");
+            const isStoreVisible = storePanel && !storePanel.classList.contains("store-panel-hidden") && storePanel.classList.contains("panel-visible");
+            const isAnyMainPanelEffectivelyOpen = isSettingsVisible || isInfoVisible || isFreeSettingsVisible || isConfigMenuVisible || isGenericMenuVisible || isStoreVisible;
 
             if (isAnyMainPanelEffectivelyOpen) {
                 startButton.disabled = true;
@@ -4849,6 +4860,7 @@ function setupSlider(slider, display) {
             const srcRect = sourceElement.getBoundingClientRect();
             targetPanel.style.top = srcRect.top + 'px';
             targetPanel.style.height = srcRect.height + 'px';
+            targetPanel.style.width = srcRect.width + 'px';
         }
 
         // --- Panel Management Refactor ---
@@ -4949,6 +4961,7 @@ function setupSlider(slider, display) {
                     panelElement.style.top = '';
                     panelElement.style.bottom = '';
                     panelElement.style.height = '';
+                    panelElement.style.width = '';
                     // Caller of togglePanel(..., false) is now responsible for updateMainButtonStates
                 }, 300); 
             }
@@ -5319,10 +5332,10 @@ function setupSlider(slider, display) {
         if (profileMenuButton) profileMenuButton.addEventListener('click', openProfileMenu);
         if (customizationMenuButton) customizationMenuButton.addEventListener('click', openCustomizationMenu);
         if (storeMenuButton) storeMenuButton.addEventListener('click', openStoreMenu);
-        if (achievementsMenuButton) achievementsMenuButton.addEventListener('click', () => { closeConfigMenuPanel(); openGenericMenuPanel('Logros'); });
-        if (bonusesMenuButton) bonusesMenuButton.addEventListener('click', () => { closeConfigMenuPanel(); openGenericMenuPanel('Bonificaciones'); });
-        if (dailyMenuButton) dailyMenuButton.addEventListener('click', () => { closeConfigMenuPanel(); openGenericMenuPanel('Premios diarios'); });
-        if (wheelMenuButton) wheelMenuButton.addEventListener('click', () => { closeConfigMenuPanel(); openGenericMenuPanel('Ruleta de premios'); });
+        if (achievementsMenuButton) achievementsMenuButton.addEventListener('click', () => { openGenericMenuPanel('Logros'); });
+        if (bonusesMenuButton) bonusesMenuButton.addEventListener('click', () => { openGenericMenuPanel('Bonificaciones'); });
+        if (dailyMenuButton) dailyMenuButton.addEventListener('click', () => { openGenericMenuPanel('Premios diarios'); });
+        if (wheelMenuButton) wheelMenuButton.addEventListener('click', () => { openGenericMenuPanel('Ruleta de premios'); });
         if (applyFreeSettingsBottomButton) applyFreeSettingsBottomButton.addEventListener('click', applyFreeSettings);
         if (freeDifficultySelector) freeDifficultySelector.addEventListener('change', () => {
             freeDifficulty = freeDifficultySelector.value;
@@ -5365,7 +5378,7 @@ function setupSlider(slider, display) {
         }
 
         function openConfigMenuPanel() {
-            configMenuPanel.classList.add('centered-panel');
+            configMenuPanel.classList.remove('centered-panel');
             togglePanel(configMenuPanel, configMenuPanel.querySelector('.panel-content'), true);
         }
 
@@ -5379,6 +5392,10 @@ function setupSlider(slider, display) {
             if (genericMenuTitle) genericMenuTitle.textContent = title || '';
             genericMenuPanel.classList.add('centered-panel');
             togglePanel(genericMenuPanel, genericMenuPanel.querySelector('.panel-content'), true);
+            requestAnimationFrame(() => {
+                matchPanelSizeWithElement(configMenuPanel, genericMenuPanel);
+                genericMenuPanel.classList.remove('centered-panel');
+            });
         }
 
         function closeGenericMenuPanel() {
@@ -5388,11 +5405,14 @@ function setupSlider(slider, display) {
         }
 
         function openStoreMenu() {
-            closeConfigMenuPanel();
             if (storePanel) {
                 populateStoreItems();
                 storePanel.classList.add('centered-panel');
                 togglePanel(storePanel, storePanel.querySelector('.panel-content'), true);
+                requestAnimationFrame(() => {
+                    matchPanelSizeWithElement(configMenuPanel, storePanel);
+                    storePanel.classList.remove('centered-panel');
+                });
             }
         }
 
@@ -5473,8 +5493,11 @@ function setupSlider(slider, display) {
         }
 
         function openProfileMenu() {
-            closeConfigMenuPanel();
             openSettingsPanel();
+            requestAnimationFrame(() => {
+                matchPanelSizeWithElement(configMenuPanel, settingsPanel);
+                settingsPanel.classList.remove('centered-panel');
+            });
             if (playerSelectControlGroup) playerSelectControlGroup.classList.remove('hidden');
             if (addPlayerControlGroup) addPlayerControlGroup.classList.remove('hidden');
             if (playerNameControlGroup) playerNameControlGroup.classList.remove('hidden');
@@ -5487,8 +5510,11 @@ function setupSlider(slider, display) {
         }
 
         function openCustomizationMenu() {
-            closeConfigMenuPanel();
             openSettingsPanel();
+            requestAnimationFrame(() => {
+                matchPanelSizeWithElement(configMenuPanel, settingsPanel);
+                settingsPanel.classList.remove('centered-panel');
+            });
             if (playerSelectControlGroup) playerSelectControlGroup.classList.add('hidden');
             if (addPlayerControlGroup) addPlayerControlGroup.classList.add('hidden');
             if (playerNameControlGroup) playerNameControlGroup.classList.remove('hidden');
