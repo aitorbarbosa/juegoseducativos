@@ -2924,7 +2924,6 @@
                 </div>
                 <div class="panel-content">
                     <button class="menu-option-button" id="profile-menu-button">PERFIL</button>
-                    <button class="menu-option-button" id="customization-menu-button">PERSONALIZACION</button>
                     <button class="menu-option-button" id="store-menu-button">TIENDA</button>
                     <button class="menu-option-button" id="achievements-menu-button">LOGROS</button>
                     <button class="menu-option-button" id="bonuses-menu-button">BONIFICACIONES</button>
@@ -3157,7 +3156,6 @@
         const closeConfigMenuButton = document.getElementById("close-config-menu-button");
         const closeGenericMenuButton = document.getElementById("close-generic-menu-button");
         const profileMenuButton = document.getElementById("profile-menu-button");
-        const customizationMenuButton = document.getElementById("customization-menu-button");
         const storeMenuButton = document.getElementById("store-menu-button");
         const achievementsMenuButton = document.getElementById("achievements-menu-button");
         const bonusesMenuButton = document.getElementById("bonuses-menu-button");
@@ -5319,7 +5317,6 @@ function setupSlider(slider, display) {
         if (closeConfigMenuButton) closeConfigMenuButton.addEventListener('click', closeConfigMenuPanel);
         if (closeGenericMenuButton) closeGenericMenuButton.addEventListener('click', closeGenericMenuPanel);
         if (profileMenuButton) profileMenuButton.addEventListener('click', openProfileMenu);
-        if (customizationMenuButton) customizationMenuButton.addEventListener('click', openCustomizationMenu);
         if (storeMenuButton) storeMenuButton.addEventListener('click', openStoreMenu);
         if (achievementsMenuButton) achievementsMenuButton.addEventListener('click', () => { openGenericMenuPanel('Logros'); });
         if (bonusesMenuButton) bonusesMenuButton.addEventListener('click', () => { openGenericMenuPanel('Bonificaciones'); });
@@ -5490,23 +5487,6 @@ function setupSlider(slider, display) {
             if (playerSelectControlGroup) playerSelectControlGroup.classList.remove('hidden');
             if (addPlayerControlGroup) addPlayerControlGroup.classList.remove('hidden');
             if (playerNameControlGroup) playerNameControlGroup.classList.remove('hidden');
-            skinControlGroup.classList.add('hidden');
-            foodControlGroup.classList.add('hidden');
-            difficultyControlGroup.classList.add('hidden');
-            audioControlGroup.classList.add('hidden');
-            musicVolumeControlGroup.classList.add('hidden');
-            sfxVolumeControlGroup.classList.add('hidden');
-        }
-
-        function openCustomizationMenu() {
-            openSettingsPanel();
-            requestAnimationFrame(() => {
-                matchPanelSizeWithElement(configMenuPanel, settingsPanel);
-                settingsPanel.classList.remove('centered-panel');
-            });
-            if (playerSelectControlGroup) playerSelectControlGroup.classList.add('hidden');
-            if (addPlayerControlGroup) addPlayerControlGroup.classList.add('hidden');
-            if (playerNameControlGroup) playerNameControlGroup.classList.remove('hidden');
             skinControlGroup.classList.remove('hidden');
             foodControlGroup.classList.remove('hidden');
             difficultyControlGroup.classList.add('hidden');
@@ -5515,9 +5495,6 @@ function setupSlider(slider, display) {
             sfxVolumeControlGroup.classList.add('hidden');
         }
 
-        if (resetDataButton) {
-            resetDataButton.addEventListener('click', openResetConfirmPanel);
-        }
         if (confirmResetNoButton) {
             confirmResetNoButton.addEventListener('click', () => {
                 closeResetConfirmPanel();
