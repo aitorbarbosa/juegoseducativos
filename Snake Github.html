@@ -3307,6 +3307,8 @@ function setupSlider(slider, display) {
         const snakeTailTextureUp = new Image();
         const catTailTextureUp = new Image();
         const orangeCatTailTextureUp = new Image();
+        const snakeCornerTextureA = new Image();
+        const snakeCornerTextureB = new Image();
 
         const catHeadLeftImg = new Image();
         const catHeadDownImg = new Image();
@@ -4513,6 +4515,8 @@ function setupSlider(slider, display) {
             snakeTailTextureUp.src = 'https://i.imgur.com/npkMGwK.png';
             catTailTextureUp.src = 'https://i.imgur.com/5RSk7Z5.png';
             orangeCatTailTextureUp.src = 'https://i.imgur.com/IsZT8uP.png';
+            snakeCornerTextureA.src = 'https://i.imgur.com/GTHu6Eh.png';
+            snakeCornerTextureB.src = 'https://i.imgur.com/NLy26ku.png';
 
             catHeadLeftImg.src = 'https://i.imgur.com/apghsdf.png';
             catHeadDownImg.src = 'https://i.imgur.com/41vw2Cl.png';
@@ -4560,6 +4564,7 @@ function setupSlider(slider, display) {
                 const allImageObjects = [
                     classicSnakeHeadLeftImg, classicSnakeHeadDownImg, classicFoodImg,
                     snakeBodyTexture, snakeBodyTextureVertical, snakeTailTexture, snakeTailTextureUp,
+                    snakeCornerTextureA, snakeCornerTextureB,
                     rubiSnakeHeadUpDownImg, rubiSnakeHeadLeftImg, rubiSnakeFoodImg,
                     aitorSnakeHeadUpDownImg, aitorSnakeHeadLeftImg, aitorSnakeFoodImg,
                     noemiSnakeHeadUpDownImg, noemiSnakeHeadLeftImg, noemiSnakeFoodImg,
@@ -7484,15 +7489,16 @@ function setupSlider(slider, display) {
                     let texture = isTail ? tailTex : bodyTex;
 
                     if (texture && texture.complete && texture.naturalHeight !== 0) {
-                        const prev = snake[i - 1];
-                        const dx = prev.x - snake[i].x;
-                        const dy = prev.y - snake[i].y;
-                        ctx.save();
-                        ctx.translate(segmentX + GRID_SIZE / 2, segmentY + GRID_SIZE / 2);
-                        let rotation = 0;
-                        let scaleX = 1;
-                        let scaleY = 1;
-                        if (isTail) {
+                    const prev = snake[i - 1];
+                    const nextSeg = snake[i + 1];
+                    const dx = prev.x - snake[i].x;
+                    const dy = prev.y - snake[i].y;
+                    ctx.save();
+                    ctx.translate(segmentX + GRID_SIZE / 2, segmentY + GRID_SIZE / 2);
+                    let rotation = 0;
+                    let scaleX = 1;
+                    let scaleY = 1;
+                    if (isTail) {
                             const tailUpTex = skinData.tailTextureUp || snakeTailTextureUp;
                             if (dx === 1 && dy === 0) {
                                 scaleX = -1;
@@ -7502,13 +7508,43 @@ function setupSlider(slider, display) {
                                 texture = tailUpTex;
                                 scaleY = -1;
                             }
-                        } else {
-                            if (dx === 1 && dy === 0) {
-                                scaleX = -1;
-                            } else if (dx === 0 && Math.abs(dy) === 1) {
-                                texture = bodyTexVert;
+                    } else {
+                            let usedCorner = false;
+                            if (nextSeg) {
+                                const fromNextX = snake[i].x - nextSeg.x;
+                                const fromNextY = snake[i].y - nextSeg.y;
+                                const toPrevX = prev.x - snake[i].x;
+                                const toPrevY = prev.y - snake[i].y;
+                                let flipCorner = false;
+                                if ((fromNextX === -1 && fromNextY === 0 && toPrevX === 0 && toPrevY === -1) ||
+                                    (fromNextX === 0 && fromNextY === 1 && toPrevX === 1 && toPrevY === 0)) {
+                                    texture = snakeCornerTextureA;
+                                    usedCorner = true;
+                                } else if ((fromNextX === 1 && fromNextY === 0 && toPrevX === 0 && toPrevY === -1) ||
+                                           (fromNextX === 0 && fromNextY === 1 && toPrevX === -1 && toPrevY === 0)) {
+                                    texture = snakeCornerTextureA;
+                                    usedCorner = true;
+                                    flipCorner = true;
+                                } else if ((fromNextX === -1 && fromNextY === 0 && toPrevX === 0 && toPrevY === 1) ||
+                                           (fromNextX === 0 && fromNextY === -1 && toPrevX === 1 && toPrevY === 0)) {
+                                    texture = snakeCornerTextureB;
+                                    usedCorner = true;
+                                } else if ((fromNextX === 1 && fromNextY === 0 && toPrevX === 0 && toPrevY === 1) ||
+                                           (fromNextX === 0 && fromNextY === -1 && toPrevX === -1 && toPrevY === 0)) {
+                                    texture = snakeCornerTextureB;
+                                    usedCorner = true;
+                                    flipCorner = true;
+                                }
+                                if (flipCorner) scaleX = -1;
                             }
-                        }
+                            if (!usedCorner) {
+                                if (dx === 1 && dy === 0) {
+                                    scaleX = -1;
+                                } else if (dx === 0 && Math.abs(dy) === 1) {
+                                    texture = bodyTexVert;
+                                }
+                            }
+                    }
                         ctx.rotate(rotation);
                         ctx.scale(scaleX, scaleY);
                         ctx.drawImage(texture, -GRID_SIZE / 2, -GRID_SIZE / 2, GRID_SIZE, GRID_SIZE);
