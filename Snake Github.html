@@ -1506,9 +1506,9 @@
             right: auto;
             transform: none;
             background-color: transparent;
-            width: 48px;
-            height: 48px;
-            margin-right:30px;
+            width: 32px;
+            height: 32px;
+            margin: 0 6px;
         }
         #maze-info-button .setting-info-icon {
             width: 100%;
@@ -1521,9 +1521,9 @@
             right: auto;
             transform: none;
             background-color: transparent;
-            width: 48px;
-            height: 48px;
-            margin-right:30px;
+            width: 32px;
+            height: 32px;
+            margin: 0 6px;
         }
         #world-info-button .setting-info-icon {
             width: 100%;
@@ -1536,9 +1536,9 @@
             right: auto;
             transform: none;
             background-color: transparent;
-            width: 48px;
-            height: 48px;
-            margin-right:30px;
+            width: 32px;
+            height: 32px;
+            margin: 0 6px;
         }
         #classification-info-button .setting-info-icon {
             width: 100%;
@@ -2658,29 +2658,6 @@
                 <div class="panel-content">
                 <div id="worldButtonsContainer" class="hidden flex flex-wrap justify-center gap-4"></div>
                 <div id="mazeLevelButtonsContainer" class="hidden flex flex-wrap justify-center gap-4"></div>
-                <div class="control-row" id="player-row">
-                    <div id="player-select-control-group" class="control-group hidden">
-                        <div class="control-label-icon-row">
-                            <label class="control-label" for="playerNameSelector">Jugador:</label>
-                            <button id="delete-player-name-button" class="setting-info-button" aria-label="Eliminar jugador">
-                                <img class="setting-info-icon" src="https://i.imgur.com/w5E6xdU.png" alt="Eliminar" onerror="this.src='https://placehold.co/24x24/02030D/FFFFFF?text=Err';">
-                            </button>
-                        </div>
-                        <select id="playerNameSelector">
-                            <option value="Snake" selected>Snake</option>
-                            <option value="GamiSnake">GamiSnake</option>
-                        </select>
-                    </div>
-                    <div id="add-player-control-group" class="control-group hidden">
-                        <div class="control-label-icon-row">
-                            <label class="control-label" for="newPlayerNameInput">Añadir</label>
-                            <button id="confirm-add-player-button" class="setting-info-button" aria-label="Confirmar nuevo nombre">
-                                <img class="setting-info-icon" src="https://i.imgur.com/ZGgSVye.png" alt="Añadir" onerror="this.src='https://placehold.co/24x24/02030D/FFFFFF?text=Err';">
-                            </button>
-                        </div>
-                        <input id="newPlayerNameInput" type="text" maxlength="10">
-                    </div>
-                </div>
                 <div class="control-row" id="classification-select-row">
                     <div class="control-group" id="player-name-control-group">
                         <div class="control-label-icon-row">
@@ -4976,8 +4953,8 @@ function setupSlider(slider, display) {
             foodControlGroup.classList.remove('hidden');
             if (playerNameControlGroup) playerNameControlGroup.classList.remove('hidden');
             if (panelOpenedFromSplash) {
-                playerSelectControlGroup.classList.remove('hidden');
-                addPlayerControlGroup.classList.remove('hidden');
+                if (playerSelectControlGroup) playerSelectControlGroup.classList.remove('hidden');
+                if (addPlayerControlGroup) addPlayerControlGroup.classList.remove('hidden');
                 difficultyControlGroup.classList.add('hidden');
                 skinControlGroup.classList.add('hidden');
                 foodControlGroup.classList.add('hidden');
@@ -4985,8 +4962,8 @@ function setupSlider(slider, display) {
                 resetDataButton.classList.remove('hidden');
                 resetDataButton.classList.add('interactive-mode');
             } else {
-                playerSelectControlGroup.classList.add('hidden');
-                addPlayerControlGroup.classList.add('hidden');
+                if (playerSelectControlGroup) playerSelectControlGroup.classList.add('hidden');
+                if (addPlayerControlGroup) addPlayerControlGroup.classList.add('hidden');
                 resetDataButton.classList.add('hidden');
                 resetDataButton.classList.remove('interactive-mode');
             }
