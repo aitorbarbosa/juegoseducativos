@@ -41,7 +41,7 @@
 
         /* Color violeta para textos en negrita */
         strong {
-            color: #8f66af;
+            color: #f3f3f3;
         }
 
         .hidden {
@@ -381,19 +381,12 @@
         #title-panel h2 {
             font-size: 1.4em;
             margin: 0;
-            color: #8f66af;
+            color: #f3f3f3;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
         }
-        #title-image {
-            max-height: 48px;
-            width: auto;
-            max-width: 90%;
-        }
-
-        #main-info-title img,
-        #specific-info-title img {
+        #title-text {
             max-height: 48px;
             width: auto;
             max-width: 90%;
@@ -1598,7 +1591,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            color: #8f66af;
+            color: #f3f3f3;
             margin-bottom: 3px;
         }
         .settings-header h2, .info-header h2, .specific-info-header h2, .reset-header h2 {
@@ -1672,7 +1665,7 @@
         #info-panel-content h4,
         #specific-info-content h4 {
             font-size: 1em;
-            color: #8f66af;
+            color: #f3f3f3;
             margin-top: 6px;
             margin-bottom: 3px;
             text-align: left;
@@ -1805,10 +1798,10 @@
             }
           
             #title-panel { min-height: 30px; padding: 6px; }
-            #title-image,
-            #main-info-title img,
-            #specific-info-title img,
-            #settings-title img { max-height: 30px; }
+            #title-text,
+            #settings-title,
+            #main-info-title,
+            #specific-info-title { font-size: 0.9em; }
 
             #current-world-info-group { min-height: 30px; padding: 1px 4px 1px 14px; min-width: 70px; cursor: pointer;}
             #current-world-info-group .info-label { font-size: 0.6em; }
@@ -1925,10 +1918,10 @@
             }
 
             #title-panel { min-height: 36px; padding: 6px; }
-            #title-image,
-            #main-info-title img,
-            #specific-info-title img,
-            #settings-title img { max-height: 36px; }
+            #title-text,
+            #settings-title,
+            #main-info-title,
+            #specific-info-title { font-size: 1em; }
 
 
              #top-info-bar .info-label { font-size: 0.55em; }
@@ -2520,7 +2513,7 @@
         </div>
 
     <div class="game-container hidden">
-        <div id="title-panel" class="hidden"><img id="title-image" src="https://i.imgur.com/CZa88Hk.png" alt="Snake Mobile" onerror="this.src='https://placehold.co/300x80/02030D/FFFFFF?text=Title+Error'; console.error('Error loading title-image');"></div>
+        <div id="title-panel" class="hidden"><h2 id="title-text">SNAKE MOBILE</h2></div>
         <div id="progress-panel" class="hidden">
             <div id="current-world-info-group">
                 <span id="progress-panel-left-label" class="info-label">Nivel:</span>
@@ -2629,7 +2622,7 @@
         <div id="settings-panel" class="settings-panel-hidden">
                 <div class="settings-header">
                     <div class="header-title-group">
-                        <h2 id="settings-title"><img id="settings-title-img" src="https://i.imgur.com/IAfhEaH.png" alt="Configuración"></h2>
+                        <h2 id="settings-title">CONFIGURACIÓN</h2>
                         <button id="maze-info-button" class="setting-info-button hidden" data-setting="mazeLevel" aria-label="Información del modo laberinto">
                             <img class="setting-info-icon" src="https://i.imgur.com/rWe7Ylp.png" alt="info" onerror="this.src='https://placehold.co/24x24/02030D/FFFFFF?text=Err';">
                         </button>
@@ -2881,7 +2874,7 @@
 
             <div id="info-panel" class="info-panel-hidden">
                 <div class="info-header">
-                    <h2 id="main-info-title"><img src="https://i.imgur.com/CZa88Hk.png" alt="Snake Mobile" onerror="this.src='https://placehold.co/300x80/02030D/FFFFFF?text=Title+Error'; console.error('Error loading main-info-title image');"></h2>
+                    <h2 id="main-info-title">INFORMACIÓN</h2>
                     <button id="close-info-button" aria-label="Cerrar información">&times;</button>
                 </div>
                 <div id="info-panel-content">
@@ -3077,7 +3070,7 @@
         const worldButtonsContainer = document.getElementById("worldButtonsContainer");
         const mazeLevelButtonsContainer = document.getElementById("mazeLevelButtonsContainer");
         const difficultyLabel = document.getElementById("difficulty-label");
-        const settingsTitleImg = document.getElementById("settings-title-img");
+        const settingsTitle = document.getElementById("settings-title");
         const audioToggleSelector = document.getElementById("audioToggleSelector");
         const skinSelector = document.getElementById("skinSelector");
         const foodSelector = document.getElementById("foodSelector");
@@ -5573,16 +5566,12 @@ function setupSlider(slider, display) {
                 return;
             }
 
-            const imgTag = helpData.image ?
-                `<img src="${helpData.image}" alt="${helpData.title}" onerror="this.src='https://placehold.co/300x80/02030D/FFFFFF?text=Title+Error'; console.error('Error loading specific-info-title image');">` :
-                helpData.title;
-
             if (settingKey === 'difficulty') {
                 // In classification mode show the dedicated title
-                specificInfoTitle.innerHTML = imgTag;
+                specificInfoTitle.textContent = helpData.title.toUpperCase();
                 specificInfoContent.innerHTML = helpData.text_classification;
             } else {
-                specificInfoTitle.innerHTML = imgTag;
+                specificInfoTitle.textContent = helpData.title.toUpperCase();
                 specificInfoContent.innerHTML = helpData.text;
             }
             
@@ -8205,9 +8194,8 @@ function setupSlider(slider, display) {
             if (classificationRankingGroup) classificationRankingGroup.classList.add('hidden');
 
             // Set default settings header appearance
-            if (settingsTitleImg) {
-                settingsTitleImg.src = 'https://i.imgur.com/IAfhEaH.png';
-                settingsTitleImg.alt = 'Configuración';
+            if (settingsTitle) {
+                settingsTitle.textContent = 'CONFIGURACIÓN';
             }
             if (mazeInfoButton) mazeInfoButton.classList.add('hidden');
             if (classificationInfoButton) classificationInfoButton.classList.add('hidden');
@@ -8272,14 +8260,16 @@ function setupSlider(slider, display) {
                      if (!isGameCurrentlyRunning) difficultyControlGroup.classList.add("interactive-mode");
                      else difficultyControlGroup.classList.remove("interactive-mode");
                 }
-                if (settingsTitleImg) {
-                    settingsTitleImg.src = 'https://i.imgur.com/tLBeddL.png';
-                    settingsTitleImg.alt = 'Modo Aventura';
+                if (settingsTitle) {
+                    settingsTitle.textContent = 'MODO AVENTURA';
                 }
             } else if (gameMode === 'freeMode') {
                 // En el modo libre mantendremos visible el título del juego y ocultaremos
                 // el panel de progreso con la dificultad y la máxima puntuación.
                 titlePanel.classList.remove('hidden');
+                if (settingsTitle) {
+                    settingsTitle.textContent = 'MODO LIBRE';
+                }
                 progressPanel.classList.add('hidden');
                 starProgressContainer.classList.add('hidden');
                 highScoreDisplay.classList.add('hidden');
@@ -8338,9 +8328,8 @@ function setupSlider(slider, display) {
                 difficultyInfoButton.classList.remove('hidden');
                 mazeInfoButton.classList.add('hidden');
                 if (classificationInfoButton) classificationInfoButton.classList.remove('hidden');
-                if (settingsTitleImg) {
-                    settingsTitleImg.src = specificHelpTexts.difficulty.image;
-                    settingsTitleImg.alt = specificHelpTexts.difficulty.title;
+                if (settingsTitle) {
+                    settingsTitle.textContent = 'MODO CLASIFICACIÓN';
                 }
 
                 if (isSettingsPanelCurrentlyOpen && !isGameCurrentlyRunning) {
@@ -8385,9 +8374,8 @@ function setupSlider(slider, display) {
                 mazeInfoButton.classList.remove('hidden');
                 populateMazeLevelButtons();
 
-                if (settingsTitleImg) {
-                    settingsTitleImg.src = 'https://i.imgur.com/XLdIK3D.png';
-                    settingsTitleImg.alt = 'Modo Laberinto';
+                if (settingsTitle) {
+                    settingsTitle.textContent = 'MODO LABERINTO';
                 }
 
                 if (isSettingsPanelCurrentlyOpen && !isGameCurrentlyRunning) {
