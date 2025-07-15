@@ -1458,7 +1458,7 @@
         #settings-panel, #info-panel, #specific-info-panel, #free-settings-panel, #reset-confirmation-panel, #config-menu-panel, #generic-menu-panel, #store-panel, #purchase-confirmation-panel {
             position: fixed;
             left: 50%;
-            transform: translateX(-50%) scale(0.95);
+            transform: translateX(-50%) scale(0);
             background-color: #1F2937;
             padding: 15px;
             border-radius: 12px;
@@ -1566,7 +1566,7 @@
         #generic-menu-panel.centered-panel,
         #store-panel.centered-panel,
         #purchase-confirmation-panel.centered-panel {
-            transform: translate(-50%, -50%) scale(0.95);
+            transform: translate(-50%, -50%) scale(0);
         }
         #settings-panel.centered-panel.panel-visible,
         #info-panel.centered-panel.panel-visible,
@@ -4871,7 +4871,7 @@ function setupSlider(slider, display) {
                 panelElement.classList.remove(hiddenClassName);
                 positionPanel(panelElement);
                 if (!panelElement.classList.contains('centered-panel')) {
-                    panelElement.style.transform = 'scale(0.95)';
+                    panelElement.style.transform = 'scale(0)';
                 }
 
                 requestAnimationFrame(() => {
@@ -4927,7 +4927,7 @@ function setupSlider(slider, display) {
             } else { // Hiding a panel
                 panelElement.classList.remove(visibleClassName);
                 if (!panelElement.classList.contains('centered-panel')) {
-                    panelElement.style.transform = 'scale(0.95)';
+                    panelElement.style.transform = 'scale(0)';
                 }
                 setTimeout(() => {
                     panelElement.classList.add(hiddenClassName);
