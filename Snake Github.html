@@ -4950,6 +4950,15 @@ function setupSlider(slider, display) {
                 settingsPanel.classList.remove("centered-panel");
             }
             togglePanel(settingsPanel, settingsPanelContent, true);
+            if (panelOpenedFromSplash) {
+                const splashContent = document.getElementById('splash-content');
+                requestAnimationFrame(() => {
+                    if (splashContent) {
+                        matchPanelSizeWithElement(splashContent, settingsPanel);
+                        settingsPanel.classList.remove('centered-panel');
+                    }
+                });
+            }
             updateSfxVolume();
             // Show or hide certain settings when accessed from the splash screen
             if (!gameMode) difficultyControlGroup.classList.add('hidden');
@@ -5208,9 +5217,8 @@ function setupSlider(slider, display) {
                 const splashContent = document.getElementById('splash-content');
                 requestAnimationFrame(() => {
                     if (splashContent) {
-                        const rect = splashContent.getBoundingClientRect();
-                        infoPanel.style.width = rect.width + 'px';
-                        infoPanel.style.left = (rect.left + rect.width / 2) + 'px';
+                        matchPanelSizeWithElement(splashContent, infoPanel);
+                        infoPanel.classList.remove('centered-panel');
                     }
                 });
             }
