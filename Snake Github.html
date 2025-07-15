@@ -1545,6 +1545,21 @@
             height: 100%;
             object-fit: contain;
         }
+        #profile-info-button {
+            position: static;
+            top: auto;
+            right: auto;
+            transform: none;
+            background-color: transparent;
+            width: 28px;
+            height: 28px;
+            margin: 0 6px;
+        }
+        #profile-info-button .setting-info-icon {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
         #free-settings-panel {
             max-height: 90vh;
             box-sizing: border-box;
@@ -2652,6 +2667,9 @@
                         <button id="classification-info-button" class="setting-info-button hidden" aria-label="Información del modo clasificación" data-setting="difficulty">
                             <img class="setting-info-icon" src="https://i.imgur.com/rWe7Ylp.png" alt="info" onerror="this.src='https://placehold.co/24x24/02030D/FFFFFF?text=Err';">
                         </button>
+                        <button id="profile-info-button" class="setting-info-button hidden" aria-label="Información sobre perfil">
+                            <img class="setting-info-icon" src="https://i.imgur.com/rWe7Ylp.png" alt="info" onerror="this.src='https://placehold.co/24x24/02030D/FFFFFF?text=Err';">
+                        </button>
                     </div>
                     <button id="close-settings-button" aria-label="Cerrar configuración">&times;</button>
                 </div>
@@ -2662,7 +2680,7 @@
                     <div class="control-group" id="player-name-control-group">
                         <div class="control-label-icon-row">
                             <label class="control-label" for="playerNameSelector">Jugador:</label>
-                            <button class="setting-info-button" data-setting="playerName" aria-label="Información sobre nombre del jugador">
+                            <button id="player-name-info-button" class="setting-info-button" data-setting="playerName" aria-label="Información sobre nombre del jugador">
                                 <img class="setting-info-icon" src="https://i.imgur.com/rWe7Ylp.png" alt="info" onerror="this.src='https://placehold.co/24x24/02030D/FFFFFF?text=Err';">
                             </button>
                         </div>
@@ -2700,6 +2718,26 @@
                         </thead>
                         <tbody id="classification-ranking-list"></tbody>
                     </table>
+                </div>
+                <div class="control-row" id="player-manage-row">
+                    <div class="control-group" id="player-select-control-group">
+                        <div class="control-label-icon-row">
+                            <label class="control-label" for="playerNameSelector">Jugador:</label>
+                            <button id="delete-player-name-button" class="setting-info-button" aria-label="Eliminar jugador">
+                                <img class="setting-info-icon" src="https://i.imgur.com/w5E6xdU.png" alt="Eliminar" onerror="this.src='https://placehold.co/24x24/02030D/FFFFFF?text=Err';">
+                            </button>
+                        </div>
+                        <select id="playerNameSelector"></select>
+                    </div>
+                    <div class="control-group hidden" id="add-player-control-group">
+                        <div class="control-label-icon-row">
+                            <label class="control-label" for="newPlayerNameInput">Añadir</label>
+                            <button id="confirm-add-player-button" class="setting-info-button" aria-label="Confirmar nuevo jugador">
+                                <img class="setting-info-icon" src="https://i.imgur.com/ZGgSVye.png" alt="Añadir" onerror="this.src='https://placehold.co/24x24/02030D/FFFFFF?text=Err';">
+                            </button>
+                        </div>
+                        <input type="text" id="newPlayerNameInput" maxlength="10">
+                    </div>
                 </div>
                 <div class="control-group" id="skin-control-group">
                     <div class="control-label-icon-row">
@@ -3108,6 +3146,9 @@
         if (worldInfoButton) worldInfoButton.removeAttribute('data-setting');
         const mazeInfoButton = document.getElementById("maze-info-button");
         const classificationInfoButton = document.getElementById("classification-info-button");
+        const profileInfoButton = document.getElementById("profile-info-button");
+        if (profileInfoButton) profileInfoButton.removeAttribute('data-setting');
+        const playerNameInfoButton = document.getElementById("player-name-info-button");
         
         const progressPanel = document.getElementById("progress-panel");
         const titlePanel = document.getElementById("title-panel"); 
@@ -4966,6 +5007,8 @@ function setupSlider(slider, display) {
             }
             togglePanel(settingsPanel, settingsPanelContent, true);
             updateSfxVolume();
+            if (profileInfoButton) profileInfoButton.classList.add('hidden');
+            if (playerNameInfoButton) playerNameInfoButton.classList.remove('hidden');
             // Show or hide certain settings when accessed from the splash screen
             if (!gameMode) difficultyControlGroup.classList.add('hidden');
             else difficultyControlGroup.classList.remove('hidden');
@@ -5087,6 +5130,8 @@ function setupSlider(slider, display) {
                 if (gameContainer) gameContainer.classList.add('hidden');
                 panelOpenedFromSplash = false;
             }
+            if (profileInfoButton) profileInfoButton.classList.add('hidden');
+            if (playerNameInfoButton) playerNameInfoButton.classList.remove('hidden');
         }
 
         function openFreeSettingsPanel() {
@@ -5482,9 +5527,11 @@ function setupSlider(slider, display) {
            openSettingsPanel();
            matchPanelSizeWithElement(configMenuPanel, settingsPanel);
            if (settingsTitle) settingsTitle.textContent = 'PERFIL';
+           if (profileInfoButton) profileInfoButton.classList.remove('hidden');
+           if (playerNameInfoButton) playerNameInfoButton.classList.add('hidden');
            if (playerSelectControlGroup) playerSelectControlGroup.classList.remove('hidden');
            if (addPlayerControlGroup) addPlayerControlGroup.classList.remove('hidden');
-            if (playerNameControlGroup) playerNameControlGroup.classList.remove('hidden');
+           if (playerNameControlGroup) playerNameControlGroup.classList.remove('hidden');
             skinControlGroup.classList.remove('hidden');
             foodControlGroup.classList.remove('hidden');
             difficultyControlGroup.classList.add('hidden');
@@ -5599,6 +5646,33 @@ function setupSlider(slider, display) {
             applyScrollbarPadding(specificInfoContent);
         }
 
+        function openProfileInfoPanel() {
+            if (!specificInfoPanel || !specificInfoTitle || !specificInfoContent) return;
+
+            let sourcePanel = null;
+            if (!settingsPanel.classList.contains('settings-panel-hidden')) {
+                sourcePanel = settingsPanel;
+            } else if (freeSettingsPanel && !freeSettingsPanel.classList.contains('free-settings-panel-hidden')) {
+                sourcePanel = freeSettingsPanel;
+            }
+            if (sourcePanel) {
+                Array.from(sourcePanel.querySelectorAll('select, input[type="range"], .setting-info-button')).forEach(el => el.disabled = true);
+                Array.from(sourcePanel.querySelectorAll('.control-group.interactive-mode')).forEach(el => el.classList.remove('interactive-mode'));
+            }
+
+            specificInfoTitle.textContent = 'INFORMACIÓN';
+            specificInfoContent.innerHTML =
+                `<h4>Jugador</h4>${specificHelpTexts.playerName.text}` +
+                `<h4>Disfraz</h4>${specificHelpTexts.skin.text}` +
+                `<h4>Comestible</h4>${specificHelpTexts.food.text}`;
+
+            togglePanel(specificInfoPanel, specificInfoContent, true);
+            if (sourcePanel) {
+                matchPanelSizeWithElement(sourcePanel, specificInfoPanel);
+            }
+            applyScrollbarPadding(specificInfoContent);
+        }
+
         function closeSpecificInfoPanel() {
             togglePanel(specificInfoPanel, specificInfoContent, false); // Hide specific info panel
             specificInfoPanel.classList.remove('centered-panel');
@@ -5654,7 +5728,6 @@ function setupSlider(slider, display) {
                     }
                     playerNameSelectors.forEach(sel => sel.disabled = false);
                     if (panelOpenedFromSplash) {
-                        if (playerSelectControlGroup) playerSelectControlGroup.classList.add("interactive-mode");
                         if (addPlayerControlGroup) addPlayerControlGroup.classList.add("interactive-mode");
                     }
                     settingsPanel.querySelectorAll('.setting-info-button').forEach(btn => btn.disabled = false);
@@ -5714,6 +5787,10 @@ function setupSlider(slider, display) {
                 button.addEventListener('touchcancel', () => icon.classList.remove('icon-button-pressed'));
             }
         });
+
+        if (profileInfoButton) {
+            profileInfoButton.addEventListener('click', openProfileInfoPanel);
+        }
 
         if (worldInfoButton) {
             worldInfoButton.addEventListener('click', () => {
