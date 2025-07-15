@@ -1552,6 +1552,21 @@
             height: 100%;
             object-fit: contain;
         }
+        #free-mode-info-button {
+            position: static;
+            top: auto;
+            right: auto;
+            transform: none;
+            background-color: transparent;
+            width: 28px;
+            height: 28px;
+            margin: 0 6px;
+        }
+        #free-mode-info-button .setting-info-icon {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
         #profile-info-button {
             position: static;
             top: auto;
@@ -2799,7 +2814,12 @@
 
             <div id="free-settings-panel" class="free-settings-panel-hidden">
                 <div class="settings-header">
-                    <h2>PERSONALIZA TU JUEGO</h2>
+                    <div class="header-title-group">
+                        <h2>PERSONALIZA TU JUEGO</h2>
+                        <button id="free-mode-info-button" class="setting-info-button" data-setting="freeDifficulty" aria-label="Información sobre modo libre">
+                            <img class="setting-info-icon" src="https://i.imgur.com/rWe7Ylp.png" alt="info" onerror="this.src='https://placehold.co/24x24/02030D/FFFFFF?text=Err';">
+                        </button>
+                    </div>
                     <button id="close-free-settings-button" aria-label="Cerrar ajustes">&times;</button>
                 </div>
                 <div class="panel-content">
@@ -3201,6 +3221,7 @@
         if (worldInfoButton) worldInfoButton.removeAttribute('data-setting');
         const mazeInfoButton = document.getElementById("maze-info-button");
         const classificationInfoButton = document.getElementById("classification-info-button");
+        const freeModeInfoButton = document.getElementById("free-mode-info-button");
         const profileInfoButton = document.getElementById("profile-info-button");
         if (profileInfoButton) profileInfoButton.removeAttribute('data-setting');
         const playerNameInfoButton = document.getElementById("player-name-info-button");
@@ -5946,7 +5967,6 @@ function setupSlider(slider, display) {
             });
         }
 
-
         function drawFoodItem(x, y) {
             if (!ctx) return;
             const foodData = FOODS[currentFood] || FOODS['apple'];
@@ -8397,6 +8417,7 @@ function setupSlider(slider, display) {
             }
             if (mazeInfoButton) mazeInfoButton.classList.add('hidden');
             if (classificationInfoButton) classificationInfoButton.classList.add('hidden');
+            if (freeModeInfoButton) freeModeInfoButton.classList.add('hidden');
 
             if (!gameMode) {
                 titlePanel.classList.remove('hidden');
@@ -8446,6 +8467,7 @@ function setupSlider(slider, display) {
                 foodControlGroup.classList.add('hidden');
                 difficultyInfoButton.classList.add('hidden');
                 worldInfoButton.classList.remove('hidden');
+                if (freeModeInfoButton) freeModeInfoButton.classList.add('hidden');
                 mazeInfoButton.classList.add('hidden');
                 populateWorldButtons();
                 drawStarProgress();
@@ -8485,6 +8507,7 @@ function setupSlider(slider, display) {
                 mazeLevelButtonsContainer.classList.add('hidden');
                 worldInfoButton.classList.add('hidden');
                 difficultyInfoButton.classList.remove('hidden');
+                if (freeModeInfoButton) freeModeInfoButton.classList.remove('hidden');
                 mazeInfoButton.classList.add('hidden');
 
                 if (isSettingsPanelCurrentlyOpen && !isGameCurrentlyRunning) {
@@ -8525,7 +8548,9 @@ function setupSlider(slider, display) {
                 worldInfoButton.classList.add('hidden');
                 difficultyInfoButton.classList.remove('hidden');
                 mazeInfoButton.classList.add('hidden');
+                if (freeModeInfoButton) freeModeInfoButton.classList.add('hidden');
                 if (classificationInfoButton) classificationInfoButton.classList.remove('hidden');
+                if (freeModeInfoButton) freeModeInfoButton.classList.add('hidden');
                 if (settingsTitle) {
                     settingsTitle.textContent = 'MODO CLASIFICACION';
                 }
@@ -8570,6 +8595,7 @@ function setupSlider(slider, display) {
                 worldInfoButton.classList.add('hidden');
                 difficultyInfoButton.classList.add('hidden');
                 mazeInfoButton.classList.remove('hidden');
+                if (freeModeInfoButton) freeModeInfoButton.classList.add('hidden');
                 populateMazeLevelButtons();
 
                 if (settingsTitle) {
@@ -8591,6 +8617,7 @@ function setupSlider(slider, display) {
                 mazeLevelButtonsContainer.classList.add('hidden');
                 worldInfoButton.classList.add('hidden');
                 difficultyInfoButton.classList.remove('hidden');
+                if (freeModeInfoButton) freeModeInfoButton.classList.add('hidden');
                 mazeInfoButton.classList.add('hidden');
                 if (isSettingsPanelCurrentlyOpen && !isGameCurrentlyRunning) {
                     difficultySelector.disabled = false;
