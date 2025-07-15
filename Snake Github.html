@@ -1052,6 +1052,29 @@
             box-shadow: none;
         }
 
+        .player-action-button {
+            background-color: #384152;
+            border: none;
+            border-radius: 8px;
+            padding: 0;
+            width: 38px;
+            height: 38px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-sizing: border-box;
+        }
+        .player-action-icon {
+            width: 24px;
+            height: 24px;
+        }
+        #add-player-control-group {
+            flex-direction: row;
+            align-items: center;
+            gap: 6px;
+        }
+
         #free-settings-panel input[type="number"] {
             padding: 4px 6px;
             width: 100%;
@@ -1452,10 +1475,10 @@
             display: block;
         }
 
-        .settings-panel-hidden, .info-panel-hidden, .specific-info-panel-hidden, .free-settings-panel-hidden, .reset-panel-hidden, .config-menu-panel-hidden, .generic-menu-panel-hidden, .store-panel-hidden, .purchase-confirmation-panel-hidden {
+        .settings-panel-hidden, .info-panel-hidden, .specific-info-panel-hidden, .free-settings-panel-hidden, .reset-panel-hidden, .config-menu-panel-hidden, .generic-menu-panel-hidden, .store-panel-hidden, .purchase-confirmation-panel-hidden, .delete-player-confirmation-panel-hidden {
             display: none !important;
         }
-        #settings-panel, #info-panel, #specific-info-panel, #free-settings-panel, #reset-confirmation-panel, #config-menu-panel, #generic-menu-panel, #store-panel, #purchase-confirmation-panel {
+        #settings-panel, #info-panel, #specific-info-panel, #free-settings-panel, #reset-confirmation-panel, #config-menu-panel, #generic-menu-panel, #store-panel, #purchase-confirmation-panel, #delete-player-confirmation-panel {
             position: fixed;
             left: 0;
             transform: scale(0);
@@ -2094,6 +2117,7 @@
         #generic-menu-panel { z-index: 2101; }
         #store-panel { z-index: 2101; }
         #purchase-confirmation-panel { z-index: 2103; }
+        #delete-player-confirmation-panel { z-index: 2103; }
         #modal-overlay {
             position: fixed;
             top: 0;
@@ -2281,6 +2305,90 @@
         #confirmPurchaseNo:hover { filter: brightness(0.95); }
         #confirmPurchaseYes:disabled,
         #confirmPurchaseNo:disabled { filter: brightness(0.6); cursor: not-allowed; }
+
+        #delete-player-confirmation-panel p { text-align: center; margin: 0 0 10px 0; }
+        #delete-player-confirmation-panel .reset-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+        }
+        #confirmDeletePlayerYes,
+        #confirmDeletePlayerNo {
+            flex: 0 0 auto;
+            min-width: 130px;
+            position: relative;
+            padding: 0 6px;
+            font-size: 1em;
+            border-radius: 10px;
+            box-shadow: 0 2px 0 #422E58;
+            overflow: hidden;
+            background: none;
+            color: #ffffff;
+            font-family: 'Press Start 2P', sans-serif;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.05s ease-out, filter 0.05s ease-out;
+            height: 65px;
+            box-sizing: border-box;
+        }
+        #confirmDeletePlayerYes::before,
+        #confirmDeletePlayerNo::before {
+            content: '';
+            position: absolute;
+            left: -2px;
+            top: -2px;
+            width: calc(100% + 4px);
+            height: calc(100% + 4px);
+            border-radius: 10px;
+            pointer-events: none;
+            z-index: -2;
+        }
+        #confirmDeletePlayerYes::after,
+        #confirmDeletePlayerNo::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            width: 100%;
+            height: 80%;
+            border-radius: 10px;
+            transform: translateY(-50%);
+            pointer-events: none;
+            z-index: -1;
+        }
+        #confirmDeletePlayerYes {
+            border: 2px solid #7f1d1d;
+            text-shadow: -1px -1px 0 #7f1d1d,
+                         1px -1px 0 #7f1d1d,
+                        -1px 1px 0 #7f1d1d,
+                         1px 1px 0 #7f1d1d;
+        }
+        #confirmDeletePlayerYes::before {
+            background: linear-gradient(
+                #fecaca 0%,
+                #fecaca 50%,
+                #b91c1c 50%,
+                #b91c1c 100%
+            );
+        }
+        #confirmDeletePlayerYes::after { background-color: #f87171; }
+        #confirmDeletePlayerNo {
+            border: 2px solid #1b5e20;
+            text-shadow: -1px -1px 0 #1b5e20,
+                         1px -1px 0 #1b5e20,
+                        -1px 1px 0 #1b5e20,
+                         1px 1px 0 #1b5e20;
+        }
+        #confirmDeletePlayerNo::before {
+            background: linear-gradient(
+                #d1fae5 0%,
+                #d1fae5 50%,
+                #4CAF50 50%,
+                #4CAF50 100%
+            );
+        }
+        #confirmDeletePlayerNo::after { background-color: #81c784; }
+        #confirmDeletePlayerYes:hover,
+        #confirmDeletePlayerNo:hover { filter: brightness(0.95); }
 
         /* --- Estilo de botones para selección de niveles en modo laberinto --- */
         .maze-level-button {
@@ -2658,6 +2766,29 @@
                 <div class="panel-content">
                 <div id="worldButtonsContainer" class="hidden flex flex-wrap justify-center gap-4"></div>
                 <div id="mazeLevelButtonsContainer" class="hidden flex flex-wrap justify-center gap-4"></div>
+                <div class="control-group hidden" id="player-select-control-group">
+                    <div class="control-label-icon-row">
+                        <label class="control-label" for="playerNameSelector">Jugador:</label>
+                        <div class="player-action-buttons">
+                            <button class="setting-info-button" data-setting="playerName" aria-label="Información sobre nombre del jugador">
+                                <img class="setting-info-icon" src="https://i.imgur.com/rWe7Ylp.png" alt="info" onerror="this.src='https://placehold.co/24x24/02030D/FFFFFF?text=Err';">
+                            </button>
+                            <button id="add-player-name-button" class="player-action-button" aria-label="Añadir jugador">
+                                <img class="player-action-icon" src="https://i.imgur.com/ZGgSVye.png" alt="Añadir" onerror="this.src='https://placehold.co/24x24/02030D/FFFFFF?text=+';">
+                            </button>
+                            <button id="delete-player-name-button" class="player-action-button" aria-label="Eliminar jugador">
+                                <img class="player-action-icon" src="https://i.imgur.com/w5E6xdU.png" alt="Eliminar" onerror="this.src='https://placehold.co/24x24/02030D/FFFFFF?text=-';">
+                            </button>
+                        </div>
+                    </div>
+                    <select id="playerNameSelector"></select>
+                </div>
+                <div class="control-group hidden" id="add-player-control-group">
+                    <input id="newPlayerNameInput" type="text" placeholder="Nuevo jugador">
+                    <button id="confirm-add-player-button" class="player-action-button" aria-label="Confirmar">
+                        <img class="player-action-icon" src="https://i.imgur.com/ZGgSVye.png" alt="Confirmar" onerror="this.src='https://placehold.co/24x24/02030D/FFFFFF?text=OK';">
+                    </button>
+                </div>
                 <div class="control-row" id="classification-select-row">
                     <div class="control-group" id="player-name-control-group">
                         <div class="control-label-icon-row">
@@ -2953,6 +3084,18 @@
                     </div>
                 </div>
             </div>
+            <div id="delete-player-confirmation-panel" class="delete-player-confirmation-panel-hidden">
+                <div class="reset-header">
+                    <h2>ELIMINAR JUGADOR</h2>
+                </div>
+                <div class="panel-content">
+                    <p id="delete-player-confirmation-text">¿Eliminar jugador?</p>
+                    <div class="reset-buttons">
+                        <button id="confirmDeletePlayerYes">SI</button>
+                        <button id="confirmDeletePlayerNo">NO</button>
+                    </div>
+                </div>
+            </div>
 
             <div id="insufficient-funds-toast" class="panel-card hidden">
                 <div class="value-box">Monedas insuficientes</div>
@@ -3085,11 +3228,17 @@
         const foodSelector = document.getElementById("foodSelector");
         const playerNameSelectors = document.querySelectorAll("#playerNameSelector");
         const confirmAddPlayerButton = document.getElementById("confirm-add-player-button");
+        const addPlayerNameButton = document.getElementById("add-player-name-button");
         const deletePlayerNameButton = document.getElementById("delete-player-name-button");
         const newPlayerNameInput = document.getElementById("newPlayerNameInput");
+        const deletePlayerConfirmPanel = document.getElementById("delete-player-confirmation-panel");
+        const deletePlayerConfirmText = document.getElementById("delete-player-confirmation-text");
+        const confirmDeletePlayerYesButton = document.getElementById("confirmDeletePlayerYes");
+        const confirmDeletePlayerNoButton = document.getElementById("confirmDeletePlayerNo");
         const playerSelectControlGroup = document.getElementById("player-select-control-group");
         const playerNameControlGroup = document.getElementById("player-name-control-group");
         const addPlayerControlGroup = document.getElementById("add-player-control-group");
+        let isAddingPlayer = false;
         const difficultyControlGroup = document.getElementById("difficulty-control-group");
         const audioControlGroup = document.getElementById("audio-control-group");
         const skinControlGroup = document.getElementById("skin-control-group");
@@ -4855,6 +5004,7 @@ function setupSlider(slider, display) {
             else if (panelId === "generic-menu-panel") hiddenClassName = "generic-menu-panel-hidden";
             else if (panelId === "store-panel") hiddenClassName = "store-panel-hidden";
             else if (panelId === "purchase-confirmation-panel") hiddenClassName = "purchase-confirmation-panel-hidden";
+            else if (panelId === "delete-player-confirmation-panel") hiddenClassName = "delete-player-confirmation-panel-hidden";
             else {
                 console.error("togglePanel: Clase oculta no definida para el panel:", panelId);
                 return;
@@ -5476,6 +5626,12 @@ function setupSlider(slider, display) {
             if (purchaseItemPreview) purchaseItemPreview.innerHTML = '';
             if (modalOverlay) modalOverlay.classList.add('hidden');
             foodToPurchase = null;
+        }
+
+        function closeDeletePlayerConfirmPanel() {
+            togglePanel(deletePlayerConfirmPanel, deletePlayerConfirmPanel.querySelector('.panel-content'), false);
+            deletePlayerConfirmPanel.classList.remove('centered-panel');
+            if (modalOverlay) modalOverlay.classList.add('hidden');
         }
 
        function openProfileMenu() {
@@ -9267,20 +9423,49 @@ async function startGame(isRestart = false) {
         }
 
         if (confirmAddPlayerButton) {
-            confirmAddPlayerButton.addEventListener('click', addNewPlayerFromInput);
+            confirmAddPlayerButton.addEventListener('click', function() {
+                addNewPlayerFromInput();
+                if (addPlayerControlGroup) addPlayerControlGroup.classList.add('hidden');
+                playerNameSelectors.forEach(sel => sel.disabled = false);
+                isAddingPlayer = false;
+            });
+        }
+        if (addPlayerNameButton) {
+            addPlayerNameButton.addEventListener('click', function() {
+                if (!isAddingPlayer) {
+                    playerNameSelectors.forEach(sel => sel.disabled = true);
+                    if (addPlayerControlGroup) addPlayerControlGroup.classList.remove('hidden');
+                    isAddingPlayer = true;
+                    if (newPlayerNameInput) newPlayerNameInput.focus();
+                } else {
+                    addNewPlayerFromInput();
+                    if (addPlayerControlGroup) addPlayerControlGroup.classList.add('hidden');
+                    playerNameSelectors.forEach(sel => sel.disabled = false);
+                    isAddingPlayer = false;
+                }
+            });
         }
         if (newPlayerNameInput) {
             newPlayerNameInput.addEventListener('keyup', function(e) { if (e.key === 'Enter') addNewPlayerFromInput(); });
-            newPlayerNameInput.addEventListener('blur', addNewPlayerFromInput);
-            newPlayerNameInput.addEventListener('input', function() {
-                if (this.value.length > 10) this.value = this.value.slice(0, 10);
-            });
+            newPlayerNameInput.addEventListener('input', function() { if (this.value.length > 10) this.value = this.value.slice(0, 10); });
         }
         if (deletePlayerNameButton) {
             deletePlayerNameButton.addEventListener('click', function() {
                 if (Object.keys(playerProfiles).length <= 1) return;
+                const name = getSelectedPlayerName();
+                if (name === 'Snake') return;
+                if (deletePlayerConfirmText) deletePlayerConfirmText.textContent = `¿Eliminar jugador ${name}?`;
+                if (deletePlayerConfirmPanel) {
+                    deletePlayerConfirmPanel.classList.add('centered-panel');
+                    togglePanel(settingsPanel, settingsPanelContent, false);
+                    togglePanel(deletePlayerConfirmPanel, deletePlayerConfirmPanel.querySelector('.panel-content'), true);
+                    if (modalOverlay) modalOverlay.classList.remove('hidden');
+                }
+            });
+        }
+        if (confirmDeletePlayerYesButton) {
+            confirmDeletePlayerYesButton.addEventListener('click', function() {
                 const nameToDelete = getSelectedPlayerName();
-                if (nameToDelete === 'Snake') return;
                 if (playerProfiles[nameToDelete]) delete playerProfiles[nameToDelete];
                 const remaining = Object.keys(playerProfiles);
                 const newSelection = remaining[0];
@@ -9296,6 +9481,14 @@ async function startGame(isRestart = false) {
                 updateGameModeUI();
                 requestAnimationFrame(draw);
                 saveGameSettings();
+                closeDeletePlayerConfirmPanel();
+                togglePanel(settingsPanel, settingsPanelContent, true);
+            });
+        }
+        if (confirmDeletePlayerNoButton) {
+            confirmDeletePlayerNoButton.addEventListener('click', function() {
+                closeDeletePlayerConfirmPanel();
+                togglePanel(settingsPanel, settingsPanelContent, true);
             });
         }
 
