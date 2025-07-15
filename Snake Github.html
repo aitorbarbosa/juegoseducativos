@@ -137,7 +137,7 @@
         }
 
 
-        .game-container {
+.game-container {
             text-align: center;
             background-color: #1F2937;
             padding-top: 10px;
@@ -152,6 +152,14 @@
             height: 100%;
             display: flex;
             flex-direction: column;
+            transform-origin: top center;
+            transform: scale(0);
+            opacity: 0;
+            transition: transform 0.3s ease-out, opacity 0.3s ease-out;
+        }
+.game-container.game-container-visible {
+            transform: scale(1);
+            opacity: 1;
         }
         #play-area { position: relative; }
 
@@ -1458,7 +1466,7 @@
         #settings-panel, #info-panel, #specific-info-panel, #free-settings-panel, #reset-confirmation-panel, #config-menu-panel, #generic-menu-panel, #store-panel, #purchase-confirmation-panel {
             position: fixed;
             left: 50%;
-            transform: translateX(-50%) scale(0.95);
+            transform: translateX(-50%) scale(0);
             background-color: #1F2937;
             padding: 15px;
             border-radius: 12px;
@@ -1566,7 +1574,7 @@
         #generic-menu-panel.centered-panel,
         #store-panel.centered-panel,
         #purchase-confirmation-panel.centered-panel {
-            transform: translate(-50%, -50%) scale(0.95);
+            transform: translate(-50%, -50%) scale(0);
         }
         #settings-panel.centered-panel.panel-visible,
         #info-panel.centered-panel.panel-visible,
@@ -3040,10 +3048,26 @@
         }
 
         // Selección de elementos del DOM
-        const splashScreen = document.getElementById("splash-screen"); 
-        const canvasEl = document.getElementById("gameCanvas"); 
-        let ctx; 
-        const gameContainer = document.querySelector('.game-container'); 
+const splashScreen = document.getElementById("splash-screen");
+const canvasEl = document.getElementById("gameCanvas");
+let ctx;
+const gameContainer = document.querySelector('.game-container');
+
+        function showGameContainer() {
+            if (!gameContainer) return;
+            gameContainer.classList.remove('hidden');
+            requestAnimationFrame(() => {
+                gameContainer.classList.add('game-container-visible');
+            });
+        }
+
+        function hideGameContainer() {
+            if (!gameContainer) return;
+            gameContainer.classList.remove('game-container-visible');
+            setTimeout(() => {
+                gameContainer.classList.add('hidden');
+            }, 300);
+        }
         const coinValueDisplay = document.getElementById("coinValue");
         const selectorCoinValueDisplay = document.getElementById("selectorCoinValue");
         const earnedCoinsMessage = document.getElementById("earnedCoinsMessage");
@@ -4871,7 +4895,7 @@ function setupSlider(slider, display) {
                 panelElement.classList.remove(hiddenClassName);
                 positionPanel(panelElement);
                 if (!panelElement.classList.contains('centered-panel')) {
-                    panelElement.style.transform = 'scale(0.95)';
+                    panelElement.style.transform = 'scale(0)';
                 }
 
                 requestAnimationFrame(() => {
@@ -4927,7 +4951,7 @@ function setupSlider(slider, display) {
             } else { // Hiding a panel
                 panelElement.classList.remove(visibleClassName);
                 if (!panelElement.classList.contains('centered-panel')) {
-                    panelElement.style.transform = 'scale(0.95)';
+                    panelElement.style.transform = 'scale(0)';
                 }
                 setTimeout(() => {
                     panelElement.classList.add(hiddenClassName);
@@ -5065,11 +5089,11 @@ function setupSlider(slider, display) {
             
             setTimeout(() => { // Ensure buttons are updated after panel animation
                 updateMainButtonStates();
-            }, 0);
-            settingsPanel.classList.remove('centered-panel');
+                settingsPanel.classList.remove('centered-panel');
+            }, 300);
 
             if (panelOpenedFromSplash && splashScreen && !splashScreen.classList.contains('hidden')) {
-                if (gameContainer) gameContainer.classList.add('hidden');
+                hideGameContainer();
                 panelOpenedFromSplash = false;
             }
         }
@@ -5279,11 +5303,11 @@ function setupSlider(slider, display) {
             }
             setTimeout(() => {
                 updateMainButtonStates();
-            }, 0);
-            infoPanel.classList.remove('centered-panel');
+                infoPanel.classList.remove('centered-panel');
+            }, 300);
 
             if (panelOpenedFromSplash && splashScreen && !splashScreen.classList.contains('hidden')) {
-                if (gameContainer) gameContainer.classList.add('hidden');
+                hideGameContainer();
                 panelOpenedFromSplash = false;
             }
         }
@@ -9440,7 +9464,7 @@ async function startGame(isRestart = false) {
                 introOptionAvailable = true;
                 modeTransitionStart = null;
                 gameMode = '';
-                if (gameContainer) gameContainer.classList.add('hidden');
+                hideGameContainer();
                 if (splashScreen) splashScreen.classList.remove('hidden');
             } else {
                 // Return to mode selection
@@ -10003,13 +10027,13 @@ async function startGame(isRestart = false) {
 
             attachSplashButtonEvents(splashInfoButtonEl, () => {
                 panelOpenedFromSplash = true;
-                if (gameContainer) gameContainer.classList.remove('hidden');
+                showGameContainer();
                 openInfoPanel();
             });
 
             attachSplashButtonEvents(splashSettingsButtonEl, () => {
                 panelOpenedFromSplash = true;
-                if (gameContainer) gameContainer.classList.remove('hidden');
+                showGameContainer();
                 openSettingsPanel();
             });
 
@@ -10052,7 +10076,7 @@ async function startGame(isRestart = false) {
                         }
 
                         if (splashScreen) splashScreen.classList.add('hidden');
-                        if (gameContainer) gameContainer.classList.remove('hidden');
+                        showGameContainer();
                         modeSelectIndex = 0;
                         showModeSelect = true;
                         introOptionAvailable = true; // reset intro visibility on fresh start
@@ -10075,7 +10099,7 @@ async function startGame(isRestart = false) {
             } else {
                 console.error("Botón de inicio del splash no encontrado!");
                 if (splashScreen) splashScreen.classList.add('hidden');
-                if (gameContainer) gameContainer.classList.remove('hidden');
+                showGameContainer();
                 initializeGameLogic();
             }
         };
