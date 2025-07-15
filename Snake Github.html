@@ -4961,7 +4961,7 @@ function setupSlider(slider, display) {
         }
 
         // --- Panel Management Refactor ---
-        function togglePanel(panelElement, contentContainer, show) {
+        function togglePanel(panelElement, contentContainer, show, instant = false) {
             if (!panelElement) {
                 console.error("togglePanel: panelElement no encontrado.");
                 return;
@@ -5004,13 +5004,9 @@ function setupSlider(slider, display) {
 
                 panelElement.classList.remove(hiddenClassName);
                 positionPanel(panelElement);
-                if (panelElement.classList.contains('centered-panel')) {
-                    panelElement.style.transform = 'translate(-50%, -50%) scale(0)';
-                } else {
-                    panelElement.style.transform = 'scale(0)';
-                }
 
-                requestAnimationFrame(() => {
+                if (instant) {
+                    panelElement.style.transition = 'none';
                     panelElement.classList.add(visibleClassName);
                     if (panelElement.classList.contains('centered-panel')) {
                         panelElement.style.transform = 'translate(-50%, -50%) scale(1)';
@@ -5022,7 +5018,27 @@ function setupSlider(slider, display) {
                         targetScrollElement.scrollTop = 0;
                         applyScrollbarPadding(targetScrollElement);
                     }
-                });
+                    requestAnimationFrame(() => { panelElement.style.transition = ''; });
+                } else {
+                    if (panelElement.classList.contains('centered-panel')) {
+                        panelElement.style.transform = 'translate(-50%, -50%) scale(0)';
+                    } else {
+                        panelElement.style.transform = 'scale(0)';
+                    }
+                    requestAnimationFrame(() => {
+                        panelElement.classList.add(visibleClassName);
+                        if (panelElement.classList.contains('centered-panel')) {
+                            panelElement.style.transform = 'translate(-50%, -50%) scale(1)';
+                        } else {
+                            panelElement.style.transform = 'scale(1)';
+                        }
+                        const targetScrollElement = contentContainer || panelElement;
+                        if (targetScrollElement) {
+                            targetScrollElement.scrollTop = 0;
+                            applyScrollbarPadding(targetScrollElement);
+                        }
+                    });
+                }
                 
                 startButton.disabled = true;
                 configButton.disabled = true;
@@ -5706,7 +5722,7 @@ function setupSlider(slider, display) {
             }
         };
 
-        function openSpecificInfoPanel(settingKey) {
+        function openSpecificInfoPanel(settingKey, instant = false) {
             if (!specificInfoPanel || !specificInfoTitle || !specificInfoContent) return;
 
             if (settingKey === 'difficulty' && gameMode !== 'classification') {
@@ -5742,7 +5758,7 @@ function setupSlider(slider, display) {
                 Array.from(sourcePanel.querySelectorAll('.control-group.interactive-mode')).forEach(el => el.classList.remove("interactive-mode")); // Visually indicate disabled state
             }
 
-            togglePanel(specificInfoPanel, specificInfoContent, true);
+            togglePanel(specificInfoPanel, specificInfoContent, true, instant);
             if (sourcePanel && sourcePanel !== profilePanel) {
                 matchPanelSizeWithElement(sourcePanel, specificInfoPanel);
             }
@@ -5867,7 +5883,9 @@ function setupSlider(slider, display) {
                 else if (mode == 'classification') settingKey = 'difficulty';
                 else if (mode == 'maze') settingKey = 'mazeLevel';
                 if (settingKey) {
-                    openSpecificInfoPanel(settingKey);
+                    openSpecificInfoPanel(settingKey, true);
+                    // Ensure the panel matches the canvas once visible
+                    requestAnimationFrame(() => positionPanel(specificInfoPanel));
                     localStorage.setItem(storageKey, 'true');
                 }
             }
@@ -9605,6 +9623,7 @@ async function startGame(isRestart = false) {
                 } else if (selectedMode === 'freeMode') {
                     screenState.showFreeModeCover = true;
                     screenState.showFreeModeEnd = false;
+                    maybeShowInitialHelpForMode(selectedMode);
                     openFreeSettingsPanel();
                 } else if (selectedMode === 'classification') {
                     screenState.showClassificationCover = true;
@@ -9616,7 +9635,9 @@ async function startGame(isRestart = false) {
                     screenState.showMazeCover = true;
                 }
                 updateGameModeUI();
-                maybeShowInitialHelpForMode(selectedMode);
+                if (selectedMode !== 'freeMode') {
+                    maybeShowInitialHelpForMode(selectedMode);
+                }
                 draw();
                 updateMainButtonStates();
             } else {
