@@ -5989,18 +5989,35 @@ function setupSlider(slider, display) {
             if (!ctx) return;
             const foodData = FOODS[currentFood] || FOODS['apple'];
             const foodImg = foodData.asset;
-            
+
             let foodVisualTopY;
             let foodVisualHeight;
+            let drawWidth = GRID_SIZE;
+            let drawHeight = GRID_SIZE;
+            let offsetX = 0;
+            let offsetY = 0;
 
             if (foodImg && foodImg.complete && foodImg.naturalHeight !== 0) {
                 const drawSize = GRID_SIZE * foodData.scale;
-                const offset = (drawSize - GRID_SIZE) / 2;
-                foodVisualTopY = y * GRID_SIZE - offset;
-                foodVisualHeight = drawSize;
+                const aspect = foodImg.naturalWidth / foodImg.naturalHeight;
+                if (aspect >= 1) {
+                    drawWidth = drawSize;
+                    drawHeight = drawSize / aspect;
+                } else {
+                    drawHeight = drawSize;
+                    drawWidth = drawSize * aspect;
+                }
+                offsetX = (drawWidth - GRID_SIZE) / 2;
+                offsetY = (drawHeight - GRID_SIZE) / 2;
+                foodVisualTopY = y * GRID_SIZE - offsetY;
+                foodVisualHeight = drawHeight;
             } else {
-                foodVisualTopY = y * GRID_SIZE + 2; 
-                foodVisualHeight = GRID_SIZE - 4; 
+                drawWidth = GRID_SIZE - 4;
+                drawHeight = GRID_SIZE - 4;
+                offsetX = -2;
+                offsetY = -2;
+                foodVisualTopY = y * GRID_SIZE + 2;
+                foodVisualHeight = GRID_SIZE - 4;
             }
             const foodVisualBottomY = foodVisualTopY + foodVisualHeight;
 
@@ -6012,14 +6029,12 @@ function setupSlider(slider, display) {
 
             if (foodIsVisible && (foodTimeRemaining > 0 || currentFoodItem.initialLifespanForThisFood === 0)) {
                 if (foodImg && foodImg.complete && foodImg.naturalHeight !== 0) {
-                    const drawSize = GRID_SIZE * foodData.scale;
-                    const offset = (drawSize - GRID_SIZE) / 2;
                     if (currentFoodItem.isGolden) {
                         ctx.filter = 'brightness(1.2)';
-                        drawImageWithTint(ctx, foodImg, x * GRID_SIZE - offset, y * GRID_SIZE - offset, drawSize, drawSize, 'rgba(255,215,0,0.5)');
+                        drawImageWithTint(ctx, foodImg, x * GRID_SIZE - offsetX, y * GRID_SIZE - offsetY, drawWidth, drawHeight, 'rgba(255,215,0,0.5)');
                         ctx.filter = 'none';
                     } else {
-                        ctx.drawImage(foodImg, x * GRID_SIZE - offset, y * GRID_SIZE - offset, drawSize, drawSize);
+                        ctx.drawImage(foodImg, x * GRID_SIZE - offsetX, y * GRID_SIZE - offsetY, drawWidth, drawHeight);
                     }
                 } else {
                     ctx.fillStyle = currentFoodItem.isGolden ? 'gold' : FOOD_SHAPE_FALLBACK.color;
@@ -6205,13 +6220,30 @@ function setupSlider(slider, display) {
             const img = foodData.asset;
             let foodVisualTopY;
             let foodVisualHeight;
+            let drawWidth = GRID_SIZE;
+            let drawHeight = GRID_SIZE;
+            let offsetX = 0;
+            let offsetY = 0;
             if (img && img.complete && img.naturalHeight !== 0) {
-                const size = GRID_SIZE * foodData.scale;
-                const off = (size - GRID_SIZE) / 2;
-                foodVisualTopY = item.y * GRID_SIZE - off;
-                foodVisualHeight = size;
-                drawImageWithTint(ctx, img, item.x * GRID_SIZE - off, item.y * GRID_SIZE - off, size, size, 'rgba(255,0,0,0.2)');
+                const drawSize = GRID_SIZE * foodData.scale;
+                const aspect = img.naturalWidth / img.naturalHeight;
+                if (aspect >= 1) {
+                    drawWidth = drawSize;
+                    drawHeight = drawSize / aspect;
+                } else {
+                    drawHeight = drawSize;
+                    drawWidth = drawSize * aspect;
+                }
+                offsetX = (drawWidth - GRID_SIZE) / 2;
+                offsetY = (drawHeight - GRID_SIZE) / 2;
+                foodVisualTopY = item.y * GRID_SIZE - offsetY;
+                foodVisualHeight = drawHeight;
+                drawImageWithTint(ctx, img, item.x * GRID_SIZE - offsetX, item.y * GRID_SIZE - offsetY, drawWidth, drawHeight, 'rgba(255,0,0,0.2)');
             } else {
+                drawWidth = GRID_SIZE - 4;
+                drawHeight = GRID_SIZE - 4;
+                offsetX = -2;
+                offsetY = -2;
                 foodVisualTopY = item.y * GRID_SIZE + 2;
                 foodVisualHeight = GRID_SIZE - 4;
                 ctx.fillStyle = '#ff0000';
@@ -6526,13 +6558,30 @@ function setupSlider(slider, display) {
             const img = foodData.asset;
             let foodVisualTopY;
             let foodVisualHeight;
+            let drawWidth = GRID_SIZE;
+            let drawHeight = GRID_SIZE;
+            let offsetX = 0;
+            let offsetY = 0;
             if (img && img.complete && img.naturalHeight !== 0) {
-                const size = GRID_SIZE * foodData.scale;
-                const off = (size - GRID_SIZE) / 2;
-                foodVisualTopY = item.y * GRID_SIZE - off;
-                foodVisualHeight = size;
-                drawImageWithTint(ctx, img, item.x * GRID_SIZE - off, item.y * GRID_SIZE - off, size, size, 'rgba(0,0,255,0.2)');
+                const drawSize = GRID_SIZE * foodData.scale;
+                const aspect = img.naturalWidth / img.naturalHeight;
+                if (aspect >= 1) {
+                    drawWidth = drawSize;
+                    drawHeight = drawSize / aspect;
+                } else {
+                    drawHeight = drawSize;
+                    drawWidth = drawSize * aspect;
+                }
+                offsetX = (drawWidth - GRID_SIZE) / 2;
+                offsetY = (drawHeight - GRID_SIZE) / 2;
+                foodVisualTopY = item.y * GRID_SIZE - offsetY;
+                foodVisualHeight = drawHeight;
+                drawImageWithTint(ctx, img, item.x * GRID_SIZE - offsetX, item.y * GRID_SIZE - offsetY, drawWidth, drawHeight, 'rgba(0,0,255,0.2)');
             } else {
+                drawWidth = GRID_SIZE - 4;
+                drawHeight = GRID_SIZE - 4;
+                offsetX = -2;
+                offsetY = -2;
                 foodVisualTopY = item.y * GRID_SIZE + 2;
                 foodVisualHeight = GRID_SIZE - 4;
                 ctx.fillStyle = '#0000ff';
