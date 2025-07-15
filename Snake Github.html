@@ -2517,6 +2517,30 @@
         #insufficient-funds-toast.show {
             opacity: 1;
         }
+        #confirm-add-player-button,
+        #delete-player-name-button {
+            background-color: #8f66af;
+            color: #F3F3F3;
+            border: 3px solid #2d1d3a;
+            border-radius: 8px;
+            padding: 10px 15px;
+            font-family: 'Press Start 2P', sans-serif;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.05s ease-out,
+                filter 0.05s ease-out;
+            width: 100%;
+            text-align: center;
+            font-size: 0.75em;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 50px;
+            box-sizing: border-box;
+        }
+        #delete-player-name-button {
+            background-color: #dc2626;
+            border-color: #7f1d1d;
+        }
     </style>
 </head>
 <body>
@@ -2700,6 +2724,18 @@
                         </thead>
                         <tbody id="classification-ranking-list"></tbody>
                     </table>
+                </div>
+                <div class="control-row" id="player-manage-row">
+                    <div class="control-group hidden" id="player-select-control-group">
+                        <label class="control-label" for="playerNameSelector">Jugador:</label>
+                        <select id="playerNameSelector"></select>
+                        <div id="delete-player-name-button">ELIMINAR</div>
+                    </div>
+                    <div class="control-group hidden" id="add-player-control-group">
+                        <label class="control-label" for="newPlayerNameInput">Nuevo jugador:</label>
+                        <input type="text" id="newPlayerNameInput" maxlength="10">
+                        <div id="confirm-add-player-button">AÑADIR</div>
+                    </div>
                 </div>
                 <div class="control-group" id="skin-control-group">
                     <div class="control-label-icon-row">
