@@ -669,13 +669,14 @@
 
 
         canvas {
-            background-color: #374151; 
-            border: 4px solid #422E58; 
-            display: block; 
-            margin: 0 auto 5px auto; 
-            max-width: 100%; 
-            border-radius: 8px; 
-            aspect-ratio: 1 / 1; 
+            background-color: #374151;
+            border: 4px solid #422E58;
+            display: block;
+            margin: 0 auto 5px auto;
+            max-width: 100%;
+            border-radius: 8px;
+            aspect-ratio: 1 / 1;
+            image-rendering: pixelated;
         }
 
         #mobile-controls {
@@ -9861,12 +9862,13 @@ async function startGame(isRestart = false) {
                 console.error("Elemento Canvas no encontrado en initializeGameLogic.");
                 return;
             }
-            if (!ctx) { 
+            if (!ctx) {
                  ctx = canvasEl.getContext("2d");
                  if (!ctx) {
                     console.error("Fallo al obtener el contexto 2D del canvas en initializeGameLogic.");
-                    return; 
+                    return;
                  }
+                 ctx.imageSmoothingEnabled = false;
             }
             
             // HTML5 Audio objects are now created in window.onload
