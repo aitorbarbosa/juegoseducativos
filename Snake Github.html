@@ -5066,7 +5066,9 @@ function setupSlider(slider, display) {
             setTimeout(() => { // Ensure buttons are updated after panel animation
                 updateMainButtonStates();
             }, 0);
-            settingsPanel.classList.remove('centered-panel');
+            setTimeout(() => {
+                settingsPanel.classList.remove('centered-panel');
+            }, 300);
 
             if (panelOpenedFromSplash && splashScreen && !splashScreen.classList.contains('hidden')) {
                 if (gameContainer) gameContainer.classList.add('hidden');
@@ -5280,7 +5282,9 @@ function setupSlider(slider, display) {
             setTimeout(() => {
                 updateMainButtonStates();
             }, 0);
-            infoPanel.classList.remove('centered-panel');
+            setTimeout(() => {
+                infoPanel.classList.remove('centered-panel');
+            }, 300);
 
             if (panelOpenedFromSplash && splashScreen && !splashScreen.classList.contains('hidden')) {
                 if (gameContainer) gameContainer.classList.add('hidden');
@@ -5359,8 +5363,11 @@ function setupSlider(slider, display) {
         }
 
         function openConfigMenuPanel() {
-            configMenuPanel.classList.remove('centered-panel');
+            configMenuPanel.classList.add('centered-panel');
             togglePanel(configMenuPanel, configMenuPanel.querySelector('.panel-content'), true);
+            setTimeout(() => {
+                configMenuPanel.classList.remove('centered-panel');
+            }, 300);
         }
 
         function closeConfigMenuPanel() {
@@ -5375,8 +5382,10 @@ function setupSlider(slider, display) {
             togglePanel(genericMenuPanel, genericMenuPanel.querySelector('.panel-content'), true);
             requestAnimationFrame(() => {
                 matchPanelSizeWithElement(configMenuPanel, genericMenuPanel);
-                genericMenuPanel.classList.remove('centered-panel');
             });
+            setTimeout(() => {
+                genericMenuPanel.classList.remove('centered-panel');
+            }, 300);
         }
 
         function closeGenericMenuPanel() {
@@ -5392,8 +5401,10 @@ function setupSlider(slider, display) {
                 togglePanel(storePanel, storePanel.querySelector('.panel-content'), true);
                 requestAnimationFrame(() => {
                     matchPanelSizeWithElement(configMenuPanel, storePanel);
-                    storePanel.classList.remove('centered-panel');
                 });
+                setTimeout(() => {
+                    storePanel.classList.remove('centered-panel');
+                }, 300);
             }
         }
 
