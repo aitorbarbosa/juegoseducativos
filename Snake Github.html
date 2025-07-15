@@ -9616,7 +9616,12 @@ async function startGame(isRestart = false) {
                     screenState.showMazeCover = true;
                 }
                 updateGameModeUI();
-                maybeShowInitialHelpForMode(selectedMode);
+                if (selectedMode === 'freeMode') {
+                    // Delay help display so the free settings panel finishes opening
+                    setTimeout(() => maybeShowInitialHelpForMode(selectedMode), 300);
+                } else {
+                    maybeShowInitialHelpForMode(selectedMode);
+                }
                 draw();
                 updateMainButtonStates();
             } else {
