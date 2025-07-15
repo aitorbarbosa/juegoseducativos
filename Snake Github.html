@@ -4563,7 +4563,7 @@ function setupSlider(slider, display) {
             classicSnakeHeadDownImg.src = 'https://i.imgur.com/kCgKrBZ.png';
             classicFoodImg.src = 'https://i.imgur.com/fOSSwUX.png';
             snakeBodyTexture.src = 'https://i.imgur.com/thcLCXi.png';
-            snakeBodyTextureVertical.src = 'https://i.imgur.com/B2RNULt.png';
+            snakeBodyTextureVertical.src = 'https://i.imgur.com/aDYe0ek.png';
             snakeTailTexture.src = 'https://i.imgur.com/3uFq8ID.png';
             snakeTailTextureUp.src = 'https://i.imgur.com/npkMGwK.png';
             catTailTextureUp.src = 'https://i.imgur.com/5RSk7Z5.png';
@@ -5015,9 +5015,10 @@ function setupSlider(slider, display) {
             skinControlGroup.classList.remove('hidden');
             foodControlGroup.classList.remove('hidden');
             if (playerNameControlGroup) playerNameControlGroup.classList.remove('hidden');
+            if (playerSelectControlGroup) playerSelectControlGroup.classList.add('hidden');
+            if (addPlayerControlGroup) addPlayerControlGroup.classList.add('hidden');
+
             if (panelOpenedFromSplash) {
-                if (playerSelectControlGroup) playerSelectControlGroup.classList.remove('hidden');
-                if (addPlayerControlGroup) addPlayerControlGroup.classList.remove('hidden');
                 difficultyControlGroup.classList.add('hidden');
                 skinControlGroup.classList.add('hidden');
                 foodControlGroup.classList.add('hidden');
@@ -5025,8 +5026,6 @@ function setupSlider(slider, display) {
                 resetDataButton.classList.remove('hidden');
                 resetDataButton.classList.add('interactive-mode');
             } else {
-                if (playerSelectControlGroup) playerSelectControlGroup.classList.add('hidden');
-                if (addPlayerControlGroup) addPlayerControlGroup.classList.add('hidden');
                 resetDataButton.classList.add('hidden');
                 resetDataButton.classList.remove('interactive-mode');
             }
