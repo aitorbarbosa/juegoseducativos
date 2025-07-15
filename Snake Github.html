@@ -1452,10 +1452,10 @@
             display: block;
         }
 
-        .settings-panel-hidden, .info-panel-hidden, .specific-info-panel-hidden, .free-settings-panel-hidden, .reset-panel-hidden, .config-menu-panel-hidden, .generic-menu-panel-hidden, .store-panel-hidden, .purchase-confirmation-panel-hidden {
+        .settings-panel-hidden, .info-panel-hidden, .specific-info-panel-hidden, .free-settings-panel-hidden, .reset-panel-hidden, .config-menu-panel-hidden, .generic-menu-panel-hidden, .store-panel-hidden, .profile-panel-hidden, .purchase-confirmation-panel-hidden {
             display: none !important;
         }
-        #settings-panel, #info-panel, #specific-info-panel, #free-settings-panel, #reset-confirmation-panel, #config-menu-panel, #generic-menu-panel, #store-panel, #purchase-confirmation-panel {
+        #settings-panel, #info-panel, #specific-info-panel, #free-settings-panel, #reset-confirmation-panel, #config-menu-panel, #generic-menu-panel, #store-panel, #profile-panel, #purchase-confirmation-panel {
             position: fixed;
             left: 0;
             transform: scale(0);
@@ -1492,6 +1492,13 @@
             box-sizing: border-box;
         }
         #store-panel .panel-content {
+            padding-right: 10px;
+        }
+        #profile-panel {
+            max-height: 90vh;
+            box-sizing: border-box;
+        }
+        #profile-panel .panel-content {
             padding-right: 10px;
         }
 
@@ -1580,6 +1587,7 @@
         #config-menu-panel.centered-panel,
         #generic-menu-panel.centered-panel,
         #store-panel.centered-panel,
+        #profile-panel.centered-panel,
         #purchase-confirmation-panel.centered-panel {
             transform: translate(-50%, -50%) scale(0);
         }
@@ -1591,6 +1599,7 @@
         #config-menu-panel.centered-panel.panel-visible,
         #generic-menu-panel.centered-panel.panel-visible,
         #store-panel.centered-panel.panel-visible,
+        #profile-panel.centered-panel.panel-visible,
         #purchase-confirmation-panel.centered-panel.panel-visible {
             transform: translate(-50%, -50%) scale(1);
         }
@@ -1602,13 +1611,14 @@
         #config-menu-panel.panel-visible,
         #generic-menu-panel.panel-visible,
         #store-panel.panel-visible,
+        #profile-panel.panel-visible,
         #purchase-confirmation-panel.panel-visible {
             opacity: 1;
             transform: scale(1);
         }
 
          #specific-info-panel {
-            z-index: 2101;
+            z-index: 2103;
         }
         .settings-header, .info-header, .specific-info-header, .reset-header {
             display: flex;
@@ -1732,7 +1742,8 @@
         #specific-info-panel .panel-content::-webkit-scrollbar,
         #free-settings-panel .panel-content::-webkit-scrollbar,
         #reset-confirmation-panel .panel-content::-webkit-scrollbar,
-        #store-panel .panel-content::-webkit-scrollbar {
+        #store-panel .panel-content::-webkit-scrollbar,
+        #profile-panel .panel-content::-webkit-scrollbar {
             width: 8px;
         }
         #info-panel-content::-webkit-scrollbar-track,
@@ -1742,7 +1753,8 @@
         #specific-info-panel .panel-content::-webkit-scrollbar-track,
         #free-settings-panel .panel-content::-webkit-scrollbar-track,
         #reset-confirmation-panel .panel-content::-webkit-scrollbar-track,
-        #store-panel .panel-content::-webkit-scrollbar-track {
+        #store-panel .panel-content::-webkit-scrollbar-track,
+        #profile-panel .panel-content::-webkit-scrollbar-track {
             background: #2d1d3a;
             border-radius: 4px;
         }
@@ -1753,7 +1765,8 @@
         #specific-info-panel .panel-content::-webkit-scrollbar-thumb,
         #free-settings-panel .panel-content::-webkit-scrollbar-thumb,
         #reset-confirmation-panel .panel-content::-webkit-scrollbar-thumb,
-        #store-panel .panel-content::-webkit-scrollbar-thumb {
+        #store-panel .panel-content::-webkit-scrollbar-thumb,
+        #profile-panel .panel-content::-webkit-scrollbar-thumb {
             background: #442F58;
             border-radius: 4px;
         }
@@ -1772,7 +1785,9 @@
         #reset-confirmation-panel .panel-content::-webkit-scrollbar-thumb:hover,
         #reset-confirmation-panel .panel-content::-webkit-scrollbar-thumb:active,
         #store-panel .panel-content::-webkit-scrollbar-thumb:hover,
-        #store-panel .panel-content::-webkit-scrollbar-thumb:active {
+        #store-panel .panel-content::-webkit-scrollbar-thumb:active,
+        #profile-panel .panel-content::-webkit-scrollbar-thumb:hover,
+        #profile-panel .panel-content::-webkit-scrollbar-thumb:active {
             background: #8f66af;
         }
 
@@ -2108,6 +2123,7 @@
         #settings-panel { z-index: 2101; }
         #generic-menu-panel { z-index: 2101; }
         #store-panel { z-index: 2101; }
+        #profile-panel { z-index: 2101; }
         #purchase-confirmation-panel { z-index: 2103; }
         #modal-overlay {
             position: fixed;
@@ -2667,9 +2683,6 @@
                         <button id="classification-info-button" class="setting-info-button hidden" aria-label="Información del modo clasificación" data-setting="difficulty">
                             <img class="setting-info-icon" src="https://i.imgur.com/rWe7Ylp.png" alt="info" onerror="this.src='https://placehold.co/24x24/02030D/FFFFFF?text=Err';">
                         </button>
-                        <button id="profile-info-button" class="setting-info-button hidden" aria-label="Información sobre perfil">
-                            <img class="setting-info-icon" src="https://i.imgur.com/rWe7Ylp.png" alt="info" onerror="this.src='https://placehold.co/24x24/02030D/FFFFFF?text=Err';">
-                        </button>
                     </div>
                     <button id="close-settings-button" aria-label="Cerrar configuración">&times;</button>
                 </div>
@@ -2719,26 +2732,7 @@
                         <tbody id="classification-ranking-list"></tbody>
                     </table>
                 </div>
-                <div class="control-row" id="player-manage-row">
-                    <div class="control-group" id="player-select-control-group">
-                        <div class="control-label-icon-row">
-                            <label class="control-label" for="playerNameSelector">Jugador:</label>
-                            <button id="delete-player-name-button" class="setting-info-button" aria-label="Eliminar jugador">
-                                <img class="setting-info-icon" src="https://i.imgur.com/w5E6xdU.png" alt="Eliminar" onerror="this.src='https://placehold.co/24x24/02030D/FFFFFF?text=Err';">
-                            </button>
-                        </div>
-                        <select id="playerNameSelector"></select>
-                    </div>
-                    <div class="control-group hidden" id="add-player-control-group">
-                        <div class="control-label-icon-row">
-                            <label class="control-label" for="newPlayerNameInput">Añadir</label>
-                            <button id="confirm-add-player-button" class="setting-info-button" aria-label="Confirmar nuevo jugador">
-                                <img class="setting-info-icon" src="https://i.imgur.com/ZGgSVye.png" alt="Añadir" onerror="this.src='https://placehold.co/24x24/02030D/FFFFFF?text=Err';">
-                            </button>
-                        </div>
-                        <input type="text" id="newPlayerNameInput" maxlength="10">
-                    </div>
-                </div>
+
                 <div class="control-group" id="skin-control-group">
                     <div class="control-label-icon-row">
                         <label class="control-label" for="skinSelector">Disfraz:</label>
@@ -2968,6 +2962,67 @@
                     <p>Contenido no disponible todavía</p>
                 </div>
             </div>
+<div id="profile-panel" class="profile-panel-hidden">
+    <div class="settings-header">
+        <div class="header-title-group">
+            <h2>PERFIL</h2>
+            <button id="profile-info-button" class="setting-info-button" aria-label="Información sobre perfil">
+                <img class="setting-info-icon" src="https://i.imgur.com/rWe7Ylp.png" alt="info" onerror="this.src='https://placehold.co/24x24/02030D/FFFFFF?text=Err';">
+            </button>
+        </div>
+        <button id="close-profile-panel" aria-label="Cerrar">&times;</button>
+    </div>
+    <div class="panel-content">
+        <div class="control-row" id="player-manage-row">
+            <div class="control-group" id="player-select-control-group">
+                <div class="control-label-icon-row">
+                    <label class="control-label" for="playerNameSelector">Jugador:</label>
+                    <button id="delete-player-name-button" class="setting-info-button" aria-label="Eliminar jugador">
+                        <img class="setting-info-icon" src="https://i.imgur.com/w5E6xdU.png" alt="Eliminar" onerror="this.src='https://placehold.co/24x24/02030D/FFFFFF?text=Err';">
+                    </button>
+                </div>
+                <select id="playerNameSelector"></select>
+            </div>
+            <div class="control-group hidden" id="add-player-control-group">
+                <div class="control-label-icon-row">
+                    <label class="control-label" for="newPlayerNameInput">Añadir</label>
+                    <button id="confirm-add-player-button" class="setting-info-button" aria-label="Confirmar nuevo jugador">
+                        <img class="setting-info-icon" src="https://i.imgur.com/ZGgSVye.png" alt="Añadir" onerror="this.src='https://placehold.co/24x24/02030D/FFFFFF?text=Err';">
+                    </button>
+                </div>
+                <input type="text" id="newPlayerNameInput" maxlength="10">
+            </div>
+        </div>
+        <div class="control-group" id="skin-control-group">
+            <div class="control-label-icon-row">
+                <label class="control-label" for="skinSelector">Disfraz:</label>
+                <button class="setting-info-button" data-setting="skin" aria-label="Información sobre disfraces">
+                    <img class="setting-info-icon" src="https://i.imgur.com/rWe7Ylp.png" alt="info" onerror="this.src='https://placehold.co/24x24/02030D/FFFFFF?text=Err';">
+                </button>
+            </div>
+            <select id="skinSelector">
+                <option value="snake" selected>Snake</option>
+                <option value="rubiSnake">RubiSnake</option>
+                <option value="aitorSnake">AitorSnake</option>
+                <option value="noemiSnake">NoemiSnake</option>
+                <option value="maraSnake">MaraSnake</option>
+                <option value="almuSnake">AlmuSnake</option>
+                <option value="mimiSnake">MimiSnake</option>
+                <option value="blackCat">Gato Negro</option>
+                <option value="orangeCat">Gato Naranja</option>
+            </select>
+        </div>
+        <div class="control-group" id="food-control-group">
+            <div class="control-label-icon-row">
+                <label class="control-label" for="foodSelector">Comestible:</label>
+                <button class="setting-info-button" data-setting="food" aria-label="Información sobre comestibles">
+                    <img class="setting-info-icon" src="https://i.imgur.com/rWe7Ylp.png" alt="info" onerror="this.src='https://placehold.co/24x24/02030D/FFFFFF?text=Err';">
+                </button>
+            </div>
+            <select id="foodSelector"></select>
+        </div>
+    </div>
+</div>
             <div id="store-panel" class="store-panel-hidden">
                 <div class="settings-header">
                     <h2>TIENDA</h2>
@@ -3206,6 +3261,8 @@
         const wheelMenuButton = document.getElementById("wheel-menu-button");
 
         const storePanel = document.getElementById("store-panel");
+        const profilePanel = document.getElementById("profile-panel");
+        const closeProfilePanelButton = document.getElementById("close-profile-panel");
         const storeItemsContainer = document.getElementById("store-items-container");
         const closeStorePanelButton = document.getElementById("close-store-panel");
         const purchaseConfirmationPanel = document.getElementById("purchase-confirmation-panel");
@@ -4726,6 +4783,10 @@ function setupSlider(slider, display) {
                 positionPanel(storePanel);
                 applyScrollbarPadding(storePanel.querySelector('.panel-content'));
             }
+            if (profilePanel && !profilePanel.classList.contains("profile-panel-hidden")) {
+                positionPanel(profilePanel);
+                applyScrollbarPadding(profilePanel.querySelector('.panel-content'));
+            }
 
 
             if (ctx && (gameIntervalId || gameOver || snake.length > 0 || screenState.showCoverForWorld > 0 || screenState.showLevelCompleteCover > 0 || screenState.showWorldCompleteCover > 0 || screenState.showDefeatCoverForWorld > 0 || screenState.showFreeModeCover || screenState.showClassificationCover)) {
@@ -4779,7 +4840,8 @@ function setupSlider(slider, display) {
             const isConfigMenuVisible = !configMenuPanel.classList.contains("config-menu-panel-hidden") && configMenuPanel.classList.contains("panel-visible");
             const isGenericMenuVisible = !genericMenuPanel.classList.contains("generic-menu-panel-hidden") && genericMenuPanel.classList.contains("panel-visible");
             const isStoreVisible = storePanel && !storePanel.classList.contains("store-panel-hidden") && storePanel.classList.contains("panel-visible");
-            const isAnyMainPanelEffectivelyOpen = isSettingsVisible || isInfoVisible || isFreeSettingsVisible || isConfigMenuVisible || isGenericMenuVisible || isStoreVisible;
+            const isProfileVisible = profilePanel && !profilePanel.classList.contains("profile-panel-hidden") && profilePanel.classList.contains("panel-visible");
+            const isAnyMainPanelEffectivelyOpen = isSettingsVisible || isInfoVisible || isFreeSettingsVisible || isConfigMenuVisible || isGenericMenuVisible || isStoreVisible || isProfileVisible;
 
             if (isAnyMainPanelEffectivelyOpen) {
                 startButton.disabled = true;
@@ -4895,6 +4957,7 @@ function setupSlider(slider, display) {
             else if (panelId === "config-menu-panel") hiddenClassName = "config-menu-panel-hidden";
             else if (panelId === "generic-menu-panel") hiddenClassName = "generic-menu-panel-hidden";
             else if (panelId === "store-panel") hiddenClassName = "store-panel-hidden";
+            else if (panelId === "profile-panel") hiddenClassName = "profile-panel-hidden";
             else if (panelId === "purchase-confirmation-panel") hiddenClassName = "purchase-confirmation-panel-hidden";
             else {
                 console.error("togglePanel: Clase oculta no definida para el panel:", panelId);
@@ -5523,21 +5586,49 @@ function setupSlider(slider, display) {
         }
 
        function openProfileMenu() {
-           openSettingsPanel();
-           matchPanelSizeWithElement(configMenuPanel, settingsPanel);
-           if (settingsTitle) settingsTitle.textContent = 'PERFIL';
+           if (!profilePanel) return;
+
+           if (panelOpenedFromSplash) {
+               profilePanel.classList.add("centered-panel");
+           } else {
+               profilePanel.classList.remove("centered-panel");
+           }
+
+           togglePanel(profilePanel, profilePanel.querySelector('.panel-content'), true);
+           matchPanelSizeWithElement(configMenuPanel, profilePanel);
+           updateSfxVolume();
+
            if (profileInfoButton) profileInfoButton.classList.remove('hidden');
            if (playerNameInfoButton) playerNameInfoButton.classList.add('hidden');
            if (playerSelectControlGroup) playerSelectControlGroup.classList.remove('hidden');
            if (addPlayerControlGroup) addPlayerControlGroup.classList.remove('hidden');
            if (playerNameControlGroup) playerNameControlGroup.classList.add('hidden');
-            skinControlGroup.classList.remove('hidden');
-            foodControlGroup.classList.remove('hidden');
-            difficultyControlGroup.classList.add('hidden');
-            audioControlGroup.classList.add('hidden');
-            musicVolumeControlGroup.classList.add('hidden');
-            sfxVolumeControlGroup.classList.add('hidden');
-        }
+           skinControlGroup.classList.remove('hidden');
+           foodControlGroup.classList.remove('hidden');
+           difficultyControlGroup.classList.add('hidden');
+           audioControlGroup.classList.add('hidden');
+           musicVolumeControlGroup.classList.add('hidden');
+           sfxVolumeControlGroup.classList.add('hidden');
+           if (classificationRankingGroup) classificationRankingGroup.classList.add('hidden');
+           if (resetDataButton) {
+               resetDataButton.classList.add('hidden');
+               resetDataButton.classList.remove('interactive-mode');
+           }
+       }
+
+       function closeProfileMenu() {
+           const wasSpecificInfoOpen = specificInfoPanel && !specificInfoPanel.classList.contains('specific-info-panel-hidden');
+           togglePanel(profilePanel, profilePanel.querySelector('.panel-content'), false);
+           if (wasSpecificInfoOpen) togglePanel(specificInfoPanel, specificInfoContent, false);
+           setTimeout(updateMainButtonStates, 0);
+           profilePanel.classList.remove('centered-panel');
+           if (panelOpenedFromSplash && splashScreen && !splashScreen.classList.contains('hidden')) {
+               if (gameContainer) gameContainer.classList.add('hidden');
+               panelOpenedFromSplash = false;
+           }
+           if (profileInfoButton) profileInfoButton.classList.add('hidden');
+           if (playerNameInfoButton) playerNameInfoButton.classList.remove('hidden');
+       }
 
         if (confirmResetNoButton) {
             confirmResetNoButton.addEventListener('click', () => {
@@ -5553,6 +5644,7 @@ function setupSlider(slider, display) {
         }
 
         if (closeStorePanelButton) closeStorePanelButton.addEventListener('click', closeStoreMenu);
+        if (closeProfilePanelButton) closeProfilePanelButton.addEventListener('click', closeProfileMenu);
         if (confirmPurchaseYesButton) confirmPurchaseYesButton.addEventListener('click', confirmPurchase);
         if (confirmPurchaseNoButton) confirmPurchaseNoButton.addEventListener('click', closePurchaseConfirm);
 
@@ -5632,6 +5724,8 @@ function setupSlider(slider, display) {
                 sourcePanel = settingsPanel;
             } else if (freeSettingsPanel && !freeSettingsPanel.classList.contains('free-settings-panel-hidden')) {
                 sourcePanel = freeSettingsPanel;
+            } else if (profilePanel && !profilePanel.classList.contains('profile-panel-hidden')) {
+                sourcePanel = profilePanel;
             }
             if (sourcePanel) {
                 Array.from(sourcePanel.querySelectorAll('select, input[type="range"], .setting-info-button')).forEach(el => el.disabled = true);
@@ -5653,6 +5747,8 @@ function setupSlider(slider, display) {
                 sourcePanel = settingsPanel;
             } else if (freeSettingsPanel && !freeSettingsPanel.classList.contains('free-settings-panel-hidden')) {
                 sourcePanel = freeSettingsPanel;
+            } else if (profilePanel && !profilePanel.classList.contains('profile-panel-hidden')) {
+                sourcePanel = profilePanel;
             }
             if (sourcePanel) {
                 Array.from(sourcePanel.querySelectorAll('select, input[type="range"], .setting-info-button')).forEach(el => el.disabled = true);
@@ -5682,6 +5778,8 @@ function setupSlider(slider, display) {
                 targetPanel = settingsPanel;
             } else if (freeSettingsPanel && !freeSettingsPanel.classList.contains("free-settings-panel-hidden") && !gameIntervalId) {
                 targetPanel = freeSettingsPanel;
+            } else if (profilePanel && !profilePanel.classList.contains("profile-panel-hidden") && !gameIntervalId) {
+                targetPanel = profilePanel;
             }
 
             if (targetPanel) {
@@ -5764,7 +5862,7 @@ function setupSlider(slider, display) {
                 }
             }
         }
-        document.querySelectorAll('.setting-info-button').forEach(button => {
+        document.querySelectorAll('.setting-info-button:not(#profile-info-button)').forEach(button => {
             const icon = button.querySelector('.setting-info-icon');
             const settingKey = button.dataset.setting;
             if (settingKey) {
@@ -5788,7 +5886,10 @@ function setupSlider(slider, display) {
         });
 
         if (profileInfoButton) {
-            profileInfoButton.addEventListener('click', openProfileInfoPanel);
+            profileInfoButton.addEventListener('click', () => {
+                if (areSfxEnabled) playSound('modeSwitch');
+                openProfileInfoPanel();
+            });
         }
 
         if (worldInfoButton) {
