@@ -4870,14 +4870,18 @@ function setupSlider(slider, display) {
 
                 panelElement.classList.remove(hiddenClassName);
                 positionPanel(panelElement);
-                if (!panelElement.classList.contains('centered-panel')) {
-                    panelElement.style.transform = 'scale(0)';
+                if (panelElement.classList.contains('centered-panel')) {
+                    panelElement.style.transform = 'translate(-50%, -50%) scale(0)';
+                } else {
+                    panelElement.style.transform = 'translateX(-50%) scale(0)';
                 }
 
                 requestAnimationFrame(() => {
                     panelElement.classList.add(visibleClassName);
-                    if (!panelElement.classList.contains('centered-panel')) {
-                        panelElement.style.transform = 'scale(1)';
+                    if (panelElement.classList.contains('centered-panel')) {
+                        panelElement.style.transform = 'translate(-50%, -50%) scale(1)';
+                    } else {
+                        panelElement.style.transform = 'translateX(-50%) scale(1)';
                     }
                     const targetScrollElement = contentContainer || panelElement;
                     if (targetScrollElement) {
@@ -4926,8 +4930,10 @@ function setupSlider(slider, display) {
                 }
             } else { // Hiding a panel
                 panelElement.classList.remove(visibleClassName);
-                if (!panelElement.classList.contains('centered-panel')) {
-                    panelElement.style.transform = 'scale(0)';
+                if (panelElement.classList.contains('centered-panel')) {
+                    panelElement.style.transform = 'translate(-50%, -50%) scale(0)';
+                } else {
+                    panelElement.style.transform = 'translateX(-50%) scale(0)';
                 }
                 setTimeout(() => {
                     panelElement.classList.add(hiddenClassName);
