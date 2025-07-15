@@ -5868,6 +5868,8 @@ function setupSlider(slider, display) {
                 else if (mode == 'maze') settingKey = 'mazeLevel';
                 if (settingKey) {
                     openSpecificInfoPanel(settingKey);
+                    // Ensure the panel matches the canvas once visible
+                    requestAnimationFrame(() => positionPanel(specificInfoPanel));
                     localStorage.setItem(storageKey, 'true');
                 }
             }
@@ -9616,7 +9618,12 @@ async function startGame(isRestart = false) {
                     screenState.showMazeCover = true;
                 }
                 updateGameModeUI();
-                maybeShowInitialHelpForMode(selectedMode);
+                if (selectedMode === 'freeMode') {
+                    // Delay help display so the free settings panel finishes opening
+                    setTimeout(() => maybeShowInitialHelpForMode(selectedMode), 300);
+                } else {
+                    maybeShowInitialHelpForMode(selectedMode);
+                }
                 draw();
                 updateMainButtonStates();
             } else {
