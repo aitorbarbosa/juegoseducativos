@@ -3039,6 +3039,18 @@
             return `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
         }
 
+        // Normalize the difference between two coordinates when the snake wraps
+        // around the grid so that it is always -1, 0 or 1. This ensures texture
+        // orientation behaves correctly near the canvas edges.
+        function normalizedDiff(a, b, max) {
+            let diff = a - b;
+            if (diff === max - 1) return -1;
+            if (diff === -(max - 1)) return 1;
+            if (diff > 1) return -1;
+            if (diff < -1) return 1;
+            return diff;
+        }
+
         // Selección de elementos del DOM
         const splashScreen = document.getElementById("splash-screen"); 
         const canvasEl = document.getElementById("gameCanvas"); 
@@ -7477,8 +7489,8 @@ function setupSlider(slider, display) {
                     if (texture && texture.complete && texture.naturalHeight !== 0) {
                     const prev = snake[i - 1];
                     const nextSeg = snake[i + 1];
-                    const dx = prev.x - snake[i].x;
-                    const dy = prev.y - snake[i].y;
+                    const dx = normalizedDiff(prev.x, snake[i].x, tileCountX);
+                    const dy = normalizedDiff(prev.y, snake[i].y, tileCountY);
                     ctx.save();
                     ctx.translate(segmentX + GRID_SIZE / 2, segmentY + GRID_SIZE / 2);
                     let rotation = 0;
@@ -7497,10 +7509,10 @@ function setupSlider(slider, display) {
                     } else {
                             let usedCorner = false;
                             if (nextSeg) {
-                                const fromNextX = snake[i].x - nextSeg.x;
-                                const fromNextY = snake[i].y - nextSeg.y;
-                                const toPrevX = prev.x - snake[i].x;
-                                const toPrevY = prev.y - snake[i].y;
+                                const fromNextX = normalizedDiff(snake[i].x, nextSeg.x, tileCountX);
+                                const fromNextY = normalizedDiff(snake[i].y, nextSeg.y, tileCountY);
+                                const toPrevX = dx;
+                                const toPrevY = dy;
                                 let flipCorner = false;
                                 if ((fromNextX === -1 && fromNextY === 0 && toPrevX === 0 && toPrevY === -1) ||
                                     (fromNextX === 0 && fromNextY === 1 && toPrevX === 1 && toPrevY === 0)) {
