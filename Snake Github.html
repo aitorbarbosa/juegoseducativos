@@ -5066,7 +5066,9 @@ function setupSlider(slider, display) {
             setTimeout(() => { // Ensure buttons are updated after panel animation
                 updateMainButtonStates();
             }, 0);
-            settingsPanel.classList.remove('centered-panel');
+            setTimeout(() => {
+                settingsPanel.classList.remove('centered-panel');
+            }, 300);
 
             if (panelOpenedFromSplash && splashScreen && !splashScreen.classList.contains('hidden')) {
                 if (gameContainer) gameContainer.classList.add('hidden');
@@ -5280,7 +5282,9 @@ function setupSlider(slider, display) {
             setTimeout(() => {
                 updateMainButtonStates();
             }, 0);
-            infoPanel.classList.remove('centered-panel');
+            setTimeout(() => {
+                infoPanel.classList.remove('centered-panel');
+            }, 300);
 
             if (panelOpenedFromSplash && splashScreen && !splashScreen.classList.contains('hidden')) {
                 if (gameContainer) gameContainer.classList.add('hidden');
