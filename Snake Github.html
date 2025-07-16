@@ -3309,8 +3309,8 @@
         const difficultyLabel = document.getElementById("difficulty-label");
         const settingsTitle = document.getElementById("settings-title");
         const audioToggleSelector = document.getElementById("audioToggleSelector");
-        const skinSelector = document.getElementById("skinSelector");
-        const foodSelector = document.getElementById("foodSelector");
+        const skinSelectors = document.querySelectorAll("#skinSelector");
+        const foodSelectors = document.querySelectorAll("#foodSelector");
         const playerNameSelectors = document.querySelectorAll("#playerNameSelector");
         const confirmAddPlayerButton = document.getElementById("confirm-add-player-button");
         const deletePlayerNameButton = document.getElementById("delete-player-name-button");
@@ -3320,8 +3320,8 @@
         const addPlayerControlGroup = document.getElementById("add-player-control-group");
         const difficultyControlGroup = document.getElementById("difficulty-control-group");
         const audioControlGroup = document.getElementById("audio-control-group");
-        const skinControlGroup = document.getElementById("skin-control-group");
-        const foodControlGroup = document.getElementById("food-control-group");
+        const skinControlGroups = document.querySelectorAll("#skin-control-group");
+        const foodControlGroups = document.querySelectorAll("#food-control-group");
         const sfxVolumeSlider = document.getElementById("sfxVolumeSlider");
         const sfxVolumeValue = document.getElementById("sfxVolumeValue");
         const sfxVolumeControlGroup = document.getElementById("sfx-volume-control-group");
@@ -4146,12 +4146,14 @@ function setupSlider(slider, display) {
             if (!profile) return;
             difficultySelector.value = profile.difficulty || 'principiante';
             classificationDifficultyIndex = CLASSIFICATION_DIFFICULTY_ORDER.indexOf(difficultySelector.value);
-            skinSelector.value = profile.skin || 'snake';
-            currentSkin = skinSelector.value;
+            skinSelectors.forEach(sel => sel.value = profile.skin || 'snake');
+            currentSkin = skinSelectors.length ? skinSelectors[0].value : 'snake';
             applySkin(currentSkin);
-            foodSelector.value = profile.food || 'apple';
-            if (!unlockedFoods[foodSelector.value]) foodSelector.value = 'apple';
-            currentFood = foodSelector.value;
+            foodSelectors.forEach(sel => sel.value = profile.food || 'apple');
+            if (foodSelectors.length && !unlockedFoods[foodSelectors[0].value]) {
+                foodSelectors.forEach(sel => sel.value = 'apple');
+            }
+            currentFood = foodSelectors.length ? foodSelectors[0].value : 'apple';
             applyFood(currentFood);
             updateFoodSelectorAvailability();
             audioToggleSelector.value = profile.audioGeneral || 'all';
@@ -4195,6 +4197,12 @@ function setupSlider(slider, display) {
         function getSelectedPlayerName() {
             return playerNameSelectors.length ? playerNameSelectors[0].value : '';
         }
+        function getSelectedSkin() {
+            return skinSelectors.length ? skinSelectors[0].value : 'snake';
+        }
+        function getSelectedFood() {
+            return foodSelectors.length ? foodSelectors[0].value : 'apple';
+        }
         function updatePlayerNameSelectors(selectedName) {
             playerNames = Object.keys(playerProfiles);
             playerNameSelectors.forEach(sel => {
@@ -4210,15 +4218,17 @@ function setupSlider(slider, display) {
         }
 
         function updateFoodSelectorOptions(selectedFood) {
-            if (!foodSelector) return;
-            foodSelector.innerHTML = '';
-            FOOD_ORDER.forEach(key => {
-                const opt = document.createElement('option');
-                opt.value = key;
-                opt.textContent = FOOD_DISPLAY_NAMES[key];
-                foodSelector.appendChild(opt);
+            if (!foodSelectors.length) return;
+            foodSelectors.forEach(sel => {
+                sel.innerHTML = '';
+                FOOD_ORDER.forEach(key => {
+                    const opt = document.createElement('option');
+                    opt.value = key;
+                    opt.textContent = FOOD_DISPLAY_NAMES[key];
+                    sel.appendChild(opt);
+                });
+                if (selectedFood && FOOD_ORDER.includes(selectedFood)) sel.value = selectedFood;
             });
-            if (selectedFood && FOOD_ORDER.includes(selectedFood)) foodSelector.value = selectedFood;
         }
         // --- Fin Configuración de Jugadores ---
 
@@ -5165,10 +5175,10 @@ function setupSlider(slider, display) {
                 backButton.disabled = true;
 
                 if (panelElement === settingsPanel && !gameIntervalId) {
-                    skinSelector.disabled = false;
-                    foodSelector.disabled = false;
-                    skinControlGroup.classList.add("interactive-mode");
-                    foodControlGroup.classList.add("interactive-mode");
+                    skinSelectors.forEach(sel => sel.disabled = false);
+                    foodSelectors.forEach(sel => sel.disabled = false);
+                    skinControlGroups.forEach(g => g.classList.add("interactive-mode"));
+                    foodControlGroups.forEach(g => g.classList.add("interactive-mode"));
                     if (gameMode === 'levels') worldsSelector.disabled = false; else difficultySelector.disabled = false;
                     difficultyControlGroup.classList.add("interactive-mode");
                     if (typeof Tone !== 'undefined') {
@@ -5232,16 +5242,16 @@ function setupSlider(slider, display) {
             // Show or hide certain settings when accessed from the splash screen
             if (!gameMode) difficultyControlGroup.classList.add('hidden');
             else difficultyControlGroup.classList.remove('hidden');
-            skinControlGroup.classList.remove('hidden');
-            foodControlGroup.classList.remove('hidden');
+            skinControlGroups.forEach(g => g.classList.remove('hidden'));
+            foodControlGroups.forEach(g => g.classList.remove('hidden'));
             if (playerNameControlGroup) playerNameControlGroup.classList.remove('hidden');
             if (playerSelectControlGroup) playerSelectControlGroup.classList.add('hidden');
             if (addPlayerControlGroup) addPlayerControlGroup.classList.add('hidden');
 
             if (panelOpenedFromSplash) {
                 difficultyControlGroup.classList.add('hidden');
-                skinControlGroup.classList.add('hidden');
-                foodControlGroup.classList.add('hidden');
+                skinControlGroups.forEach(g => g.classList.add('hidden'));
+                foodControlGroups.forEach(g => g.classList.add('hidden'));
                 if (playerNameControlGroup) playerNameControlGroup.classList.add('hidden');
                 resetDataButton.classList.remove('hidden');
                 resetDataButton.classList.add('interactive-mode');
@@ -5255,8 +5265,8 @@ function setupSlider(slider, display) {
                     classificationRankingGroup.classList.remove('hidden');
                     populateClassificationRanking();
                 }
-                skinControlGroup.classList.add('hidden');
-                foodControlGroup.classList.add('hidden');
+                skinControlGroups.forEach(g => g.classList.add('hidden'));
+                foodControlGroups.forEach(g => g.classList.add('hidden'));
                 audioControlGroup.classList.add('hidden');
                 musicVolumeControlGroup.classList.add('hidden');
                 sfxVolumeControlGroup.classList.add('hidden');
@@ -5793,8 +5803,8 @@ function setupSlider(slider, display) {
            if (playerSelectControlGroup) playerSelectControlGroup.classList.remove('hidden');
            if (addPlayerControlGroup) addPlayerControlGroup.classList.remove('hidden');
            if (playerNameControlGroup) playerNameControlGroup.classList.add('hidden');
-           skinControlGroup.classList.remove('hidden');
-           foodControlGroup.classList.remove('hidden');
+           skinControlGroups.forEach(g => g.classList.remove('hidden'));
+           foodControlGroups.forEach(g => g.classList.remove('hidden'));
            difficultyControlGroup.classList.add('hidden');
            audioControlGroup.classList.add('hidden');
            musicVolumeControlGroup.classList.add('hidden');
@@ -5976,8 +5986,8 @@ function setupSlider(slider, display) {
                 targetPanel.querySelectorAll('select, input[type="range"], .setting-info-button').forEach(el => el.disabled = false);
 
                 if (targetPanel === settingsPanel) {
-                    skinControlGroup.classList.add("interactive-mode");
-                    foodControlGroup.classList.add("interactive-mode");
+                    skinControlGroups.forEach(g => g.classList.add("interactive-mode"));
+                    foodControlGroups.forEach(g => g.classList.add("interactive-mode"));
 
                     if (gameMode === 'levels') {
                         worldsSelector.disabled = false;
@@ -7234,10 +7244,10 @@ function setupSlider(slider, display) {
         function updateUIOnGameOver() {
             updateMainButtonStates();
 
-            skinSelector.disabled = false;
-            foodSelector.disabled = false;
-            skinControlGroup.classList.add("interactive-mode");
-            foodControlGroup.classList.add("interactive-mode");
+            skinSelectors.forEach(sel => sel.disabled = false);
+            foodSelectors.forEach(sel => sel.disabled = false);
+            skinControlGroups.forEach(g => g.classList.add("interactive-mode"));
+            foodControlGroups.forEach(g => g.classList.add("interactive-mode"));
 
             if (gameMode === 'levels') {
                 worldsSelector.disabled = false; 
@@ -8694,8 +8704,8 @@ function setupSlider(slider, display) {
                 mazeLevelButtonsContainer.classList.add('hidden');
                 difficultyControlGroup.classList.add('hidden');
                 if (playerNameControlGroup) playerNameControlGroup.classList.add('hidden');
-                skinControlGroup.classList.add('hidden');
-                foodControlGroup.classList.add('hidden');
+                skinControlGroups.forEach(g => g.classList.add('hidden'));
+                foodControlGroups.forEach(g => g.classList.add('hidden'));
                 difficultyInfoButton.classList.add('hidden');
                 worldInfoButton.classList.remove('hidden');
                 if (freeModeInfoButton) freeModeInfoButton.classList.add('hidden');
@@ -8794,8 +8804,8 @@ function setupSlider(slider, display) {
                     if (!isGameCurrentlyRunning) difficultyControlGroup.classList.add("interactive-mode");
                     else difficultyControlGroup.classList.remove("interactive-mode");
                 }
-                skinControlGroup.classList.add('hidden');
-                foodControlGroup.classList.add('hidden');
+                skinControlGroups.forEach(g => g.classList.add('hidden'));
+                foodControlGroups.forEach(g => g.classList.add('hidden'));
                 audioControlGroup.classList.add('hidden');
                 musicVolumeControlGroup.classList.add('hidden');
                 sfxVolumeControlGroup.classList.add('hidden');
@@ -8820,8 +8830,8 @@ function setupSlider(slider, display) {
                 worldButtonsContainer.classList.add('hidden');
                 difficultyControlGroup.classList.add('hidden');
                 if (playerNameControlGroup) playerNameControlGroup.classList.add('hidden');
-                skinControlGroup.classList.add('hidden');
-                foodControlGroup.classList.add('hidden');
+                skinControlGroups.forEach(g => g.classList.add('hidden'));
+                foodControlGroups.forEach(g => g.classList.add('hidden'));
                 mazeLevelButtonsContainer.classList.remove('hidden');
                 worldInfoButton.classList.add('hidden');
                 difficultyInfoButton.classList.add('hidden');
@@ -9306,7 +9316,7 @@ async function startGame(isRestart = false) {
                 MIRROR_EFFECT_DURATION = DEFAULT_MIRROR_EFFECT_DURATION;
             }
 
-            applySkin(skinSelector.value); 
+            applySkin(getSelectedSkin());
             
             resizeGameElements(); 
             if (tileCountX <= 0 || tileCountY <= 0) { 
@@ -9445,14 +9455,14 @@ async function startGame(isRestart = false) {
             difficultySelector.disabled = true;
             worldsSelector.disabled = true;
             audioToggleSelector.disabled = true;
-            skinSelector.disabled = true;
-            foodSelector.disabled = true;
+            skinSelectors.forEach(sel => sel.disabled = true);
+            foodSelectors.forEach(sel => sel.disabled = true);
             musicVolumeSlider.disabled = true;
             sfxVolumeSlider.disabled = true;
             difficultyControlGroup.classList.remove("interactive-mode");
             audioControlGroup.classList.remove("interactive-mode");
-            skinControlGroup.classList.remove("interactive-mode");
-            foodControlGroup.classList.remove("interactive-mode");
+            skinControlGroups.forEach(g => g.classList.remove("interactive-mode"));
+            foodControlGroups.forEach(g => g.classList.remove("interactive-mode"));
             musicVolumeControlGroup.classList.remove("interactive-mode");
             sfxVolumeControlGroup.classList.remove("interactive-mode");
             if (gameMode === 'freeMode') {
@@ -9622,15 +9632,17 @@ async function startGame(isRestart = false) {
         });
 
 
-        skinSelector.addEventListener('change', function() {
+        skinSelectors.forEach(sel => sel.addEventListener('change', function() {
+            skinSelectors.forEach(s => { if (s !== this) s.value = this.value; });
             applySkin(this.value);
             saveGameSettings();
-        });
+        }));
 
-        foodSelector.addEventListener('change', function() {
+        foodSelectors.forEach(sel => sel.addEventListener('change', function() {
+            foodSelectors.forEach(f => { if (f !== this) f.value = this.value; });
             applyFood(this.value);
             saveGameSettings();
-        });
+        }));
 
         playerNameSelectors.forEach(sel => sel.addEventListener('change', function() {
             const previous = currentPlayerName;
@@ -10017,12 +10029,18 @@ async function startGame(isRestart = false) {
         }
 
         function updateFoodSelectorAvailability() {
-            if (!foodSelector) return;
-            Array.from(foodSelector.options).forEach(opt => {
-                opt.disabled = !unlockedFoods[opt.value];
+            if (!foodSelectors.length) return;
+            foodSelectors.forEach(sel => {
+                Array.from(sel.options).forEach(opt => {
+                    opt.disabled = !unlockedFoods[opt.value];
+                });
+                if (!unlockedFoods[sel.value]) {
+                    sel.value = 'apple';
+                }
             });
-            if (!unlockedFoods[foodSelector.value]) {
-                foodSelector.value = 'apple';
+            const current = foodSelectors[0].value;
+            if (!unlockedFoods[current]) {
+                foodSelectors.forEach(sel => sel.value = 'apple');
                 applyFood('apple');
             }
         }
@@ -10185,8 +10203,8 @@ async function startGame(isRestart = false) {
             const profile = playerProfiles[currentPlayerName] || createDefaultProfile(currentPlayerName);
             profile.name = currentPlayerName;
             profile.difficulty = difficultySelector.value;
-            profile.skin = skinSelector.value;
-            profile.food = foodSelector.value;
+            profile.skin = getSelectedSkin();
+            profile.food = getSelectedFood();
             profile.audioGeneral = audioToggleSelector.value;
             profile.musicVolume = musicVolumeSlider.value;
             profile.sfxVolume = sfxVolumeSlider.value;
@@ -10258,8 +10276,8 @@ async function startGame(isRestart = false) {
             const cfg = DIFFICULTY_SETTINGS[difficulty];
             snakeSpeed = cfg.speed;
             initialSnakeLength = cfg.initialLength;
-            currentSkin = skinSelector.value;
-            currentFood = foodSelector.value;
+            currentSkin = getSelectedSkin();
+            currentFood = getSelectedFood();
             currentPlayerName = getSelectedPlayerName();
             
             isMusicEnabled = (audioToggleSelector.value === 'all' || audioToggleSelector.value === 'music_only');
