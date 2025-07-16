@@ -2468,8 +2468,8 @@
 
         /* --- Estilo de celdas de la tienda --- */
         .store-item {
-          width: 100px;
-          height: 100px;
+          width: 100%;
+          aspect-ratio: 1 / 1;
           background-image: url('https://i.imgur.com/NNbtyMH.png');
           background-size: contain;
           background-repeat: no-repeat;
@@ -3139,7 +3139,7 @@
                     <button id="close-store-panel" aria-label="Cerrar">&times;</button>
                 </div>
                 <div class="panel-content">
-                    <div id="store-items-container" class="flex flex-wrap justify-center gap-4"></div>
+                    <div id="store-items-container" class="grid grid-cols-3 gap-4 w-full"></div>
                 </div>
             </div>
             <div id="modal-overlay" class="hidden"></div>
