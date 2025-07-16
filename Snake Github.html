@@ -2468,19 +2468,34 @@
 
         /* --- Estilo de celdas de la tienda --- */
         .store-item {
-          width: 100px;
-          height: 100px;
+          width: 100%;
+          aspect-ratio: 1 / 1;
+          position: relative;
+          cursor: pointer;
+          transition: transform 0.05s ease-out;
+        }
+
+        .store-item::before {
+          content: '';
+          position: absolute;
+          inset: 0;
           background-image: url('https://i.imgur.com/NNbtyMH.png');
           background-size: contain;
           background-repeat: no-repeat;
           background-position: center;
-          position: relative;
-          cursor: pointer;
-          transition: transform 0.05s ease-out, filter 0.05s ease-out;
+          transition: filter 0.05s ease-out;
+          pointer-events: none;
         }
-        .store-item:hover { filter: brightness(0.95); }
-        .store-item.icon-button-pressed { filter: brightness(0.5); }
+        .store-item:hover::before { filter: brightness(0.95); }
+        .store-item.icon-button-pressed::before { filter: brightness(0.5); }
         .store-item.locked {
+          /* keep text sharp while dimming the icon */
+        }
+        .store-item.locked::before {
+          filter: grayscale(100%);
+          opacity: 0.7;
+        }
+        .store-item.locked .store-item-img {
           filter: grayscale(100%);
           opacity: 0.7;
         }
@@ -3139,7 +3154,7 @@
                     <button id="close-store-panel" aria-label="Cerrar">&times;</button>
                 </div>
                 <div class="panel-content">
-                    <div id="store-items-container" class="flex flex-wrap justify-center gap-4"></div>
+                    <div id="store-items-container" class="grid grid-cols-3 gap-4 w-full"></div>
                 </div>
             </div>
             <div id="modal-overlay" class="hidden"></div>
