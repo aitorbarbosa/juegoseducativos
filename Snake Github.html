@@ -3670,6 +3670,43 @@ function setupSlider(slider, display) {
         const orangeCatBodyTexture = new Image();
         const orangeCatBodyTextureVertical = new Image();
         const orangeCatTailTexture = new Image();
+        const orangeCatCornerTextureA = new Image();
+        const orangeCatCornerTextureB = new Image();
+
+        const orangeCatReactionPreEatLeftImg = new Image();
+        const orangeCatReactionPreEatDownImg = new Image();
+        const orangeCatReactionEatLeftImg = new Image();
+        const orangeCatReactionEatDownImg = new Image();
+        const orangeCatReactionEatGoldenLeftImg = new Image();
+        const orangeCatReactionEatGoldenDownImg = new Image();
+        const orangeCatReactionEatSpeedLeftImg = new Image();
+        const orangeCatReactionEatSpeedDownImg = new Image();
+        const orangeCatReactionEatFalseLeftImg = new Image();
+        const orangeCatReactionEatFalseDownImg = new Image();
+        const orangeCatReactionEatMirrorLeftImg = new Image();
+        const orangeCatReactionEatMirrorDownImg = new Image();
+
+        const blackCatHeadLeftImg = new Image();
+        const blackCatHeadDownImg = new Image();
+        const blackCatBodyTexture = new Image();
+        const blackCatBodyTextureVertical = new Image();
+        const blackCatTailTexture = new Image();
+        const blackCatTailTextureUp = new Image();
+        const blackCatCornerTextureA = new Image();
+        const blackCatCornerTextureB = new Image();
+
+        const blackCatReactionPreEatLeftImg = new Image();
+        const blackCatReactionPreEatDownImg = new Image();
+        const blackCatReactionEatLeftImg = new Image();
+        const blackCatReactionEatDownImg = new Image();
+        const blackCatReactionEatGoldenLeftImg = new Image();
+        const blackCatReactionEatGoldenDownImg = new Image();
+        const blackCatReactionEatSpeedLeftImg = new Image();
+        const blackCatReactionEatSpeedDownImg = new Image();
+        const blackCatReactionEatFalseLeftImg = new Image();
+        const blackCatReactionEatFalseDownImg = new Image();
+        const blackCatReactionEatMirrorLeftImg = new Image();
+        const blackCatReactionEatMirrorDownImg = new Image();
 
         const rubiSnakeHeadUpDownImg = new Image();
         const rubiSnakeHeadLeftImg = new Image();
@@ -4082,6 +4119,24 @@ function setupSlider(slider, display) {
             eatMirror: { left: reactionEatMirrorLeftImg, upDown: reactionEatMirrorDownImg }
         };
 
+        const ORANGE_CAT_REACTION_IMAGES = {
+            preEat: { left: orangeCatReactionPreEatLeftImg, upDown: orangeCatReactionPreEatDownImg },
+            eat: { left: orangeCatReactionEatLeftImg, upDown: orangeCatReactionEatDownImg },
+            eatGolden: { left: orangeCatReactionEatGoldenLeftImg, upDown: orangeCatReactionEatGoldenDownImg },
+            eatSpeed: { left: orangeCatReactionEatSpeedLeftImg, upDown: orangeCatReactionEatSpeedDownImg },
+            eatFalse: { left: orangeCatReactionEatFalseLeftImg, upDown: orangeCatReactionEatFalseDownImg },
+            eatMirror: { left: orangeCatReactionEatMirrorLeftImg, upDown: orangeCatReactionEatMirrorDownImg }
+        };
+
+        const BLACK_CAT_REACTION_IMAGES = {
+            preEat: { left: blackCatReactionPreEatLeftImg, upDown: blackCatReactionPreEatDownImg },
+            eat: { left: blackCatReactionEatLeftImg, upDown: blackCatReactionEatDownImg },
+            eatGolden: { left: blackCatReactionEatGoldenLeftImg, upDown: blackCatReactionEatGoldenDownImg },
+            eatSpeed: { left: blackCatReactionEatSpeedLeftImg, upDown: blackCatReactionEatSpeedDownImg },
+            eatFalse: { left: blackCatReactionEatFalseLeftImg, upDown: blackCatReactionEatFalseDownImg },
+            eatMirror: { left: blackCatReactionEatMirrorLeftImg, upDown: blackCatReactionEatMirrorDownImg }
+        };
+
         // --- Configuración de Jugadores (Skins) ---
         const SKINS = {
             snake: {
@@ -4171,18 +4226,21 @@ function setupSlider(slider, display) {
             },
             blackCat: {
                 snakeHeadAsset: {
-                    upDown: catHeadDownImg,
-                    left: catHeadLeftImg,
+                    upDown: blackCatHeadDownImg,
+                    left: blackCatHeadLeftImg,
                 },
                 foodAsset: classicFoodImg,
                 snakeHeadScale: 1.6,
                 foodScale: 1.5,
                 bodyTintColor: null,
                 bodyStrokeColor: adjustColor('#000000', 0.30),
-                bodyTexture: catBodyTexture,
-                bodyTextureVertical: catBodyTextureVertical,
-                tailTexture: catTailTexture,
-                tailTextureUp: catTailTextureUp,
+                bodyTexture: blackCatBodyTexture,
+                bodyTextureVertical: blackCatBodyTextureVertical,
+                tailTexture: blackCatTailTexture,
+                tailTextureUp: blackCatTailTextureUp,
+                cornerTextureA: blackCatCornerTextureA,
+                cornerTextureB: blackCatCornerTextureB,
+                reactionAssets: BLACK_CAT_REACTION_IMAGES,
             },
             orangeCat: {
                 snakeHeadAsset: {
@@ -4198,6 +4256,9 @@ function setupSlider(slider, display) {
                 bodyTextureVertical: orangeCatBodyTextureVertical,
                 tailTexture: orangeCatTailTexture,
                 tailTextureUp: orangeCatTailTextureUp,
+                cornerTextureA: orangeCatCornerTextureA,
+                cornerTextureB: orangeCatCornerTextureB,
+                reactionAssets: ORANGE_CAT_REACTION_IMAGES,
             }
         };
         let currentSkin = 'snake';
@@ -4938,7 +4999,9 @@ function setupSlider(slider, display) {
             snakeTailTexture.src = 'https://i.imgur.com/3uFq8ID.png';
             snakeTailTextureUp.src = 'https://i.imgur.com/npkMGwK.png';
             catTailTextureUp.src = 'https://i.imgur.com/5RSk7Z5.png';
-            orangeCatTailTextureUp.src = 'https://i.imgur.com/IsZT8uP.png';
+            orangeCatTailTextureUp.src = 'https://i.imgur.com/auo3BQl.png';
+            orangeCatCornerTextureA.src = 'https://i.imgur.com/AncaSaL.png';
+            orangeCatCornerTextureB.src = 'https://i.imgur.com/7BODiGZ.png';
             snakeCornerTextureA.src = 'https://i.imgur.com/fVJRbzv.png';
             snakeCornerTextureB.src = 'https://i.imgur.com/pvhD811.png';
 
@@ -4947,12 +5010,46 @@ function setupSlider(slider, display) {
             catBodyTexture.src = 'https://i.imgur.com/uJQ5TXv.png';
             catBodyTextureVertical.src = 'https://i.imgur.com/xoDatQ4.png';
             catTailTexture.src = 'https://i.imgur.com/DFw5YoI.png';
+            blackCatTailTextureUp.src = 'https://i.imgur.com/633xXuR.png';
+            blackCatTailTexture.src = 'https://i.imgur.com/M9Wj2a9.png';
+            blackCatCornerTextureA.src = 'https://i.imgur.com/uvYf3J7.png';
+            blackCatCornerTextureB.src = 'https://i.imgur.com/xCaavi5.png';
 
-            orangeCatHeadLeftImg.src = 'https://i.imgur.com/OxZbCeA.png';
-            orangeCatHeadDownImg.src = 'https://i.imgur.com/AHX8zIA.png';
-            orangeCatBodyTexture.src = 'https://i.imgur.com/0ZcTvZf.png';
-            orangeCatBodyTextureVertical.src = 'https://i.imgur.com/TeyJ59Z.png';
-            orangeCatTailTexture.src = 'https://i.imgur.com/LM9ZUyB.png';
+            blackCatHeadLeftImg.src = 'https://i.imgur.com/SBD6RRR.png';
+            blackCatHeadDownImg.src = 'https://i.imgur.com/LqfhRxT.png';
+            blackCatBodyTexture.src = 'https://i.imgur.com/3JQwfCg.png';
+            blackCatBodyTextureVertical.src = 'https://i.imgur.com/RnEdT45.png';
+
+            blackCatReactionPreEatLeftImg.src = 'https://i.imgur.com/QK7DYU1.png';
+            blackCatReactionPreEatDownImg.src = 'https://i.imgur.com/jsyAOEW.png';
+            blackCatReactionEatLeftImg.src = 'https://i.imgur.com/P7GuD78.png';
+            blackCatReactionEatDownImg.src = 'https://i.imgur.com/L3HDO7u.png';
+            blackCatReactionEatGoldenLeftImg.src = 'https://i.imgur.com/jS6x1MR.png';
+            blackCatReactionEatGoldenDownImg.src = 'https://i.imgur.com/LHXElRb.png';
+            blackCatReactionEatSpeedLeftImg.src = 'https://i.imgur.com/Ofj3rve.png';
+            blackCatReactionEatSpeedDownImg.src = 'https://i.imgur.com/gy2g1lL.png';
+            blackCatReactionEatFalseLeftImg.src = 'https://i.imgur.com/RM92MFm.png';
+            blackCatReactionEatFalseDownImg.src = 'https://i.imgur.com/8tGbhDb.png';
+            blackCatReactionEatMirrorLeftImg.src = 'https://i.imgur.com/CiYmqiF.png';
+            blackCatReactionEatMirrorDownImg.src = 'https://i.imgur.com/xd5gub1.png';
+
+            orangeCatHeadLeftImg.src = 'https://i.imgur.com/XyBysQJ.png';
+            orangeCatHeadDownImg.src = 'https://i.imgur.com/lI3mijf.png';
+            orangeCatBodyTexture.src = 'https://i.imgur.com/SsaQis3.png';
+            orangeCatBodyTextureVertical.src = 'https://i.imgur.com/XZBdrBs.png';
+            orangeCatTailTexture.src = 'https://i.imgur.com/LH4XCsn.png';
+            orangeCatReactionPreEatLeftImg.src = 'https://i.imgur.com/nvnGTuQ.png';
+            orangeCatReactionPreEatDownImg.src = 'https://i.imgur.com/Wgms2iw.png';
+            orangeCatReactionEatLeftImg.src = 'https://i.imgur.com/xxAur2G.png';
+            orangeCatReactionEatDownImg.src = 'https://i.imgur.com/PThr1g7.png';
+            orangeCatReactionEatGoldenLeftImg.src = 'https://i.imgur.com/RVTq3k5.png';
+            orangeCatReactionEatGoldenDownImg.src = 'https://i.imgur.com/5dm93GG.png';
+            orangeCatReactionEatSpeedLeftImg.src = 'https://i.imgur.com/UEqlf8J.png';
+            orangeCatReactionEatSpeedDownImg.src = 'https://i.imgur.com/YTyByg9.png';
+            orangeCatReactionEatFalseLeftImg.src = 'https://i.imgur.com/M10kEFU.png';
+            orangeCatReactionEatFalseDownImg.src = 'https://i.imgur.com/UQ6Hsft.png';
+            orangeCatReactionEatMirrorLeftImg.src = 'https://i.imgur.com/MCbxCCd.png';
+            orangeCatReactionEatMirrorDownImg.src = 'https://i.imgur.com/wDELjYE.png';
 
             rubiSnakeHeadUpDownImg.src = 'https://i.imgur.com/XQzDVMk.png';
             rubiSnakeHeadLeftImg.src = 'https://i.imgur.com/XQzDVMk.png'; 
@@ -5009,14 +5106,30 @@ function setupSlider(slider, display) {
                     mimiSnakeHeadUpDownImg, mimiSnakeHeadLeftImg, mimiSnakeFoodImg,
                     catHeadLeftImg, catHeadDownImg, catBodyTexture, catBodyTextureVertical,
                     catTailTexture, catTailTextureUp,
+                    blackCatHeadLeftImg, blackCatHeadDownImg, blackCatBodyTexture,
+                    blackCatBodyTextureVertical, blackCatTailTexture, blackCatTailTextureUp,
+                    blackCatCornerTextureA, blackCatCornerTextureB,
+                    blackCatReactionPreEatLeftImg, blackCatReactionPreEatDownImg,
+                    blackCatReactionEatLeftImg, blackCatReactionEatDownImg,
+                    blackCatReactionEatGoldenLeftImg, blackCatReactionEatGoldenDownImg,
+                    blackCatReactionEatSpeedLeftImg, blackCatReactionEatSpeedDownImg,
+                    blackCatReactionEatFalseLeftImg, blackCatReactionEatFalseDownImg,
+                    blackCatReactionEatMirrorLeftImg, blackCatReactionEatMirrorDownImg,
                     orangeCatHeadLeftImg, orangeCatHeadDownImg, orangeCatBodyTexture,
                     orangeCatBodyTextureVertical, orangeCatTailTexture, orangeCatTailTextureUp,
+                    orangeCatCornerTextureA, orangeCatCornerTextureB,
                     reactionPreEatLeftImg, reactionPreEatDownImg,
+                    orangeCatReactionPreEatLeftImg, orangeCatReactionPreEatDownImg,
                     reactionEatLeftImg, reactionEatDownImg,
                     reactionEatGoldenLeftImg, reactionEatGoldenDownImg,
                     reactionEatSpeedLeftImg, reactionEatSpeedDownImg,
                     reactionEatFalseLeftImg, reactionEatFalseDownImg,
                     reactionEatMirrorLeftImg, reactionEatMirrorDownImg,
+                    orangeCatReactionEatLeftImg, orangeCatReactionEatDownImg,
+                    orangeCatReactionEatGoldenLeftImg, orangeCatReactionEatGoldenDownImg,
+                    orangeCatReactionEatSpeedLeftImg, orangeCatReactionEatSpeedDownImg,
+                    orangeCatReactionEatFalseLeftImg, orangeCatReactionEatFalseDownImg,
+                    orangeCatReactionEatMirrorLeftImg, orangeCatReactionEatMirrorDownImg,
                     obstacleImg, lightningYellowImg, lightningRedImg,
                     ...Object.values(FOODS).map(f => f.asset)
                 ];
@@ -8149,6 +8262,8 @@ function setupSlider(slider, display) {
                     const bodyTex = skinData.bodyTexture || snakeBodyTexture;
                     const bodyTexVert = skinData.bodyTextureVertical || skinData.bodyTexture || snakeBodyTextureVertical;
                     const tailTex = skinData.tailTexture || snakeTailTexture;
+                    const cornerTexA = skinData.cornerTextureA || snakeCornerTextureA;
+                    const cornerTexB = skinData.cornerTextureB || snakeCornerTextureB;
                     let texture = isTail ? tailTex : bodyTex;
 
                     if (texture && texture.complete && texture.naturalHeight !== 0) {
@@ -8181,20 +8296,20 @@ function setupSlider(slider, display) {
                                 let flipCorner = false;
                                 if ((fromNextX === -1 && fromNextY === 0 && toPrevX === 0 && toPrevY === -1) ||
                                     (fromNextX === 0 && fromNextY === 1 && toPrevX === 1 && toPrevY === 0)) {
-                                    texture = snakeCornerTextureA;
+                                    texture = cornerTexA;
                                     usedCorner = true;
                                 } else if ((fromNextX === 1 && fromNextY === 0 && toPrevX === 0 && toPrevY === -1) ||
                                            (fromNextX === 0 && fromNextY === 1 && toPrevX === -1 && toPrevY === 0)) {
-                                    texture = snakeCornerTextureA;
+                                    texture = cornerTexA;
                                     usedCorner = true;
                                     flipCorner = true;
                                 } else if ((fromNextX === -1 && fromNextY === 0 && toPrevX === 0 && toPrevY === 1) ||
                                            (fromNextX === 0 && fromNextY === -1 && toPrevX === 1 && toPrevY === 0)) {
-                                    texture = snakeCornerTextureB;
+                                    texture = cornerTexB;
                                     usedCorner = true;
                                 } else if ((fromNextX === 1 && fromNextY === 0 && toPrevX === 0 && toPrevY === 1) ||
                                            (fromNextX === 0 && fromNextY === -1 && toPrevX === -1 && toPrevY === 0)) {
-                                    texture = snakeCornerTextureB;
+                                    texture = cornerTexB;
                                     usedCorner = true;
                                     flipCorner = true;
                                 }
