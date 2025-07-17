@@ -3669,6 +3669,18 @@ function setupSlider(slider, display) {
         const mimiSnakeHeadUpDownImg = new Image();
         const mimiSnakeHeadLeftImg = new Image();
         const mimiSnakeFoodImg = new Image();
+        const reactionPreEatLeftImg = new Image();
+        const reactionPreEatDownImg = new Image();
+        const reactionEatLeftImg = new Image();
+        const reactionEatDownImg = new Image();
+        const reactionEatGoldenLeftImg = new Image();
+        const reactionEatGoldenDownImg = new Image();
+        const reactionEatSpeedLeftImg = new Image();
+        const reactionEatSpeedDownImg = new Image();
+        const reactionEatFalseLeftImg = new Image();
+        const reactionEatFalseDownImg = new Image();
+        const reactionEatMirrorLeftImg = new Image();
+        const reactionEatMirrorDownImg = new Image();
         const obstacleImg = new Image();
         const lightningYellowImg = new Image();
         const lightningRedImg = new Image();
@@ -4036,6 +4048,14 @@ function setupSlider(slider, display) {
         let displayMazeLevel = 1;
         let displayTargetScore = TARGET_SCORES_LEVELS[0];
 
+        const SNAKE_REACTION_IMAGES = {
+            preEat: { left: reactionPreEatLeftImg, upDown: reactionPreEatDownImg },
+            eat: { left: reactionEatLeftImg, upDown: reactionEatDownImg },
+            eatGolden: { left: reactionEatGoldenLeftImg, upDown: reactionEatGoldenDownImg },
+            eatSpeed: { left: reactionEatSpeedLeftImg, upDown: reactionEatSpeedDownImg },
+            eatFalse: { left: reactionEatFalseLeftImg, upDown: reactionEatFalseDownImg },
+            eatMirror: { left: reactionEatMirrorLeftImg, upDown: reactionEatMirrorDownImg }
+        };
 
         // --- Configuración de Jugadores (Skins) ---
         const SKINS = {
@@ -4050,6 +4070,7 @@ function setupSlider(slider, display) {
                 bodyTintColor: null,
                 bodyStrokeColor: adjustColor('#90ff00', 0.30),
                 tailTextureUp: snakeTailTextureUp,
+                reactionAssets: SNAKE_REACTION_IMAGES,
             },
             rubiSnake: {
                 snakeHeadAsset: {
@@ -4659,6 +4680,7 @@ function setupSlider(slider, display) {
         let MIRROR_EFFECT_DURATION = DEFAULT_MIRROR_EFFECT_DURATION;
         const LIGHTNING_LIFESPAN = 5000;
         const SPEED_BOOST_DURATION = 3000;
+        const REACTION_DISPLAY_TIME = 300;
         let obstacles = [];
         let snakeSpawnRow = 0;
         let falseFoodItems = [];
@@ -4669,6 +4691,8 @@ function setupSlider(slider, display) {
         let mirrorSpawnTimeoutId;
         let controlsInverted = false;
         let mirrorEffect = { active: false, startTime: 0 };
+        let currentReaction = null;
+        let reactionEndTime = 0;
         
         function updateMirrorEffect() {
             if (!mirrorEffect.active) return;
@@ -4684,6 +4708,11 @@ function setupSlider(slider, display) {
                 mirrorEffect.active = false;
                 controlsInverted = false;
             }
+        }
+
+        function setReaction(type) {
+            currentReaction = type;
+            reactionEndTime = Date.now() + REACTION_DISPLAY_TIME;
         }
         let speedBoost = { active: false, color: '', change: 0, startTime: 0 };
 
@@ -4887,6 +4916,18 @@ function setupSlider(slider, display) {
             mimiSnakeHeadUpDownImg.src = 'https://i.imgur.com/2UnTxTM.png';
             mimiSnakeHeadLeftImg.src = 'https://i.imgur.com/GjJrvUA.png';
             mimiSnakeFoodImg.src = 'https://i.imgur.com/kgOjgCI.png';
+            reactionPreEatLeftImg.src = 'https://i.imgur.com/0FK1plF.png';
+            reactionPreEatDownImg.src = 'https://i.imgur.com/dKMfnD6.png';
+            reactionEatLeftImg.src = 'https://i.imgur.com/pzH12dx.png';
+            reactionEatDownImg.src = 'https://i.imgur.com/zNHi8Ov.png';
+            reactionEatGoldenLeftImg.src = 'https://i.imgur.com/RrRObU7.png';
+            reactionEatGoldenDownImg.src = 'https://i.imgur.com/bI4HcjQ.png';
+            reactionEatSpeedLeftImg.src = 'https://i.imgur.com/HfuKLPO.png';
+            reactionEatSpeedDownImg.src = 'https://i.imgur.com/FtncbXv.png';
+            reactionEatFalseLeftImg.src = 'https://i.imgur.com/4z2BzX0.png';
+            reactionEatFalseDownImg.src = 'https://i.imgur.com/LxkP3jV.png';
+            reactionEatMirrorLeftImg.src = 'https://i.imgur.com/X561Smv.png';
+            reactionEatMirrorDownImg.src = 'https://i.imgur.com/0dWecr1.png';
 
             Object.values(FOODS).forEach(food => {
                 if (food.url) food.asset.src = food.url;
@@ -4909,6 +4950,12 @@ function setupSlider(slider, display) {
                     catTailTexture, catTailTextureUp,
                     orangeCatHeadLeftImg, orangeCatHeadDownImg, orangeCatBodyTexture,
                     orangeCatBodyTextureVertical, orangeCatTailTexture, orangeCatTailTextureUp,
+                    reactionPreEatLeftImg, reactionPreEatDownImg,
+                    reactionEatLeftImg, reactionEatDownImg,
+                    reactionEatGoldenLeftImg, reactionEatGoldenDownImg,
+                    reactionEatSpeedLeftImg, reactionEatSpeedDownImg,
+                    reactionEatFalseLeftImg, reactionEatFalseDownImg,
+                    reactionEatMirrorLeftImg, reactionEatMirrorDownImg,
                     obstacleImg, lightningYellowImg, lightningRedImg,
                     ...Object.values(FOODS).map(f => f.asset)
                 ];
@@ -8118,7 +8165,22 @@ function setupSlider(slider, display) {
                         let baseImageForUp = currentSkinData.snakeHeadAsset.upDown;
                         let baseImageForDown = currentSkinData.snakeHeadAsset.upDown;
                         let baseImageForLeft = currentSkinData.snakeHeadAsset.left;
-                        let baseImageForRight = currentSkinData.snakeHeadAsset.left; 
+                        let baseImageForRight = currentSkinData.snakeHeadAsset.left;
+                        if (currentReaction && Date.now() < reactionEndTime && currentSkinData.reactionAssets) {
+                            const rImgs = currentSkinData.reactionAssets[currentReaction];
+                            if (rImgs) {
+                                if (rImgs.upDown) {
+                                    baseImageForUp = rImgs.upDown;
+                                    baseImageForDown = rImgs.upDown;
+                                }
+                                if (rImgs.left) {
+                                    baseImageForLeft = rImgs.left;
+                                    baseImageForRight = rImgs.left;
+                                }
+                            }
+                        } else if (currentReaction && (!currentSkinData.reactionAssets || !currentSkinData.reactionAssets[currentReaction])) {
+                            currentReaction = null;
+                        }
                         let flipHorizontal = false;
                         let flipVertical = false;
 
@@ -8437,6 +8499,18 @@ function setupSlider(slider, display) {
             if (nextHeadY < 0) nextHeadY = tileCountY - 1;
             else if (nextHeadY >= tileCountY) nextHeadY = 0;
 
+            let willEat = false;
+            if (currentFoodItem.x !== undefined && nextHeadX === currentFoodItem.x && nextHeadY === currentFoodItem.y) {
+                willEat = true;
+            } else if (falseFoodItems.some(ff => ff.x === nextHeadX && ff.y === nextHeadY)) {
+                willEat = true;
+            } else if (lightningItems.some(li => li.x === nextHeadX && li.y === nextHeadY)) {
+                willEat = true;
+            } else if (mirrorItems.some(mi => mi.x === nextHeadX && mi.y === nextHeadY)) {
+                willEat = true;
+            }
+            if (willEat) setReaction('preEat');
+
             if (!gameOver) {
                 for (let i = 1; i < snake.length; i++) {
                     if (nextHeadX === snake[i].x && nextHeadY === snake[i].y) {
@@ -8460,6 +8534,7 @@ function setupSlider(slider, display) {
                 if (currentFoodItem.isGolden) gained *= 2;
                 score += gained;
                 if(areSfxEnabled) playSound('eat');
+                setReaction(currentFoodItem.isGolden ? 'eatGolden' : 'eat');
 
                 growth = 1;
                 clearTimeout(foodDisappearTimeoutId);
@@ -8500,6 +8575,7 @@ function setupSlider(slider, display) {
                     if ((gameMode === 'levels' && currentWorld >= 6) || (gameMode === 'classification' && rank >= 2)) startStreakAnimation(streakMultiplier);
                     removeFalseFoodItem(ff);
                     if (areSfxEnabled) playSound('badEat');
+                    setReaction('eatFalse');
                 }
             }
             for (let i = lightningItems.length - 1; i >= 0; i--) {
@@ -8508,6 +8584,7 @@ function setupSlider(slider, display) {
                     activateSpeedBoost(lt.color);
                     removeLightningItem(lt);
                     if (areSfxEnabled) playSound('eat');
+                    setReaction('eatSpeed');
                 }
             }
             for (let i = mirrorItems.length - 1; i >= 0; i--) {
@@ -8517,6 +8594,7 @@ function setupSlider(slider, display) {
                     mirrorEffect = { active: true, startTime: Date.now() };
                     removeMirrorItem(mi);
                     if (areSfxEnabled) playSound('eat');
+                    setReaction('eatMirror');
                 }
             }
             for (const ob of obstacles) {
