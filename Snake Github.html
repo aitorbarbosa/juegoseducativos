@@ -10936,9 +10936,9 @@ async function startGame(isRestart = false) {
                 updateProfileSelectedItems();
                 switchProfileTab('general');
             } else if (selectInfo.action === 'store') {
+                const targetTab = selectInfo.type === 'food' ? 'comida' : 'disfraces';
                 closeSelectConfirm();
                 closeProfileMenu();
-                const targetTab = selectInfo.type === 'food' ? 'comida' : 'disfraces';
                 // wait for the profile panel closing animation to finish before
                 // showing the store, otherwise the store panel may not appear
                 setTimeout(() => openStoreMenuWithTab(targetTab), 310);
