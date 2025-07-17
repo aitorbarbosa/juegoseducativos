@@ -1389,7 +1389,9 @@
         #confirmResetYes.icon-button-pressed,
         #confirmResetNo.icon-button-pressed,
         #confirmPurchaseYes.icon-button-pressed,
-        #confirmPurchaseNo.icon-button-pressed {
+        #confirmPurchaseNo.icon-button-pressed,
+        #confirmSelectYes.icon-button-pressed,
+        #confirmSelectNo.icon-button-pressed {
             filter: brightness(0.5);
         }
         .menu-option-button {
@@ -1461,10 +1463,10 @@
             display: block;
         }
 
-        .settings-panel-hidden, .info-panel-hidden, .specific-info-panel-hidden, .free-settings-panel-hidden, .reset-panel-hidden, .config-menu-panel-hidden, .generic-menu-panel-hidden, .store-panel-hidden, .profile-panel-hidden, .purchase-confirmation-panel-hidden, .delete-confirmation-panel-hidden, .out-of-lives-panel-hidden {
+        .settings-panel-hidden, .info-panel-hidden, .specific-info-panel-hidden, .free-settings-panel-hidden, .reset-panel-hidden, .config-menu-panel-hidden, .generic-menu-panel-hidden, .store-panel-hidden, .profile-panel-hidden, .purchase-confirmation-panel-hidden, .delete-confirmation-panel-hidden, .out-of-lives-panel-hidden, .select-confirmation-panel-hidden {
             display: none !important;
         }
-        #settings-panel, #info-panel, #specific-info-panel, #free-settings-panel, #reset-confirmation-panel, #config-menu-panel, #generic-menu-panel, #store-panel, #profile-panel, #purchase-confirmation-panel, #delete-confirmation-panel, #out-of-lives-panel {
+        #settings-panel, #info-panel, #specific-info-panel, #free-settings-panel, #reset-confirmation-panel, #config-menu-panel, #generic-menu-panel, #store-panel, #profile-panel, #purchase-confirmation-panel, #delete-confirmation-panel, #out-of-lives-panel, #select-confirmation-panel {
             position: fixed;
             left: 0;
             transform: scale(0);
@@ -1614,7 +1616,8 @@
         #profile-panel.centered-panel,
         #purchase-confirmation-panel.centered-panel,
         #delete-confirmation-panel.centered-panel,
-        #out-of-lives-panel.centered-panel {
+        #out-of-lives-panel.centered-panel,
+        #select-confirmation-panel.centered-panel {
             transform: translate(-50%, -50%) scale(0);
         }
         #settings-panel.centered-panel.panel-visible,
@@ -1628,7 +1631,8 @@
         #profile-panel.centered-panel.panel-visible,
         #purchase-confirmation-panel.centered-panel.panel-visible,
         #delete-confirmation-panel.centered-panel.panel-visible,
-        #out-of-lives-panel.centered-panel.panel-visible {
+        #out-of-lives-panel.centered-panel.panel-visible,
+        #select-confirmation-panel.centered-panel.panel-visible {
             transform: translate(-50%, -50%) scale(1);
         }
         #settings-panel.panel-visible,
@@ -1642,7 +1646,8 @@
         #profile-panel.panel-visible,
         #purchase-confirmation-panel.panel-visible,
         #delete-confirmation-panel.panel-visible,
-        #out-of-lives-panel.panel-visible {
+        #out-of-lives-panel.panel-visible,
+        #select-confirmation-panel.panel-visible {
             opacity: 1;
             transform: scale(1);
         }
@@ -2166,6 +2171,7 @@
         #profile-panel { z-index: 2101; }
         #purchase-confirmation-panel { z-index: 2103; }
         #delete-confirmation-panel { z-index: 2103; }
+        #select-confirmation-panel { z-index: 2103; }
         #out-of-lives-panel {
             z-index: 2103;
             max-height: 90vh;
@@ -2391,6 +2397,92 @@
         #confirmPurchaseYes:disabled,
         #confirmPurchaseNo:disabled { filter: brightness(0.6); cursor: not-allowed; }
 
+        /* Estilos de botones para confirmación de selección o ir a tienda */
+        #confirmSelectYes,
+        #confirmSelectNo {
+            flex: 0 0 auto;
+            min-width: 130px;
+            position: relative;
+            padding: 0 6px;
+            font-size: 1em;
+            border: 2px solid #2B1D3A;
+            border-radius: 10px;
+            box-shadow: 0 2px 0 #422E58;
+            overflow: hidden;
+            background: none;
+            color: #ffffff;
+            font-family: 'Press Start 2P', sans-serif;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.05s ease-out, filter 0.05s ease-out;
+            height: 65px;
+            box-sizing: border-box;
+        }
+        #confirmSelectYes::before,
+        #confirmSelectNo::before {
+            content: '';
+            position: absolute;
+            left: -2px;
+            top: -2px;
+            width: calc(100% + 4px);
+            height: calc(100% + 4px);
+            border-radius: 10px;
+            pointer-events: none;
+            z-index: -2;
+        }
+        #confirmSelectYes::after,
+        #confirmSelectNo::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            width: 100%;
+            height: 80%;
+            border-radius: 10px;
+            transform: translateY(-50%);
+            pointer-events: none;
+            z-index: -1;
+        }
+        #confirmSelectYes {
+            border: 2px solid #1b5e20;
+            text-shadow: 0px 0px 1px #422E58,
+                         -1px -1px 0 #1b5e20,
+                          1px -1px 0 #1b5e20,
+                         -1px 1px 0 #1b5e20,
+                          1px 1px 0 #1b5e20;
+        }
+        #confirmSelectYes::before {
+            background: linear-gradient(
+                #d1fae5 0%,
+                #d1fae5 50%,
+                #4CAF50 50%,
+                #4CAF50 100%
+            );
+        }
+        #confirmSelectYes::after {
+            background-color: #81c784;
+        }
+        #confirmSelectNo {
+            border: 2px solid #7f1d1d;
+            text-shadow: 0px 0px 1px #422E58,
+                         -1px -1px 0 #7f1d1d,
+                          1px -1px 0 #7f1d1d,
+                         -1px 1px 0 #7f1d1d,
+                          1px 1px 0 #7f1d1d;
+        }
+        #confirmSelectNo::before {
+            background: linear-gradient(
+                #fecaca 0%,
+                #fecaca 50%,
+                #b91c1c 50%,
+                #b91c1c 100%
+            );
+        }
+        #confirmSelectNo::after {
+            background-color: #f87171;
+        }
+        #confirmSelectYes:hover,
+        #confirmSelectNo:hover { filter: brightness(0.95); }
+
         /* Estilos de botones para confirmar eliminación de jugador */
         #confirmDeleteYes,
         #confirmDeleteNo {
@@ -2559,6 +2651,10 @@
         }
         .store-item.purchased {
           pointer-events: none;
+        }
+        .profile-clickable {
+          pointer-events: auto !important;
+          cursor: pointer;
         }
         .store-item-img {
           position: absolute;
@@ -3189,6 +3285,13 @@
         </button>
     </div>
     <div class="panel-content">
+        <div id="profile-tabs" class="flex justify-center gap-2 mb-2">
+            <button data-tab="general" id="profile-tab-general" class="store-tab active">PERFIL</button>
+            <button data-tab="comida" id="profile-tab-comida" class="store-tab">COMIDA</button>
+            <button data-tab="disfraces" id="profile-tab-disfraces" class="store-tab">DISFRACES</button>
+        </div>
+
+        <div id="profile-general-content">
         <div class="control-row" id="player-manage-row">
             <div class="control-group" id="player-select-control-group">
                 <div class="control-label-icon-row">
@@ -3209,7 +3312,12 @@
                 <input type="text" id="newPlayerNameInput" maxlength="10">
             </div>
         </div>
-        <div class="control-group" id="skin-control-group">
+        <div id="selected-items-row" class="grid grid-cols-2 gap-2 mb-2 w-full">
+            <div id="selected-skin-item" class="store-item"></div>
+            <div id="selected-food-item" class="store-item"></div>
+        </div>
+
+        <div class="control-group hidden" id="skin-control-group">
             <div class="control-label-icon-row">
                 <label class="control-label" for="skinSelector">Disfraz:</label>
                 <button class="setting-info-button" data-setting="skin" aria-label="Información sobre disfraces">
@@ -3228,7 +3336,7 @@
                 <option value="orangeCat">Gato Naranja</option>
             </select>
         </div>
-        <div class="control-group" id="food-control-group">
+        <div class="control-group hidden" id="food-control-group">
             <div class="control-label-icon-row">
                 <label class="control-label" for="foodSelector">Comestible:</label>
                 <button class="setting-info-button" data-setting="food" aria-label="Información sobre comestibles">
@@ -3237,7 +3345,24 @@
             </div>
             <select id="foodSelector"></select>
         </div>
+        </div> <!-- end general content -->
+
+        <div id="profile-food-content" class="hidden">
+            <h4>COLECCION</h4>
+            <div id="profile-food-unlocked" class="grid grid-cols-3 gap-4 w-full mb-2"></div>
+            <h4>SIN DESBLOQUEAR</h4>
+            <div id="profile-food-locked" class="grid grid-cols-3 gap-4 w-full"></div>
+        </div>
+
+        <div id="profile-skin-content" class="hidden">
+            <h4>COLECCION</h4>
+            <div id="profile-skin-unlocked" class="grid grid-cols-3 gap-4 w-full mb-2"></div>
+            <h4>SIN DESBLOQUEAR</h4>
+            <div id="profile-skin-locked" class="grid grid-cols-3 gap-4 w-full"></div>
+        </div>
+
     </div>
+</div>
 </div>
             <div id="store-panel" class="store-panel-hidden">
                 <div class="settings-header">
@@ -3276,6 +3401,16 @@
                     <div class="reset-buttons">
                         <button id="confirmDeleteYes">SI</button>
                         <button id="confirmDeleteNo">NO</button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="select-confirmation-panel" class="select-confirmation-panel-hidden">
+                <div class="panel-content">
+                    <p id="select-confirmation-text"></p>
+                    <div class="reset-buttons">
+                        <button id="confirmSelectYes">SI</button>
+                        <button id="confirmSelectNo">NO</button>
                     </div>
                 </div>
             </div>
@@ -3532,6 +3667,21 @@
         const closeOutOfLivesPanelButton = document.getElementById("close-out-of-lives-panel");
         const getLivesStoreButton = document.getElementById("get-lives-store-button");
         const getLivesBonusesButton = document.getElementById("get-lives-bonuses-button");
+
+        const profileTabButtons = document.querySelectorAll('#profile-tabs .store-tab');
+        const profileGeneralContent = document.getElementById('profile-general-content');
+        const profileFoodContent = document.getElementById('profile-food-content');
+        const profileSkinContent = document.getElementById('profile-skin-content');
+        const profileSelectedSkin = document.getElementById('selected-skin-item');
+        const profileSelectedFood = document.getElementById('selected-food-item');
+        const profileFoodUnlocked = document.getElementById('profile-food-unlocked');
+        const profileFoodLocked = document.getElementById('profile-food-locked');
+        const profileSkinUnlocked = document.getElementById('profile-skin-unlocked');
+        const profileSkinLocked = document.getElementById('profile-skin-locked');
+        const selectConfirmationPanel = document.getElementById('select-confirmation-panel');
+        const selectConfirmationText = document.getElementById('select-confirmation-text');
+        const confirmSelectYesButton = document.getElementById('confirmSelectYes');
+        const confirmSelectNoButton = document.getElementById('confirmSelectNo');
 
         const settingsPanelContent = settingsPanel.querySelector('.panel-content');
         const freeSettingsPanelContent = freeSettingsPanel.querySelector('.panel-content');
@@ -4370,6 +4520,7 @@ function setupSlider(slider, display) {
             }
             currentFood = foodSelectors.length ? foodSelectors[0].value : 'apple';
             applyFood(currentFood);
+            updateProfileSelectedItems();
             updateFoodSelectorAvailability();
             audioToggleSelector.value = profile.audioGeneral || 'all';
             musicVolumeSlider.value = profile.musicVolume || 75;
@@ -4566,6 +4717,7 @@ function setupSlider(slider, display) {
         const HEART_PRICE = 100;
         const GEM_PRICE = 1000;
         let storeTab = 'general';
+        let profileTab = 'general';
         // --- Fin Configuración de Comestibles ---
 
 
@@ -5439,6 +5591,7 @@ function setupSlider(slider, display) {
             else if (panelId === "purchase-confirmation-panel") hiddenClassName = "purchase-confirmation-panel-hidden";
             else if (panelId === "delete-confirmation-panel") hiddenClassName = "delete-confirmation-panel-hidden";
             else if (panelId === "out-of-lives-panel") hiddenClassName = "out-of-lives-panel-hidden";
+            else if (panelId === "select-confirmation-panel") hiddenClassName = "select-confirmation-panel-hidden";
             else {
                 console.error("togglePanel: Clase oculta no definida para el panel:", panelId);
                 return;
@@ -6283,8 +6436,8 @@ function setupSlider(slider, display) {
            if (playerSelectControlGroup) playerSelectControlGroup.classList.remove('hidden');
            if (addPlayerControlGroup) addPlayerControlGroup.classList.remove('hidden');
            if (playerNameControlGroup) playerNameControlGroup.classList.add('hidden');
-           skinControlGroups.forEach(g => g.classList.remove('hidden'));
-           foodControlGroups.forEach(g => g.classList.remove('hidden'));
+           skinControlGroups.forEach(g => g.classList.add('hidden'));
+           foodControlGroups.forEach(g => g.classList.add('hidden'));
            skinControlGroups.forEach(g => g.classList.remove('interactive-mode'));
            foodControlGroups.forEach(g => g.classList.remove('interactive-mode'));
            difficultyControlGroup.classList.add('hidden');
@@ -6296,6 +6449,15 @@ function setupSlider(slider, display) {
                resetDataButton.classList.add('hidden');
                resetDataButton.classList.remove('interactive-mode');
            }
+
+           profileTab = 'general';
+           profileTabButtons.forEach(b => b.classList.remove('active'));
+           const defaultProfileBtn = document.querySelector('#profile-tab-general');
+           if (defaultProfileBtn) defaultProfileBtn.classList.add('active');
+           if (profileGeneralContent) profileGeneralContent.classList.remove('hidden');
+           if (profileFoodContent) profileFoodContent.classList.add('hidden');
+           if (profileSkinContent) profileSkinContent.classList.add('hidden');
+           updateProfileSelectedItems();
        }
 
        function closeProfileMenu() {
@@ -6340,6 +6502,40 @@ function setupSlider(slider, display) {
                 storeTab = btn.dataset.tab;
                 populateStoreItems();
             });
+        });
+
+        function switchProfileTab(tab) {
+            profileTab = tab;
+            profileTabButtons.forEach(b => {
+                if (b.dataset.tab === tab) b.classList.add('active');
+                else b.classList.remove('active');
+            });
+            if (profileGeneralContent) profileGeneralContent.classList.add('hidden');
+            if (profileFoodContent) profileFoodContent.classList.add('hidden');
+            if (profileSkinContent) profileSkinContent.classList.add('hidden');
+            if (tab === 'comida') {
+                if (profileFoodContent) profileFoodContent.classList.remove('hidden');
+                populateProfileFoodTab();
+            } else if (tab === 'disfraces') {
+                if (profileSkinContent) profileSkinContent.classList.remove('hidden');
+                populateProfileSkinTab();
+            } else {
+                if (profileGeneralContent) profileGeneralContent.classList.remove('hidden');
+                updateProfileSelectedItems();
+            }
+        }
+
+        profileTabButtons.forEach(btn => {
+            btn.addEventListener('click', () => switchProfileTab(btn.dataset.tab));
+        });
+
+        if (confirmSelectYesButton) confirmSelectYesButton.addEventListener('click', confirmSelect);
+        if (confirmSelectNoButton) confirmSelectNoButton.addEventListener('click', closeSelectConfirm);
+        if (profileSelectedSkin) profileSelectedSkin.addEventListener('click', () => {
+            switchProfileTab('disfraces');
+        });
+        if (profileSelectedFood) profileSelectedFood.addEventListener('click', () => {
+            switchProfileTab('comida');
         });
 
         // --- Specific Info Panel Logic ---
@@ -10198,12 +10394,14 @@ async function startGame(isRestart = false) {
             skinSelectors.forEach(s => { if (s !== this) s.value = this.value; });
             applySkin(this.value);
             saveGameSettings();
+            updateProfileSelectedItems();
         }));
 
         foodSelectors.forEach(sel => sel.addEventListener('change', function() {
             foodSelectors.forEach(f => { if (f !== this) f.value = this.value; });
             applyFood(this.value);
             saveGameSettings();
+            updateProfileSelectedItems();
         }));
 
         playerNameSelectors.forEach(sel => sel.addEventListener('change', function() {
@@ -10647,6 +10845,119 @@ async function startGame(isRestart = false) {
             }
         }
 
+        function updateProfileSelectedItems() {
+            if (profileSelectedSkin) {
+                profileSelectedSkin.innerHTML = '';
+                profileSelectedSkin.className = 'store-item purchased profile-clickable';
+                const img = document.createElement('img');
+                img.className = 'store-item-img';
+                img.src = SKINS[getSelectedSkin()]?.snakeHeadAsset?.upDown?.src || '';
+                profileSelectedSkin.appendChild(img);
+            }
+            if (profileSelectedFood) {
+                profileSelectedFood.innerHTML = '';
+                profileSelectedFood.className = 'store-item purchased profile-clickable';
+                const img = document.createElement('img');
+                img.className = 'store-item-img';
+                img.src = FOODS[getSelectedFood()]?.asset?.src || '';
+                profileSelectedFood.appendChild(img);
+            }
+        }
+
+        function populateProfileFoodTab() {
+            if (!profileFoodUnlocked || !profileFoodLocked) return;
+            profileFoodUnlocked.innerHTML = '';
+            profileFoodLocked.innerHTML = '';
+            FOOD_ORDER.forEach(key => {
+                const item = document.createElement('div');
+                item.className = 'store-item';
+                const img = document.createElement('img');
+                img.className = 'store-item-img';
+                img.src = FOODS[key]?.asset?.src || '';
+                item.appendChild(img);
+                if (unlockedFoods[key]) {
+                    item.classList.add('purchased', 'profile-clickable');
+                    item.addEventListener('click', () => openSelectConfirm('food', key, 'select'));
+                } else {
+                    item.classList.add('locked');
+                    item.addEventListener('click', () => openSelectConfirm('food', key, 'store'));
+                }
+                addIconPressEvents(item, item);
+                (unlockedFoods[key] ? profileFoodUnlocked : profileFoodLocked).appendChild(item);
+            });
+        }
+
+        function populateProfileSkinTab() {
+            if (!profileSkinUnlocked || !profileSkinLocked) return;
+            profileSkinUnlocked.innerHTML = '';
+            profileSkinLocked.innerHTML = '';
+            SKIN_ORDER.forEach(key => {
+                const item = document.createElement('div');
+                item.className = 'store-item';
+                const img = document.createElement('img');
+                img.className = 'store-item-img';
+                img.src = SKINS[key]?.snakeHeadAsset?.upDown?.src || '';
+                item.appendChild(img);
+                if (unlockedSkins[key]) {
+                    item.classList.add('purchased', 'profile-clickable');
+                    item.addEventListener('click', () => openSelectConfirm('skin', key, 'select'));
+                } else {
+                    item.classList.add('locked');
+                    item.addEventListener('click', () => openSelectConfirm('skin', key, 'store'));
+                }
+                addIconPressEvents(item, item);
+                (unlockedSkins[key] ? profileSkinUnlocked : profileSkinLocked).appendChild(item);
+            });
+        }
+
+        let selectInfo = null;
+        function openSelectConfirm(type, key, action) {
+            selectInfo = { type, key, action };
+            if (selectConfirmationText) {
+                const name = type === 'food' ? FOOD_DISPLAY_NAMES[key] : SKIN_DISPLAY_NAMES[key];
+                selectConfirmationText.textContent = action === 'select' ? `¿Usar ${name}?` : `¿Ver ${name} en la tienda?`;
+            }
+            selectConfirmationPanel.classList.add('centered-panel');
+            togglePanel(selectConfirmationPanel, selectConfirmationPanel.querySelector('.panel-content'), true);
+            if (modalOverlay) modalOverlay.classList.remove('hidden');
+        }
+
+        function confirmSelect() {
+            if (!selectInfo) { closeSelectConfirm(); return; }
+            if (selectInfo.action === 'select') {
+                if (selectInfo.type === 'food') {
+                    foodSelectors.forEach(sel => sel.value = selectInfo.key);
+                    applyFood(selectInfo.key);
+                } else {
+                    skinSelectors.forEach(sel => sel.value = selectInfo.key);
+                    applySkin(selectInfo.key);
+                }
+                saveGameSettings();
+                updateProfileSelectedItems();
+            } else if (selectInfo.action === 'store') {
+                closeSelectConfirm();
+                openStoreMenuWithTab(selectInfo.type === 'food' ? 'comida' : 'disfraces');
+                return;
+            }
+            closeSelectConfirm();
+        }
+
+        function closeSelectConfirm() {
+            togglePanel(selectConfirmationPanel, selectConfirmationPanel.querySelector('.panel-content'), false);
+            selectConfirmationPanel.classList.remove('centered-panel');
+            if (modalOverlay) modalOverlay.classList.add('hidden');
+            selectInfo = null;
+        }
+
+        function openStoreMenuWithTab(tab) {
+            openStoreMenu();
+            storeTab = tab;
+            storeTabButtons.forEach(b => b.classList.remove('active'));
+            const btn = document.querySelector(`#store-tab-${tab}`);
+            if (btn) btn.classList.add('active');
+            populateStoreItems();
+        }
+
         addIconPressEvents(configButton, configButtonIcon);
         addIconPressEvents(backButton, backButtonIcon);
         addIconPressEvents(restartMazeButton, restartMazeButtonIcon);
@@ -10661,6 +10972,10 @@ async function startGame(isRestart = false) {
         addIconPressEvents(confirmPurchaseNoButton, confirmPurchaseNoButton);
         addIconPressEvents(confirmDeleteYesButton, confirmDeleteYesButton);
         addIconPressEvents(confirmDeleteNoButton, confirmDeleteNoButton);
+        addIconPressEvents(confirmSelectYesButton, confirmSelectYesButton);
+        addIconPressEvents(confirmSelectNoButton, confirmSelectNoButton);
+        addIconPressEvents(profileSelectedSkin, profileSelectedSkin);
+        addIconPressEvents(profileSelectedFood, profileSelectedFood);
         addIconPressEvents(closeSettingsButton, closeSettingsButton);
         addIconPressEvents(closeFreeSettingsButton, closeFreeSettingsButton);
         addIconPressEvents(closeInfoButton, closeInfoButton);
