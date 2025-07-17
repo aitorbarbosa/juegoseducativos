@@ -5412,6 +5412,21 @@ function setupSlider(slider, display) {
                 settingsPanel.classList.remove("centered-panel");
             }
             togglePanel(settingsPanel, settingsPanelContent, true);
+            if (panelOpenedFromSplash) {
+                settingsPanel.style.margin = '10px';
+                const splashContent = document.getElementById('splash-content');
+                requestAnimationFrame(() => {
+                    if (splashContent) {
+                        const rect = splashContent.getBoundingClientRect();
+                        settingsPanel.style.width = (rect.width - 20) + 'px';
+                        settingsPanel.style.left = (rect.left + rect.width / 2) + 'px';
+                    }
+                });
+            } else {
+                settingsPanel.style.margin = '';
+                settingsPanel.style.width = '';
+                settingsPanel.style.left = '';
+            }
             updateSfxVolume();
             if (profileInfoButton) profileInfoButton.classList.add('hidden');
             if (playerNameInfoButton) playerNameInfoButton.classList.remove('hidden');
@@ -5530,6 +5545,9 @@ function setupSlider(slider, display) {
                 updateMainButtonStates();
             }, 0);
             settingsPanel.classList.remove('centered-panel');
+            settingsPanel.style.margin = '';
+            settingsPanel.style.width = '';
+            settingsPanel.style.left = '';
 
             if (panelOpenedFromSplash && splashScreen && !splashScreen.classList.contains('hidden')) {
                 if (gameContainer) gameContainer.classList.add('hidden');
@@ -5670,14 +5688,19 @@ function setupSlider(slider, display) {
             infoPanel.classList.add('centered-panel');
             togglePanel(infoPanel, infoPanelContent, true);
             if (panelOpenedFromSplash) {
+                infoPanel.style.margin = '10px';
                 const splashContent = document.getElementById('splash-content');
                 requestAnimationFrame(() => {
                     if (splashContent) {
                         const rect = splashContent.getBoundingClientRect();
-                        infoPanel.style.width = rect.width + 'px';
+                        infoPanel.style.width = (rect.width - 20) + 'px';
                         infoPanel.style.left = (rect.left + rect.width / 2) + 'px';
                     }
                 });
+            } else {
+                infoPanel.style.margin = '';
+                infoPanel.style.width = '';
+                infoPanel.style.left = '';
             }
             if (gameOver && !gameIntervalId) {
                 if (ctx && canvasEl) {
@@ -5746,6 +5769,9 @@ function setupSlider(slider, display) {
                 updateMainButtonStates();
             }, 0);
             infoPanel.classList.remove('centered-panel');
+            infoPanel.style.margin = '';
+            infoPanel.style.width = '';
+            infoPanel.style.left = '';
 
             if (panelOpenedFromSplash && splashScreen && !splashScreen.classList.contains('hidden')) {
                 if (gameContainer) gameContainer.classList.add('hidden');
@@ -10320,6 +10346,13 @@ async function startGame(isRestart = false) {
         addIconPressEvents(confirmPurchaseNoButton, confirmPurchaseNoButton);
         addIconPressEvents(confirmDeleteYesButton, confirmDeleteYesButton);
         addIconPressEvents(confirmDeleteNoButton, confirmDeleteNoButton);
+        addIconPressEvents(closeSettingsButton, closeSettingsButton);
+        addIconPressEvents(closeFreeSettingsButton, closeFreeSettingsButton);
+        addIconPressEvents(closeInfoButton, closeInfoButton);
+        addIconPressEvents(closeSpecificInfoButton, closeSpecificInfoButton);
+        addIconPressEvents(closeConfigMenuButton, closeConfigMenuButton);
+        addIconPressEvents(closeGenericMenuButton, closeGenericMenuButton);
+        addIconPressEvents(closeProfilePanelButton, closeProfilePanelButton);
         addIconPressEvents(closeStorePanelButton, closeStorePanelButton);
         addIconPressEvents(closeOutOfLivesPanelButton, closeOutOfLivesPanelButton);
         addIconPressEvents(getLivesStoreButton, getLivesStoreButton);
