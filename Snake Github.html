@@ -4476,9 +4476,10 @@ function setupSlider(slider, display) {
         let difficulty = 'principiante';
         let freeDifficulty = 'personalizado';
         let snakeSpeed = 150; 
-        let foodTimeRemaining = 0; 
-        let foodDisappearTimeoutId; 
+        let foodTimeRemaining = 0;
+        let foodDisappearTimeoutId;
         let foodVisualTimerIntervalId;
+        let eatReactionTimeoutId = null;
         let streakMultiplier = 1; 
         let lastWarningSoundSecond = -1; 
 
@@ -4681,6 +4682,7 @@ function setupSlider(slider, display) {
         const LIGHTNING_LIFESPAN = 5000;
         const SPEED_BOOST_DURATION = 3000;
         const REACTION_DISPLAY_TIME = 300;
+        const PRE_EAT_DELAY_MS = 100;
         let obstacles = [];
         let snakeSpawnRow = 0;
         let falseFoodItems = [];
@@ -4713,6 +4715,14 @@ function setupSlider(slider, display) {
         function setReaction(type) {
             currentReaction = type;
             reactionEndTime = Date.now() + REACTION_DISPLAY_TIME;
+        }
+
+        function scheduleEatReaction(type) {
+            if (eatReactionTimeoutId) clearTimeout(eatReactionTimeoutId);
+            eatReactionTimeoutId = setTimeout(() => {
+                setReaction(type);
+                eatReactionTimeoutId = null;
+            }, PRE_EAT_DELAY_MS);
         }
         let speedBoost = { active: false, color: '', change: 0, startTime: 0 };
 
@@ -8526,7 +8536,7 @@ function setupSlider(slider, display) {
                 if (currentFoodItem.isGolden) gained *= 2;
                 score += gained;
                 if(areSfxEnabled) playSound('eat');
-                setReaction(currentFoodItem.isGolden ? 'eatGolden' : 'eat');
+                scheduleEatReaction(currentFoodItem.isGolden ? 'eatGolden' : 'eat');
 
                 growth = 1;
                 clearTimeout(foodDisappearTimeoutId);
