@@ -7078,6 +7078,10 @@ function setupSlider(slider, display) {
             if (speedBoost.active) {
                 applySpeedChange(-speedBoost.change);
             }
+            if (mirrorEffect.active) {
+                mirrorEffect = { active: false, startTime: 0 };
+                controlsInverted = false;
+            }
             applySpeedChange(change);
             speedBoost = { active: true, color, change, startTime: Date.now() };
         }
@@ -8635,6 +8639,10 @@ function setupSlider(slider, display) {
             for (let i = mirrorItems.length - 1; i >= 0; i--) {
                 const mi = mirrorItems[i];
                 if (nextHead.x === mi.x && nextHead.y === mi.y) {
+                    if (speedBoost.active) {
+                        applySpeedChange(-speedBoost.change);
+                        speedBoost = { active: false, color: '', change: 0, startTime: 0 };
+                    }
                     controlsInverted = true;
                     mirrorEffect = { active: true, startTime: Date.now() };
                     removeMirrorItem(mi);
