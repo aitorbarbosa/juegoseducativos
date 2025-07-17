@@ -4476,9 +4476,10 @@ function setupSlider(slider, display) {
         let difficulty = 'principiante';
         let freeDifficulty = 'personalizado';
         let snakeSpeed = 150; 
-        let foodTimeRemaining = 0; 
-        let foodDisappearTimeoutId; 
+        let foodTimeRemaining = 0;
+        let foodDisappearTimeoutId;
         let foodVisualTimerIntervalId;
+        let eatReactionTimeoutId = null;
         let streakMultiplier = 1; 
         let lastWarningSoundSecond = -1; 
 
@@ -4680,7 +4681,8 @@ function setupSlider(slider, display) {
         let MIRROR_EFFECT_DURATION = DEFAULT_MIRROR_EFFECT_DURATION;
         const LIGHTNING_LIFESPAN = 5000;
         const SPEED_BOOST_DURATION = 3000;
-        const REACTION_DISPLAY_TIME = 300;
+        const REACTION_DISPLAY_TIME = 600;
+        const PRE_EAT_DELAY_MS = 100;
         let obstacles = [];
         let snakeSpawnRow = 0;
         let falseFoodItems = [];
@@ -4710,9 +4712,43 @@ function setupSlider(slider, display) {
             }
         }
 
-        function setReaction(type) {
+        function setReaction(type, duration = REACTION_DISPLAY_TIME) {
             currentReaction = type;
-            reactionEndTime = Date.now() + REACTION_DISPLAY_TIME;
+            reactionEndTime = Date.now() + duration;
+        }
+
+        function scheduleEatReaction(type, duration = REACTION_DISPLAY_TIME) {
+            if (eatReactionTimeoutId) clearTimeout(eatReactionTimeoutId);
+            eatReactionTimeoutId = setTimeout(() => {
+                setReaction(type, duration);
+                eatReactionTimeoutId = null;
+            }, PRE_EAT_DELAY_MS);
+        }
+
+        function refreshEffectReactions() {
+            if (eatReactionTimeoutId) return;
+            const now = Date.now();
+            if (currentReaction && now < reactionEndTime) return;
+            if (speedBoost.active) {
+                const remaining = SPEED_BOOST_DURATION - (now - speedBoost.startTime);
+                if (remaining > 0) {
+                    setReaction('eatSpeed', remaining);
+                    return;
+                }
+            }
+            if (mirrorEffect.active) {
+                let duration = MIRROR_EFFECT_DURATION;
+                if (gameMode === 'classification' || gameMode === 'freeMode') {
+                    const cfg = gameMode === 'classification' ? DIFFICULTY_SETTINGS[difficultySelector.value] : freeModeSettings;
+                    if (typeof cfg.mirrorEffectDuration === 'number') {
+                        duration = cfg.mirrorEffectDuration;
+                    }
+                }
+                const remaining = duration - (now - mirrorEffect.startTime);
+                if (remaining > 0) {
+                    setReaction('eatMirror', remaining);
+                }
+            }
         }
         let speedBoost = { active: false, color: '', change: 0, startTime: 0 };
 
@@ -7007,6 +7043,12 @@ function setupSlider(slider, display) {
             mirrorItems = [];
             controlsInverted = false;
             mirrorEffect = { active: false, startTime: 0 };
+            if (eatReactionTimeoutId) {
+                clearTimeout(eatReactionTimeoutId);
+                eatReactionTimeoutId = null;
+            }
+            currentReaction = null;
+            reactionEndTime = 0;
         }
 
         function generateMazeLevel(levelIndex) {
@@ -7473,8 +7515,14 @@ function setupSlider(slider, display) {
             }
             controlsInverted = false;
             mirrorEffect = { active: false, startTime: 0 };
+            if (eatReactionTimeoutId) {
+                clearTimeout(eatReactionTimeoutId);
+                eatReactionTimeoutId = null;
+            }
+            currentReaction = null;
+            reactionEndTime = 0;
 
-            let levelEffectivelyWon = false; 
+            let levelEffectivelyWon = false;
             isNewHighScore = false; 
 
             if (gameMode === 'freeMode') {
@@ -8482,6 +8530,7 @@ function setupSlider(slider, display) {
             if (gameOver || tileCountX <= 0 || tileCountY <= 0) return;
             updateSpeedBoost();
             updateMirrorEffect();
+            refreshEffectReactions();
 
             direction = nextDirection; // Actualizar la dirección actual con la siguiente dirección almacenada
 
@@ -8494,7 +8543,11 @@ function setupSlider(slider, display) {
                 case "right": nextHeadX++; break;
             }
 
-            if (currentFoodItem.x !== undefined && nextHeadX === currentFoodItem.x && nextHeadY === currentFoodItem.y) {
+            const willEatFood = currentFoodItem.x !== undefined && nextHeadX === currentFoodItem.x && nextHeadY === currentFoodItem.y;
+            const willEatFalse = falseFoodItems.some(ff => ff.x === nextHeadX && ff.y === nextHeadY);
+            const willEatLightning = lightningItems.some(li => li.x === nextHeadX && li.y === nextHeadY);
+            const willEatMirror = mirrorItems.some(mi => mi.x === nextHeadX && mi.y === nextHeadY);
+            if (willEatFood || willEatFalse || willEatLightning || willEatMirror) {
                 setReaction('preEat');
             }
 
@@ -8526,7 +8579,7 @@ function setupSlider(slider, display) {
                 if (currentFoodItem.isGolden) gained *= 2;
                 score += gained;
                 if(areSfxEnabled) playSound('eat');
-                setReaction(currentFoodItem.isGolden ? 'eatGolden' : 'eat');
+                scheduleEatReaction(currentFoodItem.isGolden ? 'eatGolden' : 'eat');
 
                 growth = 1;
                 clearTimeout(foodDisappearTimeoutId);
@@ -8567,7 +8620,7 @@ function setupSlider(slider, display) {
                     if ((gameMode === 'levels' && currentWorld >= 6) || (gameMode === 'classification' && rank >= 2)) startStreakAnimation(streakMultiplier);
                     removeFalseFoodItem(ff);
                     if (areSfxEnabled) playSound('badEat');
-                    setReaction('eatFalse');
+                    scheduleEatReaction('eatFalse');
                 }
             }
             for (let i = lightningItems.length - 1; i >= 0; i--) {
@@ -8576,7 +8629,7 @@ function setupSlider(slider, display) {
                     activateSpeedBoost(lt.color);
                     removeLightningItem(lt);
                     if (areSfxEnabled) playSound('eat');
-                    setReaction('eatSpeed');
+                    scheduleEatReaction('eatSpeed', SPEED_BOOST_DURATION - PRE_EAT_DELAY_MS);
                 }
             }
             for (let i = mirrorItems.length - 1; i >= 0; i--) {
@@ -8586,7 +8639,7 @@ function setupSlider(slider, display) {
                     mirrorEffect = { active: true, startTime: Date.now() };
                     removeMirrorItem(mi);
                     if (areSfxEnabled) playSound('eat');
-                    setReaction('eatMirror');
+                    scheduleEatReaction('eatMirror', MIRROR_EFFECT_DURATION - PRE_EAT_DELAY_MS);
                 }
             }
             for (const ob of obstacles) {
