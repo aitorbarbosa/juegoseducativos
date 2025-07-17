@@ -9212,8 +9212,12 @@ async function startGame(isRestart = false) {
             }
             
             if (!screenState.gameActuallyStarted) { 
-                draw(); 
-                updateMainButtonStates(); 
+                draw();
+                if (selectedMode === 'freeMode') {
+                    setTimeout(updateMainButtonStates, 0);
+                } else {
+                    updateMainButtonStates();
+                }
                 return;
             }
             
@@ -9847,7 +9851,11 @@ async function startGame(isRestart = false) {
                     maybeShowInitialHelpForMode(selectedMode);
                 }
                 draw();
-                updateMainButtonStates();
+                if (selectedMode === 'freeMode') {
+                    setTimeout(updateMainButtonStates, 0);
+                } else {
+                    updateMainButtonStates();
+                }
             } else {
                 startGame(false);
             }
