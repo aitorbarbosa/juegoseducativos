@@ -6159,6 +6159,7 @@ function setupSlider(slider, display) {
             if (!purchaseInfo) { closePurchaseConfirm(); return; }
             let price = 0;
             let success = false;
+            let failureMessage = null;
             if (purchaseInfo.type === 'food') {
                 price = FOODS[purchaseInfo.key].price;
                 if (totalCoins >= price) {
@@ -6186,6 +6187,8 @@ function setupSlider(slider, display) {
                         saveLives();
                         updateLivesDisplay();
                         success = true;
+                    } else if (playerLives >= MAX_LIVES) {
+                        failureMessage = 'Vidas al máximo';
                     }
                 } else if (purchaseInfo.key === 'gem') {
                     price = GEM_PRICE;
@@ -6204,7 +6207,7 @@ function setupSlider(slider, display) {
                 populateStoreItems();
                 closePurchaseConfirm();
             } else {
-                showInsufficientFundsToast();
+                showInsufficientFundsToast(failureMessage);
             }
         }
 
@@ -9038,14 +9041,18 @@ function setupSlider(slider, display) {
             }, COIN_MESSAGE_DISPLAY_TIME);
         }
 
-        function showInsufficientFundsToast() {
+        function showInsufficientFundsToast(message = 'Monedas insuficientes') {
             if (!insufficientFundsToast) return;
+            const valueBox = insufficientFundsToast.querySelector('.value-box');
+            const originalText = valueBox ? valueBox.textContent : '';
+            if (valueBox) valueBox.textContent = message;
             insufficientFundsToast.classList.remove('hidden');
             void insufficientFundsToast.offsetWidth;
             insufficientFundsToast.classList.add('show');
             setTimeout(() => {
                 insufficientFundsToast.classList.remove('show');
                 insufficientFundsToast.classList.add('hidden');
+                if (valueBox) valueBox.textContent = originalText;
             }, 1000);
         }
 
