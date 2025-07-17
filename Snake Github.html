@@ -3670,6 +3670,21 @@ function setupSlider(slider, display) {
         const orangeCatBodyTexture = new Image();
         const orangeCatBodyTextureVertical = new Image();
         const orangeCatTailTexture = new Image();
+        const orangeCatCornerTextureA = new Image();
+        const orangeCatCornerTextureB = new Image();
+
+        const orangeCatReactionPreEatLeftImg = new Image();
+        const orangeCatReactionPreEatDownImg = new Image();
+        const orangeCatReactionEatLeftImg = new Image();
+        const orangeCatReactionEatDownImg = new Image();
+        const orangeCatReactionEatGoldenLeftImg = new Image();
+        const orangeCatReactionEatGoldenDownImg = new Image();
+        const orangeCatReactionEatSpeedLeftImg = new Image();
+        const orangeCatReactionEatSpeedDownImg = new Image();
+        const orangeCatReactionEatFalseLeftImg = new Image();
+        const orangeCatReactionEatFalseDownImg = new Image();
+        const orangeCatReactionEatMirrorLeftImg = new Image();
+        const orangeCatReactionEatMirrorDownImg = new Image();
 
         const rubiSnakeHeadUpDownImg = new Image();
         const rubiSnakeHeadLeftImg = new Image();
@@ -4082,6 +4097,15 @@ function setupSlider(slider, display) {
             eatMirror: { left: reactionEatMirrorLeftImg, upDown: reactionEatMirrorDownImg }
         };
 
+        const ORANGE_CAT_REACTION_IMAGES = {
+            preEat: { left: orangeCatReactionPreEatLeftImg, upDown: orangeCatReactionPreEatDownImg },
+            eat: { left: orangeCatReactionEatLeftImg, upDown: orangeCatReactionEatDownImg },
+            eatGolden: { left: orangeCatReactionEatGoldenLeftImg, upDown: orangeCatReactionEatGoldenDownImg },
+            eatSpeed: { left: orangeCatReactionEatSpeedLeftImg, upDown: orangeCatReactionEatSpeedDownImg },
+            eatFalse: { left: orangeCatReactionEatFalseLeftImg, upDown: orangeCatReactionEatFalseDownImg },
+            eatMirror: { left: orangeCatReactionEatMirrorLeftImg, upDown: orangeCatReactionEatMirrorDownImg }
+        };
+
         // --- Configuración de Jugadores (Skins) ---
         const SKINS = {
             snake: {
@@ -4198,6 +4222,9 @@ function setupSlider(slider, display) {
                 bodyTextureVertical: orangeCatBodyTextureVertical,
                 tailTexture: orangeCatTailTexture,
                 tailTextureUp: orangeCatTailTextureUp,
+                cornerTextureA: orangeCatCornerTextureA,
+                cornerTextureB: orangeCatCornerTextureB,
+                reactionAssets: ORANGE_CAT_REACTION_IMAGES,
             }
         };
         let currentSkin = 'snake';
@@ -4938,7 +4965,9 @@ function setupSlider(slider, display) {
             snakeTailTexture.src = 'https://i.imgur.com/3uFq8ID.png';
             snakeTailTextureUp.src = 'https://i.imgur.com/npkMGwK.png';
             catTailTextureUp.src = 'https://i.imgur.com/5RSk7Z5.png';
-            orangeCatTailTextureUp.src = 'https://i.imgur.com/IsZT8uP.png';
+            orangeCatTailTextureUp.src = 'https://i.imgur.com/auo3BQl.png';
+            orangeCatCornerTextureA.src = 'https://i.imgur.com/AncaSaL.png';
+            orangeCatCornerTextureB.src = 'https://i.imgur.com/7BODiGZ.png';
             snakeCornerTextureA.src = 'https://i.imgur.com/fVJRbzv.png';
             snakeCornerTextureB.src = 'https://i.imgur.com/pvhD811.png';
 
@@ -4948,11 +4977,23 @@ function setupSlider(slider, display) {
             catBodyTextureVertical.src = 'https://i.imgur.com/xoDatQ4.png';
             catTailTexture.src = 'https://i.imgur.com/DFw5YoI.png';
 
-            orangeCatHeadLeftImg.src = 'https://i.imgur.com/OxZbCeA.png';
-            orangeCatHeadDownImg.src = 'https://i.imgur.com/AHX8zIA.png';
-            orangeCatBodyTexture.src = 'https://i.imgur.com/0ZcTvZf.png';
-            orangeCatBodyTextureVertical.src = 'https://i.imgur.com/TeyJ59Z.png';
-            orangeCatTailTexture.src = 'https://i.imgur.com/LM9ZUyB.png';
+            orangeCatHeadLeftImg.src = 'https://i.imgur.com/XyBysQJ.png';
+            orangeCatHeadDownImg.src = 'https://i.imgur.com/lI3mijf.png';
+            orangeCatBodyTexture.src = 'https://i.imgur.com/SsaQis3.png';
+            orangeCatBodyTextureVertical.src = 'https://i.imgur.com/XZBdrBs.png';
+            orangeCatTailTexture.src = 'https://i.imgur.com/LH4XCsn.png';
+            orangeCatReactionPreEatLeftImg.src = 'https://i.imgur.com/nvnGTuQ.png';
+            orangeCatReactionPreEatDownImg.src = 'https://i.imgur.com/Wgms2iw.png';
+            orangeCatReactionEatLeftImg.src = 'https://i.imgur.com/xxAur2G.png';
+            orangeCatReactionEatDownImg.src = 'https://i.imgur.com/PThr1g7.png';
+            orangeCatReactionEatGoldenLeftImg.src = 'https://i.imgur.com/RVTq3k5.png';
+            orangeCatReactionEatGoldenDownImg.src = 'https://i.imgur.com/5dm93GG.png';
+            orangeCatReactionEatSpeedLeftImg.src = 'https://i.imgur.com/UEqlf8J.png';
+            orangeCatReactionEatSpeedDownImg.src = 'https://i.imgur.com/YTyByg9.png';
+            orangeCatReactionEatFalseLeftImg.src = 'https://i.imgur.com/M10kEFU.png';
+            orangeCatReactionEatFalseDownImg.src = 'https://i.imgur.com/UQ6Hsft.png';
+            orangeCatReactionEatMirrorLeftImg.src = 'https://i.imgur.com/MCbxCCd.png';
+            orangeCatReactionEatMirrorDownImg.src = 'https://i.imgur.com/wDELjYE.png';
 
             rubiSnakeHeadUpDownImg.src = 'https://i.imgur.com/XQzDVMk.png';
             rubiSnakeHeadLeftImg.src = 'https://i.imgur.com/XQzDVMk.png'; 
@@ -5011,12 +5052,19 @@ function setupSlider(slider, display) {
                     catTailTexture, catTailTextureUp,
                     orangeCatHeadLeftImg, orangeCatHeadDownImg, orangeCatBodyTexture,
                     orangeCatBodyTextureVertical, orangeCatTailTexture, orangeCatTailTextureUp,
+                    orangeCatCornerTextureA, orangeCatCornerTextureB,
                     reactionPreEatLeftImg, reactionPreEatDownImg,
+                    orangeCatReactionPreEatLeftImg, orangeCatReactionPreEatDownImg,
                     reactionEatLeftImg, reactionEatDownImg,
                     reactionEatGoldenLeftImg, reactionEatGoldenDownImg,
                     reactionEatSpeedLeftImg, reactionEatSpeedDownImg,
                     reactionEatFalseLeftImg, reactionEatFalseDownImg,
                     reactionEatMirrorLeftImg, reactionEatMirrorDownImg,
+                    orangeCatReactionEatLeftImg, orangeCatReactionEatDownImg,
+                    orangeCatReactionEatGoldenLeftImg, orangeCatReactionEatGoldenDownImg,
+                    orangeCatReactionEatSpeedLeftImg, orangeCatReactionEatSpeedDownImg,
+                    orangeCatReactionEatFalseLeftImg, orangeCatReactionEatFalseDownImg,
+                    orangeCatReactionEatMirrorLeftImg, orangeCatReactionEatMirrorDownImg,
                     obstacleImg, lightningYellowImg, lightningRedImg,
                     ...Object.values(FOODS).map(f => f.asset)
                 ];
@@ -8149,6 +8197,8 @@ function setupSlider(slider, display) {
                     const bodyTex = skinData.bodyTexture || snakeBodyTexture;
                     const bodyTexVert = skinData.bodyTextureVertical || skinData.bodyTexture || snakeBodyTextureVertical;
                     const tailTex = skinData.tailTexture || snakeTailTexture;
+                    const cornerTexA = skinData.cornerTextureA || snakeCornerTextureA;
+                    const cornerTexB = skinData.cornerTextureB || snakeCornerTextureB;
                     let texture = isTail ? tailTex : bodyTex;
 
                     if (texture && texture.complete && texture.naturalHeight !== 0) {
@@ -8181,20 +8231,20 @@ function setupSlider(slider, display) {
                                 let flipCorner = false;
                                 if ((fromNextX === -1 && fromNextY === 0 && toPrevX === 0 && toPrevY === -1) ||
                                     (fromNextX === 0 && fromNextY === 1 && toPrevX === 1 && toPrevY === 0)) {
-                                    texture = snakeCornerTextureA;
+                                    texture = cornerTexA;
                                     usedCorner = true;
                                 } else if ((fromNextX === 1 && fromNextY === 0 && toPrevX === 0 && toPrevY === -1) ||
                                            (fromNextX === 0 && fromNextY === 1 && toPrevX === -1 && toPrevY === 0)) {
-                                    texture = snakeCornerTextureA;
+                                    texture = cornerTexA;
                                     usedCorner = true;
                                     flipCorner = true;
                                 } else if ((fromNextX === -1 && fromNextY === 0 && toPrevX === 0 && toPrevY === 1) ||
                                            (fromNextX === 0 && fromNextY === -1 && toPrevX === 1 && toPrevY === 0)) {
-                                    texture = snakeCornerTextureB;
+                                    texture = cornerTexB;
                                     usedCorner = true;
                                 } else if ((fromNextX === 1 && fromNextY === 0 && toPrevX === 0 && toPrevY === 1) ||
                                            (fromNextX === 0 && fromNextY === -1 && toPrevX === -1 && toPrevY === 0)) {
-                                    texture = snakeCornerTextureB;
+                                    texture = cornerTexB;
                                     usedCorner = true;
                                     flipCorner = true;
                                 }
