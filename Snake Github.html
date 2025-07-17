@@ -2668,6 +2668,72 @@
         #insufficient-funds-toast.show {
             opacity: 1;
         }
+
+        /* Toast message for running out of lives */
+        #out-of-lives-toast {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            padding: 4px;
+            font-size: 0.85em;
+            color: #ffffff;
+            pointer-events: none;
+            z-index: 2205;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+
+            /* Visual style matching the progress stars panel */
+            border: 2px solid #2B1D3A;
+            border-radius: 10px;
+            box-shadow: 0 2px 0 #422E58;
+            box-sizing: border-box;
+        }
+
+        #out-of-lives-toast::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                #D3BAE8 0%,
+                #D3BAE8 50%,
+                #583F7D 50%,
+                #583F7D 100%
+            );
+            border-radius: 10px;
+            pointer-events: none;
+            z-index: -2;
+        }
+
+        #out-of-lives-toast::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            width: 100%;
+            height: 90%;
+            background-color: #8C64AF;
+            border-radius: 10px;
+            transform: translateY(-50%);
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        #out-of-lives-toast .value-box {
+            background-color: #422E58;
+            border-radius: 8px;
+            padding: 6px 8px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #out-of-lives-toast.show {
+            opacity: 1;
+        }
     </style>
 </head>
 <body>
@@ -3186,6 +3252,10 @@
                 <div class="value-box">Monedas insuficientes</div>
             </div>
 
+            <div id="out-of-lives-toast" class="panel-card hidden">
+                <div class="value-box">¡Te has quedado sin vidas! Espera un poco para recuperarlas</div>
+            </div>
+
             <div class="control-row" id="action-buttons-row">
                     <button id="backButton" aria-label="Volver">
                         <img id="backButtonIcon" src="https://i.imgur.com/1WrBpTQ.png" alt="Volver" onerror="this.src='https://placehold.co/24x24/02030D/FFFFFF?text=Err';">
@@ -3412,6 +3482,7 @@
         const confirmDeleteNoButton = document.getElementById("confirmDeleteNo");
         const modalOverlay = document.getElementById("modal-overlay");
         const insufficientFundsToast = document.getElementById("insufficient-funds-toast");
+        const outOfLivesToast = document.getElementById("out-of-lives-toast");
 
         const settingsPanelContent = settingsPanel.querySelector('.panel-content');
         const freeSettingsPanelContent = freeSettingsPanel.querySelector('.panel-content');
@@ -8499,6 +8570,17 @@ function setupSlider(slider, display) {
             }, 1000);
         }
 
+        function showOutOfLivesToast() {
+            if (!outOfLivesToast) return;
+            outOfLivesToast.classList.remove('hidden');
+            void outOfLivesToast.offsetWidth;
+            outOfLivesToast.classList.add('show');
+            setTimeout(() => {
+                outOfLivesToast.classList.remove('show');
+                outOfLivesToast.classList.add('hidden');
+            }, 1000);
+        }
+
         function saveLives() {
             localStorage.setItem('snakeGameLives', playerLives.toString());
             localStorage.setItem('snakeGameLifeQueue', JSON.stringify(lifeRestoreQueue));
@@ -9134,6 +9216,10 @@ function populateMazeLevelButtons() {
 
 
 async function startGame(isRestart = false) {
+    if (playerLives <= 0 && startButton.textContent !== "Ajustes") {
+        showOutOfLivesToast();
+        return;
+    }
     isNewHighScore = false;
     blinkAnimation.active = false;
     blinkAnimation.rowIndex = -1;
