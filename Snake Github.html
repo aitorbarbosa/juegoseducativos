@@ -1651,6 +1651,7 @@
             z-index: 2103;
         }
         .settings-header, .info-header, .specific-info-header, .reset-header {
+            position: relative;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -1681,17 +1682,23 @@
         #out-of-lives-panel .settings-header {
             justify-content: flex-end;
         }
-        #close-settings-button, #close-info-button, #close-specific-info-button, #close-free-settings-button {
+        .close-button {
+            position: absolute;
+            top: 0;
+            right: 0;
+            transform: translate(50%, -50%);
             background: none;
             border: none;
-            color: #f5f5f5;
-            font-size: 2em; 
-            cursor: pointer;
             padding: 0;
-            line-height: 1;
+            width: 32px;
+            height: 32px;
+            cursor: pointer;
+            line-height: 0;
         }
-        #close-settings-button:hover, #close-info-button:hover, #close-specific-info-button:hover, #close-free-settings-button:hover {
-            color: #8f66af;
+        .close-button img {
+            width: 100%;
+            height: 100%;
+            display: block;
         }
         #settings-panel .control-group {
             background-color: #374151;
@@ -2859,7 +2866,9 @@
                             <img class="setting-info-icon" src="https://i.imgur.com/rWe7Ylp.png" alt="info" onerror="this.src='https://placehold.co/24x24/02030D/FFFFFF?text=Err';">
                         </button>
                     </div>
-                    <button id="close-settings-button" aria-label="Cerrar configuración">&times;</button>
+                    <button id="close-settings-button" class="close-button" aria-label="Cerrar configuración">
+                        <img src="https://i.imgur.com/w5E6xdU.png" alt="Cerrar">
+                    </button>
                 </div>
                 <div class="panel-content">
                 <div id="worldButtonsContainer" class="hidden flex flex-wrap justify-center gap-4"></div>
@@ -2980,7 +2989,9 @@
                             <img class="setting-info-icon" src="https://i.imgur.com/rWe7Ylp.png" alt="info" onerror="this.src='https://placehold.co/24x24/02030D/FFFFFF?text=Err';">
                         </button>
                     </div>
-                    <button id="close-free-settings-button" aria-label="Cerrar ajustes">&times;</button>
+                    <button id="close-free-settings-button" class="close-button" aria-label="Cerrar ajustes">
+                        <img src="https://i.imgur.com/w5E6xdU.png" alt="Cerrar">
+                    </button>
                 </div>
                 <div class="panel-content">
                 <div class="control-group" id="free-difficulty-control-group">
@@ -3084,7 +3095,9 @@
             <div id="info-panel" class="info-panel-hidden">
                 <div class="info-header">
                     <h2 id="main-info-title">INFORMACION</h2>
-                    <button id="close-info-button" aria-label="Cerrar información">&times;</button>
+                    <button id="close-info-button" class="close-button" aria-label="Cerrar información">
+                        <img src="https://i.imgur.com/w5E6xdU.png" alt="Cerrar">
+                    </button>
                 </div>
                 <div id="info-panel-content">
                     <p>¡Prepárate para la clásica diversión de la serpiente con un toque moderno y desafiante!¡Cada partida es una nueva oportunidad para superarte!</p>
@@ -3101,7 +3114,9 @@
             <div id="specific-info-panel" class="specific-info-panel-hidden">
                 <div class="specific-info-header">
                     <h2 id="specific-info-title">DETALLE DEL AJUSTE</h2>
-                    <button id="close-specific-info-button" aria-label="Cerrar detalle">&times;</button>
+                    <button id="close-specific-info-button" class="close-button" aria-label="Cerrar detalle">
+                        <img src="https://i.imgur.com/w5E6xdU.png" alt="Cerrar">
+                    </button>
                 </div>
                 <div id="specific-info-content">
                  </div>
@@ -3122,7 +3137,9 @@
             <div id="config-menu-panel" class="config-menu-panel-hidden">
                 <div class="settings-header">
                     <h2>MENU</h2>
-                    <button id="close-config-menu-button" aria-label="Cerrar menú">&times;</button>
+                    <button id="close-config-menu-button" class="close-button" aria-label="Cerrar menú">
+                        <img src="https://i.imgur.com/w5E6xdU.png" alt="Cerrar">
+                    </button>
                 </div>
                 <div class="panel-content">
                     <button class="menu-option-button" id="profile-menu-button">PERFIL</button>
@@ -3136,7 +3153,9 @@
             <div id="generic-menu-panel" class="generic-menu-panel-hidden">
                 <div class="settings-header">
                     <h2 id="generic-menu-title"></h2>
-                    <button id="close-generic-menu-button" aria-label="Cerrar">&times;</button>
+                    <button id="close-generic-menu-button" class="close-button" aria-label="Cerrar">
+                        <img src="https://i.imgur.com/w5E6xdU.png" alt="Cerrar">
+                    </button>
                 </div>
                 <div class="panel-content">
                     <p>Contenido no disponible todavía</p>
@@ -3150,7 +3169,9 @@
                 <img class="setting-info-icon" src="https://i.imgur.com/rWe7Ylp.png" alt="info" onerror="this.src='https://placehold.co/24x24/02030D/FFFFFF?text=Err';">
             </button>
         </div>
-        <button id="close-profile-panel" aria-label="Cerrar">&times;</button>
+        <button id="close-profile-panel" class="close-button" aria-label="Cerrar">
+            <img src="https://i.imgur.com/w5E6xdU.png" alt="Cerrar">
+        </button>
     </div>
     <div class="panel-content">
         <div class="control-row" id="player-manage-row">
@@ -3206,7 +3227,9 @@
             <div id="store-panel" class="store-panel-hidden">
                 <div class="settings-header">
                     <h2>TIENDA</h2>
-                    <button id="close-store-panel" aria-label="Cerrar">&times;</button>
+                    <button id="close-store-panel" class="close-button" aria-label="Cerrar">
+                        <img src="https://i.imgur.com/w5E6xdU.png" alt="Cerrar">
+                    </button>
                 </div>
                 <div class="panel-content">
                     <div id="store-items-container" class="grid grid-cols-3 gap-4 w-full"></div>
@@ -3243,7 +3266,9 @@
 
             <div id="out-of-lives-panel" class="out-of-lives-panel-hidden">
                 <div class="settings-header">
-                    <button id="close-out-of-lives-panel" aria-label="Cerrar">&times;</button>
+                    <button id="close-out-of-lives-panel" class="close-button" aria-label="Cerrar">
+                        <img src="https://i.imgur.com/w5E6xdU.png" alt="Cerrar">
+                    </button>
                 </div>
                 <div class="panel-content">
                     <p>¡Te has quedado sin vidas!</p>
