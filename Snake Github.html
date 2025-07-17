@@ -2582,6 +2582,21 @@
           font-family: 'Press Start 2P', sans-serif;
         }
 
+        .store-tab {
+          font-family: 'Press Start 2P', sans-serif;
+          font-size: 0.7rem;
+          padding: 4px 6px;
+          border: 2px solid #8f66af;
+          border-radius: 6px;
+          background-color: #1F2937;
+          color: #C084FC;
+        }
+
+        .store-tab.active {
+          background-color: #8f66af;
+          color: #1F2937;
+        }
+
         #purchase-item-preview {
           margin: 0 auto 8px;
         }
@@ -3232,6 +3247,11 @@
                     </button>
                 </div>
                 <div class="panel-content">
+                    <div id="store-tabs" class="flex justify-center gap-2 mb-2">
+                        <button data-tab="general" id="store-tab-general" class="store-tab active">GENERAL</button>
+                        <button data-tab="comida" id="store-tab-comida" class="store-tab">COMIDA</button>
+                        <button data-tab="disfraces" id="store-tab-disfraces" class="store-tab">DISFRACES</button>
+                    </div>
                     <div id="store-items-container" class="grid grid-cols-3 gap-4 w-full"></div>
                 </div>
             </div>
@@ -3495,6 +3515,7 @@
         const profilePanel = document.getElementById("profile-panel");
         const closeProfilePanelButton = document.getElementById("close-profile-panel");
         const storeItemsContainer = document.getElementById("store-items-container");
+        const storeTabButtons = document.querySelectorAll('#store-tabs .store-tab');
         const closeStorePanelButton = document.getElementById("close-store-panel");
         const purchaseConfirmationPanel = document.getElementById("purchase-confirmation-panel");
         const purchaseItemPreview = document.getElementById("purchase-item-preview");
@@ -3899,6 +3920,19 @@ function setupSlider(slider, display) {
             mimiSnake: "MimiSnake",
             blackCat: "Gato Negro",
             orangeCat: "Gato Naranja"
+        };
+
+        const SKIN_ORDER = ['snake','rubiSnake','aitorSnake','noemiSnake','maraSnake','almuSnake','mimiSnake','blackCat','orangeCat'];
+        const SKIN_PRICES = {
+            snake: 0,
+            rubiSnake: 1000,
+            aitorSnake: 1000,
+            noemiSnake: 1000,
+            maraSnake: 1000,
+            almuSnake: 1000,
+            mimiSnake: 1000,
+            blackCat: 1000,
+            orangeCat: 1000
         };
 
         // Nombres descriptivos de cada mundo
@@ -4526,7 +4560,12 @@ function setupSlider(slider, display) {
             bolaDragon: 'Bola de dragón'
         };
         let unlockedFoods = { apple: true };
+        let unlockedSkins = { snake: true };
         let currentFood = 'apple';
+        let totalGems = 0;
+        const HEART_PRICE = 100;
+        const GEM_PRICE = 1000;
+        let storeTab = 'general';
         // --- Fin Configuración de Comestibles ---
 
 
@@ -5237,6 +5276,7 @@ function setupSlider(slider, display) {
 
         function resetGameUIDisplays() {
             updateCoinDisplay();
+            updateGemDisplay();
             scoreValueDisplay.textContent = "0";
             if (gameMode === 'levels' || gameMode === 'maze') {
                 timeLengthValueEl.textContent = Math.ceil(LEVEL_TIME_LIMIT / 1000);
@@ -5986,6 +6026,12 @@ function setupSlider(slider, display) {
 
         function openStoreMenu() {
             if (!storePanel) return;
+            storeTab = 'general';
+            if (storeTabButtons && storeTabButtons.length) {
+                storeTabButtons.forEach(b => b.classList.remove('active'));
+                const defaultBtn = document.querySelector('#store-tab-general');
+                if (defaultBtn) defaultBtn.classList.add('active');
+            }
             populateStoreItems();
             const isConfigMenuVisible = !configMenuPanel.classList.contains('config-menu-panel-hidden') && configMenuPanel.classList.contains('panel-visible');
             storePanel.classList.remove('centered-panel');
@@ -6003,58 +6049,158 @@ function setupSlider(slider, display) {
         function populateStoreItems() {
             if (!storeItemsContainer) return;
             storeItemsContainer.innerHTML = '';
-            FOOD_ORDER.forEach(key => {
-                const item = document.createElement('div');
-                item.className = 'store-item';
+            if (storeTab === 'comida') {
+                FOOD_ORDER.forEach(key => {
+                    const item = document.createElement('div');
+                    item.className = 'store-item';
 
-                const img = document.createElement('img');
-                img.className = 'store-item-img';
-                img.src = FOODS[key]?.asset?.src || '';
-                item.appendChild(img);
+                    const img = document.createElement('img');
+                    img.className = 'store-item-img';
+                    img.src = FOODS[key]?.asset?.src || '';
+                    item.appendChild(img);
 
-                const status = document.createElement('div');
-                status.className = 'store-item-status';
-                if (unlockedFoods[key]) {
-                    status.textContent = '';
-                    item.classList.add('purchased');
-                } else {
-                    status.textContent = FOODS[key].price.toString();
-                    item.classList.add('locked');
-                    item.addEventListener('click', () => openPurchaseConfirm(key));
+                    const status = document.createElement('div');
+                    status.className = 'store-item-status';
+                    if (unlockedFoods[key]) {
+                        status.textContent = '';
+                        item.classList.add('purchased');
+                    } else {
+                        status.textContent = FOODS[key].price.toString();
+                        item.classList.add('locked');
+                        item.addEventListener('click', () => openPurchaseConfirm('food', key));
+                        addIconPressEvents(item, item);
+                    }
+                    item.appendChild(status);
+                    storeItemsContainer.appendChild(item);
+                });
+            } else if (storeTab === 'disfraces') {
+                SKIN_ORDER.forEach(key => {
+                    const item = document.createElement('div');
+                    item.className = 'store-item';
+
+                    const img = document.createElement('img');
+                    img.className = 'store-item-img';
+                    img.src = SKINS[key]?.snakeHeadAsset?.upDown?.src || '';
+                    item.appendChild(img);
+
+                    const status = document.createElement('div');
+                    status.className = 'store-item-status';
+                    if (unlockedSkins[key]) {
+                        status.textContent = '';
+                        item.classList.add('purchased');
+                    } else {
+                        status.textContent = SKIN_PRICES[key].toString();
+                        item.classList.add('locked');
+                        item.addEventListener('click', () => openPurchaseConfirm('skin', key));
+                        addIconPressEvents(item, item);
+                    }
+                    item.appendChild(status);
+                    storeItemsContainer.appendChild(item);
+                });
+            } else {
+                const generalItems = [
+                    { key: 'heart', price: HEART_PRICE, img: 'https://i.imgur.com/WrI2XXx.png' },
+                    { key: 'gem', price: GEM_PRICE, img: 'https://i.imgur.com/gPGsaCO.png' }
+                ];
+                generalItems.forEach(data => {
+                    const item = document.createElement('div');
+                    item.className = 'store-item';
+                    const img = document.createElement('img');
+                    img.className = 'store-item-img';
+                    img.src = data.img;
+                    item.appendChild(img);
+                    const status = document.createElement('div');
+                    status.className = 'store-item-status';
+                    status.textContent = data.price.toString();
+                    item.addEventListener('click', () => openPurchaseConfirm('general', data.key));
                     addIconPressEvents(item, item);
-                }
-                item.appendChild(status);
-                storeItemsContainer.appendChild(item);
-            });
+                    item.appendChild(status);
+                    storeItemsContainer.appendChild(item);
+                });
+            }
         }
 
-        let foodToPurchase = null;
-        function openPurchaseConfirm(key) {
-            foodToPurchase = key;
+        let purchaseInfo = null;
+        function openPurchaseConfirm(type, key) {
+            purchaseInfo = { type, key };
             if (purchaseItemPreview) {
                 purchaseItemPreview.innerHTML = '';
                 purchaseItemPreview.className = 'store-item';
                 const img = document.createElement('img');
                 img.className = 'store-item-img';
-                img.src = FOODS[key]?.asset?.src || '';
+                if (type === 'food') {
+                    img.src = FOODS[key]?.asset?.src || '';
+                } else if (type === 'skin') {
+                    img.src = SKINS[key]?.snakeHeadAsset?.upDown?.src || '';
+                } else if (type === 'general') {
+                    img.src = key === 'heart' ? 'https://i.imgur.com/WrI2XXx.png' : 'https://i.imgur.com/gPGsaCO.png';
+                }
                 purchaseItemPreview.appendChild(img);
             }
-            if (purchaseConfirmationText) purchaseConfirmationText.innerHTML = `¿Comprar ${FOOD_DISPLAY_NAMES[key]} por <strong>${FOODS[key].price}</strong> monedas?`;
+            let price = 0;
+            let name = '';
+            if (type === 'food') {
+                price = FOODS[key].price;
+                name = FOOD_DISPLAY_NAMES[key];
+            } else if (type === 'skin') {
+                price = SKIN_PRICES[key];
+                name = SKIN_DISPLAY_NAMES[key];
+            } else if (type === 'general') {
+                price = key === 'heart' ? HEART_PRICE : GEM_PRICE;
+                name = key === 'heart' ? 'coraz\u00F3n' : 'gema';
+            }
+            if (purchaseConfirmationText) purchaseConfirmationText.innerHTML = `¿Comprar ${name} por <strong>${price}</strong> monedas?`;
             purchaseConfirmationPanel.classList.add('centered-panel');
             togglePanel(purchaseConfirmationPanel, purchaseConfirmationPanel.querySelector('.panel-content'), true);
             if (modalOverlay) modalOverlay.classList.remove('hidden');
         }
 
         function confirmPurchase() {
-            if (!foodToPurchase) { closePurchaseConfirm(); return; }
-            const price = FOODS[foodToPurchase].price;
-            if (totalCoins >= price) {
-                totalCoins -= price;
-                unlockedFoods[foodToPurchase] = true;
-                saveUnlockedFoods();
+            if (!purchaseInfo) { closePurchaseConfirm(); return; }
+            let price = 0;
+            let success = false;
+            if (purchaseInfo.type === 'food') {
+                price = FOODS[purchaseInfo.key].price;
+                if (totalCoins >= price) {
+                    totalCoins -= price;
+                    unlockedFoods[purchaseInfo.key] = true;
+                    saveUnlockedFoods();
+                    updateFoodSelectorAvailability();
+                    success = true;
+                }
+            } else if (purchaseInfo.type === 'skin') {
+                price = SKIN_PRICES[purchaseInfo.key];
+                if (totalCoins >= price) {
+                    totalCoins -= price;
+                    unlockedSkins[purchaseInfo.key] = true;
+                    saveUnlockedSkins();
+                    updateSkinSelectorAvailability();
+                    success = true;
+                }
+            } else if (purchaseInfo.type === 'general') {
+                if (purchaseInfo.key === 'heart') {
+                    price = HEART_PRICE;
+                    if (totalCoins >= price && playerLives < MAX_LIVES) {
+                        totalCoins -= price;
+                        playerLives++;
+                        saveLives();
+                        updateLivesDisplay();
+                        success = true;
+                    }
+                } else if (purchaseInfo.key === 'gem') {
+                    price = GEM_PRICE;
+                    if (totalCoins >= price) {
+                        totalCoins -= price;
+                        totalGems++;
+                        saveGems();
+                        updateGemDisplay();
+                        success = true;
+                    }
+                }
+            }
+            if (success) {
                 localStorage.setItem('snakeGameCoins', totalCoins.toString());
                 updateCoinDisplay();
-                updateFoodSelectorAvailability();
                 populateStoreItems();
                 closePurchaseConfirm();
             } else {
@@ -6067,7 +6213,7 @@ function setupSlider(slider, display) {
             purchaseConfirmationPanel.classList.remove('centered-panel');
             if (purchaseItemPreview) purchaseItemPreview.innerHTML = '';
             if (modalOverlay) modalOverlay.classList.add('hidden');
-            foodToPurchase = null;
+            purchaseInfo = null;
         }
 
         let playerToDelete = null;
@@ -6096,6 +6242,7 @@ function setupSlider(slider, display) {
                 classificationDifficultyIndex = CLASSIFICATION_DIFFICULTY_ORDER.indexOf(keepDifficulty);
             }
             updateCoinDisplay();
+            updateGemDisplay();
             updateGameModeUI();
             requestAnimationFrame(draw);
             saveGameSettings();
@@ -6182,6 +6329,15 @@ function setupSlider(slider, display) {
         if (closeOutOfLivesPanelButton) closeOutOfLivesPanelButton.addEventListener('click', closeOutOfLivesPanel);
         if (getLivesStoreButton) getLivesStoreButton.addEventListener('click', () => { closeOutOfLivesPanel(); openStoreMenu(); });
         if (getLivesBonusesButton) getLivesBonusesButton.addEventListener('click', () => { closeOutOfLivesPanel(); openGenericMenuPanel('Bonificaciones'); });
+
+        storeTabButtons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                storeTabButtons.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                storeTab = btn.dataset.tab;
+                populateStoreItems();
+            });
+        });
 
         // --- Specific Info Panel Logic ---
         const specificHelpTexts = {
@@ -8842,6 +8998,10 @@ function setupSlider(slider, display) {
             if (selectorCoinValueDisplay) selectorCoinValueDisplay.textContent = totalCoins;
         }
 
+        function updateGemDisplay() {
+            if (selectorGemsValueDisplay) selectorGemsValueDisplay.textContent = totalGems;
+        }
+
         function animateCoinGain(oldTotal, newTotal) {
             const diff = newTotal - oldTotal;
             if (diff <= 0) {
@@ -9006,6 +9166,7 @@ function setupSlider(slider, display) {
                 if (targetScoreDivider) targetScoreDivider.classList.add('hidden');
                 if (targetScoreValueDisplay) targetScoreValueDisplay.classList.add('hidden');
                 updateCoinDisplay();
+                updateGemDisplay();
                 updateLivesDisplay();
                 updateLifeTimerDisplay();
             } else {
@@ -10069,6 +10230,7 @@ async function startGame(isRestart = false) {
             }
 
             updateCoinDisplay();
+            updateGemDisplay();
             updateGameModeUI();
             requestAnimationFrame(draw);
             saveGameSettings();
@@ -10090,6 +10252,7 @@ async function startGame(isRestart = false) {
                     classificationDifficultyIndex = CLASSIFICATION_DIFFICULTY_ORDER.indexOf(keepDifficulty);
                 }
                 updateCoinDisplay();
+                updateGemDisplay();
                 updateGameModeUI();
                 requestAnimationFrame(draw);
                 saveGameSettings();
@@ -10426,6 +10589,23 @@ async function startGame(isRestart = false) {
             }
         }
 
+        function saveUnlockedSkins() {
+            localStorage.setItem('snakeGameUnlockedSkins', JSON.stringify(unlockedSkins));
+        }
+
+        function loadUnlockedSkins() {
+            try {
+                const data = JSON.parse(localStorage.getItem('snakeGameUnlockedSkins') || '{}');
+                unlockedSkins = { snake: true, ...data };
+            } catch (e) {
+                unlockedSkins = { snake: true };
+            }
+        }
+
+        function saveGems() {
+            localStorage.setItem('snakeGameGems', totalGems.toString());
+        }
+
         function updateFoodSelectorAvailability() {
             if (!foodSelectors.length) return;
             foodSelectors.forEach(sel => {
@@ -10440,6 +10620,23 @@ async function startGame(isRestart = false) {
             if (!unlockedFoods[current]) {
                 foodSelectors.forEach(sel => sel.value = 'apple');
                 applyFood('apple');
+            }
+        }
+
+        function updateSkinSelectorAvailability() {
+            if (!skinSelectors.length) return;
+            skinSelectors.forEach(sel => {
+                Array.from(sel.options).forEach(opt => {
+                    opt.disabled = !unlockedSkins[opt.value];
+                });
+                if (!unlockedSkins[sel.value]) {
+                    sel.value = 'snake';
+                }
+            });
+            const current = skinSelectors[0].value;
+            if (!unlockedSkins[current]) {
+                skinSelectors.forEach(sel => sel.value = 'snake');
+                applySkin('snake');
             }
         }
 
@@ -10628,6 +10825,8 @@ async function startGame(isRestart = false) {
             playerProfiles[currentPlayerName] = profile;
             savePlayerProfiles();
             localStorage.setItem('snakeGameCoins', totalCoins.toString());
+            localStorage.setItem('snakeGameGems', totalGems.toString());
+            saveUnlockedSkins();
             saveUnlockedFoods();
             localStorage.setItem('snakePlayerNames', JSON.stringify(Object.keys(playerProfiles)));
             localStorage.setItem('snakeGamePlayerName', currentPlayerName);
@@ -10645,12 +10844,16 @@ async function startGame(isRestart = false) {
             }
             const savedCoins = parseInt(localStorage.getItem('snakeGameCoins'), 10);
             totalCoins = Number.isFinite(savedCoins) && savedCoins >= 0 ? savedCoins : 0;
+            const savedGems = parseInt(localStorage.getItem('snakeGameGems'), 10);
+            totalGems = Number.isFinite(savedGems) && savedGems >= 0 ? savedGems : 0;
             loadUnlockedFoods(); // Load foods before applying profile
+            loadUnlockedSkins();
             updateFoodSelectorOptions(playerProfiles[currentPlayerName]?.food || 'apple');
             updatePlayerNameSelectors(currentPlayerName);
             applyProfile(playerProfiles[currentPlayerName]);
             updateSfxVolume();
             updateFoodSelectorAvailability();
+            updateSkinSelectorAvailability();
             populateStoreItems();
 
             // Always start with no mode selected
@@ -10696,6 +10899,7 @@ async function startGame(isRestart = false) {
             console.log("Configuraciones cargadas de localStorage y aplicadas a selectores.");
             updateGameModeUI(); // This will use the newly set display variables
             updateCoinDisplay();
+            updateGemDisplay();
         }
 
 
