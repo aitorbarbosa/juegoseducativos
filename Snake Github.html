@@ -5412,6 +5412,20 @@ function setupSlider(slider, display) {
                 settingsPanel.classList.remove("centered-panel");
             }
             togglePanel(settingsPanel, settingsPanelContent, true);
+            if (panelOpenedFromSplash) {
+                const splashContent = document.getElementById('splash-content');
+                requestAnimationFrame(() => {
+                    if (splashContent) {
+                        const rect = splashContent.getBoundingClientRect();
+                        const margin = 30;
+                        settingsPanel.style.width = (rect.width - margin * 2) + 'px';
+                        settingsPanel.style.left = (rect.left + rect.width / 2) + 'px';
+                    }
+                });
+            } else {
+                settingsPanel.style.width = '';
+                settingsPanel.style.left = '';
+            }
             updateSfxVolume();
             if (profileInfoButton) profileInfoButton.classList.add('hidden');
             if (playerNameInfoButton) playerNameInfoButton.classList.remove('hidden');
@@ -5530,6 +5544,8 @@ function setupSlider(slider, display) {
                 updateMainButtonStates();
             }, 0);
             settingsPanel.classList.remove('centered-panel');
+            settingsPanel.style.width = '';
+            settingsPanel.style.left = '';
 
             if (panelOpenedFromSplash && splashScreen && !splashScreen.classList.contains('hidden')) {
                 if (gameContainer) gameContainer.classList.add('hidden');
@@ -5674,10 +5690,14 @@ function setupSlider(slider, display) {
                 requestAnimationFrame(() => {
                     if (splashContent) {
                         const rect = splashContent.getBoundingClientRect();
-                        infoPanel.style.width = rect.width + 'px';
+                        const margin = 30;
+                        infoPanel.style.width = (rect.width - margin * 2) + 'px';
                         infoPanel.style.left = (rect.left + rect.width / 2) + 'px';
                     }
                 });
+            } else {
+                infoPanel.style.width = '';
+                infoPanel.style.left = '';
             }
             if (gameOver && !gameIntervalId) {
                 if (ctx && canvasEl) {
@@ -5746,6 +5766,8 @@ function setupSlider(slider, display) {
                 updateMainButtonStates();
             }, 0);
             infoPanel.classList.remove('centered-panel');
+            infoPanel.style.width = '';
+            infoPanel.style.left = '';
 
             if (panelOpenedFromSplash && splashScreen && !splashScreen.classList.contains('hidden')) {
                 if (gameContainer) gameContainer.classList.add('hidden');
@@ -10320,6 +10342,13 @@ async function startGame(isRestart = false) {
         addIconPressEvents(confirmPurchaseNoButton, confirmPurchaseNoButton);
         addIconPressEvents(confirmDeleteYesButton, confirmDeleteYesButton);
         addIconPressEvents(confirmDeleteNoButton, confirmDeleteNoButton);
+        addIconPressEvents(closeSettingsButton, closeSettingsButton);
+        addIconPressEvents(closeFreeSettingsButton, closeFreeSettingsButton);
+        addIconPressEvents(closeInfoButton, closeInfoButton);
+        addIconPressEvents(closeSpecificInfoButton, closeSpecificInfoButton);
+        addIconPressEvents(closeConfigMenuButton, closeConfigMenuButton);
+        addIconPressEvents(closeGenericMenuButton, closeGenericMenuButton);
+        addIconPressEvents(closeProfilePanelButton, closeProfilePanelButton);
         addIconPressEvents(closeStorePanelButton, closeStorePanelButton);
         addIconPressEvents(closeOutOfLivesPanelButton, closeOutOfLivesPanelButton);
         addIconPressEvents(getLivesStoreButton, getLivesStoreButton);
