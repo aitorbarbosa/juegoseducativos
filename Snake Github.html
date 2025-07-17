@@ -4476,11 +4476,12 @@ function setupSlider(slider, display) {
         let difficulty = 'principiante';
         let freeDifficulty = 'personalizado';
         let snakeSpeed = 150; 
-        let foodTimeRemaining = 0; 
-        let foodDisappearTimeoutId; 
+        let foodTimeRemaining = 0;
+        let foodDisappearTimeoutId;
         let foodVisualTimerIntervalId;
-        let streakMultiplier = 1; 
-        let lastWarningSoundSecond = -1; 
+        let preEatTimeoutId = null;
+        let streakMultiplier = 1;
+        let lastWarningSoundSecond = -1;
 
         // Game state variables for screen display
         let screenState = {
@@ -4681,6 +4682,7 @@ function setupSlider(slider, display) {
         const LIGHTNING_LIFESPAN = 5000;
         const SPEED_BOOST_DURATION = 3000;
         const REACTION_DISPLAY_TIME = 300;
+        const PRE_EAT_DELAY_MS = 100;
         let obstacles = [];
         let snakeSpawnRow = 0;
         let falseFoodItems = [];
@@ -8494,8 +8496,16 @@ function setupSlider(slider, display) {
                 case "right": nextHeadX++; break;
             }
 
-            if (currentFoodItem.x !== undefined && nextHeadX === currentFoodItem.x && nextHeadY === currentFoodItem.y) {
+            if (!preEatTimeoutId && currentFoodItem.x !== undefined && nextHeadX === currentFoodItem.x && nextHeadY === currentFoodItem.y) {
+                const poppedTail = snake.pop();
+                snake.unshift({ x: nextHeadX, y: nextHeadY });
                 setReaction('preEat');
+                draw();
+                clearInterval(gameIntervalId);
+                preEatTimeoutId = setTimeout(() => {
+                    handleFoodEat(poppedTail);
+                }, PRE_EAT_DELAY_MS);
+                return;
             }
 
             if (nextHeadX < 0) nextHeadX = tileCountX - 1;
@@ -8607,7 +8617,60 @@ function setupSlider(slider, display) {
             if (gameMode === 'freeMode' || gameMode === 'levels') { 
                 updateTimeLengthDisplay(); 
             }
+           draw();
+       }
+
+        function handleFoodEat(tailSegment) {
+            let gained = POINTS_PER_FOOD;
+            const rank = CLASSIFICATION_RANKS[difficulty] || 0;
+            if ((gameMode === 'levels' && currentWorld >= 6) || (gameMode === 'classification' && rank >= 2)) {
+                gained *= streakMultiplier;
+                if (streakMultiplier < MAX_STREAK) { streakMultiplier += 0.5; }
+                if (streakMultiplier > MAX_STREAK) { streakMultiplier = MAX_STREAK; }
+                startStreakAnimation(streakMultiplier);
+            }
+            if (currentFoodItem.isGolden) gained *= 2;
+            score += gained;
+            if (areSfxEnabled) playSound('eat');
+            setReaction(currentFoodItem.isGolden ? 'eatGolden' : 'eat');
+            snake.push(tailSegment);
+            clearTimeout(foodDisappearTimeoutId);
+            clearInterval(foodVisualTimerIntervalId);
+            foodTimeRemaining = 0;
+            generateFood();
+
+            if (gameMode === 'levels') {
+                const absoluteLevelIndex = (currentWorld - 1) * LEVELS_PER_WORLD + (currentLevelInWorld - 1);
+                if (score >= TARGET_SCORES_LEVELS[absoluteLevelIndex]) {
+                    gameOver = true; // Level won by score
+                }
+            } else if (gameMode === 'maze') {
+                while (mazeStarsEarned < MAZE_STAR_TARGETS.length && score >= MAZE_STAR_TARGETS[mazeStarsEarned]) {
+                    mazeStarsEarned++;
+                    if (mazeStarsEarned === MAZE_STAR_TARGETS.length) {
+                        gameOver = true;
+                        break;
+                    } else {
+                        displayTargetScore = MAZE_STAR_TARGETS[mazeStarsEarned];
+                    }
+                }
+                drawStarProgress();
+                updateTargetScoreDisplay();
+            }
+
+            updateScoreDisplay();
+            if (gameMode === 'freeMode' || gameMode === 'levels') {
+                updateTimeLengthDisplay();
+            }
+
             draw();
+            preEatTimeoutId = null;
+            if (gameOver) {
+                finalizeGameOver();
+            } else {
+                clearInterval(gameIntervalId);
+                gameIntervalId = setInterval(update, snakeSpeed);
+            }
         }
         
         function updateScoreDisplay() {
