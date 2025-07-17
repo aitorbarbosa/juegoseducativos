@@ -125,6 +125,15 @@
             transition: transform 0.05s ease-out, filter 0.05s ease-out;
         }
 
+        .get-lives-button {
+            cursor: pointer;
+            width: auto;
+            height: auto;
+            max-width: min(30vw, 110px);
+            object-fit: contain;
+            transition: transform 0.05s ease-out, filter 0.05s ease-out;
+        }
+
         #splash-bottom-image {
             width: 100%;
             max-width: var(--game-max-width); /* Límite para PC, un poco más grande que el juego */
@@ -1452,10 +1461,10 @@
             display: block;
         }
 
-        .settings-panel-hidden, .info-panel-hidden, .specific-info-panel-hidden, .free-settings-panel-hidden, .reset-panel-hidden, .config-menu-panel-hidden, .generic-menu-panel-hidden, .store-panel-hidden, .profile-panel-hidden, .purchase-confirmation-panel-hidden, .delete-confirmation-panel-hidden {
+        .settings-panel-hidden, .info-panel-hidden, .specific-info-panel-hidden, .free-settings-panel-hidden, .reset-panel-hidden, .config-menu-panel-hidden, .generic-menu-panel-hidden, .store-panel-hidden, .profile-panel-hidden, .purchase-confirmation-panel-hidden, .delete-confirmation-panel-hidden, .out-of-lives-panel-hidden {
             display: none !important;
         }
-        #settings-panel, #info-panel, #specific-info-panel, #free-settings-panel, #reset-confirmation-panel, #config-menu-panel, #generic-menu-panel, #store-panel, #profile-panel, #purchase-confirmation-panel, #delete-confirmation-panel {
+        #settings-panel, #info-panel, #specific-info-panel, #free-settings-panel, #reset-confirmation-panel, #config-menu-panel, #generic-menu-panel, #store-panel, #profile-panel, #purchase-confirmation-panel, #delete-confirmation-panel, #out-of-lives-panel {
             position: fixed;
             left: 0;
             transform: scale(0);
@@ -1604,7 +1613,8 @@
         #store-panel.centered-panel,
         #profile-panel.centered-panel,
         #purchase-confirmation-panel.centered-panel,
-        #delete-confirmation-panel.centered-panel {
+        #delete-confirmation-panel.centered-panel,
+        #out-of-lives-panel.centered-panel {
             transform: translate(-50%, -50%) scale(0);
         }
         #settings-panel.centered-panel.panel-visible,
@@ -1617,7 +1627,8 @@
         #store-panel.centered-panel.panel-visible,
         #profile-panel.centered-panel.panel-visible,
         #purchase-confirmation-panel.centered-panel.panel-visible,
-        #delete-confirmation-panel.centered-panel.panel-visible {
+        #delete-confirmation-panel.centered-panel.panel-visible,
+        #out-of-lives-panel.centered-panel.panel-visible {
             transform: translate(-50%, -50%) scale(1);
         }
         #settings-panel.panel-visible,
@@ -1630,7 +1641,8 @@
         #store-panel.panel-visible,
         #profile-panel.panel-visible,
         #purchase-confirmation-panel.panel-visible,
-        #delete-confirmation-panel.panel-visible {
+        #delete-confirmation-panel.panel-visible,
+        #out-of-lives-panel.panel-visible {
             opacity: 1;
             transform: scale(1);
         }
@@ -1665,6 +1677,9 @@
         }
         #free-settings-panel .settings-header h2 {
             font-size: 1.1em;
+        }
+        #out-of-lives-panel .settings-header {
+            justify-content: flex-end;
         }
         #close-settings-button, #close-info-button, #close-specific-info-button, #close-free-settings-button {
             background: none;
@@ -1955,6 +1970,9 @@
             .info-header h2#main-info-title, #specific-info-content h3 { font-size: 1.1em; }
             #info-panel-content h4, #specific-info-content h4 { font-size: 0.95em; }
             #info-panel-content p, #info-panel-content ul, #specific-info-content p, #specific-info-content ul { font-size: 0.75em; }
+            #out-of-lives-panel .get-lives-button { max-width: min(25vw, 90px); }
+            #out-of-lives-panel .out-of-lives-heart { max-width: 100px; }
+            #out-of-lives-panel p { font-size: 0.85em; }
         }
         @media screen and (max-width: 400px) {
             /* --- INICIO DE MEDIA QUERY CORREGIDA PARA #high-score-display --- */
@@ -2061,6 +2079,9 @@
             .info-header h2#main-info-title, #specific-info-content h3 { font-size: 1em; }
             #info-panel-content h4, #specific-info-content h4 { font-size: 0.85em; }
             #info-panel-content p, #info-panel-content ul, #specific-info-content p, #specific-info-content ul { font-size: 0.7em; }
+            #out-of-lives-panel .get-lives-button { max-width: min(30vw, 75px); }
+            #out-of-lives-panel .out-of-lives-heart { max-width: 80px; }
+            #out-of-lives-panel p { font-size: 0.75em; }
         }
 
         @media screen and (min-width: 600px) {
@@ -2144,6 +2165,27 @@
         #profile-panel { z-index: 2101; }
         #purchase-confirmation-panel { z-index: 2103; }
         #delete-confirmation-panel { z-index: 2103; }
+        #out-of-lives-panel {
+            z-index: 2103;
+            max-height: 90vh;
+            box-sizing: border-box;
+        }
+        #out-of-lives-panel .panel-content {
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+        #out-of-lives-panel p {
+            margin: 0;
+        }
+        #out-of-lives-panel .out-of-lives-heart {
+            width: 100%;
+            max-width: 140px;
+            height: auto;
+        }
+        #out-of-lives-panel .get-lives-button {
+            max-width: min(30vw, 110px);
+        }
         #modal-overlay {
             position: fixed;
             top: 0;
@@ -2159,7 +2201,8 @@
         #reset-confirmation-panel p { text-align: center; margin: 0 0 10px 0; }
         #reset-confirmation-panel .reset-buttons,
         #purchase-confirmation-panel .reset-buttons,
-        #delete-confirmation-panel .reset-buttons {
+        #delete-confirmation-panel .reset-buttons,
+        #out-of-lives-panel .reset-buttons {
             display: flex;
             gap: 15px;
             justify-content: center;
@@ -2668,6 +2711,7 @@
         #insufficient-funds-toast.show {
             opacity: 1;
         }
+
     </style>
 </head>
 <body>
@@ -3186,6 +3230,21 @@
                 <div class="value-box">Monedas insuficientes</div>
             </div>
 
+            <div id="out-of-lives-panel" class="out-of-lives-panel-hidden">
+                <div class="settings-header">
+                    <button id="close-out-of-lives-panel" aria-label="Cerrar">&times;</button>
+                </div>
+                <div class="panel-content">
+                    <p>¡Te has quedado sin vidas!</p>
+                    <img src="https://i.imgur.com/SKWBRG7.png" alt="Corazón roto" class="mx-auto out-of-lives-heart">
+                    <p>¿Quieres conseguir más?</p>
+                    <div class="reset-buttons">
+                        <img id="get-lives-store-button" class="get-lives-button" src="https://i.imgur.com/9HHOgFe.png" alt="Tienda">
+                        <img id="get-lives-bonuses-button" class="get-lives-button" src="https://i.imgur.com/3dvvN2k.png" alt="Bonificaciones">
+                    </div>
+                </div>
+            </div>
+
             <div class="control-row" id="action-buttons-row">
                     <button id="backButton" aria-label="Volver">
                         <img id="backButtonIcon" src="https://i.imgur.com/1WrBpTQ.png" alt="Volver" onerror="this.src='https://placehold.co/24x24/02030D/FFFFFF?text=Err';">
@@ -3412,6 +3471,10 @@
         const confirmDeleteNoButton = document.getElementById("confirmDeleteNo");
         const modalOverlay = document.getElementById("modal-overlay");
         const insufficientFundsToast = document.getElementById("insufficient-funds-toast");
+        const outOfLivesPanel = document.getElementById("out-of-lives-panel");
+        const closeOutOfLivesPanelButton = document.getElementById("close-out-of-lives-panel");
+        const getLivesStoreButton = document.getElementById("get-lives-store-button");
+        const getLivesBonusesButton = document.getElementById("get-lives-bonuses-button");
 
         const settingsPanelContent = settingsPanel.querySelector('.panel-content');
         const freeSettingsPanelContent = freeSettingsPanel.querySelector('.panel-content');
@@ -5103,6 +5166,7 @@ function setupSlider(slider, display) {
             else if (panelId === "profile-panel") hiddenClassName = "profile-panel-hidden";
             else if (panelId === "purchase-confirmation-panel") hiddenClassName = "purchase-confirmation-panel-hidden";
             else if (panelId === "delete-confirmation-panel") hiddenClassName = "delete-confirmation-panel-hidden";
+            else if (panelId === "out-of-lives-panel") hiddenClassName = "out-of-lives-panel-hidden";
             else {
                 console.error("togglePanel: Clase oculta no definida para el panel:", panelId);
                 return;
@@ -5653,8 +5717,12 @@ function setupSlider(slider, display) {
 
         function openGenericMenuPanel(title) {
             if (genericMenuTitle) genericMenuTitle.textContent = (title || '').toUpperCase();
+            const isConfigMenuVisible = !configMenuPanel.classList.contains('config-menu-panel-hidden') && configMenuPanel.classList.contains('panel-visible');
+            genericMenuPanel.classList.remove('centered-panel');
             togglePanel(genericMenuPanel, genericMenuPanel.querySelector('.panel-content'), true);
-            matchPanelSizeWithElement(configMenuPanel, genericMenuPanel);
+            if (isConfigMenuVisible) {
+                matchPanelSizeWithElement(configMenuPanel, genericMenuPanel);
+            }
         }
 
         function closeGenericMenuPanel() {
@@ -5663,9 +5731,12 @@ function setupSlider(slider, display) {
         }
 
         function openStoreMenu() {
-            if (storePanel) {
-                populateStoreItems();
-                togglePanel(storePanel, storePanel.querySelector('.panel-content'), true);
+            if (!storePanel) return;
+            populateStoreItems();
+            const isConfigMenuVisible = !configMenuPanel.classList.contains('config-menu-panel-hidden') && configMenuPanel.classList.contains('panel-visible');
+            storePanel.classList.remove('centered-panel');
+            togglePanel(storePanel, storePanel.querySelector('.panel-content'), true);
+            if (isConfigMenuVisible) {
                 matchPanelSizeWithElement(configMenuPanel, storePanel);
             }
         }
@@ -5784,6 +5855,18 @@ function setupSlider(slider, display) {
             playerToDelete = null;
         }
 
+        function openOutOfLivesPanel() {
+            if (!outOfLivesPanel) return;
+            togglePanel(outOfLivesPanel, outOfLivesPanel.querySelector('.panel-content'), true);
+            if (modalOverlay) modalOverlay.classList.remove('hidden');
+        }
+
+        function closeOutOfLivesPanel() {
+            togglePanel(outOfLivesPanel, outOfLivesPanel.querySelector('.panel-content'), false);
+            if (modalOverlay) modalOverlay.classList.add('hidden');
+            setTimeout(updateMainButtonStates, 0);
+        }
+
        function openProfileMenu() {
            if (!profilePanel) return;
 
@@ -5842,6 +5925,9 @@ function setupSlider(slider, display) {
         if (confirmPurchaseNoButton) confirmPurchaseNoButton.addEventListener('click', closePurchaseConfirm);
         if (confirmDeleteYesButton) confirmDeleteYesButton.addEventListener('click', confirmDelete);
         if (confirmDeleteNoButton) confirmDeleteNoButton.addEventListener('click', closeDeleteConfirm);
+        if (closeOutOfLivesPanelButton) closeOutOfLivesPanelButton.addEventListener('click', closeOutOfLivesPanel);
+        if (getLivesStoreButton) getLivesStoreButton.addEventListener('click', () => { closeOutOfLivesPanel(); openStoreMenu(); });
+        if (getLivesBonusesButton) getLivesBonusesButton.addEventListener('click', () => { closeOutOfLivesPanel(); openGenericMenuPanel('Bonificaciones'); });
 
         // --- Specific Info Panel Logic ---
         const specificHelpTexts = {
@@ -8499,6 +8585,7 @@ function setupSlider(slider, display) {
             }, 1000);
         }
 
+
         function saveLives() {
             localStorage.setItem('snakeGameLives', playerLives.toString());
             localStorage.setItem('snakeGameLifeQueue', JSON.stringify(lifeRestoreQueue));
@@ -9134,6 +9221,10 @@ function populateMazeLevelButtons() {
 
 
 async function startGame(isRestart = false) {
+    if (playerLives <= 0 && startButton.textContent !== "Ajustes") {
+        openOutOfLivesPanel();
+        return;
+    }
     isNewHighScore = false;
     blinkAnimation.active = false;
     blinkAnimation.rowIndex = -1;
@@ -10063,6 +10154,9 @@ async function startGame(isRestart = false) {
         addIconPressEvents(confirmDeleteYesButton, confirmDeleteYesButton);
         addIconPressEvents(confirmDeleteNoButton, confirmDeleteNoButton);
         addIconPressEvents(closeStorePanelButton, closeStorePanelButton);
+        addIconPressEvents(closeOutOfLivesPanelButton, closeOutOfLivesPanelButton);
+        addIconPressEvents(getLivesStoreButton, getLivesStoreButton);
+        addIconPressEvents(getLivesBonusesButton, getLivesBonusesButton);
 
         // Original click listeners for D-Pad 
         upButton.addEventListener("click", () => changeDirection("up"));
