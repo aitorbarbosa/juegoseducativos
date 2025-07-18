@@ -6310,7 +6310,7 @@ function setupSlider(slider, display) {
             if (!purchaseInfo) { closePurchaseConfirm(); return; }
             let price = 0;
             let success = false;
-            let failureMessage = null;
+            let failureMessage;
             if (purchaseInfo.type === 'food') {
                 price = FOODS[purchaseInfo.key].price;
                 if (totalCoins >= price) {
@@ -6335,8 +6335,13 @@ function setupSlider(slider, display) {
                     if (totalCoins >= price && playerLives < MAX_LIVES) {
                         totalCoins -= price;
                         playerLives++;
+                        if (lifeRestoreQueue.length > 0) {
+                            lifeRestoreQueue.pop();
+                        }
+                        if (playerLives >= MAX_LIVES) lifeRestoreQueue = [];
                         saveLives();
                         updateLivesDisplay();
+                        updateLifeTimerDisplay();
                         success = true;
                     } else if (playerLives >= MAX_LIVES) {
                         failureMessage = 'Vidas al máximo';
@@ -9295,6 +9300,7 @@ function setupSlider(slider, display) {
                 playerLives++;
             }
             if (playerLives > MAX_LIVES) playerLives = MAX_LIVES;
+            if (playerLives >= MAX_LIVES) lifeRestoreQueue = [];
             if (initial) saveLives();
             updateLivesDisplay();
             updateLifeTimerDisplay();
@@ -9307,6 +9313,7 @@ function setupSlider(slider, display) {
             lifeRestoreQueue.push(lastTime + LIFE_RECHARGE_TIME);
             saveLives();
             updateLivesDisplay();
+            updateLifeTimerDisplay();
         }
 
         function updateTargetScoreDisplay() {
