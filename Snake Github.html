@@ -1937,8 +1937,8 @@
             }
 
             #settings-panel, #info-panel, #specific-info-panel, #free-settings-panel {
-                width: calc(100% - 20px);
-                padding: 20px;
+                width: calc(100% - 10px);
+                padding: 10px;
             }
             .settings-header h2, .info-header h2, .specific-info-header h2 {
                 font-size: 1.1em;
@@ -2083,7 +2083,7 @@
                 width: auto;
             }
             #settings-panel, #info-panel, #specific-info-panel, #free-settings-panel {
-                padding: 15px;
+                padding: 10px;
             }
             .info-header h2#main-info-title, #specific-info-content h3 { font-size: 1em; }
             #info-panel-content h4, #specific-info-content h4 { font-size: 0.85em; }
@@ -5727,7 +5727,7 @@ function setupSlider(slider, display) {
                 requestAnimationFrame(() => {
                     if (splashContent) {
                         const rect = splashContent.getBoundingClientRect();
-                        const margin = 30;
+                        const margin = 15;
                         settingsPanel.style.width = (rect.width - margin * 2) + 'px';
                         settingsPanel.style.left = (rect.left + rect.width / 2) + 'px';
                     }
@@ -5999,7 +5999,7 @@ function setupSlider(slider, display) {
                 requestAnimationFrame(() => {
                     if (splashContent) {
                         const rect = splashContent.getBoundingClientRect();
-                        const margin = 30;
+                        const margin = 15;
                         infoPanel.style.width = (rect.width - margin * 2) + 'px';
                         infoPanel.style.left = (rect.left + rect.width / 2) + 'px';
                     }
