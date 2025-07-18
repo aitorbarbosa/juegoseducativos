@@ -6335,8 +6335,11 @@ function setupSlider(slider, display) {
                     if (totalCoins >= price && playerLives < MAX_LIVES) {
                         totalCoins -= price;
                         playerLives++;
+                        if (lifeRestoreQueue.length > 0) lifeRestoreQueue.shift();
+                        if (playerLives >= MAX_LIVES) lifeRestoreQueue = [];
                         saveLives();
                         updateLivesDisplay();
+                        updateLifeTimerDisplay();
                         success = true;
                     } else if (playerLives >= MAX_LIVES) {
                         failureMessage = 'Vidas al máximo';
