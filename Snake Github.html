@@ -5713,11 +5713,13 @@ function setupSlider(slider, display) {
         }
 
 
-        function openSettingsPanel() {
+       function openSettingsPanel() {
             if (panelOpenedFromSplash) {
                 settingsPanel.classList.add("centered-panel");
             } else {
                 settingsPanel.classList.remove("centered-panel");
+                settingsPanel.style.width = '';
+                settingsPanel.style.left = '';
             }
             togglePanel(settingsPanel, settingsPanelContent, true);
             if (panelOpenedFromSplash) {
@@ -5730,9 +5732,6 @@ function setupSlider(slider, display) {
                         settingsPanel.style.left = (rect.left + rect.width / 2) + 'px';
                     }
                 });
-            } else {
-                settingsPanel.style.width = '';
-                settingsPanel.style.left = '';
             }
             updateSfxVolume();
             if (profileInfoButton) profileInfoButton.classList.add('hidden');
@@ -5810,7 +5809,7 @@ function setupSlider(slider, display) {
 
         function closeSettingsPanel() {
             const wasSpecificInfoOpen = specificInfoPanel && !specificInfoPanel.classList.contains("specific-info-panel-hidden");
-            
+
             togglePanel(settingsPanel, settingsPanelContent, false); // Hides panel
 
             if (wasSpecificInfoOpen) {
@@ -5852,8 +5851,6 @@ function setupSlider(slider, display) {
                 updateMainButtonStates();
             }, 0);
             settingsPanel.classList.remove('centered-panel');
-            settingsPanel.style.width = '';
-            settingsPanel.style.left = '';
 
             if (panelOpenedFromSplash && splashScreen && !splashScreen.classList.contains('hidden')) {
                 if (gameContainer) gameContainer.classList.add('hidden');
@@ -5990,8 +5987,12 @@ function setupSlider(slider, display) {
             closeFreeSettingsPanel();
         }
 
-        function openInfoPanel() {
+       function openInfoPanel() {
             infoPanel.classList.add('centered-panel');
+            if (!panelOpenedFromSplash) {
+                infoPanel.style.width = '';
+                infoPanel.style.left = '';
+            }
             togglePanel(infoPanel, infoPanelContent, true);
             if (panelOpenedFromSplash) {
                 const splashContent = document.getElementById('splash-content');
@@ -6003,9 +6004,6 @@ function setupSlider(slider, display) {
                         infoPanel.style.left = (rect.left + rect.width / 2) + 'px';
                     }
                 });
-            } else {
-                infoPanel.style.width = '';
-                infoPanel.style.left = '';
             }
             if (gameOver && !gameIntervalId) {
                 if (ctx && canvasEl) {
@@ -6074,8 +6072,6 @@ function setupSlider(slider, display) {
                 updateMainButtonStates();
             }, 0);
             infoPanel.classList.remove('centered-panel');
-            infoPanel.style.width = '';
-            infoPanel.style.left = '';
 
             if (panelOpenedFromSplash && splashScreen && !splashScreen.classList.contains('hidden')) {
                 if (gameContainer) gameContainer.classList.add('hidden');
