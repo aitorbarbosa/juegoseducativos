@@ -5418,6 +5418,14 @@ function setupSlider(slider, display) {
                 positionPanel(profilePanel);
                 applyScrollbarPadding(profilePanel.querySelector('.panel-content'));
             }
+            if (configMenuPanel && !configMenuPanel.classList.contains("config-menu-panel-hidden")) {
+                positionPanel(configMenuPanel);
+                applyScrollbarPadding(configMenuPanel.querySelector('.panel-content'));
+            }
+            if (genericMenuPanel && !genericMenuPanel.classList.contains("generic-menu-panel-hidden")) {
+                positionPanel(genericMenuPanel);
+                applyScrollbarPadding(genericMenuPanel.querySelector('.panel-content'));
+            }
 
 
             if (ctx && (gameIntervalId || gameOver || snake.length > 0 || screenState.showCoverForWorld > 0 || screenState.showLevelCompleteCover > 0 || screenState.showWorldCompleteCover > 0 || screenState.showDefeatCoverForWorld > 0 || screenState.showFreeModeCover || screenState.showClassificationCover)) {
