@@ -10016,7 +10016,7 @@ function populateMazeLevelButtons() {
 
 
 async function startGame(isRestart = false) {
-    if (playerLives <= 0 && startButton.textContent !== "Ajustes") {
+    if (playerLives <= 0 && startButton.textContent.toUpperCase() !== "AJUSTES") {
         openOutOfLivesPanel();
         return;
     }
@@ -10045,7 +10045,7 @@ async function startGame(isRestart = false) {
         }
     }
             
-            const wasOnWorldCompleteCoverForNewWorld = screenState.showWorldCompleteCover > 0 && startButton.textContent === "Nuevo Mundo";
+            const wasOnWorldCompleteCoverForNewWorld = screenState.showWorldCompleteCover > 0 && startButton.textContent.toUpperCase() === "NUEVO MUNDO";
         
             // Reset all visual state flags that are managed before game loop starts
             screenState.showCoverForWorld = 0;
@@ -10060,7 +10060,7 @@ async function startGame(isRestart = false) {
             restartMazeButton.classList.add('hidden');
             startButtonWrapperEl.classList.remove('split');
         
-            if (startButton.textContent === "Ajustes") {
+            if (startButton.textContent.toUpperCase() === "AJUSTES") {
                 openSettingsPanel();
                 screenState.gameActuallyStarted = false; 
             } else {
