@@ -4273,23 +4273,23 @@ function setupSlider(slider, display) {
             // Mundo 1 - Valle del Despertar
             {},
             // Mundo 2 - Cueva del Crecimiento
-            { speed: 190 },
+            { speed: 195 },
             // Mundo 3 - Templo de la Agilidad
-            { speed: 180, initialLength: 6, lightningLifespan: 5000, redLightningChance: 0.25 },
+            { speed: 190, initialLength: 6, redLightningChance: 0.25, lightningSpawnRange: [5000, 8000] },
             // Mundo 4 - Hambre Voraz
-            { speed: 170, initialLength: 8 },
+            { speed: 185, initialLength: 8, lightningLifespan: 6500, redLightningChance: 0.25, lightningSpawnRange: [5000, 8000] },
             // Mundo 5 - Doble o nada
-            { speed: 160, initialLength: 10, initialLifespan: 9500, goldenFoodChance: 0.15 },
+            { speed: 180, initialLength: 10, lightningLifespan: 6250, redLightningChance: 0.25, lightningSpawnRange: [5000, 8000], initialLifespan: 6500, goldenFoodChance: 0.2 },
             // Mundo 6 - Racha demoledora
-            { speed: 150, initialLength: 12, initialLifespan: 9000, streakReduction: 600 },
+            { speed: 175, initialLength: 12, lightningLifespan: 6000, redLightningChance: 0.25, lightningSpawnRange: [5000, 8000], initialLifespan: 6250, goldenFoodChance: 0.19, goldenFoodLifespan: 5000, streakReduction: 500 },
             // Mundo 7 - Bosque de los Engaños
-            { speed: 140, initialLength: 14, initialLifespan: 8500, falseFoodLifespan: 5000 },
+            { speed: 170, initialLength: 14, lightningLifespan: 5750, redLightningChance: 0.25, lightningSpawnRange: [5000, 8000], initialLifespan: 6000, goldenFoodChance: 0.18, goldenFoodLifespan: 4750, streakReduction: 500, falseFoodLifespan: 5000 },
             // Mundo 8 - Jardín de los Peligros
-            { speed: 130, initialLength: 16, initialLifespan: 8000 },
+            { speed: 165, initialLength: 16, lightningLifespan: 5500, redLightningChance: 0.25, lightningSpawnRange: [5000, 8000], initialLifespan: 5750, goldenFoodChance: 0.17, goldenFoodLifespan: 4500, streakReduction: 500, falseFoodLifespan: 5000, falseFoodSpawnRange: [5000, 8000] },
             // Mundo 9 - Lago del Reflejo
-            { speed: 120, initialLength: 18, initialLifespan: 7500, mirrorLifespan: 5000, mirrorEffectDuration: 3000 },
+            { speed: 160, initialLength: 18, lightningLifespan: 5250, redLightningChance: 0.25, lightningSpawnRange: [5000, 8000], initialLifespan: 5500, goldenFoodChance: 0.16, goldenFoodLifespan: 4250, streakReduction: 500, falseFoodLifespan: 5000, falseFoodSpawnRange: [4500, 7500], obstacleCount: 5, mirrorLifespan: 5000, mirrorEffectDuration: 3000 },
             // Mundo 10 - Final Inesperado
-            { goldenFoodChance: 0.15, goldenFoodLifespan: 3000, lightningLifespan: 5000, redLightningChance: 0.25, streakReduction: 600, falseFoodLifespan: 5000, mirrorLifespan: 5000, mirrorEffectDuration: 2250 }
+            { lightningSpawnRange: [5000, 8000], redLightningChance: 0.25, streakReduction: 500, falseFoodLifespan: 5000, mirrorLifespan: 5000, mirrorEffectDuration: 2250 }
         ];
 
         const LEVEL_OVERRIDES = [
@@ -4305,11 +4305,11 @@ function setupSlider(slider, display) {
             ],
             // Mundo 3 - Templo de la Agilidad
             [
-                { lightningSpawnRange: [6000, 9000] },
-                { lightningSpawnRange: [5000, 8000] },
-                { lightningSpawnRange: [4000, 7000] },
-                { lightningSpawnRange: [3000, 6000] },
-                { lightningSpawnRange: [2000, 5000] }
+                { lightningLifespan: 7500 },
+                { lightningLifespan: 6500 },
+                { lightningLifespan: 6000 },
+                { lightningLifespan: 5500 },
+                { lightningLifespan: 5000 }
             ],
             // Mundo 4 - Hambre Voraz
             [
@@ -4321,11 +4321,11 @@ function setupSlider(slider, display) {
             ],
             // Mundo 5 - Doble o nada
             [
+                { goldenFoodLifespan: 5500 },
                 { goldenFoodLifespan: 5000 },
                 { goldenFoodLifespan: 4500 },
                 { goldenFoodLifespan: 4000 },
-                { goldenFoodLifespan: 3500 },
-                { goldenFoodLifespan: 3000 }
+                { goldenFoodLifespan: 3500 }
             ],
             // Mundo 6 - Racha demoledora (sin ajustes por nivel)
             Array(5).fill({}),
@@ -4355,11 +4355,11 @@ function setupSlider(slider, display) {
             ],
             // Mundo 10 - Final Inesperado
             [
-                { speed: 115, initialLength: 20, initialLifespan: 7000, lightningSpawnRange: [7000, 9000], falseFoodSpawnRange: [6000, 8000], obstacleCount: 5 },
-                { speed: 110, initialLength: 22, initialLifespan: 6500, lightningSpawnRange: [6000, 8000], falseFoodSpawnRange: [5000, 7000], obstacleCount: 8 },
-                { speed: 105, initialLength: 24, initialLifespan: 6000, lightningSpawnRange: [5000, 7000], falseFoodSpawnRange: [4000, 6000], obstacleCount: 11 },
-                { speed: 100, initialLength: 26, initialLifespan: 5500, lightningSpawnRange: [4000, 6000], falseFoodSpawnRange: [3000, 5000], obstacleCount: 14 },
-                { speed: 95, initialLength: 30, initialLifespan: 5000, lightningSpawnRange: [3000, 5000], falseFoodSpawnRange: [2000, 4000], obstacleCount: 17 }
+                { speed: 155, initialLength: 20, initialLifespan: 5400, lightningLifespan: 5000, goldenFoodChance: 0.15, goldenFoodLifespan: 4250, falseFoodSpawnRange: [4250, 7250], obstacleCount: 6, mirrorSpawnRange: [5000, 8000] },
+                { speed: 150, initialLength: 22, initialLifespan: 5300, lightningLifespan: 4900, goldenFoodChance: 0.14, goldenFoodLifespan: 4000, falseFoodSpawnRange: [4000, 7000], obstacleCount: 8, mirrorSpawnRange: [4750, 7750] },
+                { speed: 145, initialLength: 24, initialLifespan: 5200, lightningLifespan: 4800, goldenFoodChance: 0.13, goldenFoodLifespan: 3750, falseFoodSpawnRange: [3750, 6750], obstacleCount: 10, mirrorSpawnRange: [4500, 7500] },
+                { speed: 140, initialLength: 26, initialLifespan: 5100, lightningLifespan: 5700, goldenFoodChance: 0.12, goldenFoodLifespan: 3500, falseFoodSpawnRange: [3500, 6500], obstacleCount: 12, mirrorSpawnRange: [4250, 7250] },
+                { speed: 130, initialLength: 30, initialLifespan: 5000, lightningLifespan: 5500, goldenFoodChance: 0.10, goldenFoodLifespan: 3000, falseFoodSpawnRange: [3000, 6000], obstacleCount: 15, mirrorSpawnRange: [4000, 7000] }
             ]
         ];
 
