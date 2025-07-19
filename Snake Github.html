@@ -8745,15 +8745,19 @@ function setupSlider(slider, display) {
                     const segmentY = snake[i].y * GRID_SIZE;
                     const skinData = SKINS[currentSkin];
                     const isTail = i === snake.length - 1;
+                    let renderTail = isTail;
                     const bodyTex = skinData.bodyTexture || snakeBodyTexture;
                     const bodyTexVert = skinData.bodyTextureVertical || skinData.bodyTexture || snakeBodyTextureVertical;
                     const tailTex = skinData.tailTexture || snakeTailTexture;
                     const cornerTexA = skinData.cornerTextureA || snakeCornerTextureA;
                     const cornerTexB = skinData.cornerTextureB || snakeCornerTextureB;
-                    let texture = isTail ? tailTex : bodyTex;
+                    let texture = tailTex;
 
                     if (texture && texture.complete && texture.naturalHeight !== 0) {
                     const prev = snake[i - 1];
+                    const sameAsPrev = (snake[i].x === prev.x && snake[i].y === prev.y);
+                    if (sameAsPrev) renderTail = false;
+                    if (!renderTail) texture = bodyTex;
                     const nextSeg = snake[i + 1];
                     const dx = normalizedDiff(prev.x, snake[i].x, tileCountX);
                     const dy = normalizedDiff(prev.y, snake[i].y, tileCountY);
@@ -8762,8 +8766,8 @@ function setupSlider(slider, display) {
                     let rotation = 0;
                     let scaleX = 1;
                     let scaleY = 1;
-                    if (isTail) {
-                            const tailUpTex = skinData.tailTextureUp || snakeTailTextureUp;
+                    if (renderTail) {
+                        const tailUpTex = skinData.tailTextureUp || snakeTailTextureUp;
                             if (dx === 1 && dy === 0) {
                                 scaleX = -1;
                             } else if (dx === 0 && dy === -1) {
