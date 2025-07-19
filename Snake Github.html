@@ -341,12 +341,16 @@
             word-break: break-word;
             display: none;
         }
-        #selector-info-bar .info-value {
-            font-size: 0.85em;
-            color: #f5f5f5;
-            font-family: 'Press Start 2P', sans-serif;
-            line-height: 1.3;
-        }
+#selector-info-bar .info-value {
+    font-size: 0.85em;
+    color: #f5f5f5;
+    font-family: 'Press Start 2P', sans-serif;
+    line-height: 1.3;
+}
+
+#points-info-group.small-points .info-value {
+    font-size: 0.75em;
+}
 
         #top-info-bar.selector-mode .info-group {
             background-color: transparent;
@@ -1869,10 +1873,11 @@
 
             #top-info-bar { gap: 0px; margin: 0 auto 6px auto; }
             #top-info-bar .info-group { min-height: 30px; padding: 1px 4px 1px 14px; min-width: 80px; }
-            #top-info-bar .value-box { padding: 1px 6px 1px 14px; }
+            #top-info-bar .value-box { padding: 1px 6px 1px 14px; display: flex; align-items: center; }
             #top-info-bar .info-label { font-size: 0.6em; }
-            #top-info-bar .info-value { font-size: 0.8em; }
-            #top-info-bar .info-icon-wrapper { width: 26px; height: 26px; transform: translate(10%, -50%); }
+              #top-info-bar .info-value { font-size: 0.8em; line-height: 1.1; }
+              #points-info-group.small-points .info-value { font-size: 0.7em; }
+              #top-info-bar .info-icon-wrapper { width: 26px; height: 26px; transform: translate(10%, -50%); }
             #selector-info-bar { gap: 0px; margin: 0 auto 6px auto; }
             #selector-info-bar .info-group { min-height: 30px; padding: 1px 4px 1px 14px; min-width: 80px; }
             #selector-info-bar .value-box { padding: 1px 6px 1px 14px; }
@@ -2019,10 +2024,11 @@
             #specific-info-title { font-size: 1em; }
 
 
-             #top-info-bar .info-label { font-size: 0.55em; }
-             #top-info-bar .info-value { font-size: 0.7em; }
-             #top-info-bar .info-group { min-width: 80px; min-height: 34px; padding: 2px 4px 2px 20px; }
-             #top-info-bar .value-box { padding: 2px 5px 2px 20px; }
+               #top-info-bar .info-label { font-size: 0.55em; }
+               #top-info-bar .info-value { font-size: 0.7em; line-height: 1.1; }
+               #points-info-group.small-points .info-value { font-size: 0.6em; }
+               #top-info-bar .info-group { min-width: 80px; min-height: 34px; padding: 2px 4px 2px 20px; }
+             #top-info-bar .value-box { padding: 2px 5px 2px 20px; display: flex; align-items: center; }
              #top-info-bar .info-icon-wrapper { width: 32px; height: 32px; transform: translate(12%, -50%); }
              #selector-info-bar { gap: 0px; margin: 0 auto 6px auto; }
              #selector-info-bar .info-label { font-size: 0.55em; }
@@ -3538,6 +3544,7 @@
         const scoreValueDisplay = document.getElementById("scoreValue");
         const livesValueDisplay = document.getElementById("livesValue");
         const pointsIconImg = document.getElementById("points-icon-img");
+        const pointsInfoGroup = document.getElementById("points-info-group");
         const selectorLivesValueDisplay = document.getElementById("selectorLivesValue");
         const lifeTimerValueDisplay = document.getElementById("lifeTimerValue");
         const selectorLifeTimerValueDisplay = document.getElementById("selectorLifeTimerValue");
@@ -9511,6 +9518,7 @@ function setupSlider(slider, display) {
                             pointsIconImg.src = 'https://i.imgur.com/WrI2XXx.png';
                             pointsIconImg.alt = 'Vidas';
                         }
+                        if (pointsInfoGroup) pointsInfoGroup.classList.remove('small-points');
                     updateLivesDisplay();
                     updateLifeTimerDisplay();
                 } else {
@@ -9522,8 +9530,11 @@ function setupSlider(slider, display) {
                             pointsIconImg.src = 'https://i.imgur.com/COqXj9s.png';
                             pointsIconImg.alt = 'Puntos';
                         }
+                        if (pointsInfoGroup) {
+                            pointsInfoGroup.classList.toggle('small-points', gameMode === 'levels' || gameMode === 'maze');
+                        }
+                    }
                 }
-            }
 
             const isGameCurrentlyRunning = !!gameIntervalId;
             const isSettingsPanelCurrentlyOpen = !settingsPanel.classList.contains("settings-panel-hidden");
@@ -9638,6 +9649,7 @@ function setupSlider(slider, display) {
                     else difficultyControlGroup.classList.remove("interactive-mode");
                 }
             } else if (gameMode === 'classification') {
+                if (pointsInfoGroup) pointsInfoGroup.classList.remove('small-points');
                 titlePanel.classList.add('hidden');
                 progressPanel.classList.remove('hidden');
                 starProgressContainer.classList.add('hidden');
