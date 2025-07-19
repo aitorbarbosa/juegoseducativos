@@ -4107,28 +4107,6 @@ function setupSlider(slider, display) {
         const LEVELS_PER_WORLD = 5;
         const TOTAL_WORLDS = 10;
         const LEVEL_TIME_LIMIT = 60000;
-        const TARGET_SCORES_LEVELS = [
-            // World 1
-            25, 50, 100, 150, 200,
-            // World 2
-            25, 50, 100, 150, 200,
-            // World 3
-            50, 100, 150, 200, 250,
-            // World 4
-            50, 100, 150, 200, 250,
-            // World 5
-            100, 150, 200, 250, 300,
-            // World 6
-            200, 300, 400, 500, 600,
-            // World 7
-            200, 300, 400, 500, 600,
-            // World 8
-            300, 400, 500, 600, 700,
-            // World 9
-            300, 400, 500, 600, 700,
-            // World 10
-            400, 500, 600, 700, 800,
-        ];
 
         // Star thresholds for Maze Mode (puntos objetivo para cada estrella)
         const MAZE_STAR_TARGETS = [25, 50, 100, 150, 200];
@@ -4266,7 +4244,8 @@ function setupSlider(slider, display) {
             mirrorSpawnRange: null,
             mirrorLifespan: 0,
             mirrorEffectDuration: 0,
-            obstacleCount: 0
+            obstacleCount: 0,
+            targetScore: 0
         };
 
         const WORLD_DEFAULTS = [
@@ -4293,73 +4272,85 @@ function setupSlider(slider, display) {
         ];
 
         const LEVEL_OVERRIDES = [
-            // Mundo 1 - sin modificaciones
-            Array(5).fill({}),
+            // Mundo 1 - Valle del Despertar
+            [
+                { targetScore: 25 },
+                { targetScore: 50 },
+                { targetScore: 100 },
+                { targetScore: 150 },
+                { targetScore: 200 }
+            ],
             // Mundo 2 - Cueva del Crecimiento
             [
-                { initialLength: 5 },
-                { initialLength: 7 },
-                { initialLength: 10 },
-                { initialLength: 14 },
-                { initialLength: 18 }
+                { initialLength: 5, targetScore: 25 },
+                { initialLength: 7, targetScore: 50 },
+                { initialLength: 10, targetScore: 100 },
+                { initialLength: 14, targetScore: 150 },
+                { initialLength: 18, targetScore: 200 }
             ],
             // Mundo 3 - Templo de la Agilidad
             [
-                { lightningLifespan: 7500 },
-                { lightningLifespan: 6500 },
-                { lightningLifespan: 6000 },
-                { lightningLifespan: 5500 },
-                { lightningLifespan: 5000 }
+                { lightningLifespan: 7500, targetScore: 50 },
+                { lightningLifespan: 6500, targetScore: 100 },
+                { lightningLifespan: 6000, targetScore: 150 },
+                { lightningLifespan: 5500, targetScore: 200 },
+                { lightningLifespan: 5000, targetScore: 250 }
             ],
             // Mundo 4 - Hambre Voraz
             [
-                { initialLifespan: 7500 },
-                { initialLifespan: 6500 },
-                { initialLifespan: 6000 },
-                { initialLifespan: 5500 },
-                { initialLifespan: 5000 }
+                { initialLifespan: 7500, targetScore: 50 },
+                { initialLifespan: 6500, targetScore: 100 },
+                { initialLifespan: 6000, targetScore: 150 },
+                { initialLifespan: 5500, targetScore: 200 },
+                { initialLifespan: 5000, targetScore: 250 }
             ],
             // Mundo 5 - Doble o nada
             [
-                { goldenFoodLifespan: 5500 },
-                { goldenFoodLifespan: 5000 },
-                { goldenFoodLifespan: 4500 },
-                { goldenFoodLifespan: 4000 },
-                { goldenFoodLifespan: 3500 }
+                { goldenFoodLifespan: 5500, targetScore: 100 },
+                { goldenFoodLifespan: 5000, targetScore: 150 },
+                { goldenFoodLifespan: 4500, targetScore: 200 },
+                { goldenFoodLifespan: 4000, targetScore: 250 },
+                { goldenFoodLifespan: 3500, targetScore: 300 }
             ],
-            // Mundo 6 - Racha demoledora (sin ajustes por nivel)
-            Array(5).fill({}),
+            // Mundo 6 - Racha demoledora
+            [
+                { targetScore: 200 },
+                { targetScore: 300 },
+                { targetScore: 400 },
+                { targetScore: 500 },
+                { targetScore: 600 }
+            ],
             // Mundo 7 - Bosque de los Engaños
             [
-                { falseFoodSpawnRange: [6000, 9000] },
-                { falseFoodSpawnRange: [5000, 8000] },
-                { falseFoodSpawnRange: [4000, 7000] },
-                { falseFoodSpawnRange: [3000, 6000] },
-                { falseFoodSpawnRange: [2000, 5000] }
+                { falseFoodSpawnRange: [6000, 9000], targetScore: 200 },
+                { falseFoodSpawnRange: [5000, 8000], targetScore: 300 },
+                { falseFoodSpawnRange: [4000, 7000], targetScore: 400 },
+                { falseFoodSpawnRange: [3000, 6000], targetScore: 500 },
+                { falseFoodSpawnRange: [2000, 5000], targetScore: 600 }
             ],
             // Mundo 8 - Jardín de los Peligros
             [
-                { obstacleCount: 3 },
-                { obstacleCount: 5 },
-                { obstacleCount: 8 },
-                { obstacleCount: 11 },
-                { obstacleCount: 15 }
+                { obstacleCount: 3, targetScore: 300 },
+                { obstacleCount: 5, targetScore: 400 },
+                { obstacleCount: 8, targetScore: 500 },
+                { obstacleCount: 11, targetScore: 600 },
+                { obstacleCount: 15, targetScore: 700 }
             ],
             // Mundo 9 - Lago del Reflejo
             [
-                { mirrorSpawnRange: [6000, 9000] },
-                { mirrorSpawnRange: [5000, 8000] },
-                { mirrorSpawnRange: [4000, 7000] },
-                { mirrorSpawnRange: [3000, 6000] },
-                { mirrorSpawnRange: [2000, 5000] }
+                { mirrorSpawnRange: [6000, 9000], targetScore: 300 },
+                { mirrorSpawnRange: [5000, 8000], targetScore: 400 },
+                { mirrorSpawnRange: [4000, 7000], targetScore: 500 },
+                { mirrorSpawnRange: [3000, 6000], targetScore: 600 },
+                { mirrorSpawnRange: [2000, 5000], targetScore: 700 }
             ],
             // Mundo 10 - Final Inesperado
             [
-                { speed: 155, initialLength: 20, initialLifespan: 5400, lightningLifespan: 5000, goldenFoodChance: 0.15, goldenFoodLifespan: 4250, falseFoodSpawnRange: [4250, 7250], obstacleCount: 6, mirrorSpawnRange: [5000, 8000] },
-                { speed: 150, initialLength: 22, initialLifespan: 5300, lightningLifespan: 4900, goldenFoodChance: 0.14, goldenFoodLifespan: 4000, falseFoodSpawnRange: [4000, 7000], obstacleCount: 8, mirrorSpawnRange: [4750, 7750] },
-                { speed: 145, initialLength: 24, initialLifespan: 5200, lightningLifespan: 4800, goldenFoodChance: 0.13, goldenFoodLifespan: 3750, falseFoodSpawnRange: [3750, 6750], obstacleCount: 10, mirrorSpawnRange: [4500, 7500] },
-                { speed: 140, initialLength: 26, initialLifespan: 5100, lightningLifespan: 5700, goldenFoodChance: 0.12, goldenFoodLifespan: 3500, falseFoodSpawnRange: [3500, 6500], obstacleCount: 12, mirrorSpawnRange: [4250, 7250] },
-                { speed: 130, initialLength: 30, initialLifespan: 5000, lightningLifespan: 5500, goldenFoodChance: 0.10, goldenFoodLifespan: 3000, falseFoodSpawnRange: [3000, 6000], obstacleCount: 15, mirrorSpawnRange: [4000, 7000] }
+                { speed: 155, initialLength: 20, initialLifespan: 5400, lightningLifespan: 5000, goldenFoodChance: 0.15, goldenFoodLifespan: 4250, falseFoodSpawnRange: [4250, 7250], obstacleCount: 6, mirrorSpawnRange: [5000, 8000], targetScore: 400 },
+                { speed: 150, initialLength: 22, initialLifespan: 5300, lightningLifespan: 4900, goldenFoodChance: 0.14, goldenFoodLifespan: 4000, falseFoodSpawnRange: [4000, 7000], obstacleCount: 8, mirrorSpawnRange: [4750, 7750], targetScore: 500 },
+                { speed: 145, initialLength: 24, initialLifespan: 5200, lightningLifespan: 4800, goldenFoodChance: 0.13, goldenFoodLifespan: 3750, falseFoodSpawnRange: [3750, 6750], obstacleCount: 10, mirrorSpawnRange: [4500, 7500], targetScore: 600 },
+                { speed: 140, initialLength: 26, initialLifespan: 5100, lightningLifespan: 5700, goldenFoodChance: 0.12, goldenFoodLifespan: 3500, falseFoodSpawnRange: [3500, 6500], obstacleCount: 12, mirrorSpawnRange: [4250, 7250], targetScore: 700 },
+                { speed: 130, initialLength: 30, initialLifespan: 5000, lightningLifespan: 5500, goldenFoodChance: 0.10, goldenFoodLifespan: 3000, falseFoodSpawnRange: [3000, 6000], obstacleCount: 15, mirrorSpawnRange: [4000, 7000], targetScore: 800 }
             ]
         ];
 
@@ -4380,7 +4371,7 @@ function setupSlider(slider, display) {
         let displayWorld = 1;
         let displayLevelInWorld = 1;
         let displayMazeLevel = 1;
-        let displayTargetScore = TARGET_SCORES_LEVELS[0];
+        let displayTargetScore = LEVEL_SETTINGS[0][0].targetScore;
 
         const SNAKE_REACTION_IMAGES = {
             preEat: { left: reactionPreEatLeftImg, upDown: reactionPreEatDownImg },
@@ -4633,10 +4624,10 @@ function setupSlider(slider, display) {
 
             if (gameMode === 'levels') {
                 const absoluteDisplayLevelIndex = (displayWorld - 1) * LEVELS_PER_WORLD + (displayLevelInWorld - 1);
-                if (absoluteDisplayLevelIndex >= 0 && absoluteDisplayLevelIndex < TARGET_SCORES_LEVELS.length) {
-                    displayTargetScore = TARGET_SCORES_LEVELS[absoluteDisplayLevelIndex];
+                if (absoluteDisplayLevelIndex >= 0 && absoluteDisplayLevelIndex < TOTAL_WORLDS * LEVELS_PER_WORLD) {
+                    displayTargetScore = LEVEL_SETTINGS[displayWorld - 1][displayLevelInWorld - 1].targetScore;
                 } else {
-                    displayTargetScore = TARGET_SCORES_LEVELS[TARGET_SCORES_LEVELS.length - 1];
+                    displayTargetScore = LEVEL_SETTINGS[TOTAL_WORLDS - 1][LEVELS_PER_WORLD - 1].targetScore;
                 }
             } else if (gameMode === 'maze') {
                 mazePreviousStars = mazeLevelStars[displayMazeLevel - 1] || 0;
@@ -6904,8 +6895,8 @@ function setupSlider(slider, display) {
                 if (gameMode === 'levels') {
                     displayWorld = currentWorld;
                     displayLevelInWorld = currentLevelInWorld;
-                    const absoluteIndex = (displayWorld - 1) * LEVELS_PER_WORLD + (displayLevelInWorld - 1);
-                    displayTargetScore = TARGET_SCORES_LEVELS[absoluteIndex] || 0;
+                    const cfg = LEVEL_SETTINGS[displayWorld - 1][displayLevelInWorld - 1];
+                    displayTargetScore = cfg.targetScore || 0;
                     screenState.showCoverForWorld = currentWorld;
                     screenState.showFreeModeCover = false;
                     screenState.showClassificationCover = false;
@@ -7901,7 +7892,7 @@ function setupSlider(slider, display) {
 
         function handleLevelsModeEnd(currentScore, timeRemaining) {
             const absoluteLevelIndex = (currentWorld - 1) * LEVELS_PER_WORLD + (currentLevelInWorld - 1);
-            const currentTarget = TARGET_SCORES_LEVELS[absoluteLevelIndex];
+            const currentTarget = LEVEL_SETTINGS[currentWorld - 1][currentLevelInWorld - 1].targetScore;
             const levelWon = (currentScore >= currentTarget && timeRemaining > 0);
 
             if (levelWon) {
@@ -9245,7 +9236,7 @@ function setupSlider(slider, display) {
 
                 if (gameMode === 'levels') {
                     const absoluteLevelIndex = (currentWorld - 1) * LEVELS_PER_WORLD + (currentLevelInWorld - 1);
-                    if (score >= TARGET_SCORES_LEVELS[absoluteLevelIndex]) {
+                    if (score >= LEVEL_SETTINGS[currentWorld - 1][currentLevelInWorld - 1].targetScore) {
                         gameOver = true; // Level won by score
                     }
                 } else if (gameMode === 'maze') {
@@ -9838,7 +9829,7 @@ function populateWorldButtons() {
                     displayWorld = currentWorld;
                     displayLevelInWorld = currentLevelInWorld;
                     const absoluteDisplayLevelIndex = (displayWorld - 1) * LEVELS_PER_WORLD + (displayLevelInWorld - 1);
-                    displayTargetScore = TARGET_SCORES_LEVELS[absoluteDisplayLevelIndex] || 0;
+                    displayTargetScore = LEVEL_SETTINGS[displayWorld - 1][displayLevelInWorld - 1].targetScore || 0;
                     updateTargetScoreDisplay();
                     if (progressPanelLeftValue) {
                         progressPanelLeftValue.textContent = `${displayWorld}.${displayLevelInWorld}`;
@@ -10086,8 +10077,8 @@ async function startGame(isRestart = false) {
                     displayWorld = currentWorld;
                     displayLevelInWorld = currentLevelInWorld;
                     const absoluteDisplayLevelIndex = (displayWorld - 1) * LEVELS_PER_WORLD + (displayLevelInWorld - 1);
-                    if (absoluteDisplayLevelIndex >= 0 && absoluteDisplayLevelIndex < TARGET_SCORES_LEVELS.length) {
-                        displayTargetScore = TARGET_SCORES_LEVELS[absoluteDisplayLevelIndex];
+                    if (absoluteDisplayLevelIndex >= 0 && absoluteDisplayLevelIndex < TOTAL_WORLDS * LEVELS_PER_WORLD) {
+                        displayTargetScore = LEVEL_SETTINGS[displayWorld - 1][displayLevelInWorld - 1].targetScore;
                     } else {
                         displayTargetScore = 0; // Should not happen if TOTAL_WORLDS is correct
                     }
@@ -10124,10 +10115,10 @@ async function startGame(isRestart = false) {
             const absoluteDisplayLevelIndex = (displayWorld - 1) * LEVELS_PER_WORLD + (displayLevelInWorld - 1);
 
             if (gameMode === 'levels') {
-                if (absoluteDisplayLevelIndex >= 0 && absoluteDisplayLevelIndex < TARGET_SCORES_LEVELS.length) {
-                    displayTargetScore = TARGET_SCORES_LEVELS[absoluteDisplayLevelIndex];
+                if (absoluteDisplayLevelIndex >= 0 && absoluteDisplayLevelIndex < TOTAL_WORLDS * LEVELS_PER_WORLD) {
+                    displayTargetScore = LEVEL_SETTINGS[displayWorld - 1][displayLevelInWorld - 1].targetScore;
                 } else { // Should only happen if all levels/worlds are completed
-                    displayTargetScore = TARGET_SCORES_LEVELS[TARGET_SCORES_LEVELS.length -1];
+                    displayTargetScore = LEVEL_SETTINGS[TOTAL_WORLDS - 1][LEVELS_PER_WORLD - 1].targetScore;
                     console.warn("Attempting to start a level beyond defined targets. Using last target score.");
                 }
             } else if (gameMode === 'maze') {
@@ -10691,10 +10682,10 @@ async function startGame(isRestart = false) {
                 displayWorld = currentWorld;
                 displayLevelInWorld = currentLevelInWorld;
                 const absoluteDisplayLevelIndex = (displayWorld - 1) * LEVELS_PER_WORLD + (displayLevelInWorld - 1);
-                if (absoluteDisplayLevelIndex >= 0 && absoluteDisplayLevelIndex < TARGET_SCORES_LEVELS.length) {
-                    displayTargetScore = TARGET_SCORES_LEVELS[absoluteDisplayLevelIndex];
+                if (absoluteDisplayLevelIndex >= 0 && absoluteDisplayLevelIndex < TOTAL_WORLDS * LEVELS_PER_WORLD) {
+                    displayTargetScore = LEVEL_SETTINGS[displayWorld - 1][displayLevelInWorld - 1].targetScore;
                 } else {
-                    displayTargetScore = 0; 
+                    displayTargetScore = 0;
                 }
                 updateTargetScoreDisplay(); // Update UI for target score
                 if (progressPanelLeftValue) { // Update UI for progress panel
@@ -11198,7 +11189,7 @@ async function startGame(isRestart = false) {
                 currentLevelInWorld = worldCurrentLevels[currentWorld - 1] || 1;
                 const absoluteIndex = (currentWorld - 1) * LEVELS_PER_WORLD + (currentLevelInWorld - 1);
                 displayLevelInWorld = currentLevelInWorld;
-                displayTargetScore = TARGET_SCORES_LEVELS[absoluteIndex] || 0;
+                displayTargetScore = LEVEL_SETTINGS[currentWorld - 1][currentLevelInWorld - 1].targetScore || 0;
                 if (!gameIntervalId) {
                     const cfg = LEVEL_SETTINGS[currentWorld - 1][currentLevelInWorld - 1];
                     snakeSpeed = cfg.speed;
@@ -11210,7 +11201,7 @@ async function startGame(isRestart = false) {
                 // nivel visualizado sea siempre 1 y se muestre su puntuación objetivo
                 displayLevelInWorld = 1;
                 const absoluteIndex = (displayWorld - 1) * LEVELS_PER_WORLD;
-                displayTargetScore = TARGET_SCORES_LEVELS[absoluteIndex] || 0;
+                displayTargetScore = LEVEL_SETTINGS[displayWorld - 1][0].targetScore || 0;
             }
             screenState.showCoverForWorld = displayWorld;
             screenState.showWorldCompleteCover = 0;
@@ -11350,10 +11341,10 @@ async function startGame(isRestart = false) {
 
             if (gameMode === 'levels') {
                 const absoluteDisplayLevelIndex = (displayWorld - 1) * LEVELS_PER_WORLD + (displayLevelInWorld - 1);
-                if (absoluteDisplayLevelIndex >= 0 && absoluteDisplayLevelIndex < TARGET_SCORES_LEVELS.length) {
-                    displayTargetScore = TARGET_SCORES_LEVELS[absoluteDisplayLevelIndex];
+                if (absoluteDisplayLevelIndex >= 0 && absoluteDisplayLevelIndex < TOTAL_WORLDS * LEVELS_PER_WORLD) {
+                    displayTargetScore = LEVEL_SETTINGS[displayWorld - 1][displayLevelInWorld - 1].targetScore;
                 } else { // Default if out of bounds (e.g., after completing all levels)
-                    displayTargetScore = TARGET_SCORES_LEVELS[TARGET_SCORES_LEVELS.length -1];
+                    displayTargetScore = LEVEL_SETTINGS[TOTAL_WORLDS - 1][LEVELS_PER_WORLD -1].targetScore;
                 }
             } else if (gameMode === 'maze') {
                 mazePreviousStars = mazeLevelStars[displayMazeLevel - 1] || 0;
