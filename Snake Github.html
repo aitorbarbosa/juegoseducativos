@@ -4247,48 +4247,104 @@ function setupSlider(slider, display) {
         };
         const LEVEL_SETTINGS = [
             // World 1 - Valle del Despertar
-            [
-                { speed: 200, initialLength: 4, initialLifespan: 0 },
-                { speed: 200, initialLength: 4, initialLifespan: 0 },
-                { speed: 200, initialLength: 4, initialLifespan: 0 },
-                { speed: 200, initialLength: 4, initialLifespan: 0 },
-                { speed: 200, initialLength: 4, initialLifespan: 0 }
-            ],
+            Array(5).fill({
+                speed: 200,
+                initialLength: 4,
+                initialLifespan: 0,
+                goldenFoodChance: 0,
+                goldenFoodLifespan: 0,
+                lightningSpawnRange: null,
+                lightningLifespan: 0,
+                redLightningChance: 0,
+                streakReduction: 0,
+                falseFoodSpawnRange: null,
+                falseFoodLifespan: 0,
+                mirrorSpawnRange: null,
+                mirrorLifespan: 0,
+                mirrorEffectDuration: 0,
+                obstacleCount: 0
+            }),
             // World 2 - Cueva del Crecimiento
             [
-                { speed: 190, initialLength: 10, initialLifespan: 0 },
-                { speed: 190, initialLength: 15, initialLifespan: 0 },
-                { speed: 190, initialLength: 20, initialLifespan: 0 },
-                { speed: 190, initialLength: 25, initialLifespan: 0 },
-                { speed: 190, initialLength: 30, initialLifespan: 0 }
+                { speed: 190, initialLength: 10, initialLifespan: 0, goldenFoodChance: 0, goldenFoodLifespan: 0, lightningSpawnRange: null, lightningLifespan: 0, redLightningChance: 0, streakReduction: 0, falseFoodSpawnRange: null, falseFoodLifespan: 0, mirrorSpawnRange: null, mirrorLifespan: 0, mirrorEffectDuration: 0, obstacleCount: 0 },
+                { speed: 190, initialLength: 15, initialLifespan: 0, goldenFoodChance: 0, goldenFoodLifespan: 0, lightningSpawnRange: null, lightningLifespan: 0, redLightningChance: 0, streakReduction: 0, falseFoodSpawnRange: null, falseFoodLifespan: 0, mirrorSpawnRange: null, mirrorLifespan: 0, mirrorEffectDuration: 0, obstacleCount: 0 },
+                { speed: 190, initialLength: 20, initialLifespan: 0, goldenFoodChance: 0, goldenFoodLifespan: 0, lightningSpawnRange: null, lightningLifespan: 0, redLightningChance: 0, streakReduction: 0, falseFoodSpawnRange: null, falseFoodLifespan: 0, mirrorSpawnRange: null, mirrorLifespan: 0, mirrorEffectDuration: 0, obstacleCount: 0 },
+                { speed: 190, initialLength: 25, initialLifespan: 0, goldenFoodChance: 0, goldenFoodLifespan: 0, lightningSpawnRange: null, lightningLifespan: 0, redLightningChance: 0, streakReduction: 0, falseFoodSpawnRange: null, falseFoodLifespan: 0, mirrorSpawnRange: null, mirrorLifespan: 0, mirrorEffectDuration: 0, obstacleCount: 0 },
+                { speed: 190, initialLength: 30, initialLifespan: 0, goldenFoodChance: 0, goldenFoodLifespan: 0, lightningSpawnRange: null, lightningLifespan: 0, redLightningChance: 0, streakReduction: 0, falseFoodSpawnRange: null, falseFoodLifespan: 0, mirrorSpawnRange: null, mirrorLifespan: 0, mirrorEffectDuration: 0, obstacleCount: 0 }
             ],
             // World 3 - Templo de la Agilidad
-            Array(5).fill({ speed: 150, initialLength: 6, initialLifespan: 0 }),
+            [
+                { speed: 150, initialLength: 6, initialLifespan: 0, goldenFoodChance: 0, goldenFoodLifespan: 0, lightningSpawnRange: [5000, 7000], lightningLifespan: 5000, redLightningChance: 0.25, streakReduction: 0, falseFoodSpawnRange: null, falseFoodLifespan: 0, mirrorSpawnRange: null, mirrorLifespan: 0, mirrorEffectDuration: 0, obstacleCount: 0 },
+                { speed: 150, initialLength: 6, initialLifespan: 0, goldenFoodChance: 0, goldenFoodLifespan: 0, lightningSpawnRange: [4000, 6000], lightningLifespan: 5000, redLightningChance: 0.25, streakReduction: 0, falseFoodSpawnRange: null, falseFoodLifespan: 0, mirrorSpawnRange: null, mirrorLifespan: 0, mirrorEffectDuration: 0, obstacleCount: 0 },
+                { speed: 150, initialLength: 6, initialLifespan: 0, goldenFoodChance: 0, goldenFoodLifespan: 0, lightningSpawnRange: [3000, 5000], lightningLifespan: 5000, redLightningChance: 0.25, streakReduction: 0, falseFoodSpawnRange: null, falseFoodLifespan: 0, mirrorSpawnRange: null, mirrorLifespan: 0, mirrorEffectDuration: 0, obstacleCount: 0 },
+                { speed: 150, initialLength: 6, initialLifespan: 0, goldenFoodChance: 0, goldenFoodLifespan: 0, lightningSpawnRange: [2000, 4000], lightningLifespan: 5000, redLightningChance: 0.25, streakReduction: 0, falseFoodSpawnRange: null, falseFoodLifespan: 0, mirrorSpawnRange: null, mirrorLifespan: 0, mirrorEffectDuration: 0, obstacleCount: 0 },
+                { speed: 150, initialLength: 6, initialLifespan: 0, goldenFoodChance: 0, goldenFoodLifespan: 0, lightningSpawnRange: [1000, 3000], lightningLifespan: 5000, redLightningChance: 0.25, streakReduction: 0, falseFoodSpawnRange: null, falseFoodLifespan: 0, mirrorSpawnRange: null, mirrorLifespan: 0, mirrorEffectDuration: 0, obstacleCount: 0 }
+            ],
             // World 4 - Hambre Voraz
             [
-                { speed: 180, initialLength: 8, initialLifespan: 9500 },
-                { speed: 180, initialLength: 8, initialLifespan: 9000 },
-                { speed: 180, initialLength: 8, initialLifespan: 8500 },
-                { speed: 180, initialLength: 8, initialLifespan: 8000 },
-                { speed: 180, initialLength: 8, initialLifespan: 7500 }
+                { speed: 180, initialLength: 8, initialLifespan: 9500, goldenFoodChance: 0, goldenFoodLifespan: 0, lightningSpawnRange: null, lightningLifespan: 0, redLightningChance: 0, streakReduction: 0, falseFoodSpawnRange: null, falseFoodLifespan: 0, mirrorSpawnRange: null, mirrorLifespan: 0, mirrorEffectDuration: 0, obstacleCount: 0 },
+                { speed: 180, initialLength: 8, initialLifespan: 9000, goldenFoodChance: 0, goldenFoodLifespan: 0, lightningSpawnRange: null, lightningLifespan: 0, redLightningChance: 0, streakReduction: 0, falseFoodSpawnRange: null, falseFoodLifespan: 0, mirrorSpawnRange: null, mirrorLifespan: 0, mirrorEffectDuration: 0, obstacleCount: 0 },
+                { speed: 180, initialLength: 8, initialLifespan: 8500, goldenFoodChance: 0, goldenFoodLifespan: 0, lightningSpawnRange: null, lightningLifespan: 0, redLightningChance: 0, streakReduction: 0, falseFoodSpawnRange: null, falseFoodLifespan: 0, mirrorSpawnRange: null, mirrorLifespan: 0, mirrorEffectDuration: 0, obstacleCount: 0 },
+                { speed: 180, initialLength: 8, initialLifespan: 8000, goldenFoodChance: 0, goldenFoodLifespan: 0, lightningSpawnRange: null, lightningLifespan: 0, redLightningChance: 0, streakReduction: 0, falseFoodSpawnRange: null, falseFoodLifespan: 0, mirrorSpawnRange: null, mirrorLifespan: 0, mirrorEffectDuration: 0, obstacleCount: 0 },
+                { speed: 180, initialLength: 8, initialLifespan: 7500, goldenFoodChance: 0, goldenFoodLifespan: 0, lightningSpawnRange: null, lightningLifespan: 0, redLightningChance: 0, streakReduction: 0, falseFoodSpawnRange: null, falseFoodLifespan: 0, mirrorSpawnRange: null, mirrorLifespan: 0, mirrorEffectDuration: 0, obstacleCount: 0 }
             ],
             // World 5 - Doble o nada
-            Array(5).fill({ speed: 170, initialLength: 10, initialLifespan: 9500 }),
+            [
+                { speed: 170, initialLength: 10, initialLifespan: 9500, goldenFoodChance: 0.15, goldenFoodLifespan: 4000, lightningSpawnRange: null, lightningLifespan: 0, redLightningChance: 0, streakReduction: 0, falseFoodSpawnRange: null, falseFoodLifespan: 0, mirrorSpawnRange: null, mirrorLifespan: 0, mirrorEffectDuration: 0, obstacleCount: 0 },
+                { speed: 170, initialLength: 10, initialLifespan: 9500, goldenFoodChance: 0.15, goldenFoodLifespan: 3500, lightningSpawnRange: null, lightningLifespan: 0, redLightningChance: 0, streakReduction: 0, falseFoodSpawnRange: null, falseFoodLifespan: 0, mirrorSpawnRange: null, mirrorLifespan: 0, mirrorEffectDuration: 0, obstacleCount: 0 },
+                { speed: 170, initialLength: 10, initialLifespan: 9500, goldenFoodChance: 0.15, goldenFoodLifespan: 3000, lightningSpawnRange: null, lightningLifespan: 0, redLightningChance: 0, streakReduction: 0, falseFoodSpawnRange: null, falseFoodLifespan: 0, mirrorSpawnRange: null, mirrorLifespan: 0, mirrorEffectDuration: 0, obstacleCount: 0 },
+                { speed: 170, initialLength: 10, initialLifespan: 9500, goldenFoodChance: 0.15, goldenFoodLifespan: 2500, lightningSpawnRange: null, lightningLifespan: 0, redLightningChance: 0, streakReduction: 0, falseFoodSpawnRange: null, falseFoodLifespan: 0, mirrorSpawnRange: null, mirrorLifespan: 0, mirrorEffectDuration: 0, obstacleCount: 0 },
+                { speed: 170, initialLength: 10, initialLifespan: 9500, goldenFoodChance: 0.15, goldenFoodLifespan: 2000, lightningSpawnRange: null, lightningLifespan: 0, redLightningChance: 0, streakReduction: 0, falseFoodSpawnRange: null, falseFoodLifespan: 0, mirrorSpawnRange: null, mirrorLifespan: 0, mirrorEffectDuration: 0, obstacleCount: 0 }
+            ],
             // World 6 - Racha demoledora
-            Array(5).fill({ speed: 160, initialLength: 12, initialLifespan: 9000 }),
+            Array(5).fill({
+                speed: 160,
+                initialLength: 12,
+                initialLifespan: 9000,
+                goldenFoodChance: 0,
+                goldenFoodLifespan: 0,
+                lightningSpawnRange: null,
+                lightningLifespan: 0,
+                redLightningChance: 0,
+                streakReduction: 600,
+                falseFoodSpawnRange: null,
+                falseFoodLifespan: 0,
+                mirrorSpawnRange: null,
+                mirrorLifespan: 0,
+                mirrorEffectDuration: 0,
+                obstacleCount: 0
+            }),
             // World 7 - Bosque de los Engaños
-            Array(5).fill({ speed: 150, initialLength: 14, initialLifespan: 8500 }),
+            [
+                { speed: 150, initialLength: 14, initialLifespan: 8500, goldenFoodChance: 0, goldenFoodLifespan: 0, lightningSpawnRange: null, lightningLifespan: 0, redLightningChance: 0, streakReduction: 0, falseFoodSpawnRange: [5000, 7000], falseFoodLifespan: 5000, mirrorSpawnRange: null, mirrorLifespan: 0, mirrorEffectDuration: 0, obstacleCount: 0 },
+                { speed: 150, initialLength: 14, initialLifespan: 8500, goldenFoodChance: 0, goldenFoodLifespan: 0, lightningSpawnRange: null, lightningLifespan: 0, redLightningChance: 0, streakReduction: 0, falseFoodSpawnRange: [4000, 6000], falseFoodLifespan: 5000, mirrorSpawnRange: null, mirrorLifespan: 0, mirrorEffectDuration: 0, obstacleCount: 0 },
+                { speed: 150, initialLength: 14, initialLifespan: 8500, goldenFoodChance: 0, goldenFoodLifespan: 0, lightningSpawnRange: null, lightningLifespan: 0, redLightningChance: 0, streakReduction: 0, falseFoodSpawnRange: [3000, 5000], falseFoodLifespan: 5000, mirrorSpawnRange: null, mirrorLifespan: 0, mirrorEffectDuration: 0, obstacleCount: 0 },
+                { speed: 150, initialLength: 14, initialLifespan: 8500, goldenFoodChance: 0, goldenFoodLifespan: 0, lightningSpawnRange: null, lightningLifespan: 0, redLightningChance: 0, streakReduction: 0, falseFoodSpawnRange: [2000, 4000], falseFoodLifespan: 5000, mirrorSpawnRange: null, mirrorLifespan: 0, mirrorEffectDuration: 0, obstacleCount: 0 },
+                { speed: 150, initialLength: 14, initialLifespan: 8500, goldenFoodChance: 0, goldenFoodLifespan: 0, lightningSpawnRange: null, lightningLifespan: 0, redLightningChance: 0, streakReduction: 0, falseFoodSpawnRange: [1000, 3000], falseFoodLifespan: 5000, mirrorSpawnRange: null, mirrorLifespan: 0, mirrorEffectDuration: 0, obstacleCount: 0 }
+            ],
             // World 8 - Jardín de los Peligros
-            Array(5).fill({ speed: 140, initialLength: 16, initialLifespan: 8000 }),
+            [
+                { speed: 140, initialLength: 16, initialLifespan: 8000, goldenFoodChance: 0, goldenFoodLifespan: 0, lightningSpawnRange: null, lightningLifespan: 0, redLightningChance: 0, streakReduction: 0, falseFoodSpawnRange: null, falseFoodLifespan: 0, mirrorSpawnRange: null, mirrorLifespan: 0, mirrorEffectDuration: 0, obstacleCount: 3 },
+                { speed: 140, initialLength: 16, initialLifespan: 8000, goldenFoodChance: 0, goldenFoodLifespan: 0, lightningSpawnRange: null, lightningLifespan: 0, redLightningChance: 0, streakReduction: 0, falseFoodSpawnRange: null, falseFoodLifespan: 0, mirrorSpawnRange: null, mirrorLifespan: 0, mirrorEffectDuration: 0, obstacleCount: 5 },
+                { speed: 140, initialLength: 16, initialLifespan: 8000, goldenFoodChance: 0, goldenFoodLifespan: 0, lightningSpawnRange: null, lightningLifespan: 0, redLightningChance: 0, streakReduction: 0, falseFoodSpawnRange: null, falseFoodLifespan: 0, mirrorSpawnRange: null, mirrorLifespan: 0, mirrorEffectDuration: 0, obstacleCount: 8 },
+                { speed: 140, initialLength: 16, initialLifespan: 8000, goldenFoodChance: 0, goldenFoodLifespan: 0, lightningSpawnRange: null, lightningLifespan: 0, redLightningChance: 0, streakReduction: 0, falseFoodSpawnRange: null, falseFoodLifespan: 0, mirrorSpawnRange: null, mirrorLifespan: 0, mirrorEffectDuration: 0, obstacleCount: 11 },
+                { speed: 140, initialLength: 16, initialLifespan: 8000, goldenFoodChance: 0, goldenFoodLifespan: 0, lightningSpawnRange: null, lightningLifespan: 0, redLightningChance: 0, streakReduction: 0, falseFoodSpawnRange: null, falseFoodLifespan: 0, mirrorSpawnRange: null, mirrorLifespan: 0, mirrorEffectDuration: 0, obstacleCount: 15 }
+            ],
             // World 9 - Lago del Reflejo
-            Array(5).fill({ speed: 130, initialLength: 18, initialLifespan: 7500 }),
+            [
+                { speed: 130, initialLength: 18, initialLifespan: 7500, goldenFoodChance: 0, goldenFoodLifespan: 0, lightningSpawnRange: null, lightningLifespan: 0, redLightningChance: 0, streakReduction: 0, falseFoodSpawnRange: null, falseFoodLifespan: 0, mirrorSpawnRange: [5000, 7000], mirrorLifespan: 5000, mirrorEffectDuration: 3000, obstacleCount: 0 },
+                { speed: 130, initialLength: 18, initialLifespan: 7500, goldenFoodChance: 0, goldenFoodLifespan: 0, lightningSpawnRange: null, lightningLifespan: 0, redLightningChance: 0, streakReduction: 0, falseFoodSpawnRange: null, falseFoodLifespan: 0, mirrorSpawnRange: [4000, 6000], mirrorLifespan: 5000, mirrorEffectDuration: 3000, obstacleCount: 0 },
+                { speed: 130, initialLength: 18, initialLifespan: 7500, goldenFoodChance: 0, goldenFoodLifespan: 0, lightningSpawnRange: null, lightningLifespan: 0, redLightningChance: 0, streakReduction: 0, falseFoodSpawnRange: null, falseFoodLifespan: 0, mirrorSpawnRange: [3000, 5000], mirrorLifespan: 5000, mirrorEffectDuration: 3000, obstacleCount: 0 },
+                { speed: 130, initialLength: 18, initialLifespan: 7500, goldenFoodChance: 0, goldenFoodLifespan: 0, lightningSpawnRange: null, lightningLifespan: 0, redLightningChance: 0, streakReduction: 0, falseFoodSpawnRange: null, falseFoodLifespan: 0, mirrorSpawnRange: [2000, 4000], mirrorLifespan: 5000, mirrorEffectDuration: 3000, obstacleCount: 0 },
+                { speed: 130, initialLength: 18, initialLifespan: 7500, goldenFoodChance: 0, goldenFoodLifespan: 0, lightningSpawnRange: null, lightningLifespan: 0, redLightningChance: 0, streakReduction: 0, falseFoodSpawnRange: null, falseFoodLifespan: 0, mirrorSpawnRange: [1000, 3000], mirrorLifespan: 5000, mirrorEffectDuration: 3000, obstacleCount: 0 }
+            ],
             // World 10 - Desafío Final
             [
-                { speed: 125, initialLength: 20, initialLifespan: 7000 },
-                { speed: 120, initialLength: 25, initialLifespan: 6500 },
-                { speed: 115, initialLength: 30, initialLifespan: 6000 },
-                { speed: 110, initialLength: 35, initialLifespan: 5500 },
-                { speed: 105, initialLength: 40, initialLifespan: 5000 }
+                { speed: 125, initialLength: 20, initialLifespan: 7000, goldenFoodChance: 0.15, goldenFoodLifespan: 3000, lightningSpawnRange: [7000, 9000], lightningLifespan: 5000, redLightningChance: 0.25, streakReduction: 600, falseFoodSpawnRange: [6000, 8000], falseFoodLifespan: 5000, mirrorSpawnRange: [7000, 9000], mirrorLifespan: 5000, mirrorEffectDuration: 2250, obstacleCount: 5 },
+                { speed: 120, initialLength: 25, initialLifespan: 6500, goldenFoodChance: 0.15, goldenFoodLifespan: 3000, lightningSpawnRange: [6000, 8000], lightningLifespan: 5000, redLightningChance: 0.25, streakReduction: 600, falseFoodSpawnRange: [5000, 7000], falseFoodLifespan: 5000, mirrorSpawnRange: [6000, 8000], mirrorLifespan: 5000, mirrorEffectDuration: 2250, obstacleCount: 8 },
+                { speed: 115, initialLength: 30, initialLifespan: 6000, goldenFoodChance: 0.15, goldenFoodLifespan: 3000, lightningSpawnRange: [5000, 7000], lightningLifespan: 5000, redLightningChance: 0.25, streakReduction: 600, falseFoodSpawnRange: [4000, 6000], falseFoodLifespan: 5000, mirrorSpawnRange: [5000, 7000], mirrorLifespan: 5000, mirrorEffectDuration: 2250, obstacleCount: 11 },
+                { speed: 110, initialLength: 35, initialLifespan: 5500, goldenFoodChance: 0.15, goldenFoodLifespan: 3000, lightningSpawnRange: [4000, 6000], lightningLifespan: 5000, redLightningChance: 0.25, streakReduction: 600, falseFoodSpawnRange: [3000, 5000], falseFoodLifespan: 5000, mirrorSpawnRange: [4000, 6000], mirrorLifespan: 5000, mirrorEffectDuration: 2250, obstacleCount: 14 },
+                { speed: 105, initialLength: 40, initialLifespan: 5000, goldenFoodChance: 0.15, goldenFoodLifespan: 3000, lightningSpawnRange: [3000, 5000], lightningLifespan: 5000, redLightningChance: 0.25, streakReduction: 600, falseFoodSpawnRange: [2000, 4000], falseFoodLifespan: 5000, mirrorSpawnRange: [3000, 5000], mirrorLifespan: 5000, mirrorEffectDuration: 2250, obstacleCount: 17 }
             ]
         ];
         let currentWorld = 1;
@@ -4989,6 +5045,11 @@ function setupSlider(slider, display) {
             if (gameMode === 'classification' || gameMode === 'freeMode' || gameMode === 'maze') {
                 const cfg = (gameMode === 'classification') ? DIFFICULTY_SETTINGS[difficultySelector.value]
                           : (gameMode === 'maze' ? DIFFICULTY_SETTINGS[currentMazeDifficulty] : freeModeSettings);
+                if (typeof cfg.mirrorEffectDuration === 'number') {
+                    duration = cfg.mirrorEffectDuration;
+                }
+            } else if (gameMode === 'levels') {
+                const cfg = LEVEL_SETTINGS[currentWorld - 1][currentLevelInWorld - 1];
                 if (typeof cfg.mirrorEffectDuration === 'number') {
                     duration = cfg.mirrorEffectDuration;
                 }
@@ -6975,7 +7036,9 @@ function setupSlider(slider, display) {
                 // Reduce food lifespan by 0.5 s per 0.5 streak increase
                 const reductionPerStep = (gameMode === 'classification'
                     ? DIFFICULTY_SETTINGS[difficulty].streakReduction
-                    : (gameMode === 'maze' ? DIFFICULTY_SETTINGS[currentMazeDifficulty].streakReduction : freeModeSettings.streakReduction)) || 1000;
+                    : (gameMode === 'levels'
+                        ? (LEVEL_SETTINGS[currentWorld - 1][currentLevelInWorld - 1].streakReduction || 0)
+                        : (gameMode === 'maze' ? DIFFICULTY_SETTINGS[currentMazeDifficulty].streakReduction : freeModeSettings.streakReduction))) || 1000;
                 streakReduction = (effectiveStreak - 1) * reductionPerStep;
             }
             const calculatedLifespan = baseLifespan - streakReduction;
@@ -7003,14 +7066,21 @@ function setupSlider(slider, display) {
             const classificationRank = CLASSIFICATION_RANKS[difficulty] || 0;
             const diffCfg = (gameMode === 'classification') ? (DIFFICULTY_SETTINGS[difficulty] || {})
                           : (gameMode === 'maze' ? DIFFICULTY_SETTINGS[currentMazeDifficulty] : freeModeSettings);
-            const goldenChance = diffCfg.goldenFoodChance !== undefined ? diffCfg.goldenFoodChance : GOLDEN_FOOD_CHANCE;
-            const isGolden = ((gameMode === 'levels' && currentWorld === 5) || (gameMode === 'classification' && classificationRank >= 1) || gameMode === 'freeMode') && Math.random() < goldenChance;
+            let goldenChance = diffCfg.goldenFoodChance !== undefined ? diffCfg.goldenFoodChance : GOLDEN_FOOD_CHANCE;
+            if (gameMode === 'levels') {
+                const levelCfg = LEVEL_SETTINGS[currentWorld - 1][currentLevelInWorld - 1];
+                if (levelCfg.goldenFoodChance !== undefined) goldenChance = levelCfg.goldenFoodChance;
+            }
+            const isGolden = ((gameMode === 'levels' && goldenChance > 0) || (gameMode === 'classification' && classificationRank >= 1) || gameMode === 'freeMode') && Math.random() < goldenChance;
             let lifespan = calculateNextFoodLifespan();
             if (isGolden) {
                 if (gameMode === 'classification' && classificationRank === 1 && diffCfg.goldenFoodLifespan === undefined) {
                     lifespan = GOLDEN_FOOD_LIFESPAN_CLASSIF_RANK1;
                 } else if (gameMode === 'levels') {
-                    lifespan = GOLDEN_FOOD_LIFESPANS_WORLD5[currentLevelInWorld - 1] || lifespan;
+                    const levelCfg = LEVEL_SETTINGS[currentWorld - 1][currentLevelInWorld - 1];
+                    if (levelCfg.goldenFoodLifespan !== undefined) {
+                        lifespan = levelCfg.goldenFoodLifespan;
+                    }
                 } else if (gameMode === 'freeMode' && diffCfg.goldenFoodLifespan !== undefined) {
                     lifespan = diffCfg.goldenFoodLifespan;
                 } else if (diffCfg.goldenFoodLifespan !== undefined) {
@@ -7222,6 +7292,11 @@ function setupSlider(slider, display) {
                 if (typeof cfg.falseFoodLifespan === 'number') {
                     lifespan = cfg.falseFoodLifespan;
                 }
+            } else if (gameMode === 'levels') {
+                const cfg = LEVEL_SETTINGS[currentWorld - 1][currentLevelInWorld - 1];
+                if (typeof cfg.falseFoodLifespan === 'number') {
+                    lifespan = cfg.falseFoodLifespan;
+                }
             }
             const item = { x: pos.x, y: pos.y, remaining: lifespan, lifespan };
             item.timeoutId = setTimeout(() => removeFalseFoodItem(item), lifespan);
@@ -7237,14 +7312,10 @@ function setupSlider(slider, display) {
                           : (gameMode === 'maze' ? DIFFICULTY_SETTINGS[currentMazeDifficulty] : freeModeSettings);
                 if (!cfg.falseFoodSpawnRange) return;
                 range = cfg.falseFoodSpawnRange;
-            } else if (gameMode === "levels" && (currentWorld === 7 || currentWorld === 8 || currentWorld === 10)) {
-                if (currentWorld === 7) {
-                    range = FALSE_FOOD_SPAWN_RANGES_WORLD4[currentLevelInWorld - 1] || [5000,8000];
-                } else if (currentWorld === 10) {
-                    range = FALSE_FOOD_SPAWN_RANGES_WORLD8[currentLevelInWorld - 1] || [5000,7000];
-                } else {
-                    range = FALSE_FOOD_SPAWN_RANGE_WORLD5;
-                }
+            } else if (gameMode === "levels") {
+                const cfg = LEVEL_SETTINGS[currentWorld - 1][currentLevelInWorld - 1];
+                if (!cfg.falseFoodSpawnRange) return;
+                range = cfg.falseFoodSpawnRange;
             } else {
                 return;
             }
@@ -7378,12 +7449,22 @@ function setupSlider(slider, display) {
                 if (typeof cfg.redLightningChance === 'number') {
                     redChance = cfg.redLightningChance;
                 }
+            } else if (gameMode === 'levels') {
+                const cfg = LEVEL_SETTINGS[currentWorld - 1][currentLevelInWorld - 1];
+                if (typeof cfg.redLightningChance === 'number') {
+                    redChance = cfg.redLightningChance;
+                }
             }
             const color = Math.random() < redChance ? 'red' : 'yellow';
             let lifespan = LIGHTNING_LIFESPAN;
             if (gameMode === 'classification' || gameMode === 'freeMode' || gameMode === 'maze') {
                 const cfg = (gameMode === 'classification') ? (DIFFICULTY_SETTINGS[difficultySelector.value] || {})
                           : (gameMode === 'maze' ? DIFFICULTY_SETTINGS[currentMazeDifficulty] : freeModeSettings);
+                if (typeof cfg.lightningLifespan === 'number') {
+                    lifespan = cfg.lightningLifespan;
+                }
+            } else if (gameMode === 'levels') {
+                const cfg = LEVEL_SETTINGS[currentWorld - 1][currentLevelInWorld - 1];
                 if (typeof cfg.lightningLifespan === 'number') {
                     lifespan = cfg.lightningLifespan;
                 }
@@ -7402,16 +7483,10 @@ function setupSlider(slider, display) {
                           : (gameMode === 'maze' ? DIFFICULTY_SETTINGS[currentMazeDifficulty] : freeModeSettings);
                 if (!cfg.lightningSpawnRange) return;
                 range = cfg.lightningSpawnRange;
-            } else if (gameMode === "levels" && (currentWorld === 3 || currentWorld === 4 || currentWorld === 9 || currentWorld === 10)) {
-                if (currentWorld === 3) {
-                    range = LIGHTNING_SPAWN_RANGES_WORLD6[currentLevelInWorld - 1] || [5000, 7000];
-                } else if (currentWorld === 4) {
-                    range = LIGHTNING_SPAWN_RANGE_WORLD4;
-                } else if (currentWorld === 10) {
-                    range = LIGHTNING_SPAWN_RANGES_WORLD8[currentLevelInWorld - 1] || [5000, 7000];
-                } else {
-                    range = LIGHTNING_SPAWN_RANGE_WORLD7;
-                }
+            } else if (gameMode === "levels") {
+                const cfg = LEVEL_SETTINGS[currentWorld - 1][currentLevelInWorld - 1];
+                if (!cfg.lightningSpawnRange) return;
+                range = cfg.lightningSpawnRange;
             } else {
                 return;
             }
@@ -7537,6 +7612,11 @@ function setupSlider(slider, display) {
                 if (typeof cfg.mirrorLifespan === 'number') {
                     lifespan = cfg.mirrorLifespan;
                 }
+            } else if (gameMode === 'levels') {
+                const cfg = LEVEL_SETTINGS[currentWorld - 1][currentLevelInWorld - 1];
+                if (typeof cfg.mirrorLifespan === 'number') {
+                    lifespan = cfg.mirrorLifespan;
+                }
             }
             const item = { x: pos.x, y: pos.y, remaining: lifespan, lifespan };
             item.timeoutId = setTimeout(() => removeMirrorItem(item), lifespan);
@@ -7552,10 +7632,10 @@ function setupSlider(slider, display) {
                           : (gameMode === 'maze' ? DIFFICULTY_SETTINGS[currentMazeDifficulty] : freeModeSettings);
                 if (!cfg.mirrorSpawnRange) return;
                 range = cfg.mirrorSpawnRange;
-            } else if (gameMode === "levels" && (currentWorld === 9 || currentWorld === 10)) {
-                range = currentWorld === 9 ?
-                    (MIRROR_SPAWN_RANGES_WORLD7[currentLevelInWorld - 1] || [5000, 7000]) :
-                    (MIRROR_SPAWN_RANGES_WORLD8[currentLevelInWorld - 1] || [5000, 7000]);
+            } else if (gameMode === "levels") {
+                const cfg = LEVEL_SETTINGS[currentWorld - 1][currentLevelInWorld - 1];
+                if (!cfg.mirrorSpawnRange) return;
+                range = cfg.mirrorSpawnRange;
             } else {
                 return;
             }
@@ -10086,7 +10166,7 @@ async function startGame(isRestart = false) {
                 const levelCfg = LEVEL_SETTINGS[currentWorld - 1][currentLevelInWorld - 1];
                 snakeSpeed = levelCfg.speed;
                 initialSnakeLength = levelCfg.initialLength;
-                MIRROR_EFFECT_DURATION = DEFAULT_MIRROR_EFFECT_DURATION;
+                MIRROR_EFFECT_DURATION = levelCfg.mirrorEffectDuration || DEFAULT_MIRROR_EFFECT_DURATION;
             } else if (gameMode === 'freeMode') {
                 const cfg = freeModeSettings;
                 snakeSpeed = cfg.speed;
@@ -10177,27 +10257,28 @@ async function startGame(isRestart = false) {
                 updateTimeLengthDisplay();
                 clearInterval(gameTimerIntervalId);
             }
-            if (gameMode === "levels" && (currentWorld === 7 || currentWorld === 8 || currentWorld === 10)) {
-                startWorld4FalseFoodMechanics();
-            } else {
-                stopWorld4FalseFoodMechanics();
-            }
-            if (gameMode === "levels" && currentWorld === 8) {
-                startWorld5Obstacles();
-            } else if (gameMode === "levels" && currentWorld === 3) {
-                stopWorld6Obstacles();
-                startWorld6LightningMechanics();
-            } else if (gameMode === "levels" && currentWorld === 4) {
-                stopWorld6Obstacles();
-                startWorld6LightningMechanics();
-            } else if (gameMode === "levels" && currentWorld === 9) {
-                startWorld6Obstacles();
-                startWorld6LightningMechanics();
-                startWorld7MirrorMechanics();
-            } else if (gameMode === "levels" && currentWorld === 10) {
-                startWorld8Obstacles();
-                startWorld6LightningMechanics();
-                startWorld7MirrorMechanics();
+            if (gameMode === "levels") {
+                const cfg = LEVEL_SETTINGS[currentWorld - 1][currentLevelInWorld - 1];
+                if (cfg.falseFoodSpawnRange) {
+                    startWorld4FalseFoodMechanics();
+                } else {
+                    stopWorld4FalseFoodMechanics();
+                }
+                if (cfg.obstacleCount && cfg.obstacleCount > 0) {
+                    startWorld6Obstacles(cfg.obstacleCount);
+                } else {
+                    stopWorld6Obstacles();
+                }
+                if (cfg.lightningSpawnRange) {
+                    startWorld6LightningMechanics();
+                } else {
+                    stopWorld6LightningMechanics();
+                }
+                if (cfg.mirrorSpawnRange) {
+                    startWorld7MirrorMechanics();
+                } else {
+                    stopWorld7MirrorMechanics();
+                }
             } else if (gameMode === 'classification') {
                 stopWorld5Obstacles();
                 stopWorld6Obstacles();
