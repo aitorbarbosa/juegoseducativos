@@ -4129,7 +4129,14 @@ function setupSlider(slider, display) {
         const MAZE_STAR_TARGETS = [25, 50, 100, 150, 200];
         let mazeStarsEarned = 0;
 
-        const MAZE_LEVEL_COUNT = 10;
+        const MAZE_LEVELS_PER_DIFFICULTY = 10;
+        const MAZE_LEVEL_COUNT = MAZE_LEVELS_PER_DIFFICULTY * 4;
+        function getMazeDifficultyForLevel(level) {
+            if (level <= MAZE_LEVELS_PER_DIFFICULTY) return 'principiante';
+            if (level <= MAZE_LEVELS_PER_DIFFICULTY * 2) return 'explorador';
+            if (level <= MAZE_LEVELS_PER_DIFFICULTY * 3) return 'veterano';
+            return 'legendario';
+        }
         let currentMazeLevel = 1;
         let mazeLevelStars = Array(MAZE_LEVEL_COUNT).fill(0);
         let mazePreviousStars = 0; // Stars achieved before starting the current run
@@ -4754,6 +4761,7 @@ function setupSlider(slider, display) {
 
         let difficulty = 'principiante';
         let freeDifficulty = 'personalizado';
+        let currentMazeDifficulty = 'principiante';
         let snakeSpeed = 150; 
         let foodTimeRemaining = 0;
         let foodDisappearTimeoutId;
@@ -4800,30 +4808,30 @@ function setupSlider(slider, display) {
 
 
         const FREE_MODE_DEFAULTS = {
-            speed: 140,
-            initialLifespan: 7500,
-            initialLength: 10,
+            speed: 187,
+            initialLifespan: 5600,
+            initialLength: 8,
             goldenFoodChance: 0.1,
-            goldenFoodLifespan: 4000,
-            lightningSpawnRange: [6000, 10000],
-            lightningLifespan: 5000,
+            goldenFoodLifespan: 3000,
+            lightningSpawnRange: [4500, 7500],
+            lightningLifespan: 3750,
             redLightningChance: 0.25,
-            streakReduction: 800,
-            falseFoodSpawnRange: [6000, 10000],
-            falseFoodLifespan: 5000,
-            mirrorSpawnRange: [6000, 10000],
-            mirrorLifespan: 5000,
-            mirrorEffectDuration: 3000,
-            obstacleCount: 5
+            streakReduction: 600,
+            falseFoodSpawnRange: [4500, 7500],
+            falseFoodLifespan: 3750,
+            mirrorSpawnRange: [4500, 7500],
+            mirrorLifespan: 3750,
+            mirrorEffectDuration: 2250,
+            obstacleCount: 3
         };
         let freeModeSettings = { ...FREE_MODE_DEFAULTS };
 
 
         const DIFFICULTY_SETTINGS = {
             principiante: {
-                speed: 180,
+                speed: 240,
                 initialLifespan: 0,
-                initialLength: 4,
+                initialLength: 3,
                 goldenFoodChance: 0,
                 goldenFoodLifespan: 0,
                 lightningSpawnRange: null,
@@ -4838,15 +4846,15 @@ function setupSlider(slider, display) {
                 obstacleCount: 0
             },
             explorador:   {
-                speed: 160,
-                initialLifespan: 8000,
-                initialLength: 6,
+                speed: 213,
+                initialLifespan: 6000,
+                initialLength: 5,
                 goldenFoodChance: 0.15,
-                goldenFoodLifespan: 3500,
-                lightningSpawnRange: [6000, 10000],
-                lightningLifespan: 5000,
+                goldenFoodLifespan: 2625,
+                lightningSpawnRange: [4500, 7500],
+                lightningLifespan: 3750,
                 redLightningChance: 0.25,
-                streakReduction: 800,
+                streakReduction: 600,
                 falseFoodSpawnRange: null,
                 falseFoodLifespan: 0,
                 mirrorSpawnRange: null,
@@ -4855,38 +4863,38 @@ function setupSlider(slider, display) {
                 obstacleCount: 0
             },
             veterano:     {
-                speed: 140,
-                initialLifespan: 7500,
-                initialLength: 10,
+                speed: 187,
+                initialLifespan: 5600,
+                initialLength: 8,
                 goldenFoodChance: 0.1,
-                goldenFoodLifespan: 4000,
-                lightningSpawnRange: [6000, 10000],
-                lightningLifespan: 5000,
+                goldenFoodLifespan: 3000,
+                lightningSpawnRange: [4500, 7500],
+                lightningLifespan: 3750,
                 redLightningChance: 0.25,
-                streakReduction: 800,
-                falseFoodSpawnRange: [6000, 10000],
-                falseFoodLifespan: 5000,
-                mirrorSpawnRange: [6000, 10000],
-                mirrorLifespan: 5000,
-                mirrorEffectDuration: 3000,
-                obstacleCount: 5
+                streakReduction: 600,
+                falseFoodSpawnRange: [4500, 7500],
+                falseFoodLifespan: 3750,
+                mirrorSpawnRange: [4500, 7500],
+                mirrorLifespan: 3750,
+                mirrorEffectDuration: 2250,
+                obstacleCount: 3
             },
             legendario:   {
-                speed: 120,
-                initialLifespan: 7000,
-                initialLength: 15,
+                speed: 160,
+                initialLifespan: 5250,
+                initialLength: 11,
                 goldenFoodChance: 0.1,
-                goldenFoodLifespan: 4000,
-                lightningSpawnRange: [6000, 10000],
-                lightningLifespan: 5000,
+                goldenFoodLifespan: 3000,
+                lightningSpawnRange: [4500, 7500],
+                lightningLifespan: 3750,
                 redLightningChance: 0.25,
-                streakReduction: 800,
-                falseFoodSpawnRange: [5000, 7000],
-                falseFoodLifespan: 6000,
-                mirrorSpawnRange: [5000, 7000],
-                mirrorLifespan: 6000,
-                mirrorEffectDuration: 3000,
-                obstacleCount: 10
+                streakReduction: 600,
+                falseFoodSpawnRange: [3750, 5250],
+                falseFoodLifespan: 4500,
+                mirrorSpawnRange: [3750, 5250],
+                mirrorLifespan: 4500,
+                mirrorEffectDuration: 2250,
+                obstacleCount: 6
             }
         };
         const CLASSIFICATION_RANKS = {
@@ -4978,8 +4986,9 @@ function setupSlider(slider, display) {
         function updateMirrorEffect() {
             if (!mirrorEffect.active) return;
             let duration = MIRROR_EFFECT_DURATION;
-            if (gameMode === 'classification' || gameMode === 'freeMode') {
-                const cfg = (gameMode === 'classification') ? DIFFICULTY_SETTINGS[difficultySelector.value] : freeModeSettings;
+            if (gameMode === 'classification' || gameMode === 'freeMode' || gameMode === 'maze') {
+                const cfg = (gameMode === 'classification') ? DIFFICULTY_SETTINGS[difficultySelector.value]
+                          : (gameMode === 'maze' ? DIFFICULTY_SETTINGS[currentMazeDifficulty] : freeModeSettings);
                 if (typeof cfg.mirrorEffectDuration === 'number') {
                     duration = cfg.mirrorEffectDuration;
                 }
@@ -5017,8 +5026,9 @@ function setupSlider(slider, display) {
             }
             if (mirrorEffect.active) {
                 let duration = MIRROR_EFFECT_DURATION;
-                if (gameMode === 'classification' || gameMode === 'freeMode') {
-                    const cfg = gameMode === 'classification' ? DIFFICULTY_SETTINGS[difficultySelector.value] : freeModeSettings;
+                if (gameMode === 'classification' || gameMode === 'freeMode' || gameMode === 'maze') {
+                    const cfg = gameMode === 'classification' ? DIFFICULTY_SETTINGS[difficultySelector.value]
+                              : (gameMode === 'maze' ? DIFFICULTY_SETTINGS[currentMazeDifficulty] : freeModeSettings);
                     if (typeof cfg.mirrorEffectDuration === 'number') {
                         duration = cfg.mirrorEffectDuration;
                     }
@@ -6953,6 +6963,8 @@ function setupSlider(slider, display) {
                 baseLifespan = levelCfg.initialLifespan || 0;
             } else if (gameMode === 'classification') {
                 baseLifespan = DIFFICULTY_SETTINGS[difficulty].initialLifespan;
+            } else if (gameMode === 'maze') {
+                baseLifespan = DIFFICULTY_SETTINGS[currentMazeDifficulty].initialLifespan;
             } else {
                 baseLifespan = freeModeSettings.initialLifespan;
             }
@@ -6961,7 +6973,9 @@ function setupSlider(slider, display) {
             const effectiveStreak = Math.min(streakMultiplier, MAX_STREAK);
             if (effectiveStreak > 1) {
                 // Reduce food lifespan by 0.5 s per 0.5 streak increase
-                const reductionPerStep = (gameMode === 'classification' ? DIFFICULTY_SETTINGS[difficulty].streakReduction : freeModeSettings.streakReduction) || 1000;
+                const reductionPerStep = (gameMode === 'classification'
+                    ? DIFFICULTY_SETTINGS[difficulty].streakReduction
+                    : (gameMode === 'maze' ? DIFFICULTY_SETTINGS[currentMazeDifficulty].streakReduction : freeModeSettings.streakReduction)) || 1000;
                 streakReduction = (effectiveStreak - 1) * reductionPerStep;
             }
             const calculatedLifespan = baseLifespan - streakReduction;
@@ -6987,7 +7001,8 @@ function setupSlider(slider, display) {
             }
 
             const classificationRank = CLASSIFICATION_RANKS[difficulty] || 0;
-            const diffCfg = (gameMode === 'classification') ? (DIFFICULTY_SETTINGS[difficulty] || {}) : freeModeSettings;
+            const diffCfg = (gameMode === 'classification') ? (DIFFICULTY_SETTINGS[difficulty] || {})
+                          : (gameMode === 'maze' ? DIFFICULTY_SETTINGS[currentMazeDifficulty] : freeModeSettings);
             const goldenChance = diffCfg.goldenFoodChance !== undefined ? diffCfg.goldenFoodChance : GOLDEN_FOOD_CHANCE;
             const isGolden = ((gameMode === 'levels' && currentWorld === 5) || (gameMode === 'classification' && classificationRank >= 1) || gameMode === 'freeMode') && Math.random() < goldenChance;
             let lifespan = calculateNextFoodLifespan();
@@ -7201,8 +7216,9 @@ function setupSlider(slider, display) {
                     isAdjacentToAnyFood(pos)) && attempts < 100);
             if (attempts >= 100) return;
             let lifespan = FALSE_FOOD_LIFESPAN;
-            if (gameMode === 'classification' || gameMode === 'freeMode') {
-                const cfg = (gameMode === 'classification') ? (DIFFICULTY_SETTINGS[difficultySelector.value] || {}) : freeModeSettings;
+            if (gameMode === 'classification' || gameMode === 'freeMode' || gameMode === 'maze') {
+                const cfg = (gameMode === 'classification') ? (DIFFICULTY_SETTINGS[difficultySelector.value] || {})
+                          : (gameMode === 'maze' ? DIFFICULTY_SETTINGS[currentMazeDifficulty] : freeModeSettings);
                 if (typeof cfg.falseFoodLifespan === 'number') {
                     lifespan = cfg.falseFoodLifespan;
                 }
@@ -7216,8 +7232,9 @@ function setupSlider(slider, display) {
         function scheduleNextFalseFoodSpawn() {
             if (gameOver) return;
             let range;
-            if (gameMode === 'classification' || gameMode === 'freeMode') {
-                const cfg = (gameMode === 'classification') ? (DIFFICULTY_SETTINGS[difficultySelector.value] || {}) : freeModeSettings;
+            if (gameMode === 'classification' || gameMode === 'freeMode' || gameMode === 'maze') {
+                const cfg = (gameMode === 'classification') ? (DIFFICULTY_SETTINGS[difficultySelector.value] || {})
+                          : (gameMode === 'maze' ? DIFFICULTY_SETTINGS[currentMazeDifficulty] : freeModeSettings);
                 if (!cfg.falseFoodSpawnRange) return;
                 range = cfg.falseFoodSpawnRange;
             } else if (gameMode === "levels" && (currentWorld === 7 || currentWorld === 8 || currentWorld === 10)) {
@@ -7355,16 +7372,18 @@ function setupSlider(slider, display) {
                     isAdjacentToAnyFood(pos)) && attempts < 100);
             if (attempts >= 100) return;
             let redChance = 0.25;
-            if (gameMode === 'classification' || gameMode === 'freeMode') {
-                const cfg = (gameMode === 'classification') ? (DIFFICULTY_SETTINGS[difficultySelector.value] || {}) : freeModeSettings;
+            if (gameMode === 'classification' || gameMode === 'freeMode' || gameMode === 'maze') {
+                const cfg = (gameMode === 'classification') ? (DIFFICULTY_SETTINGS[difficultySelector.value] || {})
+                          : (gameMode === 'maze' ? DIFFICULTY_SETTINGS[currentMazeDifficulty] : freeModeSettings);
                 if (typeof cfg.redLightningChance === 'number') {
                     redChance = cfg.redLightningChance;
                 }
             }
             const color = Math.random() < redChance ? 'red' : 'yellow';
             let lifespan = LIGHTNING_LIFESPAN;
-            if (gameMode === 'classification' || gameMode === 'freeMode') {
-                const cfg = (gameMode === 'classification') ? (DIFFICULTY_SETTINGS[difficultySelector.value] || {}) : freeModeSettings;
+            if (gameMode === 'classification' || gameMode === 'freeMode' || gameMode === 'maze') {
+                const cfg = (gameMode === 'classification') ? (DIFFICULTY_SETTINGS[difficultySelector.value] || {})
+                          : (gameMode === 'maze' ? DIFFICULTY_SETTINGS[currentMazeDifficulty] : freeModeSettings);
                 if (typeof cfg.lightningLifespan === 'number') {
                     lifespan = cfg.lightningLifespan;
                 }
@@ -7378,8 +7397,9 @@ function setupSlider(slider, display) {
         function scheduleNextLightningSpawn() {
             if (gameOver) return;
             let range;
-            if (gameMode === "classification" || gameMode === 'freeMode') {
-                const cfg = (gameMode === 'classification') ? (DIFFICULTY_SETTINGS[difficultySelector.value] || {}) : freeModeSettings;
+            if (gameMode === "classification" || gameMode === 'freeMode' || gameMode === 'maze') {
+                const cfg = (gameMode === 'classification') ? (DIFFICULTY_SETTINGS[difficultySelector.value] || {})
+                          : (gameMode === 'maze' ? DIFFICULTY_SETTINGS[currentMazeDifficulty] : freeModeSettings);
                 if (!cfg.lightningSpawnRange) return;
                 range = cfg.lightningSpawnRange;
             } else if (gameMode === "levels" && (currentWorld === 3 || currentWorld === 4 || currentWorld === 9 || currentWorld === 10)) {
@@ -7511,8 +7531,9 @@ function setupSlider(slider, display) {
                     isAdjacentToAnyFood(pos)) && attempts < 100);
             if (attempts >= 100) return;
             let lifespan = FALSE_FOOD_LIFESPAN;
-            if (gameMode === 'classification' || gameMode === 'freeMode') {
-                const cfg = (gameMode === 'classification') ? (DIFFICULTY_SETTINGS[difficultySelector.value] || {}) : freeModeSettings;
+            if (gameMode === 'classification' || gameMode === 'freeMode' || gameMode === 'maze') {
+                const cfg = (gameMode === 'classification') ? (DIFFICULTY_SETTINGS[difficultySelector.value] || {})
+                          : (gameMode === 'maze' ? DIFFICULTY_SETTINGS[currentMazeDifficulty] : freeModeSettings);
                 if (typeof cfg.mirrorLifespan === 'number') {
                     lifespan = cfg.mirrorLifespan;
                 }
@@ -7526,8 +7547,9 @@ function setupSlider(slider, display) {
         function scheduleNextMirrorSpawn() {
             if (gameOver) return;
             let range;
-            if (gameMode === 'classification' || gameMode === 'freeMode') {
-                const cfg = (gameMode === 'classification') ? (DIFFICULTY_SETTINGS[difficultySelector.value] || {}) : freeModeSettings;
+            if (gameMode === 'classification' || gameMode === 'freeMode' || gameMode === 'maze') {
+                const cfg = (gameMode === 'classification') ? (DIFFICULTY_SETTINGS[difficultySelector.value] || {})
+                          : (gameMode === 'maze' ? DIFFICULTY_SETTINGS[currentMazeDifficulty] : freeModeSettings);
                 if (!cfg.mirrorSpawnRange) return;
                 range = cfg.mirrorSpawnRange;
             } else if (gameMode === "levels" && (currentWorld === 9 || currentWorld === 10)) {
@@ -7571,7 +7593,7 @@ function setupSlider(slider, display) {
 
         function generateMazeLevel(levelIndex) {
             obstacles = [];
-            const layout = MAZE_LAYOUTS[levelIndex];
+            const layout = MAZE_LAYOUTS[((levelIndex - 1) % MAZE_LEVELS_PER_DIFFICULTY) + 1];
             if (layout) {
                 obstacles = layout.map(pos => ({ x: pos.x, y: pos.y, img: obstacleImg }));
             }
@@ -8533,8 +8555,10 @@ function setupSlider(slider, display) {
             let mirrorOverlayColor = 'rgba(0,0,255,0.3)';
             if (mirrorEffect.active) {
                 let effectDuration = MIRROR_EFFECT_DURATION;
-                if (gameMode === 'classification') {
-                    const cfg = DIFFICULTY_SETTINGS[difficultySelector.value] || {};
+                if (gameMode === 'classification' || gameMode === 'maze') {
+                    const cfg = gameMode === 'classification'
+                        ? (DIFFICULTY_SETTINGS[difficultySelector.value] || {})
+                        : DIFFICULTY_SETTINGS[currentMazeDifficulty] || {};
                     if (typeof cfg.mirrorEffectDuration === 'number') {
                         effectDuration = cfg.mirrorEffectDuration;
                     }
@@ -10069,14 +10093,18 @@ async function startGame(isRestart = false) {
                 initialSnakeLength = cfg.initialLength;
                 MIRROR_EFFECT_DURATION = cfg.mirrorEffectDuration || DEFAULT_MIRROR_EFFECT_DURATION;
             } else if (gameMode === 'classification') {
-                const cfg = DIFFICULTY_SETTINGS[difficultySelector.value];
+                difficulty = difficultySelector.value;
+                const cfg = DIFFICULTY_SETTINGS[difficulty];
                 snakeSpeed = cfg.speed;
                 initialSnakeLength = cfg.initialLength;
                 MIRROR_EFFECT_DURATION = cfg.mirrorEffectDuration || DEFAULT_MIRROR_EFFECT_DURATION;
             } else { // maze
-                snakeSpeed = DIFFICULTY_SETTINGS.principiante.speed;
-                initialSnakeLength = DIFFICULTY_SETTINGS.principiante.initialLength;
-                MIRROR_EFFECT_DURATION = DEFAULT_MIRROR_EFFECT_DURATION;
+                currentMazeDifficulty = getMazeDifficultyForLevel(displayMazeLevel);
+                difficulty = currentMazeDifficulty;
+                const cfg = DIFFICULTY_SETTINGS[currentMazeDifficulty];
+                snakeSpeed = cfg.speed;
+                initialSnakeLength = cfg.initialLength;
+                MIRROR_EFFECT_DURATION = cfg.mirrorEffectDuration || DEFAULT_MIRROR_EFFECT_DURATION;
             }
 
             applySkin(getSelectedSkin());
@@ -10091,7 +10119,9 @@ async function startGame(isRestart = false) {
             snake = [];
             let startX = Math.floor(tileCountX / 2);
             let startY = Math.floor(tileCountY / 2);
-            if (gameMode === 'maze' && displayMazeLevel === 3) {
+            if (gameMode === 'maze' &&
+                (displayMazeLevel === 3 || displayMazeLevel === 13 ||
+                 displayMazeLevel === 23 || displayMazeLevel === 33)) {
                 startX = 1;
                 startY = 1;
             }
@@ -10176,11 +10206,13 @@ async function startGame(isRestart = false) {
                 stopWorld8Obstacles();
                 stopWorld4FalseFoodMechanics();
                 const rank = CLASSIFICATION_RANKS[difficultySelector.value] || 0;
-                const cfg = DIFFICULTY_SETTINGS[difficultySelector.value] || {};
+                const diff = difficultySelector.value;
+                const cfg = DIFFICULTY_SETTINGS[diff] || {};
                 if (rank >= 2) startWorld6LightningMechanics();
                 if (rank >= 3) {
                     startWorld4FalseFoodMechanics();
-                    const count = cfg.obstacleCount;
+                    let count = cfg.obstacleCount;
+                    if (diff === 'veterano' || diff === 'legendario') count = 0;
                     if (rank >= 4) {
                         startWorld8Obstacles(count);
                     } else {
@@ -10194,6 +10226,20 @@ async function startGame(isRestart = false) {
                 stopWorld6LightningMechanics();
                 stopWorld7MirrorMechanics();
                 stopWorld8Obstacles();
+                stopWorld4FalseFoodMechanics();
+                const rank = CLASSIFICATION_RANKS[currentMazeDifficulty] || 0;
+                const cfg = DIFFICULTY_SETTINGS[currentMazeDifficulty] || {};
+                if (rank >= 2) startWorld6LightningMechanics();
+                if (rank >= 3) {
+                    startWorld4FalseFoodMechanics();
+                    const count = cfg.obstacleCount;
+                    if (rank >= 4) {
+                        startWorld8Obstacles(count);
+                    } else {
+                        startWorld6Obstacles(count);
+                    }
+                    startWorld7MirrorMechanics();
+                }
                 startMazeLevel();
             } else {
                 stopWorld5Obstacles();
