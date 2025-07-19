@@ -8198,14 +8198,6 @@ function setupSlider(slider, display) {
             gameOverByTimeout = false;
             gameOverByInactivity = false;
 
-            playSoundForGameOver(levelEffectivelyWon);
-            draw();
-            managePostGameOverMusicAndAnimation();
-
-            if (gameMode === 'classification' || !levelEffectivelyWon) {
-                loseLife();
-            }
-
             let earnedCoins;
             if (gameMode === 'freeMode') {
                 // In free mode coins are earned based on time played
@@ -8215,17 +8207,26 @@ function setupSlider(slider, display) {
             }
             const previousCoins = totalCoins;
 
+            totalCoins += earnedCoins;
+            localStorage.setItem('snakeGameCoins', totalCoins.toString());
+            updateUIOnGameOver();
+            if (gameMode === 'levels' || gameMode === 'maze') {
+                saveGameSettings();
+            }
+
+            playSoundForGameOver(levelEffectivelyWon);
+            draw();
+            managePostGameOverMusicAndAnimation();
+
+            if (gameMode === 'classification' || !levelEffectivelyWon) {
+                loseLife();
+            }
+
             const soundDelay = levelEffectivelyWon ? WIN_SOUND_DURATION : GAME_OVER_SOUND_DURATION;
             setTimeout(() => {
                 showEarnedCoinsMessage(earnedCoins);
                 setTimeout(() => {
-                    totalCoins += earnedCoins;
                     animateCoinGain(previousCoins, totalCoins);
-                    localStorage.setItem('snakeGameCoins', totalCoins.toString());
-                    updateUIOnGameOver();
-                    if (gameMode === 'levels' || gameMode === 'maze') {
-                        saveGameSettings();
-                    }
                 }, COIN_MESSAGE_DISPLAY_TIME);
             }, soundDelay);
         }
