@@ -4800,30 +4800,30 @@ function setupSlider(slider, display) {
 
 
         const FREE_MODE_DEFAULTS = {
-            speed: 140,
-            initialLifespan: 7500,
-            initialLength: 10,
+            speed: 187,
+            initialLifespan: 5600,
+            initialLength: 8,
             goldenFoodChance: 0.1,
-            goldenFoodLifespan: 4000,
-            lightningSpawnRange: [6000, 10000],
-            lightningLifespan: 5000,
+            goldenFoodLifespan: 3000,
+            lightningSpawnRange: [4500, 7500],
+            lightningLifespan: 3750,
             redLightningChance: 0.25,
-            streakReduction: 800,
-            falseFoodSpawnRange: [6000, 10000],
-            falseFoodLifespan: 5000,
-            mirrorSpawnRange: [6000, 10000],
-            mirrorLifespan: 5000,
-            mirrorEffectDuration: 3000,
-            obstacleCount: 5
+            streakReduction: 600,
+            falseFoodSpawnRange: [4500, 7500],
+            falseFoodLifespan: 3750,
+            mirrorSpawnRange: [4500, 7500],
+            mirrorLifespan: 3750,
+            mirrorEffectDuration: 2250,
+            obstacleCount: 3
         };
         let freeModeSettings = { ...FREE_MODE_DEFAULTS };
 
 
         const DIFFICULTY_SETTINGS = {
             principiante: {
-                speed: 180,
+                speed: 240,
                 initialLifespan: 0,
-                initialLength: 4,
+                initialLength: 3,
                 goldenFoodChance: 0,
                 goldenFoodLifespan: 0,
                 lightningSpawnRange: null,
@@ -4838,15 +4838,15 @@ function setupSlider(slider, display) {
                 obstacleCount: 0
             },
             explorador:   {
-                speed: 160,
-                initialLifespan: 8000,
-                initialLength: 6,
+                speed: 213,
+                initialLifespan: 6000,
+                initialLength: 5,
                 goldenFoodChance: 0.15,
-                goldenFoodLifespan: 3500,
-                lightningSpawnRange: [6000, 10000],
-                lightningLifespan: 5000,
+                goldenFoodLifespan: 2625,
+                lightningSpawnRange: [4500, 7500],
+                lightningLifespan: 3750,
                 redLightningChance: 0.25,
-                streakReduction: 800,
+                streakReduction: 600,
                 falseFoodSpawnRange: null,
                 falseFoodLifespan: 0,
                 mirrorSpawnRange: null,
@@ -4855,38 +4855,38 @@ function setupSlider(slider, display) {
                 obstacleCount: 0
             },
             veterano:     {
-                speed: 140,
-                initialLifespan: 7500,
-                initialLength: 10,
+                speed: 187,
+                initialLifespan: 5600,
+                initialLength: 8,
                 goldenFoodChance: 0.1,
-                goldenFoodLifespan: 4000,
-                lightningSpawnRange: [6000, 10000],
-                lightningLifespan: 5000,
+                goldenFoodLifespan: 3000,
+                lightningSpawnRange: [4500, 7500],
+                lightningLifespan: 3750,
                 redLightningChance: 0.25,
-                streakReduction: 800,
-                falseFoodSpawnRange: [6000, 10000],
-                falseFoodLifespan: 5000,
-                mirrorSpawnRange: [6000, 10000],
-                mirrorLifespan: 5000,
-                mirrorEffectDuration: 3000,
-                obstacleCount: 5
+                streakReduction: 600,
+                falseFoodSpawnRange: [4500, 7500],
+                falseFoodLifespan: 3750,
+                mirrorSpawnRange: [4500, 7500],
+                mirrorLifespan: 3750,
+                mirrorEffectDuration: 2250,
+                obstacleCount: 3
             },
             legendario:   {
-                speed: 120,
-                initialLifespan: 7000,
-                initialLength: 15,
+                speed: 160,
+                initialLifespan: 5250,
+                initialLength: 11,
                 goldenFoodChance: 0.1,
-                goldenFoodLifespan: 4000,
-                lightningSpawnRange: [6000, 10000],
-                lightningLifespan: 5000,
+                goldenFoodLifespan: 3000,
+                lightningSpawnRange: [4500, 7500],
+                lightningLifespan: 3750,
                 redLightningChance: 0.25,
-                streakReduction: 800,
-                falseFoodSpawnRange: [5000, 7000],
-                falseFoodLifespan: 6000,
-                mirrorSpawnRange: [5000, 7000],
-                mirrorLifespan: 6000,
-                mirrorEffectDuration: 3000,
-                obstacleCount: 10
+                streakReduction: 600,
+                falseFoodSpawnRange: [3750, 5250],
+                falseFoodLifespan: 4500,
+                mirrorSpawnRange: [3750, 5250],
+                mirrorLifespan: 4500,
+                mirrorEffectDuration: 2250,
+                obstacleCount: 6
             }
         };
         const CLASSIFICATION_RANKS = {
