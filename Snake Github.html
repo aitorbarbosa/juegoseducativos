@@ -8906,6 +8906,22 @@ function setupSlider(slider, display) {
                             const offset = (drawSize - GRID_SIZE) / 2;
                             const drawX = head.x * GRID_SIZE - offset;
                             const drawY = head.y * GRID_SIZE - offset;
+                            // Prevent body segment from showing under the head
+                            if (offset > 0) {
+                                const overlap = Math.min(offset, GRID_SIZE / 2);
+                                const cellX = head.x * GRID_SIZE;
+                                const cellY = head.y * GRID_SIZE;
+                                ctx.fillStyle = "#374151";  // board background color
+                                if (direction === 'right') {
+                                    ctx.fillRect(cellX + GRID_SIZE, cellY, overlap, GRID_SIZE);
+                                } else if (direction === 'left') {
+                                    ctx.fillRect(cellX - overlap, cellY, overlap, GRID_SIZE);
+                                } else if (direction === 'up') {
+                                    ctx.fillRect(cellX, cellY - overlap, GRID_SIZE, overlap);
+                                } else if (direction === 'down') {
+                                    ctx.fillRect(cellX, cellY + GRID_SIZE, GRID_SIZE, overlap);
+                                }
+                            }
                             ctx.save();
                             ctx.translate(drawX + drawSize / 2, drawY + drawSize / 2);
                             let scaleX = 1; let scaleY = 1;
