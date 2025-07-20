@@ -8816,6 +8816,16 @@ function setupSlider(slider, display) {
                                     texture = bodyTexVert;
                                 }
                             }
+                            // Reduce the first body segment to avoid overlap with the head
+                            if (i === 1) {
+                                if (dx !== 0) {
+                                    ctx.translate(-dx * GRID_SIZE / 4, 0);
+                                    scaleX *= 0.5;
+                                } else if (dy !== 0) {
+                                    ctx.translate(0, -dy * GRID_SIZE / 4);
+                                    scaleY *= 0.5;
+                                }
+                            }
                     }
                         ctx.rotate(rotation);
                         ctx.scale(scaleX, scaleY);
