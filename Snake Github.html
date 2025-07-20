@@ -4051,6 +4051,8 @@ function setupSlider(slider, display) {
         let initialSnakeLength = DEFAULT_INITIAL_SNAKE_LENGTH;
         const MAX_STREAK = 5;
         const STREAK_ANIMATION_DURATION = 1000; // ms that streak value is shown above head
+        // Slight offset applied to the first body segment so it stays neatly under the head
+        const FIRST_SEGMENT_OFFSET_RATIO = 0.3; // Portion of head extra size used as offset
         
         // Mapping for difficulty display names
         const DIFFICULTY_DISPLAY_NAMES = {
@@ -8767,6 +8769,11 @@ function setupSlider(slider, display) {
                     const dy = normalizedDiff(prev.y, snake[i].y, tileCountY);
                     ctx.save();
                     ctx.translate(segmentX + GRID_SIZE / 2, segmentY + GRID_SIZE / 2);
+                    if (i === 1 && skinData.snakeHeadScale) {
+                        const overlap = GRID_SIZE * (skinData.snakeHeadScale - 1);
+                        const offset = overlap * FIRST_SEGMENT_OFFSET_RATIO;
+                        ctx.translate(dx * offset, dy * offset);
+                    }
                     let rotation = 0;
                     let scaleX = 1;
                     let scaleY = 1;
