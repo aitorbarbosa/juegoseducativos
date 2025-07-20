@@ -4814,6 +4814,8 @@ function setupSlider(slider, display) {
         let gameOverByTimeout = false;
         let gameOverByInactivity = false;
         let gameIntervalId;
+        let lastFrameTime = 0;
+        let moveAccumulator = 0;
         let gameTimeRemaining = 0;
         let gameTimeElapsed = 0;
         let gameTimerIntervalId;
@@ -7702,9 +7704,10 @@ function setupSlider(slider, display) {
         }
 
         function applySpeedChange(change) {
-            clearInterval(gameIntervalId);
+            cancelAnimationFrame(gameIntervalId);
             snakeSpeed = Math.max(50, snakeSpeed + change);
-            gameIntervalId = setInterval(update, snakeSpeed);
+            moveAccumulator = 0;
+            gameIntervalId = requestAnimationFrame(gameLoop);
         }
 
         function activateSpeedBoost(color) {
@@ -7844,8 +7847,10 @@ function setupSlider(slider, display) {
 
         // --- Funciones de Refactorización de finalizeGameOver ---
         function clearGameTimersAndMusic() {
-            clearInterval(gameIntervalId);
+            cancelAnimationFrame(gameIntervalId);
             gameIntervalId = null;
+            lastFrameTime = 0;
+            moveAccumulator = 0;
             clearTimeout(foodDisappearTimeoutId);
             clearInterval(foodVisualTimerIntervalId);
             clearInterval(gameTimerIntervalId);
@@ -9308,10 +9313,24 @@ function setupSlider(slider, display) {
             if (growth === 0) { snake.pop(); }
 
             updateScoreDisplay(); 
-            if (gameMode === 'freeMode' || gameMode === 'levels') { 
-                updateTimeLengthDisplay(); 
+
+            if (gameMode === 'freeMode' || gameMode === 'levels') {
+                updateTimeLengthDisplay();
+            }
+        }
+
+        function gameLoop(timestamp) {
+            if (!gameIntervalId) return;
+            if (!lastFrameTime) lastFrameTime = timestamp;
+            const delta = timestamp - lastFrameTime;
+            lastFrameTime = timestamp;
+            moveAccumulator += delta;
+            while (moveAccumulator >= snakeSpeed) {
+                update();
+                moveAccumulator -= snakeSpeed;
             }
             draw();
+            gameIntervalId = requestAnimationFrame(gameLoop);
         }
         
         function updateScoreDisplay() {
@@ -10352,10 +10371,12 @@ async function startGame(isRestart = false) {
                 if (freeModeSettings.mirrorSpawnRange) startWorld7MirrorMechanics();
             }
             
-            generateFood(); 
+            generateFood();
             updateScoreDisplay();
-            clearInterval(gameIntervalId); 
-            gameIntervalId = setInterval(update, snakeSpeed); 
+            cancelAnimationFrame(gameIntervalId);
+            lastFrameTime = 0;
+            moveAccumulator = 0;
+            gameIntervalId = requestAnimationFrame(gameLoop);
 
             updateMainButtonStates(); 
             
