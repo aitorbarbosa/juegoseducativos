@@ -4977,6 +4977,7 @@ function setupSlider(slider, display) {
         const FOOD_WARNING_TIME = 3000; 
         const POINTS_PER_FOOD = 10;
         const POINTS_PER_COIN = 10;
+        const POINTS_PER_MIRROR = 25;
         const WIN_SOUND_DURATION = 1300; // ms
         const GAME_OVER_SOUND_DURATION = 800; // ms
         const COIN_MESSAGE_DISPLAY_TIME = 1000; // ms
@@ -9288,6 +9289,7 @@ function setupSlider(slider, display) {
                     }
                     controlsInverted = true;
                     mirrorEffect = { active: true, startTime: Date.now() };
+                    score += POINTS_PER_MIRROR;
                     removeMirrorItem(mi);
                     if (areSfxEnabled) playSound('eat');
                     scheduleEatReaction('eatMirror', MIRROR_EFFECT_DURATION - PRE_EAT_DELAY_MS);
