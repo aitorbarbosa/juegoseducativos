@@ -8724,7 +8724,8 @@ function setupSlider(slider, display) {
 
             if (tileCountX <= 0 || tileCountY <= 0) return; 
 
-            const currentSkinData = SKINS[currentSkin]; 
+            const currentSkinData = SKINS[currentSkin];
+            const head = snake[0];
 
             if (!gameOver) {
                 if (obstacles.length > 0) {
@@ -8732,6 +8733,9 @@ function setupSlider(slider, display) {
                 }
                 // Draw snake body
                 for (let i = 1; i < snake.length; i++) {
+                    if (head && snake[i].x === head.x && snake[i].y === head.y) {
+                        continue;
+                    }
                     const segmentX = snake[i].x * GRID_SIZE;
                     const segmentY = snake[i].y * GRID_SIZE;
                     const skinData = SKINS[currentSkin];
