@@ -8743,7 +8743,7 @@ function setupSlider(slider, display) {
                 }
                 // Draw snake body
                 for (let i = 1; i < snake.length; i++) {
-                    const prevSeg = (i - 1 < prevSnake.length ? prevSnake[i - 1]
+                    const prevSeg = (i < prevSnake.length ? prevSnake[i]
                                     : prevSnake[prevSnake.length - 1]) || snake[i];
                     const renderX = interpolateCoord(prevSeg.x, snake[i].x, tileCountX, moveProgress);
                     const renderY = interpolateCoord(prevSeg.y, snake[i].y, tileCountY, moveProgress);
