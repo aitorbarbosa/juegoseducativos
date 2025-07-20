@@ -8652,7 +8652,7 @@ function setupSlider(slider, display) {
                 const remaining = SPEED_BOOST_DURATION - (Date.now() - speedBoost.startTime);
                 if (remaining > 0) {
                     speedBoostOverlayColor = speedBoost.color === 'yellow' ? 'rgba(255,255,0,0.3)' : 'rgba(255,0,0,0.3)';
-                    speedBoostVisible = remaining > 1000 || Math.floor(remaining / 100) % 2 === 0;
+                    speedBoostVisible = true; // keep overlay visible without flicker
                 }
             }
             let mirrorVisible = false;
@@ -8669,7 +8669,7 @@ function setupSlider(slider, display) {
                 }
                 const remaining = effectDuration - (Date.now() - mirrorEffect.startTime);
                 if (remaining > 0) {
-                    mirrorVisible = remaining > 1000 || Math.floor(remaining / 100) % 2 === 0;
+                    mirrorVisible = true; // keep overlay visible without flicker
                 } else {
                     mirrorEffect.active = false;
                 }
@@ -8766,6 +8766,9 @@ function setupSlider(slider, display) {
                     const dx = normalizedDiff(prev.x, snake[i].x, tileCountX);
                     const dy = normalizedDiff(prev.y, snake[i].y, tileCountY);
                     ctx.save();
+                    if (i === 1) {
+                        ctx.globalAlpha = moveProgress;
+                    }
                     ctx.translate(segmentX + GRID_SIZE / 2, segmentY + GRID_SIZE / 2);
                     let rotation = 0;
                     let scaleX = 1;
@@ -8834,6 +8837,10 @@ function setupSlider(slider, display) {
                         }
                         ctx.restore();
                     } else {
+                        ctx.save();
+                        if (i === 1) {
+                            ctx.globalAlpha = moveProgress;
+                        }
                         ctx.fillStyle = skinData.bodyTintColor || '#A8F031';
                         ctx.fillRect(segmentX, segmentY, GRID_SIZE, GRID_SIZE);
                         if (speedBoostVisible) {
@@ -8848,6 +8855,7 @@ function setupSlider(slider, display) {
                             ctx.fillRect(segmentX, segmentY, GRID_SIZE, GRID_SIZE);
                             ctx.globalCompositeOperation = 'source-over';
                         }
+                        ctx.restore();
                     }
                 }
 
