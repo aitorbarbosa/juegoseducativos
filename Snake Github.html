@@ -8652,7 +8652,7 @@ function setupSlider(slider, display) {
                 const remaining = SPEED_BOOST_DURATION - (Date.now() - speedBoost.startTime);
                 if (remaining > 0) {
                     speedBoostOverlayColor = speedBoost.color === 'yellow' ? 'rgba(255,255,0,0.3)' : 'rgba(255,0,0,0.3)';
-                    speedBoostVisible = remaining > 1000 || Math.floor(remaining / 100) % 2 === 0;
+                    speedBoostVisible = true; // keep overlay visible without flicker
                 }
             }
             let mirrorVisible = false;
@@ -8669,7 +8669,7 @@ function setupSlider(slider, display) {
                 }
                 const remaining = effectDuration - (Date.now() - mirrorEffect.startTime);
                 if (remaining > 0) {
-                    mirrorVisible = remaining > 1000 || Math.floor(remaining / 100) % 2 === 0;
+                    mirrorVisible = true; // keep overlay visible without flicker
                 } else {
                     mirrorEffect.active = false;
                 }
