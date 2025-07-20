@@ -4838,7 +4838,12 @@ function setupSlider(slider, display) {
         let foodVisualTimerIntervalId;
         let eatReactionTimeoutId = null;
         let streakMultiplier = 1; 
-        let lastWarningSoundSecond = -1; 
+        let lastWarningSoundSecond = -1;
+
+        // Variables for smooth movement rendering
+        let prevSnake = [];
+        let lastUpdateTime = 0;
+        let animationFrameId = null;
 
         // Game state variables for screen display
         let screenState = {
@@ -7705,6 +7710,7 @@ function setupSlider(slider, display) {
             clearInterval(gameIntervalId);
             snakeSpeed = Math.max(50, snakeSpeed + change);
             gameIntervalId = setInterval(update, snakeSpeed);
+            startRenderLoop();
         }
 
         function activateSpeedBoost(color) {
@@ -7846,6 +7852,8 @@ function setupSlider(slider, display) {
         function clearGameTimersAndMusic() {
             clearInterval(gameIntervalId);
             gameIntervalId = null;
+            cancelAnimationFrame(animationFrameId);
+            animationFrameId = null;
             clearTimeout(foodDisappearTimeoutId);
             clearInterval(foodVisualTimerIntervalId);
             clearInterval(gameTimerIntervalId);
@@ -8615,8 +8623,9 @@ function setupSlider(slider, display) {
         }
 
 
-        function draw() {
+        function draw(progress = 1) {
              if (!ctx) return;
+            const moveProgress = Math.max(0, Math.min(1, progress));
             ctx.fillStyle = "#374151";
             ctx.fillRect(0, 0, canvasEl.width, canvasEl.height);
 
@@ -8722,9 +8731,17 @@ function setupSlider(slider, display) {
             }
 
 
-            if (tileCountX <= 0 || tileCountY <= 0) return; 
+            if (tileCountX <= 0 || tileCountY <= 0) return;
 
-            const currentSkinData = SKINS[currentSkin]; 
+            const currentSkinData = SKINS[currentSkin];
+
+            const renderSegments = [];
+            for (let i = 0; i < snake.length; i++) {
+                const prevSeg = prevSnake[i] || prevSnake[prevSnake.length - 1] || snake[i];
+                const rX = interpolateCoord(prevSeg.x, snake[i].x, tileCountX, moveProgress);
+                const rY = interpolateCoord(prevSeg.y, snake[i].y, tileCountY, moveProgress);
+                renderSegments.push({ x: rX, y: rY });
+            }
 
             if (!gameOver) {
                 if (obstacles.length > 0) {
@@ -8732,8 +8749,9 @@ function setupSlider(slider, display) {
                 }
                 // Draw snake body
                 for (let i = 1; i < snake.length; i++) {
-                    const segmentX = snake[i].x * GRID_SIZE;
-                    const segmentY = snake[i].y * GRID_SIZE;
+                    const seg = renderSegments[i];
+                    const segmentX = seg.x * GRID_SIZE;
+                    const segmentY = seg.y * GRID_SIZE;
                     const skinData = SKINS[currentSkin];
                     const isTail = i === snake.length - 1;
                     let renderTail = isTail;
@@ -8745,13 +8763,14 @@ function setupSlider(slider, display) {
                     let texture = tailTex;
 
                     if (texture && texture.complete && texture.naturalHeight !== 0) {
-                    const prev = snake[i - 1];
-                    const sameAsPrev = (snake[i].x === prev.x && snake[i].y === prev.y);
+                    const prev = (moveProgress < 1 && i - 1 < prevSnake.length) ? prevSnake[i - 1] : snake[i - 1];
+                    const orientSeg = (moveProgress < 1 && i < prevSnake.length) ? prevSnake[i] : snake[i];
+                    const sameAsPrev = (orientSeg.x === prev.x && orientSeg.y === prev.y);
                     if (sameAsPrev) renderTail = false;
                     if (!renderTail) texture = bodyTex;
-                    const nextSeg = snake[i + 1];
-                    const dx = normalizedDiff(prev.x, snake[i].x, tileCountX);
-                    const dy = normalizedDiff(prev.y, snake[i].y, tileCountY);
+                    const nextSeg = (moveProgress < 1 && i + 1 < prevSnake.length) ? prevSnake[i + 1] : snake[i + 1];
+                    const dx = normalizedDiff(prev.x, orientSeg.x, tileCountX);
+                    const dy = normalizedDiff(prev.y, orientSeg.y, tileCountY);
                     ctx.save();
                     ctx.translate(segmentX + GRID_SIZE / 2, segmentY + GRID_SIZE / 2);
                     let rotation = 0;
@@ -8770,8 +8789,8 @@ function setupSlider(slider, display) {
                     } else {
                             let usedCorner = false;
                             if (nextSeg) {
-                                const fromNextX = normalizedDiff(snake[i].x, nextSeg.x, tileCountX);
-                                const fromNextY = normalizedDiff(snake[i].y, nextSeg.y, tileCountY);
+                                const fromNextX = normalizedDiff(orient[i].x, nextSeg.x, tileCountX);
+                                const fromNextY = normalizedDiff(orient[i].y, nextSeg.y, tileCountY);
                                 const toPrevX = dx;
                                 const toPrevY = dy;
                                 let flipCorner = false;
@@ -8854,7 +8873,7 @@ function setupSlider(slider, display) {
 
                 // Draw snake head
                 if (snake.length > 0) {
-                    const head = snake[0];
+                    const head = renderSegments[0];
                     if (currentSkinData && currentSkinData.snakeHeadAsset) {
                         let imgToDraw;
                         let baseImageForUp = currentSkinData.snakeHeadAsset.upDown;
@@ -9175,6 +9194,7 @@ function setupSlider(slider, display) {
         
        function update() {
             if (gameOver || tileCountX <= 0 || tileCountY <= 0) return;
+            prevSnake = snake.map(seg => ({ x: seg.x, y: seg.y }));
             updateSpeedBoost();
             updateMirrorEffect();
             refreshEffectReactions();
@@ -9307,11 +9327,34 @@ function setupSlider(slider, display) {
             snake.unshift(nextHead);
             if (growth === 0) { snake.pop(); }
 
-            updateScoreDisplay(); 
-            if (gameMode === 'freeMode' || gameMode === 'levels') { 
-                updateTimeLengthDisplay(); 
+            updateScoreDisplay();
+            if (gameMode === 'freeMode' || gameMode === 'levels') {
+                updateTimeLengthDisplay();
             }
-            draw();
+            lastUpdateTime = performance.now();
+        }
+
+        function interpolateCoord(prev, curr, max, progress) {
+            const diff = normalizedDiff(curr, prev, max);
+            let value = prev + diff * progress;
+            if (value < 0) value += max;
+            if (value >= max) value -= max;
+            return value;
+        }
+
+        function renderLoop(timestamp) {
+            const progress = snakeSpeed ? Math.min(1, (timestamp - lastUpdateTime) / snakeSpeed) : 1;
+            draw(progress);
+            if (gameIntervalId) {
+                animationFrameId = requestAnimationFrame(renderLoop);
+            } else {
+                animationFrameId = null;
+            }
+        }
+
+        function startRenderLoop() {
+            cancelAnimationFrame(animationFrameId);
+            animationFrameId = requestAnimationFrame(renderLoop);
         }
         
         function updateScoreDisplay() {
@@ -10229,6 +10272,8 @@ async function startGame(isRestart = false) {
                 if (startX - i >= 0) { snake.push({ x: startX - i, y: startY }); }
                 else { snake.push({ x: 0, y: startY }); }
             }
+            prevSnake = snake.map(seg => ({ x: seg.x, y: seg.y }));
+            lastUpdateTime = performance.now();
              if (snake.length === 0 && initialSnakeLength > 0) {
                 console.error("Error al iniciar la serpiente. Pantalla muy pequeña.");
                 updateMainButtonStates();
@@ -10354,8 +10399,9 @@ async function startGame(isRestart = false) {
             
             generateFood(); 
             updateScoreDisplay();
-            clearInterval(gameIntervalId); 
-            gameIntervalId = setInterval(update, snakeSpeed); 
+            clearInterval(gameIntervalId);
+            gameIntervalId = setInterval(update, snakeSpeed);
+            startRenderLoop();
 
             updateMainButtonStates(); 
             
