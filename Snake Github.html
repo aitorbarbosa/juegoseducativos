@@ -9261,7 +9261,7 @@ function setupSlider(slider, display) {
             for (let i = falseFoodItems.length - 1; i >= 0; i--) {
                 const ff = falseFoodItems[i];
                 if (nextHead.x === ff.x && nextHead.y === ff.y) {
-                    score = Math.max(0, score - 30);
+                    score = Math.max(0, score - 25);
                     streakMultiplier = 1;
                     const rank = CLASSIFICATION_RANKS[difficulty] || 0;
                     if ((gameMode === 'levels' && currentWorld >= 6) || (gameMode === 'classification' && rank >= 2)) startStreakAnimation(streakMultiplier);
