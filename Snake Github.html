@@ -8765,8 +8765,16 @@ function setupSlider(slider, display) {
                     const nextSeg = snake[i + 1];
                     const dx = normalizedDiff(prev.x, snake[i].x, tileCountX);
                     const dy = normalizedDiff(prev.y, snake[i].y, tileCountY);
+                    let offsetX = 0;
+                    let offsetY = 0;
+                    if (i === 1) {
+                        const headScale = skinData.snakeHeadScale || 1;
+                        const firstSegOffset = (headScale - 1) * GRID_SIZE / 2;
+                        offsetX = dx * firstSegOffset;
+                        offsetY = dy * firstSegOffset;
+                    }
                     ctx.save();
-                    ctx.translate(segmentX + GRID_SIZE / 2, segmentY + GRID_SIZE / 2);
+                    ctx.translate(segmentX + offsetX + GRID_SIZE / 2, segmentY + offsetY + GRID_SIZE / 2);
                     let rotation = 0;
                     let scaleX = 1;
                     let scaleY = 1;
