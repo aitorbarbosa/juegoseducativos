@@ -8732,6 +8732,7 @@ function setupSlider(slider, display) {
                 }
                 // Draw snake body
                 for (let i = 1; i < snake.length; i++) {
+                    if (snake[i].x === snake[0].x && snake[i].y === snake[0].y) continue;
                     const segmentX = snake[i].x * GRID_SIZE;
                     const segmentY = snake[i].y * GRID_SIZE;
                     const skinData = SKINS[currentSkin];
@@ -9205,6 +9206,7 @@ function setupSlider(slider, display) {
 
             if (!gameOver) {
                 for (let i = 1; i < snake.length; i++) {
+                    if (snake[i].x === snake[0].x && snake[i].y === snake[0].y) continue;
                     if (nextHeadX === snake[i].x && nextHeadY === snake[i].y) {
                         gameOver = true;
                         break;
