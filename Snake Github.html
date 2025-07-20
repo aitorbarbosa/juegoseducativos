@@ -8731,7 +8731,11 @@ function setupSlider(slider, display) {
                     obstacles.forEach(ob => drawObstacle(ob));
                 }
                 // Draw snake body
+                const headPos = snake[0];
                 for (let i = 1; i < snake.length; i++) {
+                    if (snake[i].x === headPos.x && snake[i].y === headPos.y) {
+                        continue; // Avoid drawing body segment over the head
+                    }
                     const segmentX = snake[i].x * GRID_SIZE;
                     const segmentY = snake[i].y * GRID_SIZE;
                     const skinData = SKINS[currentSkin];
