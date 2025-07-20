@@ -8652,7 +8652,7 @@ function setupSlider(slider, display) {
                 const remaining = SPEED_BOOST_DURATION - (Date.now() - speedBoost.startTime);
                 if (remaining > 0) {
                     speedBoostOverlayColor = speedBoost.color === 'yellow' ? 'rgba(255,255,0,0.3)' : 'rgba(255,0,0,0.3)';
-                    speedBoostVisible = remaining > 1000 || Math.floor(remaining / 100) % 2 === 0;
+                    speedBoostVisible = true; // keep overlay visible without flicker
                 }
             }
             let mirrorVisible = false;
@@ -8669,7 +8669,7 @@ function setupSlider(slider, display) {
                 }
                 const remaining = effectDuration - (Date.now() - mirrorEffect.startTime);
                 if (remaining > 0) {
-                    mirrorVisible = remaining > 1000 || Math.floor(remaining / 100) % 2 === 0;
+                    mirrorVisible = true; // keep overlay visible without flicker
                 } else {
                     mirrorEffect.active = false;
                 }
@@ -8767,6 +8767,26 @@ function setupSlider(slider, display) {
                     const dy = normalizedDiff(prev.y, snake[i].y, tileCountY);
                     ctx.save();
                     ctx.translate(segmentX + GRID_SIZE / 2, segmentY + GRID_SIZE / 2);
+                    if (i === 1) {
+                        ctx.globalAlpha = moveProgress;
+                        const fromHeadX = normalizedDiff(snake[0].x, snake[i].x, tileCountX);
+                        const fromHeadY = normalizedDiff(snake[0].y, snake[i].y, tileCountY);
+                        const overlap = GRID_SIZE * 0.35;
+                        ctx.translate(fromHeadX * overlap * 0.5, fromHeadY * overlap * 0.5);
+                        ctx.beginPath();
+                        if (fromHeadX === 1) {
+                            ctx.rect(-GRID_SIZE / 2, -GRID_SIZE / 2, GRID_SIZE - overlap, GRID_SIZE);
+                        } else if (fromHeadX === -1) {
+                            ctx.rect(-GRID_SIZE / 2 + overlap, -GRID_SIZE / 2, GRID_SIZE - overlap, GRID_SIZE);
+                        } else if (fromHeadY === 1) {
+                            ctx.rect(-GRID_SIZE / 2, -GRID_SIZE / 2, GRID_SIZE, GRID_SIZE - overlap);
+                        } else if (fromHeadY === -1) {
+                            ctx.rect(-GRID_SIZE / 2, -GRID_SIZE / 2 + overlap, GRID_SIZE, GRID_SIZE - overlap);
+                        } else {
+                            ctx.rect(-GRID_SIZE / 2, -GRID_SIZE / 2, GRID_SIZE, GRID_SIZE);
+                        }
+                        ctx.clip();
+                    }
                     let rotation = 0;
                     let scaleX = 1;
                     let scaleY = 1;
@@ -8834,20 +8854,45 @@ function setupSlider(slider, display) {
                         }
                         ctx.restore();
                     } else {
+                        ctx.save();
+                        let drawX = segmentX;
+                        let drawY = segmentY;
+                        let drawW = GRID_SIZE;
+                        let drawH = GRID_SIZE;
+                        if (i === 1) {
+                            ctx.globalAlpha = moveProgress;
+                            const fromHeadX = normalizedDiff(snake[0].x, snake[i].x, tileCountX);
+                            const fromHeadY = normalizedDiff(snake[0].y, snake[i].y, tileCountY);
+                            const overlap = GRID_SIZE * 0.35;
+                            drawX += fromHeadX * overlap * 0.5;
+                            drawY += fromHeadY * overlap * 0.5;
+                            if (fromHeadX === 1) {
+                                drawW -= overlap;
+                            } else if (fromHeadX === -1) {
+                                drawX += overlap;
+                                drawW -= overlap;
+                            } else if (fromHeadY === 1) {
+                                drawH -= overlap;
+                            } else if (fromHeadY === -1) {
+                                drawY += overlap;
+                                drawH -= overlap;
+                            }
+                        }
                         ctx.fillStyle = skinData.bodyTintColor || '#A8F031';
-                        ctx.fillRect(segmentX, segmentY, GRID_SIZE, GRID_SIZE);
+                        ctx.fillRect(drawX, drawY, drawW, drawH);
                         if (speedBoostVisible) {
                             ctx.globalCompositeOperation = 'multiply';
                             ctx.fillStyle = speedBoostOverlayColor;
-                            ctx.fillRect(segmentX, segmentY, GRID_SIZE, GRID_SIZE);
+                            ctx.fillRect(drawX, drawY, drawW, drawH);
                             ctx.globalCompositeOperation = 'source-over';
                         }
                         if (mirrorVisible) {
                             ctx.globalCompositeOperation = 'multiply';
                             ctx.fillStyle = mirrorOverlayColor;
-                            ctx.fillRect(segmentX, segmentY, GRID_SIZE, GRID_SIZE);
+                            ctx.fillRect(drawX, drawY, drawW, drawH);
                             ctx.globalCompositeOperation = 'source-over';
                         }
+                        ctx.restore();
                     }
                 }
 
