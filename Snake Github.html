@@ -8652,7 +8652,7 @@ function setupSlider(slider, display) {
                 const remaining = SPEED_BOOST_DURATION - (Date.now() - speedBoost.startTime);
                 if (remaining > 0) {
                     speedBoostOverlayColor = speedBoost.color === 'yellow' ? 'rgba(255,255,0,0.3)' : 'rgba(255,0,0,0.3)';
-                    speedBoostVisible = remaining > 1000 || Math.floor(remaining / 100) % 2 === 0;
+                    speedBoostVisible = true; // keep overlay visible without flicker
                 }
             }
             let mirrorVisible = false;
@@ -8669,7 +8669,7 @@ function setupSlider(slider, display) {
                 }
                 const remaining = effectDuration - (Date.now() - mirrorEffect.startTime);
                 if (remaining > 0) {
-                    mirrorVisible = remaining > 1000 || Math.floor(remaining / 100) % 2 === 0;
+                    mirrorVisible = true; // keep overlay visible without flicker
                 } else {
                     mirrorEffect.active = false;
                 }
@@ -10266,9 +10266,12 @@ async function startGame(isRestart = false) {
                 startY = 1;
             }
             snakeSpawnRow = startY;
-            for (let i = 0; i < initialSnakeLength; i++) {
-                if (startX - i >= 0) { snake.push({ x: startX - i, y: startY }); }
-                else { snake.push({ x: 0, y: startY }); }
+            // Start the body one tile further back so it isn't visible behind
+            // the head when the head image is smaller than the grid cell
+            snake.push({ x: startX, y: startY });
+            for (let i = 1; i < initialSnakeLength; i++) {
+                const posX = startX - i - 1;
+                snake.push({ x: posX >= 0 ? posX : 0, y: startY });
             }
             prevSnake = snake.map(seg => ({ x: seg.x, y: seg.y }));
             lastUpdateTime = performance.now();
