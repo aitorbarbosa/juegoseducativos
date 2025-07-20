@@ -4833,6 +4833,8 @@ function setupSlider(slider, display) {
         let freeDifficulty = 'personalizado';
         let currentMazeDifficulty = 'principiante';
         let snakeSpeed = 150; 
+        let prevSnake = [];
+        let lastUpdateTimestamp = performance.now();
         let foodTimeRemaining = 0;
         let foodDisappearTimeoutId;
         let foodVisualTimerIntervalId;
@@ -5170,8 +5172,8 @@ function setupSlider(slider, display) {
             ctx.textAlign = 'center';
             ctx.textBaseline = 'bottom';
             ctx.font = `${Math.floor(GRID_SIZE * 0.5)}px 'Press Start 2P'`;
-            const x = head.x * GRID_SIZE + GRID_SIZE / 2;
-            const y = head.y * GRID_SIZE - 6;
+            const x = headX * GRID_SIZE + GRID_SIZE / 2;
+            const y = headY * GRID_SIZE - 6;
             ctx.fillText(streakAnimation.value, x, y);
             ctx.restore();
         }
@@ -5878,11 +5880,11 @@ function setupSlider(slider, display) {
                     screenState.showFreeModeCover = true;
                     screenState.showFreeModeEnd = false;
                     screenState.gameActuallyStarted = false;
-                    snake = []; // Vaciar la serpiente para que updateTimeLengthDisplay use initialSnakeLength
+                    snake = []; prevSnake = []; // Vaciar la serpiente para que updateTimeLengthDisplay use initialSnakeLength
                 } else if (gameMode === 'classification') {
                     screenState.showClassificationCover = true;
                     screenState.gameActuallyStarted = false;
-                    snake = [];
+                    snake = []; prevSnake = [];
                 }
                 resetGameUIDisplays(); // Update UI for score, streak, AND length (if free mode and snake is empty)
                 updateGameModeUI(); // This will refresh panel values and target scores
@@ -6112,11 +6114,11 @@ function setupSlider(slider, display) {
                 screenState.showFreeModeCover = true;
                 screenState.showFreeModeEnd = false;
                 screenState.gameActuallyStarted = false;
-                snake = []; // Vaciar la serpiente
+                snake = []; prevSnake = []; // Vaciar la serpiente
                 } else if (gameMode === 'classification') {
                     screenState.showClassificationCover = true;
                     screenState.gameActuallyStarted = false;
-                    snake = [];
+                    snake = []; prevSnake = [];
                 }
                 resetGameUIDisplays(); // Llamar aquí para que la UI se actualice con los valores reseteados
                 updateGameModeUI();
@@ -8619,6 +8621,8 @@ function setupSlider(slider, display) {
              if (!ctx) return;
             ctx.fillStyle = "#374151";
             ctx.fillRect(0, 0, canvasEl.width, canvasEl.height);
+            const now = performance.now();
+            const interpolation = Math.min(1, (now - lastUpdateTimestamp) / snakeSpeed);
 
             if (showModeSelect) {
                 drawModeSelection();
@@ -8732,8 +8736,17 @@ function setupSlider(slider, display) {
                 }
                 // Draw snake body
                 for (let i = 1; i < snake.length; i++) {
-                    const segmentX = snake[i].x * GRID_SIZE;
-                    const segmentY = snake[i].y * GRID_SIZE;
+                    const prevSeg = prevSnake[i] || snake[i];
+                    let segX = prevSeg.x;
+                    let segY = prevSeg.y;
+                    if (prevSnake[i]) {
+                        const dxInterp = normalizedDiff(snake[i].x, prevSeg.x, tileCountX);
+                        const dyInterp = normalizedDiff(snake[i].y, prevSeg.y, tileCountY);
+                        segX = (prevSeg.x + dxInterp * interpolation + tileCountX) % tileCountX;
+                        segY = (prevSeg.y + dyInterp * interpolation + tileCountY) % tileCountY;
+                    }
+                    const segmentX = segX * GRID_SIZE;
+                    const segmentY = segY * GRID_SIZE;
                     const skinData = SKINS[currentSkin];
                     const isTail = i === snake.length - 1;
                     let renderTail = isTail;
@@ -8884,11 +8897,20 @@ function setupSlider(slider, display) {
                         else if (direction === 'left') { imgToDraw = baseImageForLeft; }
                         else if (direction === 'right') { imgToDraw = baseImageForRight; flipHorizontal = true; }
 
-                        if (imgToDraw && imgToDraw.complete && imgToDraw.naturalHeight !== 0) {
                             const drawSize = GRID_SIZE * currentSkinData.snakeHeadScale;
                             const offset = (drawSize - GRID_SIZE) / 2;
-                            const drawX = head.x * GRID_SIZE - offset;
-                            const drawY = head.y * GRID_SIZE - offset;
+                            const prevHead = prevSnake[0] || head;
+                            let headX = prevHead.x;
+                            let headY = prevHead.y;
+                            if (prevSnake[0]) {
+                                const dxH = normalizedDiff(head.x, prevHead.x, tileCountX);
+                                const dyH = normalizedDiff(head.y, prevHead.y, tileCountY);
+                                headX = (prevHead.x + dxH * interpolation + tileCountX) % tileCountX;
+                                headY = (prevHead.y + dyH * interpolation + tileCountY) % tileCountY;
+                            }
+                            const drawX = headX * GRID_SIZE - offset;
+                            const drawY = headY * GRID_SIZE - offset;
+                        if (imgToDraw && imgToDraw.complete && imgToDraw.naturalHeight !== 0) {
                             ctx.save();
                             ctx.translate(drawX + drawSize / 2, drawY + drawSize / 2);
                             let scaleX = 1; let scaleY = 1;
@@ -8904,33 +8926,33 @@ function setupSlider(slider, display) {
                             ctx.restore();
                         } else {
                             ctx.fillStyle = "#a7f3d0";
-                            ctx.fillRect(head.x * GRID_SIZE, head.y * GRID_SIZE, GRID_SIZE, GRID_SIZE);
+                            ctx.fillRect(headX * GRID_SIZE, headY * GRID_SIZE, GRID_SIZE, GRID_SIZE);
                             if (speedBoostVisible) {
                                 ctx.globalCompositeOperation = 'multiply';
                                 ctx.fillStyle = speedBoostOverlayColor;
-                                ctx.fillRect(head.x * GRID_SIZE, head.y * GRID_SIZE, GRID_SIZE, GRID_SIZE);
+                                ctx.fillRect(headX * GRID_SIZE, headY * GRID_SIZE, GRID_SIZE, GRID_SIZE);
                                 ctx.globalCompositeOperation = 'source-over';
                             }
                             if (mirrorVisible) {
                                 ctx.globalCompositeOperation = 'multiply';
                                 ctx.fillStyle = mirrorOverlayColor;
-                                ctx.fillRect(head.x * GRID_SIZE, head.y * GRID_SIZE, GRID_SIZE, GRID_SIZE);
+                                ctx.fillRect(headX * GRID_SIZE, headY * GRID_SIZE, GRID_SIZE, GRID_SIZE);
                                 ctx.globalCompositeOperation = 'source-over';
                             }
                         }
                     } else {
                         ctx.fillStyle = "#a7f3d0";
-                        ctx.fillRect(head.x * GRID_SIZE, head.y * GRID_SIZE, GRID_SIZE, GRID_SIZE);
+                        ctx.fillRect(headX * GRID_SIZE, headY * GRID_SIZE, GRID_SIZE, GRID_SIZE);
                         if (speedBoostVisible) {
                             ctx.globalCompositeOperation = 'multiply';
                             ctx.fillStyle = speedBoostOverlayColor;
-                            ctx.fillRect(head.x * GRID_SIZE, head.y * GRID_SIZE, GRID_SIZE, GRID_SIZE);
+                            ctx.fillRect(headX * GRID_SIZE, headY * GRID_SIZE, GRID_SIZE, GRID_SIZE);
                             ctx.globalCompositeOperation = 'source-over';
                         }
                         if (mirrorVisible) {
                             ctx.globalCompositeOperation = 'multiply';
                             ctx.fillStyle = mirrorOverlayColor;
-                            ctx.fillRect(head.x * GRID_SIZE, head.y * GRID_SIZE, GRID_SIZE, GRID_SIZE);
+                            ctx.fillRect(headX * GRID_SIZE, headY * GRID_SIZE, GRID_SIZE, GRID_SIZE);
                             ctx.globalCompositeOperation = 'source-over';
                         }
                     }
@@ -9178,6 +9200,7 @@ function setupSlider(slider, display) {
             updateSpeedBoost();
             updateMirrorEffect();
             refreshEffectReactions();
+            prevSnake = snake.map(seg => ({ x: seg.x, y: seg.y }));
 
             direction = nextDirection; // Actualizar la dirección actual con la siguiente dirección almacenada
 
@@ -9307,6 +9330,7 @@ function setupSlider(slider, display) {
             snake.unshift(nextHead);
             if (growth === 0) { snake.pop(); }
 
+            lastUpdateTimestamp = performance.now();
             updateScoreDisplay(); 
             if (gameMode === 'freeMode' || gameMode === 'levels') { 
                 updateTimeLengthDisplay(); 
@@ -10215,7 +10239,7 @@ async function startGame(isRestart = false) {
                 return;
             }
 
-            snake = [];
+            snake = []; prevSnake = [];
             let startX = Math.floor(tileCountX / 2);
             let startY = Math.floor(tileCountY / 2);
             if (gameMode === 'maze' &&
@@ -10229,6 +10253,8 @@ async function startGame(isRestart = false) {
                 if (startX - i >= 0) { snake.push({ x: startX - i, y: startY }); }
                 else { snake.push({ x: 0, y: startY }); }
             }
+            prevSnake = snake.map(seg => ({ x: seg.x, y: seg.y }));
+            lastUpdateTimestamp = performance.now();
              if (snake.length === 0 && initialSnakeLength > 0) {
                 console.error("Error al iniciar la serpiente. Pantalla muy pequeña.");
                 updateMainButtonStates();
