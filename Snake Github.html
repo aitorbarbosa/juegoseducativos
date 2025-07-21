@@ -978,6 +978,30 @@
             transform: translateX(-100px) translateY(-50%);
         }
 
+        #earnedPointsMessage {
+            position: absolute;
+            top: 50%;
+            left: 100%;
+            transform: translateX(-50px) translateY(-50%);
+            color: #f9f871;
+            font-size: 1em;
+            white-space: nowrap;
+            opacity: 0;
+            transition: opacity 0.3s, transform 0.5s;
+            pointer-events: none;
+            z-index: 2;
+        }
+
+        #earnedPointsMessage.show {
+            opacity: 1;
+            transform: translateX(-55px) translateY(-50%);
+        }
+
+        #earnedPointsMessage.hide {
+            opacity: 0;
+            transform: translateX(-100px) translateY(-50%);
+        }
+
         #livesValue {
             position: absolute;
             top: 50%;
@@ -1869,6 +1893,17 @@
                 transform: translateX(-70px) translateY(-50%);
             }
 
+            #earnedPointsMessage {
+                font-size: 0.8em;
+                transform: translateX(-30px) translateY(-50%);
+            }
+            #earnedPointsMessage.show {
+                transform: translateX(-35px) translateY(-50%);
+            }
+            #earnedPointsMessage.hide {
+                transform: translateX(-70px) translateY(-50%);
+            }
+
 
             #top-info-bar { gap: 0px; margin: 0 auto 6px auto; }
             #top-info-bar .info-group { min-height: 30px; padding: 1px 4px 1px 14px; min-width: 80px; }
@@ -2013,6 +2048,17 @@
                 transform: translateX(-30px) translateY(-40%);
             }
             #earnedCoinsMessage.hide {
+                transform: translateX(-60px) translateY(-40%);
+            }
+
+            #earnedPointsMessage {
+                font-size: 0.75em;
+                transform: translateX(-25px) translateY(-40%);
+            }
+            #earnedPointsMessage.show {
+                transform: translateX(-30px) translateY(-40%);
+            }
+            #earnedPointsMessage.hide {
                 transform: translateX(-60px) translateY(-40%);
             }
 
@@ -2945,7 +2991,7 @@
                 </div>
                 <div class="value-box">
                     <span id="lifeTimerValue" class="info-value hidden">Lleno</span>
-                    <span id="scoreValue" class="info-value">0</span><span id="target-score-divider" class="info-value mx-1 hidden">/</span><span id="targetScoreValue" class="info-value hidden">0</span>
+                    <span id="scoreValue" class="info-value">0</span><span id="target-score-divider" class="info-value mx-1 hidden">/</span><span id="targetScoreValue" class="info-value hidden">0</span><span id="earnedPointsMessage" class="earned-points-msg hidden">+0</span>
                 </div>
             </div>
             <div id="time-info-group" class="info-group">
@@ -3540,6 +3586,7 @@
         const coinValueDisplay = document.getElementById("coinValue");
         const selectorCoinValueDisplay = document.getElementById("selectorCoinValue");
         const earnedCoinsMessage = document.getElementById("earnedCoinsMessage");
+        const earnedPointsMessage = document.getElementById("earnedPointsMessage");
         const scoreValueDisplay = document.getElementById("scoreValue");
         const livesValueDisplay = document.getElementById("livesValue");
         const pointsIconImg = document.getElementById("points-icon-img");
@@ -4972,6 +5019,7 @@ function setupSlider(slider, display) {
         const WIN_SOUND_DURATION = 1300; // ms
         const GAME_OVER_SOUND_DURATION = 800; // ms
         const COIN_MESSAGE_DISPLAY_TIME = 1000; // ms
+        const POINTS_MESSAGE_DISPLAY_TIME = 1000; // ms
         const MAX_HIGH_SCORES = 10;
         const FREE_MODE_INACTIVITY_LIMIT = 30000; // ms without movement before game ends in free mode
         const FALSE_FOOD_LIFESPAN = 5000;
@@ -9221,6 +9269,7 @@ function setupSlider(slider, display) {
                 }
                 if (currentFoodItem.isGolden) gained *= 2;
                 score += gained;
+                showEarnedPointsMessage(gained);
                 if(areSfxEnabled) playSound('eat');
                 scheduleEatReaction(currentFoodItem.isGolden ? 'eatGolden' : 'eat');
 
@@ -9289,6 +9338,7 @@ function setupSlider(slider, display) {
                     controlsInverted = true;
                     mirrorEffect = { active: true, startTime: Date.now() };
                     score += POINTS_PER_MIRROR;
+                    showEarnedPointsMessage(POINTS_PER_MIRROR);
                     removeMirrorItem(mi);
                     if (areSfxEnabled) playSound('eat');
                     scheduleEatReaction('eatMirror', MIRROR_EFFECT_DURATION - PRE_EAT_DELAY_MS);
@@ -9362,6 +9412,22 @@ function setupSlider(slider, display) {
                     earnedCoinsMessage.classList.remove('hide');
                 }, 300);
             }, COIN_MESSAGE_DISPLAY_TIME);
+        }
+
+        function showEarnedPointsMessage(amount) {
+            if (!earnedPointsMessage) return;
+            earnedPointsMessage.textContent = `+${amount}`;
+            earnedPointsMessage.classList.remove('hidden', 'hide');
+            void earnedPointsMessage.offsetWidth;
+            earnedPointsMessage.classList.add('show');
+            setTimeout(() => {
+                earnedPointsMessage.classList.remove('show');
+                earnedPointsMessage.classList.add('hide');
+                setTimeout(() => {
+                    earnedPointsMessage.classList.add('hidden');
+                    earnedPointsMessage.classList.remove('hide');
+                }, 300);
+            }, POINTS_MESSAGE_DISPLAY_TIME);
         }
 
         function showInsufficientFundsToast(message = 'Monedas insuficientes') {
