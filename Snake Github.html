@@ -7140,7 +7140,9 @@ function setupSlider(slider, display) {
             if (areSfxEnabled) playSound('timeout');
             streakMultiplier = 1;
             const classRank = CLASSIFICATION_RANKS[difficulty] || 0;
-            if ((gameMode === 'levels' && currentWorld >= 6) || (gameMode === 'classification' && classRank >= 2)) {
+            if ((gameMode === 'levels' && currentWorld >= 6) ||
+                (gameMode === 'classification' && classRank >= 2) ||
+                (gameMode === 'freeMode' && freeModeSettings.streakReduction > 0)) {
                 startStreakAnimation(streakMultiplier);
             }
             foodTimeRemaining = 0;
@@ -9218,7 +9220,9 @@ function setupSlider(slider, display) {
             if (currentFoodItem.x !== undefined && nextHead.x === currentFoodItem.x && nextHead.y === currentFoodItem.y) {
                 let gained = POINTS_PER_FOOD;
                 const rank = CLASSIFICATION_RANKS[difficulty] || 0;
-                if ((gameMode === 'levels' && currentWorld >= 6) || (gameMode === 'classification' && rank >= 2)) {
+                if ((gameMode === 'levels' && currentWorld >= 6) ||
+                    (gameMode === 'classification' && rank >= 2) ||
+                    (gameMode === 'freeMode' && freeModeSettings.streakReduction > 0)) {
                     gained *= streakMultiplier;
                     if (streakMultiplier < MAX_STREAK) { streakMultiplier += 0.5; }
                     if (streakMultiplier > MAX_STREAK) { streakMultiplier = MAX_STREAK; }
@@ -9265,7 +9269,11 @@ function setupSlider(slider, display) {
                     score = Math.max(0, score - 25);
                     streakMultiplier = 1;
                     const rank = CLASSIFICATION_RANKS[difficulty] || 0;
-                    if ((gameMode === 'levels' && currentWorld >= 6) || (gameMode === 'classification' && rank >= 2)) startStreakAnimation(streakMultiplier);
+                    if ((gameMode === 'levels' && currentWorld >= 6) ||
+                        (gameMode === 'classification' && rank >= 2) ||
+                        (gameMode === 'freeMode' && freeModeSettings.streakReduction > 0)) {
+                        startStreakAnimation(streakMultiplier);
+                    }
                     removeFalseFoodItem(ff);
                     if (areSfxEnabled) playSound('badEat');
                     scheduleEatReaction('eatFalse');
