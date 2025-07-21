@@ -7689,11 +7689,13 @@ function setupSlider(slider, display) {
             reactionEndTime = 0;
         }
 
-        function generateMazeLevel(levelIndex) {
+       function generateMazeLevel(levelIndex) {
             obstacles = [];
-            const layout = MAZE_LAYOUTS[((levelIndex - 1) % MAZE_LEVELS_PER_DIFFICULTY) + 1];
-            if (layout) {
-                obstacles = layout.map(pos => ({ x: pos.x, y: pos.y, img: obstacleImg }));
+            if (levelIndex <= MAZE_LEVELS_PER_DIFFICULTY * 2) {
+                const layout = MAZE_LAYOUTS[((levelIndex - 1) % MAZE_LEVELS_PER_DIFFICULTY) + 1];
+                if (layout) {
+                    obstacles = layout.map(pos => ({ x: pos.x, y: pos.y, img: obstacleImg }));
+                }
             }
         }
 
@@ -10341,12 +10343,8 @@ async function startGame(isRestart = false) {
                 if (rank >= 2) startWorld6LightningMechanics();
                 if (rank >= 3) {
                     startWorld4FalseFoodMechanics();
-                    const count = cfg.obstacleCount;
-                    if (rank >= 4) {
-                        startWorld8Obstacles(count);
-                    } else {
-                        startWorld6Obstacles(count);
-                    }
+                    // En modo laberinto no generamos obstáculos adicionales en
+                    // dificultades veterano o legendario
                     startWorld7MirrorMechanics();
                 }
                 startMazeLevel();
