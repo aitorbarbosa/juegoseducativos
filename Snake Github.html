@@ -959,18 +959,19 @@
             position: absolute;
             top: 50%;
             left: 100%;
-            transform: translateX(-50px) translateY(-50%);
+            transform: translateX(-20px) translateY(-50%);
             color: #4ade80;
             font-size: 1em;
             white-space: nowrap;
             opacity: 0;
             transition: opacity 0.3s, transform 0.5s;
             pointer-events: none;
+            z-index: 20;
         }
 
         #earnedCoinsMessage.show {
             opacity: 1;
-            transform: translateX(-55px) translateY(-50%);
+            transform: translateX(-45px) translateY(-50%);
         }
 
         #earnedCoinsMessage.hide {
@@ -1863,7 +1864,7 @@
                 transform: translateX(-30px) translateY(-50%);
             }
             #earnedCoinsMessage.show {
-                transform: translateX(-35px) translateY(-50%);
+                transform: translateX(-25px) translateY(-50%);
             }
             #earnedCoinsMessage.hide {
                 transform: translateX(-70px) translateY(-50%);
@@ -2010,7 +2011,7 @@
                 transform: translateX(-25px) translateY(-40%);
             }
             #earnedCoinsMessage.show {
-                transform: translateX(-30px) translateY(-40%);
+                transform: translateX(-22px) translateY(-40%);
             }
             #earnedCoinsMessage.hide {
                 transform: translateX(-60px) translateY(-40%);
@@ -4409,6 +4410,7 @@ function setupSlider(slider, display) {
                 },
                 foodAsset: classicFoodImg,
                 snakeHeadScale: 1.6,
+                foodScale: 1.25,
                 bodyTintColor: null,
                 bodyStrokeColor: adjustColor('#90ff00', 0.30),
                 tailTextureUp: snakeTailTextureUp,
@@ -4421,6 +4423,7 @@ function setupSlider(slider, display) {
                 },
                 foodAsset: rubiSnakeFoodImg,
                 snakeHeadScale: 1.7,
+                foodScale: 1.25,
                 bodyTintColor: null,
                 bodyStrokeColor: adjustColor('#E74C3C', 0.30),
                 tailTextureUp: snakeTailTextureUp,
@@ -4432,6 +4435,7 @@ function setupSlider(slider, display) {
                 },
                 foodAsset: aitorSnakeFoodImg,
                 snakeHeadScale: 1.7,
+                foodScale: 1.25,
                 bodyTintColor: null,
                 bodyStrokeColor: adjustColor('#772CE8', 0.30),
                 tailTextureUp: snakeTailTextureUp,
@@ -4443,6 +4447,7 @@ function setupSlider(slider, display) {
                 },
                 foodAsset: noemiSnakeFoodImg,
                 snakeHeadScale: 1.7,
+                foodScale: 1.25,
                 bodyTintColor: null,
                 bodyStrokeColor: adjustColor('#FFC0EB', 0.30),
                 tailTextureUp: snakeTailTextureUp,
@@ -4454,6 +4459,7 @@ function setupSlider(slider, display) {
                 },
                 foodAsset: maraSnakeFoodImg,
                 snakeHeadScale: 1.7,
+                foodScale: 1.25,
                 bodyTintColor: null,
                 bodyStrokeColor: adjustColor('#FCE9BC', 0.30),
                 tailTextureUp: snakeTailTextureUp,
@@ -4465,6 +4471,7 @@ function setupSlider(slider, display) {
                 },
                 foodAsset: almuSnakeFoodImg,
                 snakeHeadScale: 1.7,
+                foodScale: 1.25,
                 bodyTintColor: null,
                 bodyStrokeColor: adjustColor('#C96B20', 0.30),
                 tailTextureUp: snakeTailTextureUp,
@@ -4476,6 +4483,7 @@ function setupSlider(slider, display) {
                 },
                 foodAsset: mimiSnakeFoodImg,
                 snakeHeadScale: 1.7,
+                foodScale: 1.25,
                 bodyTintColor: null,
                 bodyStrokeColor: adjustColor('#FFFFFF', 0.30),
                 tailTextureUp: snakeTailTextureUp,
@@ -4487,6 +4495,7 @@ function setupSlider(slider, display) {
                 },
                 foodAsset: classicFoodImg,
                 snakeHeadScale: 1.6,
+                foodScale: 1.25,
                 bodyTintColor: null,
                 bodyStrokeColor: adjustColor('#000000', 0.30),
                 bodyTexture: blackCatBodyTexture,
@@ -4504,6 +4513,7 @@ function setupSlider(slider, display) {
                 },
                 foodAsset: classicFoodImg,
                 snakeHeadScale: 1.6,
+                foodScale: 1.25,
                 bodyTintColor: null,
                 bodyStrokeColor: adjustColor('#FFA500', 0.30),
                 bodyTexture: orangeCatBodyTexture,
