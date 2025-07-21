@@ -959,23 +959,24 @@
             position: absolute;
             top: 50%;
             left: 100%;
-            transform: translateX(-50px) translateY(-50%);
+            transform: translateX(30px) translateY(-50%);
             color: #4ade80;
             font-size: 1em;
             white-space: nowrap;
             opacity: 0;
             transition: opacity 0.3s, transform 0.5s;
             pointer-events: none;
+            z-index: 20;
         }
 
         #earnedCoinsMessage.show {
             opacity: 1;
-            transform: translateX(-55px) translateY(-50%);
+            transform: translateX(5px) translateY(-50%);
         }
 
         #earnedCoinsMessage.hide {
             opacity: 0;
-            transform: translateX(-100px) translateY(-50%);
+            transform: translateX(50px) translateY(-50%);
         }
 
         #livesValue {
@@ -1860,13 +1861,13 @@
             /* Ajustes para mensaje de monedas ganadas en móviles */
             #earnedCoinsMessage {
                 font-size: 0.8em;
-                transform: translateX(-30px) translateY(-50%);
+                transform: translateX(20px) translateY(-50%);
             }
             #earnedCoinsMessage.show {
-                transform: translateX(-35px) translateY(-50%);
+                transform: translateX(2px) translateY(-50%);
             }
             #earnedCoinsMessage.hide {
-                transform: translateX(-70px) translateY(-50%);
+                transform: translateX(40px) translateY(-50%);
             }
 
 
@@ -2007,13 +2008,13 @@
             /* Ajustes para mensaje de monedas ganadas en móviles extra-pequeños */
             #earnedCoinsMessage {
                 font-size: 0.75em;
-                transform: translateX(-25px) translateY(-40%);
+                transform: translateX(15px) translateY(-40%);
             }
             #earnedCoinsMessage.show {
-                transform: translateX(-30px) translateY(-40%);
+                transform: translateX(0px) translateY(-40%);
             }
             #earnedCoinsMessage.hide {
-                transform: translateX(-60px) translateY(-40%);
+                transform: translateX(30px) translateY(-40%);
             }
 
             #title-panel { min-height: 36px; padding: 6px; }
