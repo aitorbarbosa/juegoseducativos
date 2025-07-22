@@ -5808,17 +5808,23 @@ function setupSlider(slider, display) {
                 settingsPanel.style.width = '';
                 settingsPanel.style.left = '';
             }
-            togglePanel(settingsPanel, settingsPanelContent, true);
+            let desiredWidth = '';
+            let desiredLeft = '';
             if (panelOpenedFromSplash) {
                 const splashContent = document.getElementById('splash-content');
-                requestAnimationFrame(() => {
-                    if (splashContent) {
-                        const rect = splashContent.getBoundingClientRect();
-                        const margin = 15;
-                        settingsPanel.style.width = (rect.width - margin * 2) + 'px';
-                        settingsPanel.style.left = (rect.left + rect.width / 2) + 'px';
-                    }
-                });
+                if (splashContent) {
+                    const rect = splashContent.getBoundingClientRect();
+                    const margin = 15;
+                    desiredWidth = (rect.width - margin * 2) + 'px';
+                    desiredLeft = (rect.left + rect.width / 2) + 'px';
+                    settingsPanel.style.width = desiredWidth;
+                    settingsPanel.style.left = desiredLeft;
+                }
+            }
+            togglePanel(settingsPanel, settingsPanelContent, true);
+            if (panelOpenedFromSplash) {
+                settingsPanel.style.width = desiredWidth;
+                settingsPanel.style.left = desiredLeft;
             }
             updateSfxVolume();
             if (profileInfoButton) profileInfoButton.classList.add('hidden');
@@ -6076,21 +6082,28 @@ function setupSlider(slider, display) {
 
        function openInfoPanel() {
             infoPanel.classList.add('centered-panel');
+            let desiredWidth = '';
+            let desiredLeft = '';
+            if (panelOpenedFromSplash) {
+                const splashContent = document.getElementById('splash-content');
+                if (splashContent) {
+                    const rect = splashContent.getBoundingClientRect();
+                    const margin = 15;
+                    desiredWidth = (rect.width - margin * 2) + 'px';
+                    desiredLeft = (rect.left + rect.width / 2) + 'px';
+                }
+            }
             if (!panelOpenedFromSplash) {
                 infoPanel.style.width = '';
                 infoPanel.style.left = '';
+            } else {
+                infoPanel.style.width = desiredWidth;
+                infoPanel.style.left = desiredLeft;
             }
             togglePanel(infoPanel, infoPanelContent, true);
             if (panelOpenedFromSplash) {
-                const splashContent = document.getElementById('splash-content');
-                requestAnimationFrame(() => {
-                    if (splashContent) {
-                        const rect = splashContent.getBoundingClientRect();
-                        const margin = 15;
-                        infoPanel.style.width = (rect.width - margin * 2) + 'px';
-                        infoPanel.style.left = (rect.left + rect.width / 2) + 'px';
-                    }
-                });
+                infoPanel.style.width = desiredWidth;
+                infoPanel.style.left = desiredLeft;
             }
             if (gameOver && !gameIntervalId) {
                 if (ctx && canvasEl) {
