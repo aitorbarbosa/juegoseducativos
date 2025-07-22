@@ -48,6 +48,81 @@
             display: none !important;
         }
 
+        #preload-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #111827;
+            z-index: 3000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #preload-content {
+            width: 100%;
+            max-width: var(--game-max-width);
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 0;
+            background-color: #02010a;
+            background-image: url(https://i.imgur.com/rYyiiMo.png);
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            border-radius: 12px;
+            box-sizing: border-box;
+        }
+
+        #preload-bottom-image {
+            width: 100%;
+            max-width: var(--game-max-width);
+            height: auto;
+            max-height: calc(25vh + 60px);
+            object-fit: contain;
+            box-sizing: border-box;
+            padding-top: 40px;
+            padding-bottom: 40px;
+        }
+
+        .loader {
+            -webkit-perspective: 700px;
+            perspective: 700px;
+        }
+
+        .loader > span {
+            font-family: 'Press Start 2P', sans-serif;
+            font-size: 48px;
+            display: inline-block;
+            animation: flip 2.6s infinite linear;
+            transform-origin: 0 70%;
+            transform-style: preserve-3d;
+            -webkit-transform-style: preserve-3d;
+            color: #8C64AF;
+        }
+
+        .loader > span:nth-child(even) {
+            color: white;
+        }
+
+        .loader > span:nth-child(2) { animation-delay: 0.3s; }
+        .loader > span:nth-child(3) { animation-delay: 0.6s; }
+        .loader > span:nth-child(4) { animation-delay: 0.9s; }
+        .loader > span:nth-child(5) { animation-delay: 1.2s; }
+        .loader > span:nth-child(6) { animation-delay: 1.5s; }
+        .loader > span:nth-child(7) { animation-delay: 1.8s; }
+        .loader > span:nth-child(8) { animation-delay: 2.1s; }
+
+        @keyframes flip {
+            35% { transform: rotateX(360deg); }
+            100% { transform: rotateX(360deg); }
+        }
+
         #splash-screen {
             position: fixed;
             top: 0;
@@ -2850,7 +2925,23 @@
     </style>
 </head>
 <body>
-        <div id="splash-screen">
+        <div id="preload-screen">
+            <div id="preload-content">
+                <div class="loader">
+                    <span>C</span>
+                    <span>A</span>
+                    <span>R</span>
+                    <span>G</span>
+                    <span>A</span>
+                    <span>N</span>
+                    <span>D</span>
+                    <span>O</span>
+                </div>
+                <img id="preload-bottom-image" src="https://i.imgur.com/YJ1xHZO.png" alt="Imagen inferior del preload" onerror="this.src='https://placehold.co/600x150/02030D/FFFFFF?text=Splash+Bottom+Error'; console.error('Error loading preload-bottom-image');">
+            </div>
+        </div>
+
+        <div id="splash-screen" class="hidden">
             <div id="splash-content">
                 <img id="splash-top-image" src="https://i.imgur.com/kG4NmSM.png" alt="Logotipo superior del splash" onerror="this.src='https://placehold.co/600x200/02030D/FFFFFF?text=Splash+Top+Error'; console.error('Error loading splash-top-image');">
                 <div id="splash-button-row">
@@ -3531,6 +3622,30 @@
             if (diff > 1) return -1;
             if (diff < -1) return 1;
             return diff;
+        }
+
+        // Preload management
+        let totalPreloadImages = 0;
+        let preloadedImages = 0;
+
+        function trackPreloadImage(img) {
+            totalPreloadImages++;
+            const done = () => {
+                img.removeEventListener('load', done);
+                img.removeEventListener('error', done);
+                preloadedImages++;
+                if (preloadedImages === totalPreloadImages) {
+                    const preloadScreen = document.getElementById('preload-screen');
+                    if (preloadScreen) preloadScreen.classList.add('hidden');
+                    if (splashScreen) splashScreen.classList.remove('hidden');
+                }
+            };
+            if (img.complete) {
+                done();
+            } else {
+                img.addEventListener('load', done);
+                img.addEventListener('error', done);
+            }
         }
 
         // Selección de elementos del DOM
@@ -5223,6 +5338,7 @@ function setupSlider(slider, display) {
             ];
 
             allWorldImages.forEach(img => {
+                trackPreloadImage(img);
                 img.onload = () => {
                     worldImagesLoaded++;
                     if (worldImagesLoaded === totalWorldImagesToLoad) {
@@ -5265,6 +5381,7 @@ function setupSlider(slider, display) {
             modeSelectMazeImg.src = 'https://i.imgur.com/WY3lrHv.png';
 
             [modeSelectIntroImg, modeSelectLevelsImg, modeSelectFreeImg, modeSelectClassificationImg, modeSelectMazeImg].forEach(img => {
+                trackPreloadImage(img);
                 img.onload = () => { if (showModeSelect && ctx) requestAnimationFrame(draw); };
                 img.onerror = () => { console.error(`Error al cargar imagen: ${img.src}`); if (showModeSelect && ctx) requestAnimationFrame(draw); };
             });
@@ -5415,6 +5532,7 @@ function setupSlider(slider, display) {
                 ];
 
             allImageObjects.forEach(imgObj => {
+                trackPreloadImage(imgObj);
                 imgObj.onload = () => {
                     console.log(`Imagen ${imgObj.src.split('/').pop()} cargada.`);
                     if (ctx && (gameOver || !gameIntervalId || screenState.showCoverForWorld > 0 || screenState.showLevelCompleteCover > 0 || screenState.showWorldCompleteCover > 0 || screenState.showDefeatCoverForWorld > 0 || screenState.showFreeModeCover || screenState.showClassificationCover)) {
@@ -11507,6 +11625,11 @@ async function startGame(isRestart = false) {
             const splashBottomImageEl = document.getElementById('splash-bottom-image');
             const splashInfoButtonEl = document.getElementById('splash-info-button');
             const splashSettingsButtonEl = document.getElementById('splash-settings-button');
+            const preloadBottomImageEl = document.getElementById('preload-bottom-image');
+
+            [preloadBottomImageEl, splashTopImageEl, splashBottomImageEl, splashInfoButtonEl, splashSettingsButtonEl, splashStartButtonEl].forEach(imgEl => {
+                if (imgEl) trackPreloadImage(imgEl);
+            });
 
             function attachSplashButtonEvents(btnEl, onClick) {
                 if (!btnEl) return;
