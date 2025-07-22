@@ -7084,7 +7084,7 @@ function setupSlider(slider, display) {
                     x: Math.floor(Math.random() * tileCountX),
                     y: Math.floor(Math.random() * tileCountY),
                 };
-            } while ((isFoodOnSnake(newFoodPosition) || obstacles.some(ob => ob.x === newFoodPosition.x && ob.y === newFoodPosition.y)) && tileCountX > 0 && tileCountY > 0);
+            } while (isPositionOccupied(newFoodPosition) && tileCountX > 0 && tileCountY > 0);
             
             if (tileCountX <=0 || tileCountY <=0) { 
                 console.warn("Canvas too small to generate food.");
@@ -7194,6 +7194,16 @@ function setupSlider(slider, display) {
                     return true;
                 }
             }
+            return false;
+        }
+
+        function isPositionOccupied(pos) {
+            if (isFoodOnSnake(pos)) return true;
+            if (currentFoodItem.x === pos.x && currentFoodItem.y === pos.y) return true;
+            if (falseFoodItems.some(f => f.x === pos.x && f.y === pos.y)) return true;
+            if (obstacles.some(o => o.x === pos.x && o.y === pos.y)) return true;
+            if (lightningItems.some(l => l.x === pos.x && l.y === pos.y)) return true;
+            if (mirrorItems.some(m => m.x === pos.x && m.y === pos.y)) return true;
             return false;
         }
 
@@ -7311,10 +7321,7 @@ function setupSlider(slider, display) {
             do {
                 pos = { x: Math.floor(Math.random()*tileCountX), y: Math.floor(Math.random()*tileCountY) };
                 attempts++;
-            } while ((isFoodOnSnake(pos) ||
-                    (currentFoodItem.x === pos.x && currentFoodItem.y === pos.y) ||
-                    falseFoodItems.some(f => f.x === pos.x && f.y === pos.y) ||
-                    isAdjacentToAnyFood(pos)) && attempts < 100);
+            } while ((isPositionOccupied(pos) || isAdjacentToAnyFood(pos)) && attempts < 100);
             if (attempts >= 100) return;
             let lifespan = FALSE_FOOD_LIFESPAN;
             if (gameMode === 'classification' || gameMode === 'freeMode' || gameMode === 'maze') {
@@ -7386,8 +7393,7 @@ function setupSlider(slider, display) {
                     };
                     attempts++;
                 } while ((pos.y === snakeSpawnRow ||
-                          isFoodOnSnake(pos) ||
-                          obstacles.some(o => o.x === pos.x && o.y === pos.y) ||
+                          isPositionOccupied(pos) ||
                           isAdjacentToAnyObstacle(pos)) && attempts < 100);
                 if (attempts < 100) obstacles.push(pos);
             }
@@ -7413,8 +7419,7 @@ function setupSlider(slider, display) {
                     };
                     attempts++;
                 } while ((pos.y === snakeSpawnRow ||
-                          isFoodOnSnake(pos) ||
-                          obstacles.some(o => o.x === pos.x && o.y === pos.y) ||
+                          isPositionOccupied(pos) ||
                           isAdjacentToAnyObstacle(pos)) && attempts < 100);
                 if (attempts < 100) obstacles.push(pos);
             }
@@ -7440,8 +7445,7 @@ function setupSlider(slider, display) {
                     };
                     attempts++;
                 } while ((pos.y === snakeSpawnRow ||
-                          isFoodOnSnake(pos) ||
-                          obstacles.some(o => o.x === pos.x && o.y === pos.y) ||
+                          isPositionOccupied(pos) ||
                           isAdjacentToAnyObstacle(pos)) && attempts < 100);
                 if (attempts < 100) obstacles.push(pos);
             }
@@ -7468,10 +7472,7 @@ function setupSlider(slider, display) {
             do {
                 pos = { x: Math.floor(Math.random()*tileCountX), y: Math.floor(Math.random()*tileCountY) };
                 attempts++;
-            } while ((isFoodOnSnake(pos) ||
-                    obstacles.some(o => o.x === pos.x && o.y === pos.y) ||
-                    lightningItems.some(l => l.x === pos.x && l.y === pos.y) ||
-                    isAdjacentToAnyFood(pos)) && attempts < 100);
+            } while ((isPositionOccupied(pos) || isAdjacentToAnyFood(pos)) && attempts < 100);
             if (attempts >= 100) return;
             let redChance = 0.25;
             if (gameMode === 'classification' || gameMode === 'freeMode' || gameMode === 'maze') {
@@ -7631,10 +7632,7 @@ function setupSlider(slider, display) {
             do {
                 pos = { x: Math.floor(Math.random()*tileCountX), y: Math.floor(Math.random()*tileCountY) };
                 attempts++;
-            } while ((isFoodOnSnake(pos) ||
-                    obstacles.some(o => o.x === pos.x && o.y === pos.y) ||
-                    mirrorItems.some(m => m.x === pos.x && m.y === pos.y) ||
-                    isAdjacentToAnyFood(pos)) && attempts < 100);
+            } while ((isPositionOccupied(pos) || isAdjacentToAnyFood(pos)) && attempts < 100);
             if (attempts >= 100) return;
             let lifespan = FALSE_FOOD_LIFESPAN;
             if (gameMode === 'classification' || gameMode === 'freeMode' || gameMode === 'maze') {
