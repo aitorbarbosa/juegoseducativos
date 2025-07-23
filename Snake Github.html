@@ -7046,6 +7046,22 @@ function setupSlider(slider, display) {
             }
         }
         
+        function applyStreakReduction(base, min = 0) {
+            if (base <= 0) return 0;
+            let streakReduction = 0;
+            const effectiveStreak = Math.min(streakMultiplier, MAX_STREAK);
+            if (effectiveStreak > 1) {
+                // Reduce food lifespan by 0.5 s per 0.5 streak increase
+                const reductionPerStep = (gameMode === 'classification'
+                    ? DIFFICULTY_SETTINGS[difficulty].streakReduction
+                    : (gameMode === 'levels'
+                        ? (LEVEL_SETTINGS[currentWorld - 1][currentLevelInWorld - 1].streakReduction || 0)
+                        : (gameMode === 'maze' ? DIFFICULTY_SETTINGS[currentMazeDifficulty].streakReduction : freeModeSettings.streakReduction))) || 1000;
+                streakReduction = (effectiveStreak - 1) * reductionPerStep;
+            }
+            return Math.max(min, base - streakReduction);
+        }
+
         function calculateNextFoodLifespan() {
             let baseLifespan;
             if (gameMode === 'levels') {
@@ -7058,20 +7074,7 @@ function setupSlider(slider, display) {
             } else {
                 baseLifespan = freeModeSettings.initialLifespan;
             }
-            if (baseLifespan <= 0) return 0;
-            let streakReduction = 0;
-            const effectiveStreak = Math.min(streakMultiplier, MAX_STREAK);
-            if (effectiveStreak > 1) {
-                // Reduce food lifespan by 0.5 s per 0.5 streak increase
-                const reductionPerStep = (gameMode === 'classification'
-                    ? DIFFICULTY_SETTINGS[difficulty].streakReduction
-                    : (gameMode === 'levels'
-                        ? (LEVEL_SETTINGS[currentWorld - 1][currentLevelInWorld - 1].streakReduction || 0)
-                        : (gameMode === 'maze' ? DIFFICULTY_SETTINGS[currentMazeDifficulty].streakReduction : freeModeSettings.streakReduction))) || 1000;
-                streakReduction = (effectiveStreak - 1) * reductionPerStep;
-            }
-            const calculatedLifespan = baseLifespan - streakReduction;
-            return Math.max(MIN_FOOD_LIFESPAN, calculatedLifespan);
+            return applyStreakReduction(baseLifespan, MIN_FOOD_LIFESPAN);
         }
 
         function generateFood() {
@@ -7115,6 +7118,7 @@ function setupSlider(slider, display) {
                 } else if (diffCfg.goldenFoodLifespan !== undefined) {
                     lifespan = diffCfg.goldenFoodLifespan;
                 }
+                lifespan = applyStreakReduction(lifespan);
             }
             currentFoodItem = {
                 x: newFoodPosition.x,
