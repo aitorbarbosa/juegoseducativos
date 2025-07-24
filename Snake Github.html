@@ -715,6 +715,19 @@
                 justify-self: center;
                 align-self: center;
                 margin-bottom: 0;
+                background-size: cover;
+                background-position: center;
+                background-repeat: no-repeat;
+            }
+            .game-top-border {
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 20px;
+                background-size: contain;
+                background-repeat: repeat-x;
+                pointer-events: none;
             }
             #setup-controls { margin-top: 5px; }
         }
@@ -2961,6 +2974,7 @@
         </div>
         
         <canvas id="gameCanvas"></canvas>
+        <div id="game-top-border" class="game-top-border"></div>
         <button id="mode-left-button" class="mode-nav-button hidden" aria-label="Modo anterior">
             <img id="mode-left-button-icon" class="arrow-icon" src="https://i.imgur.com/pDjzolV.png" alt="Anterior" onerror="this.src='https://placehold.co/50x50/02030D/FFFFFF?text=Err';">
         </button>
@@ -3295,6 +3309,7 @@
             <button data-tab="general" id="profile-tab-general" class="store-tab active">PERFIL</button>
             <button data-tab="comida" id="profile-tab-comida" class="store-tab">COMIDA</button>
             <button data-tab="disfraces" id="profile-tab-disfraces" class="store-tab">DISFRACES</button>
+            <button data-tab="escenarios" id="profile-tab-escenarios" class="store-tab">ESCENARIOS</button>
         </div>
 
         <div id="profile-general-content">
@@ -3318,9 +3333,10 @@
                 <input type="text" id="newPlayerNameInput" maxlength="10">
             </div>
         </div>
-        <div id="selected-items-row" class="grid grid-cols-2 gap-2 mb-2 mt-2 w-full">
+        <div id="selected-items-row" class="grid grid-cols-3 gap-2 mb-2 mt-2 w-full">
             <div id="selected-skin-item" class="store-item"></div>
             <div id="selected-food-item" class="store-item"></div>
+            <div id="selected-scene-item" class="store-item"></div>
         </div>
 
         <div class="control-group hidden" id="skin-control-group">
@@ -3367,6 +3383,13 @@
             <div id="profile-skin-locked" class="grid grid-cols-3 gap-4 w-full"></div>
         </div>
 
+        <div id="profile-scene-content" class="hidden">
+            <h4>COLECCION</h4>
+            <div id="profile-scene-unlocked" class="grid grid-cols-3 gap-4 w-full mb-2"></div>
+            <h4>SIN DESBLOQUEAR</h4>
+            <div id="profile-scene-locked" class="grid grid-cols-3 gap-4 w-full"></div>
+        </div>
+
     </div>
 </div>
 </div>
@@ -3382,6 +3405,7 @@
                         <button data-tab="general" id="store-tab-general" class="store-tab active">GENERAL</button>
                         <button data-tab="comida" id="store-tab-comida" class="store-tab">COMIDA</button>
                         <button data-tab="disfraces" id="store-tab-disfraces" class="store-tab">DISFRACES</button>
+                        <button data-tab="escenarios" id="store-tab-escenarios" class="store-tab">ESCENARIOS</button>
                     </div>
                     <div id="store-items-container" class="grid grid-cols-3 gap-4 w-full"></div>
                 </div>
@@ -3676,12 +3700,16 @@
         const profileGeneralContent = document.getElementById('profile-general-content');
         const profileFoodContent = document.getElementById('profile-food-content');
         const profileSkinContent = document.getElementById('profile-skin-content');
+        const profileSceneContent = document.getElementById('profile-scene-content');
         const profileSelectedSkin = document.getElementById('selected-skin-item');
         const profileSelectedFood = document.getElementById('selected-food-item');
+        const profileSelectedScene = document.getElementById('selected-scene-item');
         const profileFoodUnlocked = document.getElementById('profile-food-unlocked');
         const profileFoodLocked = document.getElementById('profile-food-locked');
         const profileSkinUnlocked = document.getElementById('profile-skin-unlocked');
         const profileSkinLocked = document.getElementById('profile-skin-locked');
+        const profileSceneUnlocked = document.getElementById('profile-scene-unlocked');
+        const profileSceneLocked = document.getElementById('profile-scene-locked');
         const selectConfirmationPanel = document.getElementById('select-confirmation-panel');
         const selectConfirmationText = document.getElementById('select-confirmation-text');
         const confirmSelectYesButton = document.getElementById('confirmSelectYes');
@@ -4088,6 +4116,27 @@ function setupSlider(slider, display) {
             blackCat: 1000,
             orangeCat: 1000
         };
+
+        const SCENES = {
+            classic: {
+                menuImg: 'https://i.imgur.com/vPDsYgo.png',
+                background: '',
+                border: ''
+            },
+            hierba: {
+                menuImg: 'https://i.imgur.com/vPDsYgo.png',
+                background: 'https://i.imgur.com/4j1TQeg.png',
+                border: 'https://i.imgur.com/zchvPyL.png'
+            },
+            volcan: {
+                menuImg: 'https://i.imgur.com/vPDsYgo.png',
+                background: 'https://i.imgur.com/9HKK3mM.png',
+                border: 'https://i.imgur.com/ecrnaDL.png'
+            }
+        };
+        const SCENE_ORDER = ['classic','hierba','volcan'];
+        const SCENE_DISPLAY_NAMES = { classic: 'Clásico', hierba: 'Hierba', volcan: 'Volcán' };
+        const SCENE_PRICES = { classic: 0, hierba: 1000, volcan: 1000 };
 
         // Nombres descriptivos de cada mundo
         const WORLD_DISPLAY_NAMES = [
@@ -4600,6 +4649,8 @@ function setupSlider(slider, display) {
             }
             currentFood = foodSelectors.length ? foodSelectors[0].value : 'apple';
             applyFood(currentFood);
+            currentScene = profile.scene || 'classic';
+            applyScene(currentScene);
             updateProfileSelectedItems();
             updateFoodSelectorAvailability();
             audioToggleSelector.value = profile.audioGeneral || 'all';
@@ -4648,6 +4699,9 @@ function setupSlider(slider, display) {
         }
         function getSelectedFood() {
             return foodSelectors.length ? foodSelectors[0].value : 'apple';
+        }
+        function getSelectedScene() {
+            return currentScene;
         }
         function updatePlayerNameSelectors(selectedName) {
             playerNames = Object.keys(playerProfiles);
@@ -4792,7 +4846,9 @@ function setupSlider(slider, display) {
         };
         let unlockedFoods = { apple: true };
         let unlockedSkins = { snake: true };
+        let unlockedScenes = { classic: true };
         let currentFood = 'apple';
+        let currentScene = 'classic';
         let totalGems = 0;
         const HEART_PRICE = 100;
         const GEM_PRICE = 1000;
@@ -5444,6 +5500,18 @@ function setupSlider(slider, display) {
             console.log(`Comestible aplicado: ${currentFood}`);
             if (!gameIntervalId && ctx) {
                 draw();
+            }
+        }
+
+        function applyScene(sceneName) {
+            currentScene = sceneName;
+            const data = SCENES[currentScene];
+            if (canvasEl) {
+                canvasEl.style.backgroundImage = data.background ? `url('${data.background}')` : '';
+            }
+            const borderEl = document.getElementById('game-top-border');
+            if (borderEl) {
+                borderEl.style.backgroundImage = data.border ? `url('${data.border}')` : '';
             }
         }
         
@@ -6348,6 +6416,28 @@ function setupSlider(slider, display) {
                     item.appendChild(status);
                     storeItemsContainer.appendChild(item);
                 });
+            } else if (storeTab === 'escenarios') {
+                SCENE_ORDER.forEach(key => {
+                    const item = document.createElement('div');
+                    item.className = 'store-item';
+                    const img = document.createElement('img');
+                    img.className = 'store-item-img';
+                    img.src = SCENES[key]?.menuImg || '';
+                    item.appendChild(img);
+                    const status = document.createElement('div');
+                    status.className = 'store-item-status';
+                    if (unlockedScenes[key]) {
+                        status.textContent = '';
+                        item.classList.add('purchased');
+                    } else {
+                        status.textContent = SCENE_PRICES[key].toString();
+                        item.classList.add('locked');
+                        item.addEventListener('click', () => openPurchaseConfirm('scene', key));
+                        addIconPressEvents(item, item);
+                    }
+                    item.appendChild(status);
+                    storeItemsContainer.appendChild(item);
+                });
             } else {
                 const generalItems = [
                     { key: 'heart', price: HEART_PRICE, img: 'https://i.imgur.com/WrI2XXx.png' },
@@ -6383,6 +6473,8 @@ function setupSlider(slider, display) {
                     img.src = FOODS[key]?.asset?.src || '';
                 } else if (type === 'skin') {
                     img.src = SKINS[key]?.snakeHeadAsset?.upDown?.src || '';
+                } else if (type === 'scene') {
+                    img.src = SCENES[key]?.menuImg || '';
                 } else if (type === 'general') {
                     img.src = key === 'heart' ? 'https://i.imgur.com/WrI2XXx.png' : 'https://i.imgur.com/gPGsaCO.png';
                 }
@@ -6396,6 +6488,9 @@ function setupSlider(slider, display) {
             } else if (type === 'skin') {
                 price = SKIN_PRICES[key];
                 name = SKIN_DISPLAY_NAMES[key];
+            } else if (type === 'scene') {
+                price = SCENE_PRICES[key];
+                name = SCENE_DISPLAY_NAMES[key];
             } else if (type === 'general') {
                 price = key === 'heart' ? HEART_PRICE : GEM_PRICE;
                 name = key === 'heart' ? 'coraz\u00F3n' : 'gema';
@@ -6427,6 +6522,14 @@ function setupSlider(slider, display) {
                     unlockedSkins[purchaseInfo.key] = true;
                     saveUnlockedSkins();
                     updateSkinSelectorAvailability();
+                    success = true;
+                }
+            } else if (purchaseInfo.type === 'scene') {
+                price = SCENE_PRICES[purchaseInfo.key];
+                if (totalCoins >= price) {
+                    totalCoins -= price;
+                    unlockedScenes[purchaseInfo.key] = true;
+                    saveUnlockedScenes();
                     success = true;
                 }
             } else if (purchaseInfo.type === 'general') {
@@ -6616,12 +6719,16 @@ function setupSlider(slider, display) {
             if (profileGeneralContent) profileGeneralContent.classList.add('hidden');
             if (profileFoodContent) profileFoodContent.classList.add('hidden');
             if (profileSkinContent) profileSkinContent.classList.add('hidden');
+            if (profileSceneContent) profileSceneContent.classList.add('hidden');
             if (tab === 'comida') {
                 if (profileFoodContent) profileFoodContent.classList.remove('hidden');
                 populateProfileFoodTab();
             } else if (tab === 'disfraces') {
                 if (profileSkinContent) profileSkinContent.classList.remove('hidden');
                 populateProfileSkinTab();
+            } else if (tab === 'escenarios') {
+                if (profileSceneContent) profileSceneContent.classList.remove('hidden');
+                populateProfileSceneTab();
             } else {
                 if (profileGeneralContent) profileGeneralContent.classList.remove('hidden');
                 updateProfileSelectedItems();
@@ -6639,6 +6746,9 @@ function setupSlider(slider, display) {
         });
         if (profileSelectedFood) profileSelectedFood.addEventListener('click', () => {
             switchProfileTab('comida');
+        });
+        if (profileSelectedScene) profileSelectedScene.addEventListener('click', () => {
+            switchProfileTab('escenarios');
         });
 
         // --- Specific Info Panel Logic ---
@@ -10980,6 +11090,19 @@ async function startGame(isRestart = false) {
             }
         }
 
+        function saveUnlockedScenes() {
+            localStorage.setItem('snakeGameUnlockedScenes', JSON.stringify(unlockedScenes));
+        }
+
+        function loadUnlockedScenes() {
+            try {
+                const data = JSON.parse(localStorage.getItem('snakeGameUnlockedScenes') || '{}');
+                unlockedScenes = { classic: true, ...data };
+            } catch (e) {
+                unlockedScenes = { classic: true };
+            }
+        }
+
         function saveGems() {
             localStorage.setItem('snakeGameGems', totalGems.toString());
         }
@@ -11035,6 +11158,14 @@ async function startGame(isRestart = false) {
                 img.src = FOODS[getSelectedFood()]?.asset?.src || '';
                 profileSelectedFood.appendChild(img);
             }
+            if (profileSelectedScene) {
+                profileSelectedScene.innerHTML = '';
+                profileSelectedScene.className = 'store-item purchased profile-clickable';
+                const img = document.createElement('img');
+                img.className = 'store-item-img';
+                img.src = SCENES[currentScene]?.menuImg || '';
+                profileSelectedScene.appendChild(img);
+            }
         }
 
         function populateProfileFoodTab() {
@@ -11083,11 +11214,37 @@ async function startGame(isRestart = false) {
             });
         }
 
+        function populateProfileSceneTab() {
+            if (!profileSceneUnlocked || !profileSceneLocked) return;
+            profileSceneUnlocked.innerHTML = '';
+            profileSceneLocked.innerHTML = '';
+            SCENE_ORDER.forEach(key => {
+                const item = document.createElement('div');
+                item.className = 'store-item';
+                const img = document.createElement('img');
+                img.className = 'store-item-img';
+                img.src = SCENES[key]?.menuImg || '';
+                item.appendChild(img);
+                if (unlockedScenes[key]) {
+                    item.classList.add('purchased', 'profile-clickable');
+                    item.addEventListener('click', () => openSelectConfirm('scene', key, 'select'));
+                } else {
+                    item.classList.add('locked');
+                    item.addEventListener('click', () => openSelectConfirm('scene', key, 'store'));
+                }
+                addIconPressEvents(item, item);
+                (unlockedScenes[key] ? profileSceneUnlocked : profileSceneLocked).appendChild(item);
+            });
+        }
+
         let selectInfo = null;
         function openSelectConfirm(type, key, action) {
             selectInfo = { type, key, action };
             if (selectConfirmationText) {
-                const name = type === 'food' ? FOOD_DISPLAY_NAMES[key] : SKIN_DISPLAY_NAMES[key];
+                let name = '';
+                if (type === 'food') name = FOOD_DISPLAY_NAMES[key];
+                else if (type === 'skin') name = SKIN_DISPLAY_NAMES[key];
+                else name = SCENE_DISPLAY_NAMES[key];
                 selectConfirmationText.textContent = action === 'select' ? `¿Usar ${name}?` : `¿Ver ${name} en la tienda?`;
             }
             selectConfirmationPanel.classList.add('centered-panel');
@@ -11101,15 +11258,21 @@ async function startGame(isRestart = false) {
                 if (selectInfo.type === 'food') {
                     foodSelectors.forEach(sel => sel.value = selectInfo.key);
                     applyFood(selectInfo.key);
-                } else {
+                } else if (selectInfo.type === 'skin') {
                     skinSelectors.forEach(sel => sel.value = selectInfo.key);
                     applySkin(selectInfo.key);
+                } else {
+                    currentScene = selectInfo.key;
+                    applyScene(currentScene);
                 }
                 saveGameSettings();
                 updateProfileSelectedItems();
                 switchProfileTab('general');
             } else if (selectInfo.action === 'store') {
-                const targetTab = selectInfo.type === 'food' ? 'comida' : 'disfraces';
+                let targetTab = 'general';
+                if (selectInfo.type === 'food') targetTab = 'comida';
+                else if (selectInfo.type === 'skin') targetTab = 'disfraces';
+                else targetTab = 'escenarios';
                 closeSelectConfirm();
                 closeProfileMenu();
                 // wait for the profile panel closing animation to finish before
@@ -11154,6 +11317,7 @@ async function startGame(isRestart = false) {
         addIconPressEvents(confirmSelectNoButton, confirmSelectNoButton);
         addIconPressEvents(profileSelectedSkin, profileSelectedSkin);
         addIconPressEvents(profileSelectedFood, profileSelectedFood);
+        addIconPressEvents(profileSelectedScene, profileSelectedScene);
         addIconPressEvents(closeSettingsButton, closeSettingsButton);
         addIconPressEvents(closeFreeSettingsButton, closeFreeSettingsButton);
         addIconPressEvents(closeInfoButton, closeInfoButton);
@@ -11310,6 +11474,7 @@ async function startGame(isRestart = false) {
             profile.difficulty = difficultySelector.value;
             profile.skin = getSelectedSkin();
             profile.food = getSelectedFood();
+            profile.scene = currentScene;
             profile.audioGeneral = audioToggleSelector.value;
             profile.musicVolume = musicVolumeSlider.value;
             profile.sfxVolume = sfxVolumeSlider.value;
@@ -11328,6 +11493,7 @@ async function startGame(isRestart = false) {
             localStorage.setItem('snakeGameGems', totalGems.toString());
             saveUnlockedSkins();
             saveUnlockedFoods();
+            saveUnlockedScenes();
             localStorage.setItem('snakePlayerNames', JSON.stringify(Object.keys(playerProfiles)));
             localStorage.setItem('snakeGamePlayerName', currentPlayerName);
             console.log("Configuraciones guardadas en localStorage.");
@@ -11348,6 +11514,7 @@ async function startGame(isRestart = false) {
             totalGems = Number.isFinite(savedGems) && savedGems >= 0 ? savedGems : 0;
             loadUnlockedFoods(); // Load foods before applying profile
             loadUnlockedSkins();
+            loadUnlockedScenes();
             updateFoodSelectorOptions(playerProfiles[currentPlayerName]?.food || 'apple');
             updatePlayerNameSelectors(currentPlayerName);
             applyProfile(playerProfiles[currentPlayerName]);
@@ -11446,6 +11613,7 @@ async function startGame(isRestart = false) {
 
             applySkin(currentSkin); // Apply skin based on loaded settings
             applyFood(currentFood);
+            applyScene(currentScene);
 
             // Reset screen states for a fresh start after splash
             screenState.gameActuallyStarted = false; 
