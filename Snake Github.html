@@ -4331,22 +4331,11 @@ function setupSlider(slider, display) {
             }
         };
 
-        let sceneBgPatterns = {};
-
         function getSceneBgPattern(sceneKey) {
             const data = SCENES[sceneKey] || {};
             const img = data.bgImg;
             if (!img || !img.complete || img.naturalHeight === 0 || !ctx) return null;
-            const cached = sceneBgPatterns[sceneKey];
-            if (!cached || cached.size !== GRID_SIZE) {
-                const c = document.createElement('canvas');
-                c.width = GRID_SIZE;
-                c.height = GRID_SIZE;
-                const cctx = c.getContext('2d');
-                cctx.drawImage(img, 0, 0, GRID_SIZE, GRID_SIZE);
-                sceneBgPatterns[sceneKey] = { pattern: ctx.createPattern(c, 'repeat'), size: GRID_SIZE };
-            }
-            return sceneBgPatterns[sceneKey].pattern;
+            return img;
         }
 
         // Nombres descriptivos de cada mundo
@@ -5801,7 +5790,6 @@ function setupSlider(slider, display) {
            canvasEl.width = TILE_COUNT * GRID_SIZE;
            canvasEl.height = TILE_COUNT * GRID_SIZE;
 
-            sceneBgPatterns = {};
 
             tileCountX = TILE_COUNT;
             tileCountY = TILE_COUNT;
@@ -9015,10 +9003,9 @@ function setupSlider(slider, display) {
         function draw() {
              if (!ctx) return;
             const sceneData = SCENES[currentScene] || SCENES['classic'];
-            const pattern = getSceneBgPattern(currentScene);
-            if (pattern) {
-                ctx.fillStyle = pattern;
-                ctx.fillRect(0, 0, canvasEl.width, canvasEl.height);
+            const bgImg = getSceneBgPattern(currentScene);
+            if (bgImg) {
+                ctx.drawImage(bgImg, 0, 0, canvasEl.width, canvasEl.height);
             } else {
                 ctx.fillStyle = sceneData.bgColor || '#374151';
                 ctx.fillRect(0, 0, canvasEl.width, canvasEl.height);
