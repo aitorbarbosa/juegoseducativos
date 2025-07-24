@@ -2635,12 +2635,13 @@
           content: '';
           position: absolute;
           inset: 0;
-          background-image: url('https://i.imgur.com/NNbtyMH.png');
+          background-image: url('https://i.imgur.com/YKjPhxX.png');
           background-size: contain;
           background-repeat: no-repeat;
           background-position: center;
           transition: filter 0.05s ease-out;
           pointer-events: none;
+          z-index: 1;
         }
         .store-item:hover::before { filter: brightness(0.95); }
         .store-item.icon-button-pressed::before { filter: brightness(0.5); }
@@ -2671,13 +2672,14 @@
           height: 60%;
           object-fit: contain;
           pointer-events: none;
+          z-index: 0;
         }
         .store-item-img.scene-img-full {
-          top: 0;
-          left: 0;
-          width: 100%;
-          height: 100%;
-          transform: none;
+          width: 90%;
+          height: 90%;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
           object-fit: cover;
         }
         .store-item-status {
@@ -3871,6 +3873,24 @@ function setupSlider(slider, display) {
         const sceneGrassBorderImg = new Image();
         const sceneVolcanoBgImg = new Image();
         const sceneVolcanoBorderImg = new Image();
+        const sceneAceraGrandeBgImg = new Image();
+        const sceneAceraPequenaBgImg = new Image();
+        const sceneAguaBgImg = new Image();
+        const sceneBaldosaColoresBgImg = new Image();
+        const sceneCaminoPiedraBgImg = new Image();
+        const sceneCaminoPiedraMusgoBgImg = new Image();
+        const sceneCaminoHierbaPiedraBgImg = new Image();
+        const sceneCebraBgImg = new Image();
+        const sceneHalloweenBgImg = new Image();
+        const sceneHieloBgImg = new Image();
+        const sceneLadrilloBgImg = new Image();
+        const sceneMaderaBgImg = new Image();
+        const sceneBaldosaBlancaBgImg = new Image();
+        const sceneBaldosaBeigeBgImg = new Image();
+        const sceneRocasBgImg = new Image();
+        const sceneTejadoBgImg = new Image();
+        const sceneTierraBgImg = new Image();
+        const sceneTribalBgImg = new Image();
 
         const catHeadLeftImg = new Image();
         const catHeadDownImg = new Image();
@@ -4130,34 +4150,179 @@ function setupSlider(slider, display) {
         const SCENE_DISPLAY_NAMES = {
             classic: 'Clásico',
             hierba: 'Hierba',
-            volcan: 'Volcán'
+            volcan: 'Volcán',
+            aceraGrande: 'Acera grande',
+            aceraPequena: 'Acera pequeña',
+            agua: 'Agua',
+            baldosaColores: 'Baldosa Colores',
+            caminoPiedra: 'Camino de Piedra',
+            caminoPiedraMusgo: 'Camino de Piedra y Musgo',
+            caminoHierbaPiedra: 'Camino de Hierba y Piedra',
+            cebra: 'Cebra',
+            halloween: 'Halloween',
+            hielo: 'Hielo',
+            ladrillo: 'Ladrillo',
+            madera: 'Madera',
+            baldosaBlanca: 'Baldosa Blanca',
+            baldosaBeige: 'Baldosa Beige',
+            rocas: 'Rocas',
+            tejado: 'Tejado',
+            tierra: 'Tierra',
+            tribal: 'Tribal'
         };
 
-        const SCENE_ORDER = ['classic', 'hierba', 'volcan'];
+        const SCENE_ORDER = ['classic', 'hierba', 'volcan',
+            'aceraGrande','aceraPequena','agua','baldosaColores','caminoPiedra','caminoPiedraMusgo','caminoHierbaPiedra','cebra','halloween','hielo','ladrillo','madera','baldosaBlanca','baldosaBeige','rocas','tejado','tierra','tribal'];
         const SCENE_PRICES = {
             classic: 0,
             hierba: 1000,
-            volcan: 1000
+            volcan: 1000,
+            aceraGrande: 1000,
+            aceraPequena: 1000,
+            agua: 1000,
+            baldosaColores: 1000,
+            caminoPiedra: 1000,
+            caminoPiedraMusgo: 1000,
+            caminoHierbaPiedra: 1000,
+            cebra: 1000,
+            halloween: 1000,
+            hielo: 1000,
+            ladrillo: 1000,
+            madera: 1000,
+            baldosaBlanca: 1000,
+            baldosaBeige: 1000,
+            rocas: 1000,
+            tejado: 1000,
+            tierra: 1000,
+            tribal: 1000
         };
 
         const SCENES = {
             classic: {
-                icon: 'https://i.imgur.com/vPDsYgo.png',
+                icon: 'https://i.imgur.com/5h4MBe4.png',
                 bgImg: null,
                 borderImg: null,
                 bgColor: '#374151'
             },
             hierba: {
-                icon: 'https://i.imgur.com/vPDsYgo.png',
+                icon: 'https://i.imgur.com/DPBCWp1.png',
                 bgImg: sceneGrassBgImg,
-                borderImg: sceneGrassBorderImg,
+                borderImg: null,
                 bgColor: '#1b5e20'
             },
             volcan: {
-                icon: 'https://i.imgur.com/vPDsYgo.png',
+                icon: 'https://i.imgur.com/lGxjqbV.png',
                 bgImg: sceneVolcanoBgImg,
-                borderImg: sceneVolcanoBorderImg,
+                borderImg: null,
                 bgColor: '#7f1d1d'
+            },
+            aceraGrande: {
+                icon: 'https://i.imgur.com/WOVZvPK.png',
+                bgImg: sceneAceraGrandeBgImg,
+                borderImg: null,
+                bgColor: '#374151'
+            },
+            aceraPequena: {
+                icon: 'https://i.imgur.com/2ac9Tnk.png',
+                bgImg: sceneAceraPequenaBgImg,
+                borderImg: null,
+                bgColor: '#374151'
+            },
+            agua: {
+                icon: 'https://i.imgur.com/uM0IkxC.png',
+                bgImg: sceneAguaBgImg,
+                borderImg: null,
+                bgColor: '#374151'
+            },
+            baldosaColores: {
+                icon: 'https://i.imgur.com/q0x4GiW.png',
+                bgImg: sceneBaldosaColoresBgImg,
+                borderImg: null,
+                bgColor: '#374151'
+            },
+            caminoPiedra: {
+                icon: 'https://i.imgur.com/Xkq8aTf.png',
+                bgImg: sceneCaminoPiedraBgImg,
+                borderImg: null,
+                bgColor: '#374151'
+            },
+            caminoPiedraMusgo: {
+                icon: 'https://i.imgur.com/X9RuEBp.png',
+                bgImg: sceneCaminoPiedraMusgoBgImg,
+                borderImg: null,
+                bgColor: '#374151'
+            },
+            caminoHierbaPiedra: {
+                icon: 'https://i.imgur.com/yVHyjAt.png',
+                bgImg: sceneCaminoHierbaPiedraBgImg,
+                borderImg: null,
+                bgColor: '#374151'
+            },
+            cebra: {
+                icon: 'https://i.imgur.com/qTYu0bA.png',
+                bgImg: sceneCebraBgImg,
+                borderImg: null,
+                bgColor: '#374151'
+            },
+            halloween: {
+                icon: 'https://i.imgur.com/T4qwjxj.png',
+                bgImg: sceneHalloweenBgImg,
+                borderImg: null,
+                bgColor: '#374151'
+            },
+            hielo: {
+                icon: 'https://i.imgur.com/m2vwtBN.png',
+                bgImg: sceneHieloBgImg,
+                borderImg: null,
+                bgColor: '#374151'
+            },
+            ladrillo: {
+                icon: 'https://i.imgur.com/2DuLbzT.png',
+                bgImg: sceneLadrilloBgImg,
+                borderImg: null,
+                bgColor: '#374151'
+            },
+            madera: {
+                icon: 'https://i.imgur.com/RNXAoEZ.png',
+                bgImg: sceneMaderaBgImg,
+                borderImg: null,
+                bgColor: '#374151'
+            },
+            baldosaBlanca: {
+                icon: 'https://i.imgur.com/ShzWBiX.png',
+                bgImg: sceneBaldosaBlancaBgImg,
+                borderImg: null,
+                bgColor: '#374151'
+            },
+            baldosaBeige: {
+                icon: 'https://i.imgur.com/Qm3W9er.png',
+                bgImg: sceneBaldosaBeigeBgImg,
+                borderImg: null,
+                bgColor: '#374151'
+            },
+            rocas: {
+                icon: 'https://i.imgur.com/XCZ7Z6h.png',
+                bgImg: sceneRocasBgImg,
+                borderImg: null,
+                bgColor: '#374151'
+            },
+            tejado: {
+                icon: 'https://i.imgur.com/takLFr9.png',
+                bgImg: sceneTejadoBgImg,
+                borderImg: null,
+                bgColor: '#374151'
+            },
+            tierra: {
+                icon: 'https://i.imgur.com/UJUSLTz.png',
+                bgImg: sceneTierraBgImg,
+                borderImg: null,
+                bgColor: '#374151'
+            },
+            tribal: {
+                icon: 'https://i.imgur.com/X9l4k2m.png',
+                bgImg: sceneTribalBgImg,
+                borderImg: null,
+                bgColor: '#374151'
             }
         };
 
@@ -5402,10 +5567,28 @@ function setupSlider(slider, display) {
             snakeCornerTextureA.src = 'https://i.imgur.com/fVJRbzv.png';
             snakeCornerTextureB.src = 'https://i.imgur.com/pvhD811.png';
 
-            sceneGrassBgImg.src = 'https://i.imgur.com/4j1TQeg.png';
-            sceneGrassBorderImg.src = 'https://i.imgur.com/zchvPyL.png';
-            sceneVolcanoBgImg.src = 'https://i.imgur.com/9HKK3mM.png';
-            sceneVolcanoBorderImg.src = 'https://i.imgur.com/ecrnaDL.png';
+            sceneGrassBgImg.src = 'https://i.imgur.com/DPBCWp1.png';
+            sceneGrassBorderImg.src = '';
+            sceneVolcanoBgImg.src = 'https://i.imgur.com/lGxjqbV.png';
+            sceneVolcanoBorderImg.src = '';
+            sceneAceraGrandeBgImg.src = 'https://i.imgur.com/WOVZvPK.png';
+            sceneAceraPequenaBgImg.src = 'https://i.imgur.com/2ac9Tnk.png';
+            sceneAguaBgImg.src = 'https://i.imgur.com/uM0IkxC.png';
+            sceneBaldosaColoresBgImg.src = 'https://i.imgur.com/q0x4GiW.png';
+            sceneCaminoPiedraBgImg.src = 'https://i.imgur.com/Xkq8aTf.png';
+            sceneCaminoPiedraMusgoBgImg.src = 'https://i.imgur.com/X9RuEBp.png';
+            sceneCaminoHierbaPiedraBgImg.src = 'https://i.imgur.com/yVHyjAt.png';
+            sceneCebraBgImg.src = 'https://i.imgur.com/qTYu0bA.png';
+            sceneHalloweenBgImg.src = 'https://i.imgur.com/T4qwjxj.png';
+            sceneHieloBgImg.src = 'https://i.imgur.com/m2vwtBN.png';
+            sceneLadrilloBgImg.src = 'https://i.imgur.com/2DuLbzT.png';
+            sceneMaderaBgImg.src = 'https://i.imgur.com/RNXAoEZ.png';
+            sceneBaldosaBlancaBgImg.src = 'https://i.imgur.com/ShzWBiX.png';
+            sceneBaldosaBeigeBgImg.src = 'https://i.imgur.com/Qm3W9er.png';
+            sceneRocasBgImg.src = 'https://i.imgur.com/XCZ7Z6h.png';
+            sceneTejadoBgImg.src = 'https://i.imgur.com/takLFr9.png';
+            sceneTierraBgImg.src = 'https://i.imgur.com/UJUSLTz.png';
+            sceneTribalBgImg.src = 'https://i.imgur.com/X9l4k2m.png';
 
             catHeadLeftImg.src = 'https://i.imgur.com/apghsdf.png';
             catHeadDownImg.src = 'https://i.imgur.com/41vw2Cl.png';
@@ -5532,6 +5715,16 @@ function setupSlider(slider, display) {
                     orangeCatReactionEatSpeedLeftImg, orangeCatReactionEatSpeedDownImg,
                     orangeCatReactionEatFalseLeftImg, orangeCatReactionEatFalseDownImg,
                     orangeCatReactionEatMirrorLeftImg, orangeCatReactionEatMirrorDownImg,
+                    sceneGrassBgImg, sceneVolcanoBgImg,
+                    sceneAceraGrandeBgImg, sceneAceraPequenaBgImg,
+                    sceneAguaBgImg, sceneBaldosaColoresBgImg,
+                    sceneCaminoPiedraBgImg, sceneCaminoPiedraMusgoBgImg,
+                    sceneCaminoHierbaPiedraBgImg, sceneCebraBgImg,
+                    sceneHalloweenBgImg, sceneHieloBgImg,
+                    sceneLadrilloBgImg, sceneMaderaBgImg,
+                    sceneBaldosaBlancaBgImg, sceneBaldosaBeigeBgImg,
+                    sceneRocasBgImg, sceneTejadoBgImg,
+                    sceneTierraBgImg, sceneTribalBgImg,
                     obstacleImg, lightningYellowImg, lightningRedImg,
                     ...Object.values(FOODS).map(f => f.asset)
                 ];
