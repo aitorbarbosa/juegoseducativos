@@ -9003,13 +9003,15 @@ function setupSlider(slider, display) {
         function draw() {
              if (!ctx) return;
             const sceneData = SCENES[currentScene] || SCENES['classic'];
-            const bgImg = getSceneBgPattern(currentScene);
-            if (bgImg) {
-                ctx.drawImage(bgImg, 0, 0, canvasEl.width, canvasEl.height);
-            } else {
-                ctx.fillStyle = sceneData.bgColor || '#374151';
-                ctx.fillRect(0, 0, canvasEl.width, canvasEl.height);
-            }
+        const bgImg = getSceneBgPattern(currentScene);
+        if (bgImg) {
+            ctx.drawImage(bgImg, 0, 0, canvasEl.width, canvasEl.height);
+        } else {
+            ctx.fillStyle = sceneData.bgColor || '#374151';
+            ctx.fillRect(0, 0, canvasEl.width, canvasEl.height);
+        }
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.35)';
+        ctx.fillRect(0, 0, canvasEl.width, canvasEl.height);
 
             if (showModeSelect) {
                 drawModeSelection();
