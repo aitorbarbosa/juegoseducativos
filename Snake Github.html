@@ -4115,6 +4115,7 @@ function setupSlider(slider, display) {
         let initialSnakeLength = DEFAULT_INITIAL_SNAKE_LENGTH;
         const MAX_STREAK = 5;
         const STREAK_ANIMATION_DURATION = 1000; // ms that streak value is shown above head
+        const SCENE_CONTRAST = 0.6; // Reduction factor applied to scene backgrounds
         
         // Mapping for difficulty display names
         const DIFFICULTY_DISPLAY_NAMES = {
@@ -9005,7 +9006,10 @@ function setupSlider(slider, display) {
             const sceneData = SCENES[currentScene] || SCENES['classic'];
         const bgImg = getSceneBgPattern(currentScene);
         if (bgImg) {
+            ctx.save();
+            ctx.filter = `contrast(${SCENE_CONTRAST})`;
             ctx.drawImage(bgImg, 0, 0, canvasEl.width, canvasEl.height);
+            ctx.restore();
         } else {
             ctx.fillStyle = sceneData.bgColor || '#374151';
             ctx.fillRect(0, 0, canvasEl.width, canvasEl.height);
