@@ -3896,6 +3896,15 @@ function setupSlider(slider, display) {
         const sceneTejadoBgImg = new Image();
         const sceneTierraBgImg = new Image();
         const sceneTribalBgImg = new Image();
+        const sceneDesiertoBgImg = new Image();
+        const scenePlayaBgImg = new Image();
+        const sceneEspacioBgImg = new Image();
+        const sceneCarreteraBgImg = new Image();
+        const sceneEstrellaNeonBgImg = new Image();
+        const sceneSerpientesNeonBgImg = new Image();
+        const sceneFormasNeonBgImg = new Image();
+        const sceneCuadradosNeonBgImg = new Image();
+        const sceneXNeonBgImg = new Image();
 
         const catHeadLeftImg = new Image();
         const catHeadDownImg = new Image();
@@ -4174,11 +4183,20 @@ function setupSlider(slider, display) {
             rocas: 'Rocas',
             tejado: 'Tejado',
             tierra: 'Tierra',
-            tribal: 'Tribal'
+            tribal: 'Tribal',
+            desierto: 'Desierto',
+            playa: 'Playa',
+            espacio: 'Espacio',
+            carretera: 'Carretera',
+            estrellaNeon: 'Estrella de Neón',
+            serpientesNeon: 'Serpientes de Neón',
+            formasNeon: 'Formas de Neón',
+            cuadradosNeon: 'Cuadrados de Neón',
+            xNeon: 'X de Neón'
         };
 
         const SCENE_ORDER = ['classic', 'hierba', 'volcan',
-            'aceraGrande','aceraPequena','agua','baldosaColores','caminoPiedra','caminoPiedraMusgo','caminoHierbaPiedra','cebra','halloween','hielo','ladrillo','madera','baldosaBlanca','baldosaBeige','rocas','tejado','tierra','tribal'];
+            'aceraGrande','aceraPequena','agua','baldosaColores','caminoPiedra','caminoPiedraMusgo','caminoHierbaPiedra','cebra','halloween','hielo','ladrillo','madera','baldosaBlanca','baldosaBeige','rocas','tejado','tierra','tribal','desierto','playa','espacio','carretera','estrellaNeon','serpientesNeon','formasNeon','cuadradosNeon','xNeon'];
         const SCENE_PRICES = {
             classic: 0,
             hierba: 1000,
@@ -4200,7 +4218,16 @@ function setupSlider(slider, display) {
             rocas: 1000,
             tejado: 1000,
             tierra: 1000,
-            tribal: 1000
+            tribal: 1000,
+            desierto: 1000,
+            playa: 1000,
+            espacio: 1000,
+            carretera: 1000,
+            estrellaNeon: 1000,
+            serpientesNeon: 1000,
+            formasNeon: 1000,
+            cuadradosNeon: 1000,
+            xNeon: 1000
         };
 
         const SCENES = {
@@ -4327,6 +4354,60 @@ function setupSlider(slider, display) {
             tribal: {
                 icon: 'https://i.imgur.com/X9l4k2m.png',
                 bgImg: sceneTribalBgImg,
+                borderImg: null,
+                bgColor: '#374151'
+            },
+            desierto: {
+                icon: 'https://i.imgur.com/22F9XHL.png',
+                bgImg: sceneDesiertoBgImg,
+                borderImg: null,
+                bgColor: '#374151'
+            },
+            playa: {
+                icon: 'https://i.imgur.com/TIOY4Ae.png',
+                bgImg: scenePlayaBgImg,
+                borderImg: null,
+                bgColor: '#374151'
+            },
+            espacio: {
+                icon: 'https://i.imgur.com/OV74OfK.png',
+                bgImg: sceneEspacioBgImg,
+                borderImg: null,
+                bgColor: '#374151'
+            },
+            carretera: {
+                icon: 'https://i.imgur.com/9jDsM11.png',
+                bgImg: sceneCarreteraBgImg,
+                borderImg: null,
+                bgColor: '#374151'
+            },
+            estrellaNeon: {
+                icon: 'https://i.imgur.com/OAXNslj.png',
+                bgImg: sceneEstrellaNeonBgImg,
+                borderImg: null,
+                bgColor: '#374151'
+            },
+            serpientesNeon: {
+                icon: 'https://i.imgur.com/B60wRhn.png',
+                bgImg: sceneSerpientesNeonBgImg,
+                borderImg: null,
+                bgColor: '#374151'
+            },
+            formasNeon: {
+                icon: 'https://i.imgur.com/cuJd24Z.png',
+                bgImg: sceneFormasNeonBgImg,
+                borderImg: null,
+                bgColor: '#374151'
+            },
+            cuadradosNeon: {
+                icon: 'https://i.imgur.com/mQRM5QL.png',
+                bgImg: sceneCuadradosNeonBgImg,
+                borderImg: null,
+                bgColor: '#374151'
+            },
+            xNeon: {
+                icon: 'https://i.imgur.com/v4tEMkn.png',
+                bgImg: sceneXNeonBgImg,
                 borderImg: null,
                 bgColor: '#374151'
             }
@@ -5584,6 +5665,15 @@ function setupSlider(slider, display) {
             sceneTejadoBgImg.src = 'https://i.imgur.com/takLFr9.png';
             sceneTierraBgImg.src = 'https://i.imgur.com/UJUSLTz.png';
             sceneTribalBgImg.src = 'https://i.imgur.com/X9l4k2m.png';
+            sceneDesiertoBgImg.src = 'https://i.imgur.com/22F9XHL.png';
+            scenePlayaBgImg.src = 'https://i.imgur.com/TIOY4Ae.png';
+            sceneEspacioBgImg.src = 'https://i.imgur.com/OV74OfK.png';
+            sceneCarreteraBgImg.src = 'https://i.imgur.com/9jDsM11.png';
+            sceneEstrellaNeonBgImg.src = 'https://i.imgur.com/OAXNslj.png';
+            sceneSerpientesNeonBgImg.src = 'https://i.imgur.com/B60wRhn.png';
+            sceneFormasNeonBgImg.src = 'https://i.imgur.com/cuJd24Z.png';
+            sceneCuadradosNeonBgImg.src = 'https://i.imgur.com/mQRM5QL.png';
+            sceneXNeonBgImg.src = 'https://i.imgur.com/v4tEMkn.png';
 
             catHeadLeftImg.src = 'https://i.imgur.com/apghsdf.png';
             catHeadDownImg.src = 'https://i.imgur.com/41vw2Cl.png';
@@ -5720,6 +5810,11 @@ function setupSlider(slider, display) {
                     sceneBaldosaBlancaBgImg, sceneBaldosaBeigeBgImg,
                     sceneRocasBgImg, sceneTejadoBgImg,
                     sceneTierraBgImg, sceneTribalBgImg,
+                    sceneDesiertoBgImg, scenePlayaBgImg,
+                    sceneEspacioBgImg, sceneCarreteraBgImg,
+                    sceneEstrellaNeonBgImg, sceneSerpientesNeonBgImg,
+                    sceneFormasNeonBgImg, sceneCuadradosNeonBgImg,
+                    sceneXNeonBgImg,
                     obstacleImg, lightningYellowImg, lightningRedImg,
                     ...Object.values(FOODS).map(f => f.asset)
                 ];
