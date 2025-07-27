@@ -4030,30 +4030,8 @@ function setupSlider(slider, display) {
             9: new Image(),
             10: new Image()
         };
-        const levelCompleteImages = {
-            1: new Image(),
-            2: new Image(),
-            3: new Image(),
-            4: new Image(),
-            5: new Image(),
-            6: new Image(),
-            7: new Image(),
-            8: new Image(),
-            9: new Image(),
-            10: new Image()
-        };
-        const defeatImages = {
-            1: new Image(),
-            2: new Image(),
-            3: new Image(),
-            4: new Image(),
-            5: new Image(),
-            6: new Image(),
-            7: new Image(),
-            8: new Image(),
-            9: new Image(),
-            10: new Image()
-        };
+        const levelCompleteImg = new Image();
+        const defeatImg = new Image();
         const freeModeCoverImg = new Image();
         const freeModeEndImg = new Image();
         const freeModeInactivityImg = new Image();
@@ -4071,20 +4049,20 @@ function setupSlider(slider, display) {
         const modeSelectMazeImg = new Image();
 
         const worldImagesConfig = {
-            1: { cover: 'https://i.imgur.com/aZygoxI.png', complete: 'https://i.imgur.com/Fltk8Vy.png', level: 'https://i.imgur.com/gijG9ec.png', defeat: 'https://i.imgur.com/FZTIteF.png' },
-            2: { cover: 'https://i.imgur.com/u9P2UbG.png', complete: 'https://i.imgur.com/IBMU24f.png', level: 'https://i.imgur.com/aXJoj0F.png', defeat: 'https://i.imgur.com/4DPMHU2.png' },
-            3: { cover: 'https://i.imgur.com/VvjTffg.png', complete: 'https://i.imgur.com/SgoZBJ5.png', level: 'https://i.imgur.com/WUfSzpY.png', defeat: 'https://i.imgur.com/0OmpfWR.png' },
-            4: { cover: 'https://i.imgur.com/17yQbLk.png', complete: 'https://i.imgur.com/yqJtLHZ.png', level: 'https://i.imgur.com/2ZlgclU.png', defeat: 'https://i.imgur.com/Y4kPsNM.png' },
-            5: { cover: 'https://i.imgur.com/eve92Ap.png', complete: 'https://i.imgur.com/5ClclJK.png', level: 'https://i.imgur.com/YULiGZW.png', defeat: 'https://i.imgur.com/yiH7BqX.png' },
-            6: { cover: 'https://i.imgur.com/QaqKAcn.png', complete: 'https://i.imgur.com/xsShnmX.png', level: 'https://i.imgur.com/bUUIGGt.png', defeat: 'https://i.imgur.com/iYpiKB7.png' },
-            7: { cover: 'https://i.imgur.com/DcT65N5.png', complete: 'https://i.imgur.com/xSCMXXp.png', level: 'https://i.imgur.com/GniQn3h.png', defeat: 'https://i.imgur.com/3FilGNV.png' },
-            8: { cover: 'https://i.imgur.com/eTDOF8T.png', complete: 'https://i.imgur.com/vqPvQnL.png', level: 'https://i.imgur.com/YtiDSF1.png', defeat: 'https://i.imgur.com/ADe82lc.png' },
-            9: { cover: 'https://i.imgur.com/XpYeLDi.png', complete: 'https://i.imgur.com/BFZwRsR.png', level: 'https://i.imgur.com/IY7T8Jm.png', defeat: 'https://i.imgur.com/6Bc4w92.png' },
-            10: { cover: 'https://i.imgur.com/j0UyWzJ.png', complete: 'https://i.imgur.com/YFoeeoF.png', level: 'https://i.imgur.com/7iK51vy.png', defeat: 'https://i.imgur.com/dd6Zkda.png' }
+            1: { cover: 'https://i.imgur.com/aZygoxI.png', complete: 'https://i.imgur.com/Fltk8Vy.png' },
+            2: { cover: 'https://i.imgur.com/u9P2UbG.png', complete: 'https://i.imgur.com/IBMU24f.png' },
+            3: { cover: 'https://i.imgur.com/VvjTffg.png', complete: 'https://i.imgur.com/SgoZBJ5.png' },
+            4: { cover: 'https://i.imgur.com/17yQbLk.png', complete: 'https://i.imgur.com/yqJtLHZ.png' },
+            5: { cover: 'https://i.imgur.com/eve92Ap.png', complete: 'https://i.imgur.com/5ClclJK.png' },
+            6: { cover: 'https://i.imgur.com/QaqKAcn.png', complete: 'https://i.imgur.com/xsShnmX.png' },
+            7: { cover: 'https://i.imgur.com/DcT65N5.png', complete: 'https://i.imgur.com/xSCMXXp.png' },
+            8: { cover: 'https://i.imgur.com/eTDOF8T.png', complete: 'https://i.imgur.com/vqPvQnL.png' },
+            9: { cover: 'https://i.imgur.com/XpYeLDi.png', complete: 'https://i.imgur.com/BFZwRsR.png' },
+            10: { cover: 'https://i.imgur.com/j0UyWzJ.png', complete: 'https://i.imgur.com/YFoeeoF.png' }
         };
 
         let worldImagesLoaded = 0;
-        const totalWorldImagesToLoad = Object.keys(worldImagesConfig).length * 4 + 17;
+        const totalWorldImagesToLoad = Object.keys(worldImagesConfig).length * 2 + 19;
         // --- FIN: Declaración de Objetos Image ---
 
         // --- Música de fondo y SFX ---
@@ -5541,12 +5519,13 @@ function setupSlider(slider, display) {
             Object.entries(worldImagesConfig).forEach(([id, cfg]) => {
                 worldCoverImages[id].src = cfg.cover;
                 worldCompleteImages[id].src = cfg.complete;
-                levelCompleteImages[id].src = cfg.level;
-                defeatImages[id].src = cfg.defeat;
             });
 
+            levelCompleteImg.src = 'https://i.imgur.com/rxdqSm2.png';
+            defeatImg.src = 'https://i.imgur.com/tRk0gWB.png';
+
             freeModeCoverImg.src = 'https://i.imgur.com/5WQnA4G.png';
-            freeModeEndImg.src = 'https://i.imgur.com/dWseJe2.png';
+            freeModeEndImg.src = 'https://i.imgur.com/ZtQwxXW.png';
             freeModeInactivityImg.src = 'https://i.imgur.com/G4j8uBX.png';
             classificationModeCoverImg.src = 'https://i.imgur.com/EaIYb0R.png';
             classificationDifficultyImages.principiante.src = 'https://i.imgur.com/1VU204A.png';
@@ -5562,7 +5541,7 @@ function setupSlider(slider, display) {
             mazeCompleteImg.src = 'https://i.imgur.com/0s9b6JB.png';
             mazeFinalImg.src = 'https://i.imgur.com/dga8Z3q.png';
             mazeAllStarsImg.src = 'https://i.imgur.com/grMD2kr.png';
-            timeoutImg.src = 'https://i.imgur.com/uEjzFbY.png';
+            timeoutImg.src = 'https://i.imgur.com/UdDDj2s.png';
             starFullImg.src = 'https://i.imgur.com/mJU2iIm.png';
             starEmptyImg.src = 'https://i.imgur.com/M4FDVgp.png';
 
@@ -5570,8 +5549,7 @@ function setupSlider(slider, display) {
             const allWorldImages = [
                 ...Object.values(worldCoverImages),
                 ...Object.values(worldCompleteImages),
-                ...Object.values(levelCompleteImages),
-                ...Object.values(defeatImages),
+                levelCompleteImg, defeatImg,
                 freeModeCoverImg, freeModeEndImg, freeModeInactivityImg, classificationModeCoverImg,
                 ...Object.values(classificationDifficultyImages),
                 mazeModeCoverImg, mazeLevelCoverImg,
@@ -8764,7 +8742,7 @@ function setupSlider(slider, display) {
             ctx.fillStyle = "#374151"; 
             ctx.fillRect(0, 0, canvasEl.width, canvasEl.height);
 
-            const img = levelCompleteImages[worldNumber];
+            const img = levelCompleteImg;
             if (img && img.complete && img.naturalHeight !== 0) {
                 ctx.drawImage(img, 0, 0, canvasEl.width, canvasEl.height);
             } else {
@@ -8788,7 +8766,7 @@ function setupSlider(slider, display) {
             ctx.fillStyle = "#374151";
             ctx.fillRect(0, 0, canvasEl.width, canvasEl.height);
 
-            const img = defeatImages[worldNumber];
+            const img = defeatImg;
             if (img && img.complete && img.naturalHeight !== 0) {
                 ctx.drawImage(img, 0, 0, canvasEl.width, canvasEl.height);
             } else {
