@@ -5526,7 +5526,7 @@ function setupSlider(slider, display) {
 
             freeModeCoverImg.src = 'https://i.imgur.com/5WQnA4G.png';
             freeModeEndImg.src = 'https://i.imgur.com/ZtQwxXW.png';
-            freeModeInactivityImg.src = 'https://i.imgur.com/G4j8uBX.png';
+            freeModeInactivityImg.src = 'https://i.imgur.com/UdDDj2s.png';
             classificationModeCoverImg.src = 'https://i.imgur.com/EaIYb0R.png';
             classificationDifficultyImages.principiante.src = 'https://i.imgur.com/1VU204A.png';
             classificationDifficultyImages.explorador.src = 'https://i.imgur.com/z1PMcIx.png';
@@ -5535,7 +5535,7 @@ function setupSlider(slider, display) {
 
             mazeModeCoverImg.src = 'https://i.imgur.com/6zcf86e.png';
             mazeLevelCoverImg.src = 'https://i.imgur.com/8asDGaZ.png';
-            mazeFailImg.src = 'https://i.imgur.com/3snKeSJ.png';
+            mazeFailImg.src = 'https://i.imgur.com/tRk0gWB.png';
             mazePartialImg.src = 'https://i.imgur.com/04vASxK.png';
             mazePerfectImg.src = 'https://i.imgur.com/YKVlhix.png';
             mazeCompleteImg.src = 'https://i.imgur.com/0s9b6JB.png';
@@ -8790,7 +8790,7 @@ function setupSlider(slider, display) {
             ctx.fillStyle = "#374151";
             ctx.fillRect(0, 0, canvasEl.width, canvasEl.height);
 
-            const img = (gameMode === 'freeMode') ? freeModeInactivityImg : timeoutImg;
+            const img = timeoutImg;
             if (img && img.complete && img.naturalHeight !== 0) {
                 ctx.drawImage(img, 0, 0, canvasEl.width, canvasEl.height);
             } else {
