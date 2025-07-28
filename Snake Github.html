@@ -3999,7 +3999,6 @@ function setupSlider(slider, display) {
         const mazeFailImg = new Image();
         const mazePartialImg = new Image();
         const mazePerfectImg = new Image();
-        const mazeCompleteImg = new Image();
         const mazeFinalImg = new Image();
         const mazeAllStarsImg = new Image();
         const timeoutImg = new Image();
@@ -5538,7 +5537,6 @@ function setupSlider(slider, display) {
             mazeFailImg.src = 'https://i.imgur.com/tRk0gWB.png';
             mazePartialImg.src = 'https://i.imgur.com/04vASxK.png';
             mazePerfectImg.src = 'https://i.imgur.com/YKVlhix.png';
-            mazeCompleteImg.src = 'https://i.imgur.com/0s9b6JB.png';
             mazeFinalImg.src = 'https://i.imgur.com/dga8Z3q.png';
             mazeAllStarsImg.src = 'https://i.imgur.com/grMD2kr.png';
             timeoutImg.src = 'https://i.imgur.com/UdDDj2s.png';
@@ -5554,7 +5552,7 @@ function setupSlider(slider, display) {
                 ...Object.values(classificationDifficultyImages),
                 mazeModeCoverImg, mazeLevelCoverImg,
                 mazeFailImg, mazePartialImg, mazePerfectImg,
-                mazeCompleteImg, mazeFinalImg, mazeAllStarsImg, timeoutImg,
+                mazeFinalImg, mazeAllStarsImg, timeoutImg,
                 starFullImg, starEmptyImg
             ];
 
@@ -9009,7 +9007,6 @@ function setupSlider(slider, display) {
             if (resultType === 'fail') img = mazeFailImg;
             else if (resultType === 'partial') img = mazePartialImg;
             else if (resultType === 'perfect') img = mazePerfectImg;
-            else if (resultType === 'complete') img = mazeCompleteImg;
             else if (resultType === 'final') img = mazeFinalImg;
             else if (resultType === 'allstars') img = mazeAllStarsImg;
             if (img && img.complete && img.naturalHeight !== 0) {
@@ -9022,7 +9019,6 @@ function setupSlider(slider, display) {
                     fail: 'Reintentar',
                     partial: 'Continuar',
                     perfect: 'Perfecto',
-                    complete: '¡Completado!',
                     final: '¡Completado!',
                     allstars: '¡Completado!'
                 };
