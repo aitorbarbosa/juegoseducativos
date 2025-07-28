@@ -8903,14 +8903,15 @@ function setupSlider(slider, display) {
                 }
             }
 
-            const textColor = levelNumber > currentMazeLevel ? '#6B7280' : '#24f2ed';
+            const textColor = levelNumber > currentMazeLevel ? '#6B7280' : '#c1a4d4';
             ctx.fillStyle = textColor;
             ctx.textAlign = 'center';
             ctx.font = `${Math.floor(canvasEl.width / 14)}px 'Press Start 2P'`;
 
             const totalStars = MAZE_STAR_TARGETS.length;
             const starSize = Math.floor(canvasEl.width / (totalStars * 2 + 1));
-            const marginBottom = canvasEl.height * 0.05;
+            // Raise the level text and stars slightly higher on the screen
+            const marginBottom = canvasEl.height * 0.09;
             const textY = canvasEl.height - starSize - marginBottom - canvasEl.height * 0.03;
             ctx.fillText(`Nivel ${levelNumber}`, canvasEl.width / 2, textY);
 
