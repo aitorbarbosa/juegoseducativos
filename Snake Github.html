@@ -8910,7 +8910,8 @@ function setupSlider(slider, display) {
 
             const totalStars = MAZE_STAR_TARGETS.length;
             const starSize = Math.floor(canvasEl.width / (totalStars * 2 + 1));
-            const marginBottom = canvasEl.height * 0.05;
+            // Raise the level text and stars slightly higher on the screen
+            const marginBottom = canvasEl.height * 0.1;
             const textY = canvasEl.height - starSize - marginBottom - canvasEl.height * 0.03;
             ctx.fillText(`Nivel ${levelNumber}`, canvasEl.width / 2, textY);
 
