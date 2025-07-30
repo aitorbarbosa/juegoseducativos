@@ -7764,15 +7764,17 @@ function setupSlider(slider, display) {
             } while ((isPositionOccupied(pos) || isAdjacentToAnyFood(pos)) && attempts < 100);
             if (attempts >= 100) return;
             let lifespan = FALSE_FOOD_LIFESPAN;
+            let cfg;
             if (gameMode === 'classification' || gameMode === 'freeMode' || gameMode === 'maze') {
-                const cfg = (gameMode === 'classification') ? (DIFFICULTY_SETTINGS[difficultySelector.value] || {})
-                          : (gameMode === 'maze' ? DIFFICULTY_SETTINGS[currentMazeDifficulty] : freeModeSettings);
-                if (typeof cfg.falseFoodLifespan === 'number') {
-                    lifespan = cfg.falseFoodLifespan;
-                }
+                cfg = (gameMode === 'classification') ? (DIFFICULTY_SETTINGS[difficultySelector.value] || {})
+                      : (gameMode === 'maze' ? DIFFICULTY_SETTINGS[currentMazeDifficulty] : freeModeSettings);
             } else if (gameMode === 'levels') {
-                const cfg = LEVEL_SETTINGS[currentWorld - 1][currentLevelInWorld - 1];
-                if (typeof cfg.falseFoodLifespan === 'number') {
+                cfg = LEVEL_SETTINGS[currentWorld - 1][currentLevelInWorld - 1];
+            }
+            if (cfg) {
+                if (cfg.falseFoodSpawnRange && cfg.mirrorSpawnRange) {
+                    lifespan = calculateNextFoodLifespan();
+                } else if (typeof cfg.falseFoodLifespan === 'number') {
                     lifespan = cfg.falseFoodLifespan;
                 }
             }
@@ -8075,15 +8077,17 @@ function setupSlider(slider, display) {
             } while ((isPositionOccupied(pos) || isAdjacentToAnyFood(pos)) && attempts < 100);
             if (attempts >= 100) return;
             let lifespan = FALSE_FOOD_LIFESPAN;
+            let cfg;
             if (gameMode === 'classification' || gameMode === 'freeMode' || gameMode === 'maze') {
-                const cfg = (gameMode === 'classification') ? (DIFFICULTY_SETTINGS[difficultySelector.value] || {})
-                          : (gameMode === 'maze' ? DIFFICULTY_SETTINGS[currentMazeDifficulty] : freeModeSettings);
-                if (typeof cfg.mirrorLifespan === 'number') {
-                    lifespan = cfg.mirrorLifespan;
-                }
+                cfg = (gameMode === 'classification') ? (DIFFICULTY_SETTINGS[difficultySelector.value] || {})
+                      : (gameMode === 'maze' ? DIFFICULTY_SETTINGS[currentMazeDifficulty] : freeModeSettings);
             } else if (gameMode === 'levels') {
-                const cfg = LEVEL_SETTINGS[currentWorld - 1][currentLevelInWorld - 1];
-                if (typeof cfg.mirrorLifespan === 'number') {
+                cfg = LEVEL_SETTINGS[currentWorld - 1][currentLevelInWorld - 1];
+            }
+            if (cfg) {
+                if (cfg.falseFoodSpawnRange && cfg.mirrorSpawnRange) {
+                    lifespan = calculateNextFoodLifespan();
+                } else if (typeof cfg.mirrorLifespan === 'number') {
                     lifespan = cfg.mirrorLifespan;
                 }
             }
