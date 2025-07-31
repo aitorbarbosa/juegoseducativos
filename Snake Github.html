@@ -1467,10 +1467,10 @@
             display: block;
         }
 
-        .settings-panel-hidden, .info-panel-hidden, .specific-info-panel-hidden, .free-settings-panel-hidden, .reset-panel-hidden, .config-menu-panel-hidden, .generic-menu-panel-hidden, .store-panel-hidden, .profile-panel-hidden, .purchase-confirmation-panel-hidden, .delete-confirmation-panel-hidden, .out-of-lives-panel-hidden, .select-confirmation-panel-hidden {
+        .settings-panel-hidden, .info-panel-hidden, .specific-info-panel-hidden, .free-settings-panel-hidden, .reset-panel-hidden, .config-menu-panel-hidden, .generic-menu-panel-hidden, .store-panel-hidden, .profile-panel-hidden, .achievements-panel-hidden, .purchase-confirmation-panel-hidden, .delete-confirmation-panel-hidden, .out-of-lives-panel-hidden, .select-confirmation-panel-hidden {
             display: none !important;
         }
-        #settings-panel, #info-panel, #specific-info-panel, #free-settings-panel, #reset-confirmation-panel, #config-menu-panel, #generic-menu-panel, #store-panel, #profile-panel, #purchase-confirmation-panel, #delete-confirmation-panel, #out-of-lives-panel, #select-confirmation-panel {
+        #settings-panel, #info-panel, #specific-info-panel, #free-settings-panel, #reset-confirmation-panel, #config-menu-panel, #generic-menu-panel, #store-panel, #profile-panel, #achievements-panel, #purchase-confirmation-panel, #delete-confirmation-panel, #out-of-lives-panel, #select-confirmation-panel {
             position: fixed;
             left: 0;
             transform: scale(0);
@@ -1514,6 +1514,13 @@
             box-sizing: border-box;
         }
         #profile-panel .panel-content {
+            padding-right: 10px;
+        }
+        #achievements-panel {
+            max-height: 90vh;
+            box-sizing: border-box;
+        }
+        #achievements-panel .panel-content {
             padding-right: 10px;
         }
 
@@ -1618,6 +1625,7 @@
         #generic-menu-panel.centered-panel,
         #store-panel.centered-panel,
         #profile-panel.centered-panel,
+        #achievements-panel.centered-panel,
         #purchase-confirmation-panel.centered-panel,
         #delete-confirmation-panel.centered-panel,
         #out-of-lives-panel.centered-panel,
@@ -1633,6 +1641,7 @@
         #generic-menu-panel.centered-panel.panel-visible,
         #store-panel.centered-panel.panel-visible,
         #profile-panel.centered-panel.panel-visible,
+        #achievements-panel.centered-panel.panel-visible,
         #purchase-confirmation-panel.centered-panel.panel-visible,
         #delete-confirmation-panel.centered-panel.panel-visible,
         #out-of-lives-panel.centered-panel.panel-visible,
@@ -1648,6 +1657,7 @@
         #generic-menu-panel.panel-visible,
         #store-panel.panel-visible,
         #profile-panel.panel-visible,
+        #achievements-panel.panel-visible,
         #purchase-confirmation-panel.panel-visible,
         #delete-confirmation-panel.panel-visible,
         #out-of-lives-panel.panel-visible,
@@ -1792,7 +1802,8 @@
         #free-settings-panel .panel-content::-webkit-scrollbar,
         #reset-confirmation-panel .panel-content::-webkit-scrollbar,
         #store-panel .panel-content::-webkit-scrollbar,
-        #profile-panel .panel-content::-webkit-scrollbar {
+        #profile-panel .panel-content::-webkit-scrollbar,
+        #achievements-panel .panel-content::-webkit-scrollbar {
             width: 8px;
         }
         #info-panel-content::-webkit-scrollbar-track,
@@ -1803,7 +1814,8 @@
         #free-settings-panel .panel-content::-webkit-scrollbar-track,
         #reset-confirmation-panel .panel-content::-webkit-scrollbar-track,
         #store-panel .panel-content::-webkit-scrollbar-track,
-        #profile-panel .panel-content::-webkit-scrollbar-track {
+        #profile-panel .panel-content::-webkit-scrollbar-track,
+        #achievements-panel .panel-content::-webkit-scrollbar-track {
             background: #2d1d3a;
             border-radius: 4px;
         }
@@ -1815,7 +1827,8 @@
         #free-settings-panel .panel-content::-webkit-scrollbar-thumb,
         #reset-confirmation-panel .panel-content::-webkit-scrollbar-thumb,
         #store-panel .panel-content::-webkit-scrollbar-thumb,
-        #profile-panel .panel-content::-webkit-scrollbar-thumb {
+        #profile-panel .panel-content::-webkit-scrollbar-thumb,
+        #achievements-panel .panel-content::-webkit-scrollbar-thumb {
             background: #442F58;
             border-radius: 4px;
         }
@@ -1836,7 +1849,9 @@
         #store-panel .panel-content::-webkit-scrollbar-thumb:hover,
         #store-panel .panel-content::-webkit-scrollbar-thumb:active,
         #profile-panel .panel-content::-webkit-scrollbar-thumb:hover,
-        #profile-panel .panel-content::-webkit-scrollbar-thumb:active {
+        #profile-panel .panel-content::-webkit-scrollbar-thumb:active,
+        #achievements-panel .panel-content::-webkit-scrollbar-thumb:hover,
+        #achievements-panel .panel-content::-webkit-scrollbar-thumb:active {
             background: #8f66af;
         }
 
@@ -2175,6 +2190,7 @@
         #generic-menu-panel { z-index: 2101; }
         #store-panel { z-index: 2101; }
         #profile-panel { z-index: 2101; }
+        #achievements-panel { z-index: 2101; }
         #purchase-confirmation-panel { z-index: 2103; }
         #delete-confirmation-panel { z-index: 2103; }
         #select-confirmation-panel { z-index: 2103; }
@@ -3397,12 +3413,40 @@
             <h4>COLECCION</h4>
             <div id="profile-scene-unlocked" class="grid grid-cols-3 gap-4 w-full mb-2"></div>
             <h4>SIN DESBLOQUEAR</h4>
-            <div id="profile-scene-locked" class="grid grid-cols-3 gap-4 w-full"></div>
+        <div id="profile-scene-locked" class="grid grid-cols-3 gap-4 w-full"></div>
         </div>
 
     </div>
 </div>
 </div>
+            <div id="achievements-panel" class="achievements-panel-hidden">
+                <div class="settings-header">
+                    <h2>LOGROS</h2>
+                    <button id="close-achievements-panel" class="close-button" aria-label="Cerrar">
+                        <img src="https://i.imgur.com/w5E6xdU.png" alt="Cerrar">
+                    </button>
+                </div>
+                <div class="panel-content">
+                    <ul id="achievements-list" class="list-disc pl-6 text-left">
+                        <li>Monedas conseguidas</li>
+                        <li>Puntos conseguidos</li>
+                        <li>Gemas conseguidas</li>
+                        <li>Estrellas de laberinto</li>
+                        <li>Niveles de modo laberinto superados</li>
+                        <li>Mundos superados</li>
+                        <li>Partidas en modo libre</li>
+                        <li>Partidas en modo clasificación</li>
+                        <li>Puntos conseguidos en nivel novato</li>
+                        <li>Puntos conseguidos en nivel explorador</li>
+                        <li>Puntos conseguidos en nivel veterano</li>
+                        <li>Puntos conseguidos en nivel legendario</li>
+                        <li>Disfraces desbloqueados</li>
+                        <li>Comestibles desbloqueados</li>
+                        <li>Escenarios desbloqueados</li>
+                        <li>Añade un jugador</li>
+                    </ul>
+                </div>
+            </div>
             <div id="store-panel" class="store-panel-hidden">
                 <div class="settings-header">
                     <h2>TIENDA</h2>
@@ -3687,7 +3731,9 @@
         const wheelMenuButton = document.getElementById("wheel-menu-button");
 
         const storePanel = document.getElementById("store-panel");
+        const achievementsPanel = document.getElementById("achievements-panel");
         const profilePanel = document.getElementById("profile-panel");
+        const closeAchievementsPanelButton = document.getElementById("close-achievements-panel");
         const closeProfilePanelButton = document.getElementById("close-profile-panel");
         const storeItemsContainer = document.getElementById("store-items-container");
         const storeTabButtons = document.querySelectorAll('#store-tabs .store-tab');
@@ -4833,7 +4879,7 @@ function setupSlider(slider, display) {
         };
         let currentSkin = 'snake';
         let playerProfiles = {};
-        let playerNames = ['Snake', 'GamiSnake'];
+        let playerNames = ['Snake', 'GamiSnake', 'NuevoJugador'];
         let currentPlayerName = 'Snake';
 
         function createDefaultProfile(name = '') {
@@ -4871,6 +4917,7 @@ function setupSlider(slider, display) {
             if (Object.keys(playerProfiles).length === 0) {
                 playerProfiles['Snake'] = createDefaultProfile('Snake');
                 playerProfiles['GamiSnake'] = createDefaultProfile('GamiSnake');
+                playerProfiles['NuevoJugador'] = createDefaultProfile('NuevoJugador');
             }
             Object.keys(playerProfiles).forEach(name => {
                 const profile = playerProfiles[name];
@@ -5948,7 +5995,8 @@ function setupSlider(slider, display) {
             const isGenericMenuVisible = !genericMenuPanel.classList.contains("generic-menu-panel-hidden") && genericMenuPanel.classList.contains("panel-visible");
             const isStoreVisible = storePanel && !storePanel.classList.contains("store-panel-hidden") && storePanel.classList.contains("panel-visible");
             const isProfileVisible = profilePanel && !profilePanel.classList.contains("profile-panel-hidden") && profilePanel.classList.contains("panel-visible");
-            const isAnyMainPanelEffectivelyOpen = isSettingsVisible || isInfoVisible || isFreeSettingsVisible || isConfigMenuVisible || isGenericMenuVisible || isStoreVisible || isProfileVisible;
+            const isAchievementsVisible = achievementsPanel && !achievementsPanel.classList.contains("achievements-panel-hidden") && achievementsPanel.classList.contains("panel-visible");
+            const isAnyMainPanelEffectivelyOpen = isSettingsVisible || isInfoVisible || isFreeSettingsVisible || isConfigMenuVisible || isGenericMenuVisible || isStoreVisible || isProfileVisible || isAchievementsVisible;
 
             if (isAnyMainPanelEffectivelyOpen) {
                 startButton.disabled = true;
@@ -6065,6 +6113,7 @@ function setupSlider(slider, display) {
             else if (panelId === "generic-menu-panel") hiddenClassName = "generic-menu-panel-hidden";
             else if (panelId === "store-panel") hiddenClassName = "store-panel-hidden";
             else if (panelId === "profile-panel") hiddenClassName = "profile-panel-hidden";
+            else if (panelId === "achievements-panel") hiddenClassName = "achievements-panel-hidden";
             else if (panelId === "purchase-confirmation-panel") hiddenClassName = "purchase-confirmation-panel-hidden";
             else if (panelId === "delete-confirmation-panel") hiddenClassName = "delete-confirmation-panel-hidden";
             else if (panelId === "out-of-lives-panel") hiddenClassName = "out-of-lives-panel-hidden";
@@ -6592,7 +6641,7 @@ function setupSlider(slider, display) {
         if (closeGenericMenuButton) closeGenericMenuButton.addEventListener('click', closeGenericMenuPanel);
         if (profileMenuButton) profileMenuButton.addEventListener('click', openProfileMenu);
         if (storeMenuButton) storeMenuButton.addEventListener('click', openStoreMenu);
-        if (achievementsMenuButton) achievementsMenuButton.addEventListener('click', () => { openGenericMenuPanel('Logros'); });
+        if (achievementsMenuButton) achievementsMenuButton.addEventListener('click', openAchievementsMenu);
         if (bonusesMenuButton) bonusesMenuButton.addEventListener('click', () => { openGenericMenuPanel('Bonificaciones'); });
         if (dailyMenuButton) dailyMenuButton.addEventListener('click', () => { openGenericMenuPanel('Premios diarios'); });
         if (wheelMenuButton) wheelMenuButton.addEventListener('click', () => { openGenericMenuPanel('Ruleta de premios'); });
@@ -6682,6 +6731,21 @@ function setupSlider(slider, display) {
 
         function closeStoreMenu() {
             togglePanel(storePanel, storePanel.querySelector('.panel-content'), false);
+            setTimeout(updateMainButtonStates, 0);
+        }
+
+        function openAchievementsMenu() {
+            if (!achievementsPanel) return;
+            const isConfigMenuVisible = !configMenuPanel.classList.contains('config-menu-panel-hidden') && configMenuPanel.classList.contains('panel-visible');
+            achievementsPanel.classList.remove('centered-panel');
+            togglePanel(achievementsPanel, achievementsPanel.querySelector('.panel-content'), true);
+            if (isConfigMenuVisible) {
+                matchPanelSizeWithElement(configMenuPanel, achievementsPanel);
+            }
+        }
+
+        function closeAchievementsMenu() {
+            togglePanel(achievementsPanel, achievementsPanel.querySelector('.panel-content'), false);
             setTimeout(updateMainButtonStates, 0);
         }
 
@@ -7021,6 +7085,7 @@ function setupSlider(slider, display) {
         if (confirmPurchaseNoButton) confirmPurchaseNoButton.addEventListener('click', closePurchaseConfirm);
         if (confirmDeleteYesButton) confirmDeleteYesButton.addEventListener('click', confirmDelete);
         if (confirmDeleteNoButton) confirmDeleteNoButton.addEventListener('click', closeDeleteConfirm);
+        if (closeAchievementsPanelButton) closeAchievementsPanelButton.addEventListener('click', closeAchievementsMenu);
         if (closeOutOfLivesPanelButton) closeOutOfLivesPanelButton.addEventListener('click', closeOutOfLivesPanel);
         if (getLivesStoreButton) getLivesStoreButton.addEventListener('click', () => { closeOutOfLivesPanel(); openStoreMenu(); });
         if (getLivesBonusesButton) getLivesBonusesButton.addEventListener('click', () => { closeOutOfLivesPanel(); openGenericMenuPanel('Bonificaciones'); });
@@ -11686,6 +11751,7 @@ async function startGame(isRestart = false) {
         addIconPressEvents(closeGenericMenuButton, closeGenericMenuButton);
         addIconPressEvents(closeProfilePanelButton, closeProfilePanelButton);
         addIconPressEvents(closeStorePanelButton, closeStorePanelButton);
+        addIconPressEvents(closeAchievementsPanelButton, closeAchievementsPanelButton);
         addIconPressEvents(closeOutOfLivesPanelButton, closeOutOfLivesPanelButton);
         addIconPressEvents(getLivesStoreButton, getLivesStoreButton);
         addIconPressEvents(getLivesBonusesButton, getLivesBonusesButton);
