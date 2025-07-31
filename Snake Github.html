@@ -979,6 +979,35 @@
             transform: translateX(-100px) translateY(-50%);
         }
 
+        .achievement-achieved {
+            text-decoration: line-through;
+            color: #4ade80;
+        }
+
+        #earnedGemsMessage {
+            position: absolute;
+            top: 50%;
+            left: 100%;
+            transform: translateX(-20px) translateY(-50%);
+            color: #f472b6;
+            font-size: 1em;
+            white-space: nowrap;
+            opacity: 0;
+            transition: opacity 0.3s, transform 0.5s;
+            pointer-events: none;
+            z-index: 20;
+        }
+
+        #earnedGemsMessage.show {
+            opacity: 1;
+            transform: translateX(-45px) translateY(-50%);
+        }
+
+        #earnedGemsMessage.hide {
+            opacity: 0;
+            transform: translateX(-100px) translateY(-50%);
+        }
+
         #livesValue {
             position: absolute;
             top: 50%;
@@ -1467,10 +1496,10 @@
             display: block;
         }
 
-        .settings-panel-hidden, .info-panel-hidden, .specific-info-panel-hidden, .free-settings-panel-hidden, .reset-panel-hidden, .config-menu-panel-hidden, .generic-menu-panel-hidden, .store-panel-hidden, .profile-panel-hidden, .purchase-confirmation-panel-hidden, .delete-confirmation-panel-hidden, .out-of-lives-panel-hidden, .select-confirmation-panel-hidden {
+        .settings-panel-hidden, .info-panel-hidden, .specific-info-panel-hidden, .free-settings-panel-hidden, .reset-panel-hidden, .config-menu-panel-hidden, .generic-menu-panel-hidden, .store-panel-hidden, .profile-panel-hidden, .achievements-panel-hidden, .purchase-confirmation-panel-hidden, .delete-confirmation-panel-hidden, .out-of-lives-panel-hidden, .select-confirmation-panel-hidden {
             display: none !important;
         }
-        #settings-panel, #info-panel, #specific-info-panel, #free-settings-panel, #reset-confirmation-panel, #config-menu-panel, #generic-menu-panel, #store-panel, #profile-panel, #purchase-confirmation-panel, #delete-confirmation-panel, #out-of-lives-panel, #select-confirmation-panel {
+        #settings-panel, #info-panel, #specific-info-panel, #free-settings-panel, #reset-confirmation-panel, #config-menu-panel, #generic-menu-panel, #store-panel, #profile-panel, #achievements-panel, #purchase-confirmation-panel, #delete-confirmation-panel, #out-of-lives-panel, #select-confirmation-panel {
             position: fixed;
             left: 0;
             transform: scale(0);
@@ -1514,6 +1543,13 @@
             box-sizing: border-box;
         }
         #profile-panel .panel-content {
+            padding-right: 10px;
+        }
+        #achievements-panel {
+            max-height: 90vh;
+            box-sizing: border-box;
+        }
+        #achievements-panel .panel-content {
             padding-right: 10px;
         }
 
@@ -1792,7 +1828,8 @@
         #free-settings-panel .panel-content::-webkit-scrollbar,
         #reset-confirmation-panel .panel-content::-webkit-scrollbar,
         #store-panel .panel-content::-webkit-scrollbar,
-        #profile-panel .panel-content::-webkit-scrollbar {
+        #profile-panel .panel-content::-webkit-scrollbar,
+        #achievements-panel .panel-content::-webkit-scrollbar {
             width: 8px;
         }
         #info-panel-content::-webkit-scrollbar-track,
@@ -1803,7 +1840,8 @@
         #free-settings-panel .panel-content::-webkit-scrollbar-track,
         #reset-confirmation-panel .panel-content::-webkit-scrollbar-track,
         #store-panel .panel-content::-webkit-scrollbar-track,
-        #profile-panel .panel-content::-webkit-scrollbar-track {
+        #profile-panel .panel-content::-webkit-scrollbar-track,
+        #achievements-panel .panel-content::-webkit-scrollbar-track {
             background: #2d1d3a;
             border-radius: 4px;
         }
@@ -1815,7 +1853,8 @@
         #free-settings-panel .panel-content::-webkit-scrollbar-thumb,
         #reset-confirmation-panel .panel-content::-webkit-scrollbar-thumb,
         #store-panel .panel-content::-webkit-scrollbar-thumb,
-        #profile-panel .panel-content::-webkit-scrollbar-thumb {
+        #profile-panel .panel-content::-webkit-scrollbar-thumb,
+        #achievements-panel .panel-content::-webkit-scrollbar-thumb {
             background: #442F58;
             border-radius: 4px;
         }
@@ -1836,7 +1875,9 @@
         #store-panel .panel-content::-webkit-scrollbar-thumb:hover,
         #store-panel .panel-content::-webkit-scrollbar-thumb:active,
         #profile-panel .panel-content::-webkit-scrollbar-thumb:hover,
-        #profile-panel .panel-content::-webkit-scrollbar-thumb:active {
+        #profile-panel .panel-content::-webkit-scrollbar-thumb:active,
+        #achievements-panel .panel-content::-webkit-scrollbar-thumb:hover,
+        #achievements-panel .panel-content::-webkit-scrollbar-thumb:active {
             background: #8f66af;
         }
 
@@ -1867,6 +1908,17 @@
                 transform: translateX(-25px) translateY(-50%);
             }
             #earnedCoinsMessage.hide {
+                transform: translateX(-70px) translateY(-50%);
+            }
+
+            #earnedGemsMessage {
+                font-size: 0.8em;
+                transform: translateX(-30px) translateY(-50%);
+            }
+            #earnedGemsMessage.show {
+                transform: translateX(-25px) translateY(-50%);
+            }
+            #earnedGemsMessage.hide {
                 transform: translateX(-70px) translateY(-50%);
             }
 
@@ -2014,6 +2066,17 @@
                 transform: translateX(-22px) translateY(-40%);
             }
             #earnedCoinsMessage.hide {
+                transform: translateX(-60px) translateY(-40%);
+            }
+
+            #earnedGemsMessage {
+                font-size: 0.75em;
+                transform: translateX(-25px) translateY(-40%);
+            }
+            #earnedGemsMessage.show {
+                transform: translateX(-22px) translateY(-40%);
+            }
+            #earnedGemsMessage.hide {
                 transform: translateX(-60px) translateY(-40%);
             }
 
@@ -2954,6 +3017,15 @@
                     <span id="earnedCoinsMessage" class="earned-coins-msg hidden">+0</span>
                 </div>
             </div>
+            <div id="gems-info-group" class="info-group">
+                <div class="info-icon-wrapper">
+                    <img src="https://i.imgur.com/gPGsaCO.png" alt="Gemas" class="info-icon">
+                </div>
+                <div class="value-box">
+                    <span id="gemValue" class="info-value">0</span>
+                    <span id="earnedGemsMessage" class="earned-coins-msg hidden">+0</span>
+                </div>
+            </div>
             <div id="points-info-group" class="info-group">
                 <div class="info-icon-wrapper">
                     <img id="points-icon-img" src="https://i.imgur.com/COqXj9s.png" alt="Puntos" class="info-icon">
@@ -3417,8 +3489,17 @@
                         <button data-tab="disfraces" id="store-tab-disfraces" class="store-tab">DISFRACES</button>
                         <button data-tab="escenarios" id="store-tab-escenarios" class="store-tab">ESCENARIOS</button>
                     </div>
-                    <div id="store-items-container" class="grid grid-cols-3 gap-4 w-full"></div>
+                <div id="store-items-container" class="grid grid-cols-3 gap-4 w-full"></div>
                 </div>
+            </div>
+            <div id="achievements-panel" class="achievements-panel-hidden">
+                <div class="settings-header">
+                    <h2>LOGROS</h2>
+                    <button id="close-achievements-panel" class="close-button" aria-label="Cerrar">
+                        <img src="https://i.imgur.com/w5E6xdU.png" alt="Cerrar">
+                    </button>
+                </div>
+                <div class="panel-content" id="achievements-content"></div>
             </div>
             <div id="modal-overlay" class="hidden"></div>
             <div id="purchase-confirmation-panel" class="purchase-confirmation-panel-hidden">
@@ -3582,6 +3663,8 @@
         const lifeTimerValueDisplay = document.getElementById("lifeTimerValue");
         const selectorLifeTimerValueDisplay = document.getElementById("selectorLifeTimerValue");
         const selectorGemsValueDisplay = document.getElementById("selectorGemsValue");
+        const gemValueDisplay = document.getElementById("gemValue");
+        const earnedGemsMessage = document.getElementById("earnedGemsMessage");
         const targetScoreDivider = document.getElementById("target-score-divider");
         const targetScoreValueDisplay = document.getElementById("targetScoreValue");
         const timeLengthLabelEl = document.getElementById("timeLengthLabel");
@@ -3682,6 +3765,9 @@
         const profileMenuButton = document.getElementById("profile-menu-button");
         const storeMenuButton = document.getElementById("store-menu-button");
         const achievementsMenuButton = document.getElementById("achievements-menu-button");
+        const achievementsPanel = document.getElementById("achievements-panel");
+        const achievementsContent = document.getElementById("achievements-content");
+        const closeAchievementsPanelButton = document.getElementById("close-achievements-panel");
         const bonusesMenuButton = document.getElementById("bonuses-menu-button");
         const dailyMenuButton = document.getElementById("daily-menu-button");
         const wheelMenuButton = document.getElementById("wheel-menu-button");
@@ -5127,11 +5213,50 @@ function setupSlider(slider, display) {
         let currentFood = 'apple';
         let currentScene = 'classic';
         let totalGems = 0;
+        let achievements = {};
         const HEART_PRICE = 100;
         const GEM_PRICE = 1000;
         let storeTab = 'general';
         let profileTab = 'general';
         // --- Fin Configuración de Comestibles ---
+
+        const ACHIEVEMENT_TITLES = {
+            coins: 'Monedas conseguidas',
+            points: 'Puntos conseguidos',
+            gems: 'Gemas conseguidas',
+            stars: 'Estrellas de laberinto',
+            mazeLevels: 'Niveles de modo laberinto',
+            worlds: 'Mundos superados',
+            freeGames: 'Partidas en modo libre',
+            classificationGames: 'Partidas en modo clasificación',
+            pointsNovato: 'Puntos conseguidos en nivel novato',
+            pointsExplorador: 'Puntos conseguidos en nivel explorador',
+            pointsVeterano: 'Puntos conseguidos en nivel veterano',
+            pointsLegendario: 'Puntos conseguidos en nivel legendario',
+            skins: 'Disfraces desbloqueados',
+            foods: 'Comestibles desbloqueados',
+            scenes: 'Escenarios desbloqueados',
+            playersAdded: 'Añade un jugador'
+        };
+
+        const ACHIEVEMENT_DEFS = {
+            coins: [100, 500, 1000],
+            points: [100, 500, 1000],
+            gems: [10, 50, 100],
+            stars: [5, 15, 25],
+            mazeLevels: [10, 20, 30, 40],
+            worlds: [1, 2, 3, 4],
+            freeGames: [10, 50, 100],
+            classificationGames: [10, 50, 100],
+            pointsNovato: [100, 500, 1000],
+            pointsExplorador: [100, 500, 1000],
+            pointsVeterano: [100, 500, 1000],
+            pointsLegendario: [100, 500, 1000],
+            skins: [2, 4, 8],
+            foods: [2, 4, 8],
+            scenes: [2, 4, 8],
+            playersAdded: [1, 3, 5]
+        };
 
 
         // Estado del juego
@@ -5315,6 +5440,7 @@ function setupSlider(slider, display) {
         const WIN_SOUND_DURATION = 1300; // ms
         const GAME_OVER_SOUND_DURATION = 800; // ms
         const COIN_MESSAGE_DISPLAY_TIME = 1000; // ms
+        const GEM_MESSAGE_DISPLAY_TIME = 1000; // ms
         const MAX_HIGH_SCORES = 10;
         const FREE_MODE_INACTIVITY_LIMIT = 30000; // ms without movement before game ends in free mode
         const FALSE_FOOD_LIFESPAN = 5000;
@@ -6592,7 +6718,8 @@ function setupSlider(slider, display) {
         if (closeGenericMenuButton) closeGenericMenuButton.addEventListener('click', closeGenericMenuPanel);
         if (profileMenuButton) profileMenuButton.addEventListener('click', openProfileMenu);
         if (storeMenuButton) storeMenuButton.addEventListener('click', openStoreMenu);
-        if (achievementsMenuButton) achievementsMenuButton.addEventListener('click', () => { openGenericMenuPanel('Logros'); });
+        if (achievementsMenuButton) achievementsMenuButton.addEventListener('click', openAchievementsMenu);
+        if (closeAchievementsPanelButton) closeAchievementsPanelButton.addEventListener('click', closeAchievementsMenu);
         if (bonusesMenuButton) bonusesMenuButton.addEventListener('click', () => { openGenericMenuPanel('Bonificaciones'); });
         if (dailyMenuButton) dailyMenuButton.addEventListener('click', () => { openGenericMenuPanel('Premios diarios'); });
         if (wheelMenuButton) wheelMenuButton.addEventListener('click', () => { openGenericMenuPanel('Ruleta de premios'); });
@@ -6682,6 +6809,22 @@ function setupSlider(slider, display) {
 
         function closeStoreMenu() {
             togglePanel(storePanel, storePanel.querySelector('.panel-content'), false);
+            setTimeout(updateMainButtonStates, 0);
+        }
+
+        function openAchievementsMenu() {
+            if (!achievementsPanel) return;
+            populateAchievements();
+            const isConfigMenuVisible = !configMenuPanel.classList.contains('config-menu-panel-hidden') && configMenuPanel.classList.contains('panel-visible');
+            achievementsPanel.classList.remove('centered-panel');
+            togglePanel(achievementsPanel, achievementsPanel.querySelector('.panel-content'), true);
+            if (isConfigMenuVisible) {
+                matchPanelSizeWithElement(configMenuPanel, achievementsPanel);
+            }
+        }
+
+        function closeAchievementsMenu() {
+            togglePanel(achievementsPanel, achievementsPanel.querySelector('.panel-content'), false);
             setTimeout(updateMainButtonStates, 0);
         }
 
@@ -8664,6 +8807,8 @@ function setupSlider(slider, display) {
 
             totalCoins += earnedCoins;
             localStorage.setItem('snakeGameCoins', totalCoins.toString());
+            checkAchievement('coins', totalCoins);
+            checkAchievement('points', score);
             updateUIOnGameOver();
             if (gameMode === 'levels' || gameMode === 'maze') {
                 saveGameSettings();
@@ -9798,6 +9943,7 @@ function setupSlider(slider, display) {
         }
 
         function updateGemDisplay() {
+            if (gemValueDisplay) gemValueDisplay.textContent = totalGems;
             if (selectorGemsValueDisplay) selectorGemsValueDisplay.textContent = totalGems;
         }
 
@@ -9835,6 +9981,31 @@ function setupSlider(slider, display) {
                     earnedCoinsMessage.classList.remove('hide');
                 }, 300);
             }, COIN_MESSAGE_DISPLAY_TIME);
+        }
+
+        function showEarnedGemsMessage(amount) {
+            if (!earnedGemsMessage) return;
+            earnedGemsMessage.textContent = `+${amount}`;
+            earnedGemsMessage.classList.remove('hidden', 'hide');
+            void earnedGemsMessage.offsetWidth;
+            earnedGemsMessage.classList.add('show');
+            setTimeout(() => {
+                earnedGemsMessage.classList.remove('show');
+                earnedGemsMessage.classList.add('hide');
+                setTimeout(() => {
+                    earnedGemsMessage.classList.add('hidden');
+                    earnedGemsMessage.classList.remove('hide');
+                }, 300);
+            }, GEM_MESSAGE_DISPLAY_TIME);
+        }
+
+        function awardGems(amount) {
+            const previous = totalGems;
+            totalGems += amount;
+            saveGems();
+            updateGemDisplay();
+            showEarnedGemsMessage(amount);
+            checkAchievement('gems', totalGems);
         }
 
         function showInsufficientFundsToast(message = 'Monedas insuficientes') {
@@ -11087,6 +11258,7 @@ async function startGame(isRestart = false) {
                 updateGameModeUI();
                 requestAnimationFrame(draw);
                 saveGameSettings();
+                checkAchievement('playersAdded', Object.keys(playerProfiles).length);
             }
         }
 
@@ -11448,6 +11620,55 @@ async function startGame(isRestart = false) {
 
         function saveGems() {
             localStorage.setItem('snakeGameGems', totalGems.toString());
+        }
+
+        function loadAchievements() {
+            try {
+                const data = JSON.parse(localStorage.getItem('snakeAchievements') || '{}');
+                achievements = data || {};
+            } catch (e) {
+                achievements = {};
+            }
+        }
+
+        function saveAchievements() {
+            localStorage.setItem('snakeAchievements', JSON.stringify(achievements));
+        }
+
+        function getAchievementReward(type, index) {
+            return index + 1; // Simple reward scaling
+        }
+
+        function checkAchievement(type, value) {
+            const defs = ACHIEVEMENT_DEFS[type];
+            if (!defs) return;
+            let achieved = achievements[type] || 0;
+            while (achieved < defs.length && value >= defs[achieved]) {
+                awardGems(getAchievementReward(type, achieved));
+                achieved++;
+            }
+            achievements[type] = achieved;
+            saveAchievements();
+        }
+
+        function populateAchievements() {
+            if (!achievementsContent) return;
+            achievementsContent.innerHTML = '';
+            Object.keys(ACHIEVEMENT_DEFS).forEach(type => {
+                const section = document.createElement('div');
+                const title = document.createElement('h4');
+                title.textContent = ACHIEVEMENT_TITLES[type] || type;
+                section.appendChild(title);
+                const ul = document.createElement('ul');
+                ACHIEVEMENT_DEFS[type].forEach((threshold, idx) => {
+                    const li = document.createElement('li');
+                    li.textContent = `${threshold} -> ${getAchievementReward(type, idx)} 💎`;
+                    if ((achievements[type] || 0) > idx) li.classList.add('achievement-achieved');
+                    ul.appendChild(li);
+                });
+                section.appendChild(ul);
+                achievementsContent.appendChild(section);
+            });
         }
 
         function updateFoodSelectorAvailability() {
@@ -11851,6 +12072,7 @@ async function startGame(isRestart = false) {
             savePlayerProfiles();
             localStorage.setItem('snakeGameCoins', totalCoins.toString());
             localStorage.setItem('snakeGameGems', totalGems.toString());
+            saveAchievements();
             saveUnlockedSkins();
             saveUnlockedFoods();
             saveUnlockedScenes();
@@ -11872,6 +12094,7 @@ async function startGame(isRestart = false) {
             totalCoins = Number.isFinite(savedCoins) && savedCoins >= 0 ? savedCoins : 0;
             const savedGems = parseInt(localStorage.getItem('snakeGameGems'), 10);
             totalGems = Number.isFinite(savedGems) && savedGems >= 0 ? savedGems : 0;
+            loadAchievements();
             loadUnlockedFoods(); // Load foods before applying profile
             loadUnlockedSkins();
             loadUnlockedScenes();
