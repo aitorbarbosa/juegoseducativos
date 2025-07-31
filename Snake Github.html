@@ -1467,10 +1467,10 @@
             display: block;
         }
 
-        .settings-panel-hidden, .info-panel-hidden, .specific-info-panel-hidden, .free-settings-panel-hidden, .reset-panel-hidden, .config-menu-panel-hidden, .generic-menu-panel-hidden, .store-panel-hidden, .profile-panel-hidden, .purchase-confirmation-panel-hidden, .delete-confirmation-panel-hidden, .out-of-lives-panel-hidden, .select-confirmation-panel-hidden {
+        .settings-panel-hidden, .info-panel-hidden, .specific-info-panel-hidden, .free-settings-panel-hidden, .reset-panel-hidden, .config-menu-panel-hidden, .generic-menu-panel-hidden, .store-panel-hidden, .profile-panel-hidden, .achievements-panel-hidden, .purchase-confirmation-panel-hidden, .delete-confirmation-panel-hidden, .out-of-lives-panel-hidden, .select-confirmation-panel-hidden {
             display: none !important;
         }
-        #settings-panel, #info-panel, #specific-info-panel, #free-settings-panel, #reset-confirmation-panel, #config-menu-panel, #generic-menu-panel, #store-panel, #profile-panel, #purchase-confirmation-panel, #delete-confirmation-panel, #out-of-lives-panel, #select-confirmation-panel {
+        #settings-panel, #info-panel, #specific-info-panel, #free-settings-panel, #reset-confirmation-panel, #config-menu-panel, #generic-menu-panel, #store-panel, #profile-panel, #achievements-panel, #purchase-confirmation-panel, #delete-confirmation-panel, #out-of-lives-panel, #select-confirmation-panel {
             position: fixed;
             left: 0;
             transform: scale(0);
@@ -1514,6 +1514,13 @@
             box-sizing: border-box;
         }
         #profile-panel .panel-content {
+            padding-right: 10px;
+        }
+        #achievements-panel {
+            max-height: 90vh;
+            box-sizing: border-box;
+        }
+        #achievements-panel .panel-content {
             padding-right: 10px;
         }
 
@@ -1618,6 +1625,7 @@
         #generic-menu-panel.centered-panel,
         #store-panel.centered-panel,
         #profile-panel.centered-panel,
+        #achievements-panel.centered-panel,
         #purchase-confirmation-panel.centered-panel,
         #delete-confirmation-panel.centered-panel,
         #out-of-lives-panel.centered-panel,
@@ -1633,6 +1641,7 @@
         #generic-menu-panel.centered-panel.panel-visible,
         #store-panel.centered-panel.panel-visible,
         #profile-panel.centered-panel.panel-visible,
+        #achievements-panel.centered-panel.panel-visible,
         #purchase-confirmation-panel.centered-panel.panel-visible,
         #delete-confirmation-panel.centered-panel.panel-visible,
         #out-of-lives-panel.centered-panel.panel-visible,
@@ -1648,6 +1657,7 @@
         #generic-menu-panel.panel-visible,
         #store-panel.panel-visible,
         #profile-panel.panel-visible,
+        #achievements-panel.panel-visible,
         #purchase-confirmation-panel.panel-visible,
         #delete-confirmation-panel.panel-visible,
         #out-of-lives-panel.panel-visible,
@@ -1792,7 +1802,8 @@
         #free-settings-panel .panel-content::-webkit-scrollbar,
         #reset-confirmation-panel .panel-content::-webkit-scrollbar,
         #store-panel .panel-content::-webkit-scrollbar,
-        #profile-panel .panel-content::-webkit-scrollbar {
+        #profile-panel .panel-content::-webkit-scrollbar,
+        #achievements-panel .panel-content::-webkit-scrollbar {
             width: 8px;
         }
         #info-panel-content::-webkit-scrollbar-track,
@@ -1803,7 +1814,8 @@
         #free-settings-panel .panel-content::-webkit-scrollbar-track,
         #reset-confirmation-panel .panel-content::-webkit-scrollbar-track,
         #store-panel .panel-content::-webkit-scrollbar-track,
-        #profile-panel .panel-content::-webkit-scrollbar-track {
+        #profile-panel .panel-content::-webkit-scrollbar-track,
+        #achievements-panel .panel-content::-webkit-scrollbar-track {
             background: #2d1d3a;
             border-radius: 4px;
         }
@@ -1815,7 +1827,8 @@
         #free-settings-panel .panel-content::-webkit-scrollbar-thumb,
         #reset-confirmation-panel .panel-content::-webkit-scrollbar-thumb,
         #store-panel .panel-content::-webkit-scrollbar-thumb,
-        #profile-panel .panel-content::-webkit-scrollbar-thumb {
+        #profile-panel .panel-content::-webkit-scrollbar-thumb,
+        #achievements-panel .panel-content::-webkit-scrollbar-thumb {
             background: #442F58;
             border-radius: 4px;
         }
@@ -1836,7 +1849,9 @@
         #store-panel .panel-content::-webkit-scrollbar-thumb:hover,
         #store-panel .panel-content::-webkit-scrollbar-thumb:active,
         #profile-panel .panel-content::-webkit-scrollbar-thumb:hover,
-        #profile-panel .panel-content::-webkit-scrollbar-thumb:active {
+        #profile-panel .panel-content::-webkit-scrollbar-thumb:active,
+        #achievements-panel .panel-content::-webkit-scrollbar-thumb:hover,
+        #achievements-panel .panel-content::-webkit-scrollbar-thumb:active {
             background: #8f66af;
         }
 
@@ -2714,6 +2729,31 @@
           color: #1F2937;
         }
 
+        .achievement-item {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          padding: 6px;
+          border: 2px solid #8f66af;
+          border-radius: 6px;
+          background-color: #1F2937;
+          font-family: 'Press Start 2P', sans-serif;
+          font-size: 0.6rem;
+          color: #C084FC;
+        }
+        .achievement-item.completed {
+          background-color: #422E58;
+        }
+        .achievement-claim-button {
+          margin-left: 6px;
+          padding: 2px 4px;
+          border: 2px solid #8f66af;
+          border-radius: 4px;
+          background-color: #8f66af;
+          color: #1F2937;
+          font-size: 0.6rem;
+        }
+
         #purchase-item-preview {
           margin: 0 auto 8px;
         }
@@ -3398,11 +3438,22 @@
             <div id="profile-scene-unlocked" class="grid grid-cols-3 gap-4 w-full mb-2"></div>
             <h4>SIN DESBLOQUEAR</h4>
             <div id="profile-scene-locked" class="grid grid-cols-3 gap-4 w-full"></div>
-        </div>
+</div>
 
     </div>
 </div>
 </div>
+            <div id="achievements-panel" class="achievements-panel-hidden">
+                <div class="settings-header">
+                    <h2>LOGROS</h2>
+                    <button id="close-achievements-panel" class="close-button" aria-label="Cerrar">
+                        <img src="https://i.imgur.com/w5E6xdU.png" alt="Cerrar">
+                    </button>
+                </div>
+                <div class="panel-content">
+                    <div id="achievements-container" class="flex flex-col gap-2"></div>
+                </div>
+            </div>
             <div id="store-panel" class="store-panel-hidden">
                 <div class="settings-header">
                     <h2>TIENDA</h2>
@@ -3688,6 +3739,9 @@
 
         const storePanel = document.getElementById("store-panel");
         const profilePanel = document.getElementById("profile-panel");
+        const achievementsPanel = document.getElementById("achievements-panel");
+        const achievementsContainer = document.getElementById("achievements-container");
+        const closeAchievementsPanelButton = document.getElementById("close-achievements-panel");
         const closeProfilePanelButton = document.getElementById("close-profile-panel");
         const storeItemsContainer = document.getElementById("store-items-container");
         const storeTabButtons = document.querySelectorAll('#store-tabs .store-tab');
@@ -5131,6 +5185,24 @@ function setupSlider(slider, display) {
         const GEM_PRICE = 1000;
         let storeTab = 'general';
         let profileTab = 'general';
+        const ACHIEVEMENT_DEFINITIONS = [
+            { id: 'coins-100', category: 'Monedas', metric: 'coins', threshold: 100, reward: 1, description: 'Consigue 100 monedas' },
+            { id: 'coins-500', category: 'Monedas', metric: 'coins', threshold: 500, reward: 5, description: 'Consigue 500 monedas' },
+            { id: 'points-1000', category: 'Puntos', metric: 'points', threshold: 1000, reward: 1, description: 'Consigue 1000 puntos' },
+            { id: 'points-5000', category: 'Puntos', metric: 'points', threshold: 5000, reward: 5, description: 'Consigue 5000 puntos' },
+            { id: 'gems-10', category: 'Gemas conseguidas', metric: 'gems', threshold: 10, reward: 2, description: 'Consigue 10 gemas' },
+            { id: 'stars-10', category: 'Estrellas de laberinto', metric: 'stars', threshold: 10, reward: 3, description: 'Obtén 10 estrellas' },
+            { id: 'maze-5', category: 'Niveles de laberinto', metric: 'mazeLevels', threshold: 5, reward: 3, description: 'Supera 5 niveles de laberinto' },
+            { id: 'world-1', category: 'Mundos superados', metric: 'worlds', threshold: 1, reward: 5, description: 'Supera el primer mundo' },
+            { id: 'free-5', category: 'Partidas en modo libre', metric: 'freeGames', threshold: 5, reward: 1, description: 'Juega 5 partidas en modo libre' },
+            { id: 'class-5', category: 'Partidas en modo clasificación', metric: 'classificationGames', threshold: 5, reward: 1, description: 'Juega 5 partidas en clasificación' },
+            { id: 'skin-2', category: 'Disfraces desbloqueados', metric: 'skins', threshold: 2, reward: 2, description: 'Desbloquea 2 disfraces' },
+            { id: 'food-2', category: 'Comestibles desbloqueados', metric: 'foods', threshold: 2, reward: 2, description: 'Desbloquea 2 comestibles' },
+            { id: 'scene-2', category: 'Escenarios desbloqueados', metric: 'scenes', threshold: 2, reward: 2, description: 'Desbloquea 2 escenarios' },
+            { id: 'player-1', category: 'Añade un jugador', metric: 'players', threshold: 1, reward: 1, description: 'Añade un nuevo jugador' }
+        ];
+        let achievementsStatus = [];
+        let achievementProgress = {};
         // --- Fin Configuración de Comestibles ---
 
 
@@ -6592,7 +6664,7 @@ function setupSlider(slider, display) {
         if (closeGenericMenuButton) closeGenericMenuButton.addEventListener('click', closeGenericMenuPanel);
         if (profileMenuButton) profileMenuButton.addEventListener('click', openProfileMenu);
         if (storeMenuButton) storeMenuButton.addEventListener('click', openStoreMenu);
-        if (achievementsMenuButton) achievementsMenuButton.addEventListener('click', () => { openGenericMenuPanel('Logros'); });
+        if (achievementsMenuButton) achievementsMenuButton.addEventListener('click', openAchievementsMenu);
         if (bonusesMenuButton) bonusesMenuButton.addEventListener('click', () => { openGenericMenuPanel('Bonificaciones'); });
         if (dailyMenuButton) dailyMenuButton.addEventListener('click', () => { openGenericMenuPanel('Premios diarios'); });
         if (wheelMenuButton) wheelMenuButton.addEventListener('click', () => { openGenericMenuPanel('Ruleta de premios'); });
@@ -6682,6 +6754,22 @@ function setupSlider(slider, display) {
 
         function closeStoreMenu() {
             togglePanel(storePanel, storePanel.querySelector('.panel-content'), false);
+            setTimeout(updateMainButtonStates, 0);
+        }
+
+        function openAchievementsMenu() {
+            if (!achievementsPanel) return;
+            populateAchievementsList();
+            const isConfigMenuVisible = !configMenuPanel.classList.contains('config-menu-panel-hidden') && configMenuPanel.classList.contains('panel-visible');
+            achievementsPanel.classList.remove('centered-panel');
+            togglePanel(achievementsPanel, achievementsPanel.querySelector('.panel-content'), true);
+            if (isConfigMenuVisible) {
+                matchPanelSizeWithElement(configMenuPanel, achievementsPanel);
+            }
+        }
+
+        function closeAchievementsMenu() {
+            togglePanel(achievementsPanel, achievementsPanel.querySelector('.panel-content'), false);
             setTimeout(updateMainButtonStates, 0);
         }
 
@@ -6836,6 +6924,7 @@ function setupSlider(slider, display) {
                     unlockedFoods[purchaseInfo.key] = true;
                     saveUnlockedFoods();
                     updateFoodSelectorAvailability();
+                    recordAchievementProgress('foods', 1);
                     success = true;
                 }
             } else if (purchaseInfo.type === 'skin') {
@@ -6845,6 +6934,7 @@ function setupSlider(slider, display) {
                     unlockedSkins[purchaseInfo.key] = true;
                     saveUnlockedSkins();
                     updateSkinSelectorAvailability();
+                    recordAchievementProgress('skins', 1);
                     success = true;
                 }
             } else if (purchaseInfo.type === 'scene') {
@@ -6854,6 +6944,7 @@ function setupSlider(slider, display) {
                     unlockedScenes[purchaseInfo.key] = true;
                     saveUnlockedScenes();
                     updateSceneSelectorAvailability();
+                    recordAchievementProgress('scenes', 1);
                     success = true;
                 }
             } else if (purchaseInfo.type === 'general') {
@@ -6879,6 +6970,7 @@ function setupSlider(slider, display) {
                         totalCoins -= price;
                         totalGems++;
                         saveGems();
+                        recordAchievementProgress('gems', 1);
                         updateGemDisplay();
                         success = true;
                     }
@@ -7017,6 +7109,7 @@ function setupSlider(slider, display) {
 
         if (closeStorePanelButton) closeStorePanelButton.addEventListener('click', closeStoreMenu);
         if (closeProfilePanelButton) closeProfilePanelButton.addEventListener('click', closeProfileMenu);
+        if (closeAchievementsPanelButton) closeAchievementsPanelButton.addEventListener('click', closeAchievementsMenu);
         if (confirmPurchaseYesButton) confirmPurchaseYesButton.addEventListener('click', confirmPurchase);
         if (confirmPurchaseNoButton) confirmPurchaseNoButton.addEventListener('click', closePurchaseConfirm);
         if (confirmDeleteYesButton) confirmDeleteYesButton.addEventListener('click', confirmDelete);
@@ -8361,6 +8454,8 @@ function setupSlider(slider, display) {
                 if (currentLevelInWorld === LEVELS_PER_WORLD) { // Mundo completado
                     screenState.showWorldCompleteCover = currentWorld;
 
+                    recordAchievementProgress('worlds', 1);
+
                     if (currentWorld === TOTAL_WORLDS) { // Juego completado
                         startButton.textContent = "AJUSTES";
                         // No hay más niveles a los que avanzar. currentWorld y currentLevelInWorld permanecen en el máximo.
@@ -8442,10 +8537,12 @@ function setupSlider(slider, display) {
 
             if (levelWon && !isLastLevel && displayMazeLevel === currentMazeLevel) {
                 currentMazeLevel++;
+                recordAchievementProgress('mazeLevels', 1);
             }
 
             if (levelIndex >= 0 && levelIndex < MAZE_LEVEL_COUNT && mazeStarsEarned > mazePreviousStars) {
                 mazeLevelStars[levelIndex] = mazeStarsEarned;
+                recordAchievementProgress('stars', mazeStarsEarned - mazePreviousStars);
             }
 
             saveGameSettings();
@@ -8660,9 +8757,11 @@ function setupSlider(slider, display) {
             } else {
                 earnedCoins = Math.floor(score / POINTS_PER_COIN);
             }
+            recordAchievementProgress('points', score);
             const previousCoins = totalCoins;
 
             totalCoins += earnedCoins;
+            recordAchievementProgress('coins', earnedCoins);
             localStorage.setItem('snakeGameCoins', totalCoins.toString());
             updateUIOnGameOver();
             if (gameMode === 'levels' || gameMode === 'maze') {
@@ -8676,6 +8775,9 @@ function setupSlider(slider, display) {
             if (gameMode === 'classification' || !levelEffectivelyWon) {
                 loseLife();
             }
+
+            if (gameMode === 'classification') recordAchievementProgress('classificationGames', 1);
+            if (gameMode === 'freeMode') recordAchievementProgress('freeGames', 1);
 
             const soundDelay = levelEffectivelyWon ? WIN_SOUND_DURATION : GAME_OVER_SOUND_DURATION;
             setTimeout(() => {
@@ -11072,6 +11174,7 @@ async function startGame(isRestart = false) {
             if (newName) {
                 if (!playerProfiles[newName]) {
                     playerProfiles[newName] = createDefaultProfile(newName);
+                    recordAchievementProgress('players', 1);
                 }
                 updatePlayerNameSelectors(newName);
                 currentPlayerName = newName;
@@ -11450,6 +11553,37 @@ async function startGame(isRestart = false) {
             localStorage.setItem('snakeGameGems', totalGems.toString());
         }
 
+        function saveAchievementsStatus() {
+            localStorage.setItem('snakeAchievementsStatus', JSON.stringify(achievementsStatus));
+        }
+
+        function loadAchievementsStatus() {
+            try {
+                achievementsStatus = JSON.parse(localStorage.getItem('snakeAchievementsStatus') || '[]');
+            } catch (e) {
+                achievementsStatus = [];
+            }
+        }
+
+        function saveAchievementProgress() {
+            localStorage.setItem('snakeAchievementProgress', JSON.stringify(achievementProgress));
+        }
+
+        function loadAchievementProgress() {
+            try {
+                achievementProgress = JSON.parse(localStorage.getItem('snakeAchievementProgress') || '{}');
+            } catch (e) {
+                achievementProgress = {};
+            }
+        }
+
+        function ensureAchievementsInitialized() {
+            achievementsStatus = ACHIEVEMENT_DEFINITIONS.map(def => {
+                const stored = achievementsStatus.find(a => a.id === def.id) || {};
+                return { ...def, completed: stored.completed || false, claimed: stored.claimed || false };
+            });
+        }
+
         function updateFoodSelectorAvailability() {
             if (!foodSelectors.length) return;
             foodSelectors.forEach(sel => {
@@ -11659,6 +11793,69 @@ async function startGame(isRestart = false) {
             populateStoreItems();
         }
 
+        function populateAchievementsList() {
+            if (!achievementsContainer) return;
+            achievementsContainer.innerHTML = '';
+            const categories = {};
+            achievementsStatus.forEach(a => {
+                if (!categories[a.category]) categories[a.category] = [];
+                categories[a.category].push(a);
+            });
+            Object.keys(categories).forEach(cat => {
+                const header = document.createElement('h4');
+                header.textContent = cat.toUpperCase();
+                achievementsContainer.appendChild(header);
+                categories[cat].forEach(a => {
+                    const item = document.createElement('div');
+                    item.className = 'achievement-item' + (a.claimed ? ' completed' : '');
+                    const desc = document.createElement('span');
+                    desc.textContent = a.description;
+                    const prog = document.createElement('span');
+                    prog.textContent = `${Math.min(achievementProgress[a.metric] || 0, a.threshold)} / ${a.threshold}`;
+                    item.appendChild(desc);
+                    item.appendChild(prog);
+                    if (a.completed && !a.claimed) {
+                        const btn = document.createElement('button');
+                        btn.textContent = `+${a.reward}`;
+                        btn.className = 'achievement-claim-button';
+                        btn.addEventListener('click', () => claimAchievement(a.id));
+                        item.appendChild(btn);
+                    } else if (a.claimed) {
+                        const done = document.createElement('span');
+                        done.textContent = '✓';
+                        item.appendChild(done);
+                    }
+                    achievementsContainer.appendChild(item);
+                });
+            });
+        }
+
+        function claimAchievement(id) {
+            const ach = achievementsStatus.find(a => a.id === id);
+            if (!ach || !ach.completed || ach.claimed) return;
+            ach.claimed = true;
+            totalGems += ach.reward;
+            saveGems();
+            saveAchievementsStatus();
+            updateGemDisplay();
+            populateAchievementsList();
+        }
+
+        function checkAchievements() {
+            achievementsStatus.forEach(a => {
+                if (!a.completed && (achievementProgress[a.metric] || 0) >= a.threshold) {
+                    a.completed = true;
+                }
+            });
+            saveAchievementsStatus();
+        }
+
+        function recordAchievementProgress(metric, amount = 1) {
+            achievementProgress[metric] = (achievementProgress[metric] || 0) + amount;
+            saveAchievementProgress();
+            checkAchievements();
+        }
+
         addIconPressEvents(configButton, configButtonIcon);
         addIconPressEvents(backButton, backButtonIcon);
         addIconPressEvents(restartMazeButton, restartMazeButtonIcon);
@@ -11686,6 +11883,7 @@ async function startGame(isRestart = false) {
         addIconPressEvents(closeGenericMenuButton, closeGenericMenuButton);
         addIconPressEvents(closeProfilePanelButton, closeProfilePanelButton);
         addIconPressEvents(closeStorePanelButton, closeStorePanelButton);
+        addIconPressEvents(closeAchievementsPanelButton, closeAchievementsPanelButton);
         addIconPressEvents(closeOutOfLivesPanelButton, closeOutOfLivesPanelButton);
         addIconPressEvents(getLivesStoreButton, getLivesStoreButton);
         addIconPressEvents(getLivesBonusesButton, getLivesBonusesButton);
@@ -11875,6 +12073,11 @@ async function startGame(isRestart = false) {
             loadUnlockedFoods(); // Load foods before applying profile
             loadUnlockedSkins();
             loadUnlockedScenes();
+            loadAchievementsStatus();
+            loadAchievementProgress();
+            ensureAchievementsInitialized();
+            saveAchievementsStatus();
+            checkAchievements();
             updateFoodSelectorOptions(playerProfiles[currentPlayerName]?.food || 'apple');
             updateSceneSelectorOptions(playerProfiles[currentPlayerName]?.scene || 'classic');
             updatePlayerNameSelectors(currentPlayerName);
