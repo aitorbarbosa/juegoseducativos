@@ -4048,15 +4048,15 @@ function setupSlider(slider, display) {
         const modeSelectMazeImg = new Image();
 
         const worldImagesConfig = {
-            1: { cover: 'https://i.imgur.com/aZygoxI.png', complete: 'https://i.imgur.com/d765hmW.png' },
+            1: { cover: 'https://i.imgur.com/qRpeGP6.png', complete: 'https://i.imgur.com/d765hmW.png' },
             2: { cover: 'https://i.imgur.com/u9P2UbG.png', complete: 'https://i.imgur.com/IBMU24f.png' },
             3: { cover: 'https://i.imgur.com/yQDmlKi.png', complete: 'https://i.imgur.com/adH9K0N.png' },
             4: { cover: 'https://i.imgur.com/17yQbLk.png', complete: 'https://i.imgur.com/yqJtLHZ.png' },
-            5: { cover: 'https://i.imgur.com/eve92Ap.png', complete: 'https://i.imgur.com/5ClclJK.png' },
+            5: { cover: 'https://i.imgur.com/8dR9m3O.png', complete: 'https://i.imgur.com/5ClclJK.png' },
             6: { cover: 'https://i.imgur.com/QaqKAcn.png', complete: 'https://i.imgur.com/xsShnmX.png' },
             7: { cover: 'https://i.imgur.com/DcT65N5.png', complete: 'https://i.imgur.com/xSCMXXp.png' },
-            8: { cover: 'https://i.imgur.com/QyXjyeI.png', complete: 'https://i.imgur.com/ShH9124.png' },
-            9: { cover: 'https://i.imgur.com/5vUAVaa.png', complete: 'https://i.imgur.com/UP7JL96.png' },
+            8: { cover: 'https://i.imgur.com/as1mg0E.png', complete: 'https://i.imgur.com/ShH9124.png' },
+            9: { cover: 'https://i.imgur.com/RfOtLQv.png', complete: 'https://i.imgur.com/UP7JL96.png' },
             10: { cover: 'https://i.imgur.com/j0UyWzJ.png', complete: 'https://i.imgur.com/YFoeeoF.png' }
         };
 
@@ -4549,9 +4549,7 @@ function setupSlider(slider, display) {
             redLightningChance: 0,
             streakReduction: 0,
             falseFoodSpawnRange: null,
-            falseFoodLifespan: 0,
             mirrorSpawnRange: null,
-            mirrorLifespan: 0,
             mirrorEffectDuration: 0,
             obstacleCount: 0,
             targetScore: 0
@@ -4563,21 +4561,21 @@ function setupSlider(slider, display) {
             // Mundo 2 - Cueva del Crecimiento
             { speed: 195 },
             // Mundo 3 - Templo de la Agilidad
-            { speed: 190, initialLength: 7, redLightningChance: 0.25, lightningSpawnRange: [5000, 8000] },
+            { speed: 190, initialLength: 9, redLightningChance: 0.25, lightningSpawnRange: [5000, 8000] },
             // Mundo 4 - Hambre Voraz
-            { speed: 185, initialLength: 9, lightningLifespan: 5750, redLightningChance: 0.25, lightningSpawnRange: [5000, 8000] },
+            { speed: 185, initialLength: 10, lightningLifespan: 5750, redLightningChance: 0.25, lightningSpawnRange: [5000, 8000] },
             // Mundo 5 - Doble o nada
-            { speed: 180, initialLength: 11, lightningLifespan: 5500, redLightningChance: 0.25, lightningSpawnRange: [5000, 8000], initialLifespan: 5750 },
+            { speed: 180, initialLength: 11, lightningLifespan: 5500, redLightningChance: 0.25, lightningSpawnRange: [5000, 8000], initialLifespan: 5500 },
             // Mundo 6 - Racha demoledora
-            { speed: 175, initialLength: 13, lightningLifespan: 5250, redLightningChance: 0.25, lightningSpawnRange: [5000, 8000], initialLifespan: 5500, goldenFoodChance: 0.15, goldenFoodLifespan: 4500, streakReduction: 250 },
+            { speed: 175, initialLength: 12, lightningLifespan: 5250, redLightningChance: 0.25, lightningSpawnRange: [5000, 8000], initialLifespan: 5400, goldenFoodChance: 0.19, goldenFoodLifespan: 4400, streakReduction: 250 },
             // Mundo 7 - Bosque de los Engaños
-            { speed: 170, initialLength: 15, lightningLifespan: 5000, redLightningChance: 0.25, lightningSpawnRange: [5000, 8000], initialLifespan: 5250, goldenFoodChance: 0.14, goldenFoodLifespan: 4250, streakReduction: 250, falseFoodLifespan: 5000 },
+            { speed: 170, initialLength: 13, lightningLifespan: 5000, redLightningChance: 0.25, lightningSpawnRange: [5000, 8000], initialLifespan: 5300, goldenFoodChance: 0.18, goldenFoodLifespan: 4300, streakReduction: 250 },
             // Mundo 8 - Jardín de los Peligros
-            { speed: 165, initialLength: 17, lightningLifespan: 4750, redLightningChance: 0.25, lightningSpawnRange: [5000, 8000], initialLifespan: 5000, goldenFoodChance: 0.13, goldenFoodLifespan: 4000, streakReduction: 250, falseFoodLifespan: 5000, falseFoodSpawnRange: [5000, 8000] },
+            { speed: 165, initialLength: 14, lightningLifespan: 4750, redLightningChance: 0.25, lightningSpawnRange: [5000, 8000], initialLifespan: 5200, goldenFoodChance: 0.17, goldenFoodLifespan: 4200, streakReduction: 250, falseFoodSpawnRange: [5000, 8000] },
             // Mundo 9 - Lago del Reflejo
-            { speed: 160, initialLength: 19, lightningLifespan: 4500, redLightningChance: 0.25, lightningSpawnRange: [5000, 8000], initialLifespan: 4750, goldenFoodChance: 0.12, goldenFoodLifespan: 3750, streakReduction: 250, falseFoodLifespan: 5000, falseFoodSpawnRange: [4500, 7500], obstacleCount: 5, mirrorLifespan: 5000, mirrorEffectDuration: 3000 },
+            { speed: 160, initialLength: 15, lightningLifespan: 4500, redLightningChance: 0.25, lightningSpawnRange: [5000, 8000], initialLifespan: 5100, goldenFoodChance: 0.16, goldenFoodLifespan: 4100, streakReduction: 250, falseFoodSpawnRange: [4500, 7500], obstacleCount: 5, mirrorEffectDuration: 3000 },
             // Mundo 10 - Final Inesperado
-            { lightningSpawnRange: [5000, 8000], redLightningChance: 0.25, streakReduction: 250, falseFoodLifespan: 5000, mirrorLifespan: 5000, mirrorEffectDuration: 2250 }
+            { lightningSpawnRange: [5000, 8000], redLightningChance: 0.25, streakReduction: 250, mirrorEffectDuration: 2250, goldenFoodChance: 0.15 }
         ];
 
         const LEVEL_OVERRIDES = [
@@ -4639,11 +4637,11 @@ function setupSlider(slider, display) {
             ],
             // Mundo 8 - Jardín de los Peligros
             [
-                { obstacleCount: 3, targetScore: 600 },
-                { obstacleCount: 5, targetScore: 650 },
-                { obstacleCount: 8, targetScore: 700 },
-                { obstacleCount: 11, targetScore: 750 },
-                { obstacleCount: 15, targetScore: 800 }
+                { obstacleCount: 2, targetScore: 600 },
+                { obstacleCount: 4, targetScore: 650 },
+                { obstacleCount: 6, targetScore: 700 },
+                { obstacleCount: 8, targetScore: 750 },
+                { obstacleCount: 10, targetScore: 800 }
             ],
             // Mundo 9 - Lago del Reflejo
             [
@@ -4655,11 +4653,11 @@ function setupSlider(slider, display) {
             ],
             // Mundo 10 - Final Inesperado
             [
-                { speed: 155, initialLength: 20, initialLifespan: 4650, lightningLifespan: 4400, goldenFoodChance: 0.11, goldenFoodLifespan: 3650, falseFoodSpawnRange: [4250, 7250], obstacleCount: 6, mirrorSpawnRange: [5000, 8000], targetScore: 800 },
-                { speed: 150, initialLength: 21, initialLifespan: 4550, lightningLifespan: 4300, goldenFoodChance: 0.1, goldenFoodLifespan: 3550, falseFoodSpawnRange: [4000, 7000], obstacleCount: 8, mirrorSpawnRange: [4750, 7750], targetScore: 850 },
-                { speed: 145, initialLength: 22, initialLifespan: 4450, lightningLifespan: 4200, goldenFoodChance: 0.09, goldenFoodLifespan: 3450, falseFoodSpawnRange: [3750, 6750], obstacleCount: 10, mirrorSpawnRange: [4500, 7500], targetScore: 900 },
-                { speed: 140, initialLength: 23, initialLifespan: 4350, lightningLifespan: 4100, goldenFoodChance: 0.08, goldenFoodLifespan: 3350, falseFoodSpawnRange: [3500, 6500], obstacleCount: 12, mirrorSpawnRange: [4250, 7250], targetScore: 950 },
-                { speed: 130, initialLength: 25, initialLifespan: 4250, lightningLifespan: 4000, goldenFoodChance: 0.07, goldenFoodLifespan: 3250, falseFoodSpawnRange: [3000, 6000], obstacleCount: 15, mirrorSpawnRange: [4000, 7000], targetScore: 1000 }
+                { speed: 155, initialLength: 16, initialLifespan: 5000, lightningLifespan: 4400, goldenFoodLifespan: 4000, falseFoodSpawnRange: [4250, 7250], obstacleCount: 6, mirrorSpawnRange: [5000, 8000], targetScore: 800 },
+                { speed: 154, initialLength: 17, initialLifespan: 4900, lightningLifespan: 4300, goldenFoodLifespan: 3900, falseFoodSpawnRange: [4000, 7000], obstacleCount: 7, mirrorSpawnRange: [4750, 7750], targetScore: 850 },
+                { speed: 153, initialLength: 18, initialLifespan: 4800, lightningLifespan: 4200, goldenFoodLifespan: 3800, falseFoodSpawnRange: [3750, 6750], obstacleCount: 8, mirrorSpawnRange: [4500, 7500], targetScore: 900 },
+                { speed: 152, initialLength: 19, initialLifespan: 4700, lightningLifespan: 4100, goldenFoodLifespan: 3700, falseFoodSpawnRange: [3500, 6500], obstacleCount: 9, mirrorSpawnRange: [4250, 7250], targetScore: 950 },
+                { speed: 150, initialLength: 20, initialLifespan: 4500, lightningLifespan: 4000, goldenFoodLifespan: 3500, falseFoodSpawnRange: [3000, 6000], obstacleCount: 10, mirrorSpawnRange: [4000, 7000], targetScore: 1000 }
             ]
         ];
 
@@ -7764,15 +7762,17 @@ function setupSlider(slider, display) {
             } while ((isPositionOccupied(pos) || isAdjacentToAnyFood(pos)) && attempts < 100);
             if (attempts >= 100) return;
             let lifespan = FALSE_FOOD_LIFESPAN;
+            let cfg;
             if (gameMode === 'classification' || gameMode === 'freeMode' || gameMode === 'maze') {
-                const cfg = (gameMode === 'classification') ? (DIFFICULTY_SETTINGS[difficultySelector.value] || {})
-                          : (gameMode === 'maze' ? DIFFICULTY_SETTINGS[currentMazeDifficulty] : freeModeSettings);
-                if (typeof cfg.falseFoodLifespan === 'number') {
-                    lifespan = cfg.falseFoodLifespan;
-                }
+                cfg = (gameMode === 'classification') ? (DIFFICULTY_SETTINGS[difficultySelector.value] || {})
+                      : (gameMode === 'maze' ? DIFFICULTY_SETTINGS[currentMazeDifficulty] : freeModeSettings);
             } else if (gameMode === 'levels') {
-                const cfg = LEVEL_SETTINGS[currentWorld - 1][currentLevelInWorld - 1];
-                if (typeof cfg.falseFoodLifespan === 'number') {
+                cfg = LEVEL_SETTINGS[currentWorld - 1][currentLevelInWorld - 1];
+            }
+            if (cfg) {
+                if (cfg.falseFoodSpawnRange && cfg.mirrorSpawnRange) {
+                    lifespan = calculateNextFoodLifespan();
+                } else if (typeof cfg.falseFoodLifespan === 'number') {
                     lifespan = cfg.falseFoodLifespan;
                 }
             }
@@ -8075,15 +8075,17 @@ function setupSlider(slider, display) {
             } while ((isPositionOccupied(pos) || isAdjacentToAnyFood(pos)) && attempts < 100);
             if (attempts >= 100) return;
             let lifespan = FALSE_FOOD_LIFESPAN;
+            let cfg;
             if (gameMode === 'classification' || gameMode === 'freeMode' || gameMode === 'maze') {
-                const cfg = (gameMode === 'classification') ? (DIFFICULTY_SETTINGS[difficultySelector.value] || {})
-                          : (gameMode === 'maze' ? DIFFICULTY_SETTINGS[currentMazeDifficulty] : freeModeSettings);
-                if (typeof cfg.mirrorLifespan === 'number') {
-                    lifespan = cfg.mirrorLifespan;
-                }
+                cfg = (gameMode === 'classification') ? (DIFFICULTY_SETTINGS[difficultySelector.value] || {})
+                      : (gameMode === 'maze' ? DIFFICULTY_SETTINGS[currentMazeDifficulty] : freeModeSettings);
             } else if (gameMode === 'levels') {
-                const cfg = LEVEL_SETTINGS[currentWorld - 1][currentLevelInWorld - 1];
-                if (typeof cfg.mirrorLifespan === 'number') {
+                cfg = LEVEL_SETTINGS[currentWorld - 1][currentLevelInWorld - 1];
+            }
+            if (cfg) {
+                if (cfg.falseFoodSpawnRange && cfg.mirrorSpawnRange) {
+                    lifespan = calculateNextFoodLifespan();
+                } else if (typeof cfg.mirrorLifespan === 'number') {
                     lifespan = cfg.mirrorLifespan;
                 }
             }
