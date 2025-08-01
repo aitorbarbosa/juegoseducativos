@@ -11032,8 +11032,9 @@ async function startGame(isRestart = false) {
             }
 
             score = 0;
-            streakMultiplier = 1; 
-            gameOver = false; 
+            streakMultiplier = 1;
+            gameOver = false;
+            updateScoreDisplay();
             direction = "right"; 
             nextDirection = "right"; // Asegurar que nextDirection también se reinicia
             
@@ -11543,6 +11544,15 @@ async function startGame(isRestart = false) {
                 screenState.gameActuallyStarted = false;
 
                 if (selectedMode === 'levels') {
+                    displayWorld = currentWorld;
+                    displayLevelInWorld = currentLevelInWorld;
+                    const cfg = LEVEL_SETTINGS[displayWorld - 1][displayLevelInWorld - 1];
+                    displayTargetScore = cfg.targetScore || 0;
+                    updateTargetScoreDisplay();
+                    if (progressPanelLeftValue) {
+                        progressPanelLeftValue.textContent = `${displayWorld}.${displayLevelInWorld}`;
+                    }
+                    drawStarProgress();
                     screenState.showCoverForWorld = currentWorld;
                 } else if (selectedMode === 'freeMode') {
                     screenState.showFreeModeCover = true;
@@ -11584,6 +11594,9 @@ async function startGame(isRestart = false) {
                 gameMode = '';
                 if (gameContainer) gameContainer.classList.add('hidden');
                 if (splashScreen) splashScreen.classList.remove('hidden');
+                score = 0;
+                streakMultiplier = 1;
+                updateScoreDisplay();
             } else {
                 // Return to mode selection
                 showModeSelect = true;
@@ -11620,6 +11633,9 @@ async function startGame(isRestart = false) {
                 restartMazeButton.classList.add('hidden');
                 startButtonWrapperEl.classList.remove('split');
                 draw();
+                score = 0;
+                streakMultiplier = 1;
+                updateScoreDisplay();
             }
             updateGameModeUI();
             updateMainButtonStates();
