@@ -979,6 +979,30 @@
             transform: translateX(-100px) translateY(-50%);
         }
 
+        #earnedGemsMessage {
+            position: absolute;
+            top: 50%;
+            left: 100%;
+            transform: translateX(-20px) translateY(-50%);
+            color: #4ade80;
+            font-size: 1em;
+            white-space: nowrap;
+            opacity: 0;
+            transition: opacity 0.3s, transform 0.5s;
+            pointer-events: none;
+            z-index: 20;
+        }
+
+        #earnedGemsMessage.show {
+            opacity: 1;
+            transform: translateX(-45px) translateY(-50%);
+        }
+
+        #earnedGemsMessage.hide {
+            opacity: 0;
+            transform: translateX(-100px) translateY(-50%);
+        }
+
         #livesValue {
             position: absolute;
             top: 50%;
@@ -1880,6 +1904,17 @@
                 transform: translateX(-70px) translateY(-50%);
             }
 
+            #earnedGemsMessage {
+                font-size: 0.8em;
+                transform: translateX(-30px) translateY(-50%);
+            }
+            #earnedGemsMessage.show {
+                transform: translateX(-25px) translateY(-50%);
+            }
+            #earnedGemsMessage.hide {
+                transform: translateX(-70px) translateY(-50%);
+            }
+
 
             #top-info-bar { gap: 0px; margin: 0 auto 6px auto; }
             #top-info-bar .info-group { min-height: 30px; padding: 1px 4px 1px 14px; min-width: 80px; }
@@ -2024,6 +2059,17 @@
                 transform: translateX(-22px) translateY(-40%);
             }
             #earnedCoinsMessage.hide {
+                transform: translateX(-60px) translateY(-40%);
+            }
+
+            #earnedGemsMessage {
+                font-size: 0.75em;
+                transform: translateX(-25px) translateY(-40%);
+            }
+            #earnedGemsMessage.show {
+                transform: translateX(-22px) translateY(-40%);
+            }
+            #earnedGemsMessage.hide {
                 transform: translateX(-60px) translateY(-40%);
             }
 
@@ -3011,6 +3057,7 @@
                 </div>
                 <div class="value-box">
                     <span id="selectorGemsValue" class="info-value">0</span>
+                    <span id="earnedGemsMessage" class="earned-gems-msg hidden">+0</span>
                 </div>
             </div>
         </div>
@@ -3655,6 +3702,7 @@
         const coinValueDisplay = document.getElementById("coinValue");
         const selectorCoinValueDisplay = document.getElementById("selectorCoinValue");
         const earnedCoinsMessage = document.getElementById("earnedCoinsMessage");
+        const earnedGemsMessage = document.getElementById("earnedGemsMessage");
         const scoreValueDisplay = document.getElementById("scoreValue");
         const livesValueDisplay = document.getElementById("livesValue");
         const pointsIconImg = document.getElementById("points-icon-img");
@@ -7070,9 +7118,13 @@ function setupSlider(slider, display) {
                     price = GEM_PRICE;
                     if (totalCoins >= price) {
                         totalCoins -= price;
+                        const prev = totalGems;
                         totalGems++;
                         saveGems();
-                        updateGemDisplay();
+                        showEarnedGemsMessage(1);
+                        setTimeout(() => {
+                            animateGemGain(prev, totalGems);
+                        }, COIN_MESSAGE_DISPLAY_TIME);
                         success = true;
                     }
                 }
@@ -10046,9 +10098,13 @@ function setupSlider(slider, display) {
             if (!a) return;
             const state = achievementsState[id];
             if (state && state.achieved && !state.claimed) {
+                const prev = totalGems;
                 totalGems += a.reward;
                 saveGems();
-                updateGemDisplay();
+                showEarnedGemsMessage(a.reward);
+                setTimeout(() => {
+                    animateGemGain(prev, totalGems);
+                }, COIN_MESSAGE_DISPLAY_TIME);
                 state.claimed = true;
                 achievementsState[id] = state;
                 saveAchievementsState();
@@ -10089,13 +10145,6 @@ function setupSlider(slider, display) {
                     rewardContainer.appendChild(rewardImg);
                     top.appendChild(rewardContainer);
 
-                    if (achievementsState[a.id] && achievementsState[a.id].achieved && !achievementsState[a.id].claimed) {
-                        const btn = document.createElement('button');
-                        btn.textContent = 'RECLAMAR';
-                        btn.addEventListener('click', () => claimAchievement(a.id));
-                        top.appendChild(btn);
-                    }
-
                     item.appendChild(top);
 
                     const progressLine = document.createElement('div');
@@ -10108,10 +10157,18 @@ function setupSlider(slider, display) {
                     fill.style.width = Math.min(100, progressVal / a.threshold * 100) + '%';
                     bar.appendChild(fill);
                     progressLine.appendChild(bar);
-                    const progressText = document.createElement('span');
-                    progressText.className = 'achievement-progress-text';
-                    progressText.textContent = progressVal + '/' + a.threshold;
-                    progressLine.appendChild(progressText);
+                    const state = achievementsState[a.id] || { achieved: false, claimed: false };
+                    if (state.achieved && !state.claimed) {
+                        const btn = document.createElement('button');
+                        btn.textContent = 'RECLAMAR';
+                        btn.addEventListener('click', () => claimAchievement(a.id));
+                        progressLine.appendChild(btn);
+                    } else {
+                        const progressText = document.createElement('span');
+                        progressText.className = 'achievement-progress-text';
+                        progressText.textContent = progressVal + '/' + a.threshold;
+                        progressLine.appendChild(progressText);
+                    }
                     item.appendChild(progressLine);
 
                     if (achievementsState[a.id] && achievementsState[a.id].claimed) {
@@ -10155,6 +10212,40 @@ function setupSlider(slider, display) {
                 setTimeout(() => {
                     earnedCoinsMessage.classList.add('hidden');
                     earnedCoinsMessage.classList.remove('hide');
+                }, 300);
+            }, COIN_MESSAGE_DISPLAY_TIME);
+        }
+
+        function animateGemGain(oldTotal, newTotal) {
+            const diff = newTotal - oldTotal;
+            if (diff <= 0) {
+                if (selectorGemsValueDisplay) selectorGemsValueDisplay.textContent = newTotal;
+                return;
+            }
+            const duration = Math.min(2000, diff * 60);
+            const start = performance.now();
+            if (areSfxEnabled) playSound('coinAdd', duration / 1000);
+            function step(now) {
+                const progress = Math.min(1, (now - start) / duration);
+                const value = Math.floor(oldTotal + diff * progress);
+                if (selectorGemsValueDisplay) selectorGemsValueDisplay.textContent = value;
+                if (progress < 1) requestAnimationFrame(step);
+            }
+            requestAnimationFrame(step);
+        }
+
+        function showEarnedGemsMessage(amount) {
+            if (!earnedGemsMessage) return;
+            earnedGemsMessage.textContent = `+${amount}`;
+            earnedGemsMessage.classList.remove('hidden', 'hide');
+            void earnedGemsMessage.offsetWidth;
+            earnedGemsMessage.classList.add('show');
+            setTimeout(() => {
+                earnedGemsMessage.classList.remove('show');
+                earnedGemsMessage.classList.add('hide');
+                setTimeout(() => {
+                    earnedGemsMessage.classList.add('hidden');
+                    earnedGemsMessage.classList.remove('hide');
                 }, 300);
             }, COIN_MESSAGE_DISPLAY_TIME);
         }
