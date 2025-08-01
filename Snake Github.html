@@ -2807,6 +2807,10 @@
           font-size: 0.65rem;
           white-space: nowrap;
         }
+        #achievements-panel h4 {
+          font-size: 0.8rem;
+          margin: 4px 0;
+        }
         .store-item-status {
           position: absolute;
           bottom: 16px;
@@ -10123,7 +10127,11 @@ function setupSlider(slider, display) {
                 if (!groups[a.type]) groups[a.type] = [];
                 groups[a.type].push(a);
             });
-            Object.keys(groups).forEach(type => {
+            const orderedTypes = ['points', 'coins'];
+            Object.keys(groups).forEach(t => {
+                if (!orderedTypes.includes(t)) orderedTypes.push(t);
+            });
+            orderedTypes.forEach(type => {
                 const header = document.createElement('h4');
                 header.textContent = ACHIEVEMENT_TYPE_NAMES[type] || type;
                 achievementsContainer.appendChild(header);
