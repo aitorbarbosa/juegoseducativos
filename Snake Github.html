@@ -11032,8 +11032,9 @@ async function startGame(isRestart = false) {
             }
 
             score = 0;
-            streakMultiplier = 1; 
-            gameOver = false; 
+            streakMultiplier = 1;
+            gameOver = false;
+            updateScoreDisplay();
             direction = "right"; 
             nextDirection = "right"; // Asegurar que nextDirection también se reinicia
             
@@ -11584,6 +11585,9 @@ async function startGame(isRestart = false) {
                 gameMode = '';
                 if (gameContainer) gameContainer.classList.add('hidden');
                 if (splashScreen) splashScreen.classList.remove('hidden');
+                score = 0;
+                streakMultiplier = 1;
+                updateScoreDisplay();
             } else {
                 // Return to mode selection
                 showModeSelect = true;
@@ -11620,6 +11624,9 @@ async function startGame(isRestart = false) {
                 restartMazeButton.classList.add('hidden');
                 startButtonWrapperEl.classList.remove('split');
                 draw();
+                score = 0;
+                streakMultiplier = 1;
+                updateScoreDisplay();
             }
             updateGameModeUI();
             updateMainButtonStates();
