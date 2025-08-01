@@ -2776,6 +2776,9 @@
           position: relative;
           top: -1px;
         }
+        .achievement-desc {
+          font-size: 0.65rem;
+        }
         .achievement-top-line {
           display: flex;
           justify-content: space-between;
@@ -10131,6 +10134,7 @@ function setupSlider(slider, display) {
                     const top = document.createElement('div');
                     top.className = 'achievement-top-line';
                     const desc = document.createElement('span');
+                    desc.className = 'achievement-desc';
                     desc.textContent = a.description;
                     top.appendChild(desc);
 
