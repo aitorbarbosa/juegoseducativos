@@ -2759,15 +2759,64 @@
           font-size: 0.8rem;
         }
         .achievement-item.claimed { opacity: 0.6; }
-        .achievement-item button {
-          background-color: #8f66af;
-          border: none;
-          color: #fff;
+        .achievement-claim-button {
+          position: relative;
           padding: 2px 6px;
-          border-radius: 4px;
-          cursor: pointer;
           font-size: 0.6rem;
+          color: #4E3967;
+          border: 2px solid #2B1D3A;
+          border-radius: 10px;
+          box-shadow: 0 2px 0 #422E58;
+          text-shadow:
+            0px 0px 1px #422E58,
+            -1px -1px 0 #D0B5E2,
+            1px -1px 0 #D0B5E2,
+            -1px  1px 0 #D0B5E2,
+            1px  1px 0 #D0B5E2;
+          overflow: hidden;
+          background: none;
+          z-index: 0;
+          cursor: pointer;
+          font-family: 'Press Start 2P', sans-serif;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          box-sizing: border-box;
+          transition: filter 0.05s ease-out;
         }
+        .achievement-claim-button::before {
+          content: '';
+          position: absolute;
+          left: -2px;
+          top: -2px;
+          width: calc(100% + 4px);
+          height: calc(100% + 4px);
+          background: linear-gradient(
+            #D3BAE8 0%,
+            #D3BAE8 50%,
+            #583F7D 50%,
+            #583F7D 100%
+          );
+          border-radius: 10px;
+          pointer-events: none;
+          z-index: -2;
+        }
+        .achievement-claim-button::after {
+          content: '';
+          position: absolute;
+          top: 50%;
+          left: 0;
+          width: 100%;
+          height: 80%;
+          background-color: #8C64AF;
+          border-radius: 10px;
+          transform: translateY(-50%);
+          pointer-events: none;
+          z-index: -1;
+        }
+        .achievement-claim-button:hover { filter: brightness(0.95); }
+        .achievement-claim-button:disabled { filter: brightness(0.6); cursor: not-allowed; }
+        .achievement-claim-button.icon-button-pressed { filter: brightness(0.5); }
         .achievement-reward {
           margin-left: 4px;
           font-size: 0.75rem;
@@ -10197,7 +10246,9 @@ function setupSlider(slider, display) {
                     if (state.achieved && !state.claimed) {
                         const btn = document.createElement('button');
                         btn.textContent = 'RECLAMAR';
+                        btn.className = 'achievement-claim-button';
                         btn.addEventListener('click', () => claimAchievement(a.id));
+                        addIconPressEvents(btn, btn);
                         progressLine.appendChild(btn);
                     } else {
                         const progressText = document.createElement('span');
