@@ -2789,11 +2789,11 @@
           display: flex;
           align-items: center;
           width: 100%;
-          gap: 4px;
+          gap: 10px;
         }
         .achievement-progress-bar {
           flex-grow: 1;
-          height: 6px;
+          height: 10px;
           background-color: #374151;
           border-radius: 3px;
           overflow: hidden;
@@ -5271,37 +5271,48 @@ function setupSlider(slider, display) {
         let profileTab = 'general';
         // --- Fin Configuración de Comestibles ---
 
-        const ACHIEVEMENT_TYPE_NAMES = {
-            coins: 'Monedas conseguidas',
-            points: 'Puntos conseguidos',
-            mazeStars: 'Estrellas de laberinto',
-            mazeLevels: 'Niveles de laberinto',
-            worlds: 'Mundos superados',
-            freeGames: 'Partidas en modo libre',
-            classificationGames: 'Partidas de clasificación',
-            novicePoints: 'Puntos en nivel Novato',
-            explorerPoints: 'Puntos en nivel Explorador',
-            veteranPoints: 'Puntos en nivel Veterano',
-            legendaryPoints: 'Puntos en nivel Legendario',
-            skinsUnlocked: 'Disfraces desbloqueados',
-            foodsUnlocked: 'Comestibles desbloqueados',
-            scenesUnlocked: 'Escenarios desbloqueados',
-            playersAdded: 'Añade un jugador'
+        const ACHIEVEMENT_CATEGORY_NAMES = {
+            general: 'General',
+            adventure: 'Modo aventura',
+            maze: 'Modo laberinto',
+            classification: 'Modo Clasificación',
+            free: 'Modo libre',
+            unlockables: 'Desbloqueables',
+            specials: 'Especiales',
+            others: 'Otros'
+        };
+
+        const ACHIEVEMENT_TYPE_TO_CATEGORY = {
+            points: 'general',
+            coins: 'general',
+            worlds: 'adventure',
+            mazeStars: 'maze',
+            mazeLevels: 'maze',
+            classificationGames: 'classification',
+            novicePoints: 'classification',
+            explorerPoints: 'classification',
+            veteranPoints: 'classification',
+            legendaryPoints: 'classification',
+            freeGames: 'free',
+            foodsUnlocked: 'unlockables',
+            skinsUnlocked: 'unlockables',
+            scenesUnlocked: 'unlockables',
+            playersAdded: 'specials'
         };
 
         const ACHIEVEMENTS = [
-            { id: 'coins_100', type: 'coins', threshold: 100, reward: 1, description: 'Acumula 100 monedas' },
-            { id: 'coins_500', type: 'coins', threshold: 500, reward: 2, description: 'Acumula 500 monedas' },
-            { id: 'coins_1000', type: 'coins', threshold: 1000, reward: 5, description: 'Acumula 1000 monedas' },
-            { id: 'coins_5000', type: 'coins', threshold: 5000, reward: 10, description: 'Acumula 5000 monedas' },
-            { id: 'coins_10000', type: 'coins', threshold: 10000, reward: 20, description: 'Acumula 10000 monedas' },
-            { id: 'coins_100000', type: 'coins', threshold: 100000, reward: 40, description: 'Acumula 100000 monedas' },
             { id: 'points_1000', type: 'points', threshold: 1000, reward: 1, description: 'Consigue 1000 puntos' },
             { id: 'points_5000', type: 'points', threshold: 5000, reward: 3, description: 'Consigue 5000 puntos' },
             { id: 'points_10000', type: 'points', threshold: 10000, reward: 5, description: 'Consigue 10000 puntos' },
             { id: 'points_50000', type: 'points', threshold: 50000, reward: 10, description: 'Consigue 50000 puntos' },
             { id: 'points_100000', type: 'points', threshold: 100000, reward: 20, description: 'Consigue 100000 puntos' },
             { id: 'points_1000000', type: 'points', threshold: 1000000, reward: 40, description: 'Consigue 1000000 puntos' },
+            { id: 'coins_100', type: 'coins', threshold: 100, reward: 1, description: 'Acumula 100 monedas' },
+            { id: 'coins_500', type: 'coins', threshold: 500, reward: 2, description: 'Acumula 500 monedas' },
+            { id: 'coins_1000', type: 'coins', threshold: 1000, reward: 5, description: 'Acumula 1000 monedas' },
+            { id: 'coins_5000', type: 'coins', threshold: 5000, reward: 10, description: 'Acumula 5000 monedas' },
+            { id: 'coins_10000', type: 'coins', threshold: 10000, reward: 20, description: 'Acumula 10000 monedas' },
+            { id: 'coins_100000', type: 'coins', threshold: 100000, reward: 40, description: 'Acumula 100000 monedas' },
             { id: 'mazeStars_10', type: 'mazeStars', threshold: 10, reward: 2, description: 'Obtén 10 estrellas de laberinto' },
             { id: 'mazeStars_25', type: 'mazeStars', threshold: 25, reward: 4, description: 'Obtén 25 estrellas de laberinto' },
             { id: 'mazeStars_50', type: 'mazeStars', threshold: 50, reward: 6, description: 'Obtén 50 estrellas de laberinto' },
@@ -10124,18 +10135,26 @@ function setupSlider(slider, display) {
             achievementsContainer.innerHTML = '';
             const groups = {};
             ACHIEVEMENTS.forEach(a => {
-                if (!groups[a.type]) groups[a.type] = [];
-                groups[a.type].push(a);
+                const category = ACHIEVEMENT_TYPE_TO_CATEGORY[a.type] || 'others';
+                if (!groups[category]) groups[category] = [];
+                groups[category].push(a);
             });
-            const orderedTypes = ['points', 'coins'];
-            Object.keys(groups).forEach(t => {
-                if (!orderedTypes.includes(t)) orderedTypes.push(t);
-            });
-            orderedTypes.forEach(type => {
+            const orderedCategories = [
+                'general',
+                'adventure',
+                'maze',
+                'classification',
+                'free',
+                'unlockables',
+                'specials',
+                'others'
+            ];
+            orderedCategories.forEach(cat => {
+                if (!groups[cat]) return;
                 const header = document.createElement('h4');
-                header.textContent = ACHIEVEMENT_TYPE_NAMES[type] || type;
+                header.textContent = ACHIEVEMENT_CATEGORY_NAMES[cat] || cat;
                 achievementsContainer.appendChild(header);
-                groups[type].forEach(a => {
+                groups[cat].forEach(a => {
                     const item = document.createElement('div');
                     item.className = 'achievement-item';
 
