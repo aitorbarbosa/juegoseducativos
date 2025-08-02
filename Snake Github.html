@@ -2865,6 +2865,11 @@
           font-size: 0.8rem;
           margin: 4px 0;
         }
+        #achievements-panel h4 img {
+          width: 100%;
+          height: auto;
+          display: block;
+        }
         .store-item-status {
           position: absolute;
           bottom: 16px;
@@ -5334,6 +5339,16 @@ function setupSlider(slider, display) {
             unlockables: 'Desbloqueables',
             specials: 'Especiales',
             others: 'Otros'
+        };
+
+        const ACHIEVEMENT_CATEGORY_IMAGES = {
+            general: 'https://i.imgur.com/3pmVsgM.png',
+            adventure: 'https://i.imgur.com/u5FkBvY.png',
+            free: 'https://i.imgur.com/FBoZ2Mp.png',
+            classification: 'https://i.imgur.com/TqDSuh8.png',
+            maze: 'https://i.imgur.com/fsBqZvr.png',
+            specials: 'https://i.imgur.com/1quwyVe.png',
+            unlockables: 'https://i.imgur.com/Yab7vf9.png'
         };
 
         const ACHIEVEMENT_TYPE_TO_CATEGORY = {
@@ -10206,7 +10221,15 @@ function setupSlider(slider, display) {
             orderedCategories.forEach(cat => {
                 if (!groups[cat]) return;
                 const header = document.createElement('h4');
-                header.textContent = ACHIEVEMENT_CATEGORY_NAMES[cat] || cat;
+                const imgSrc = ACHIEVEMENT_CATEGORY_IMAGES[cat];
+                if (imgSrc) {
+                    const img = document.createElement('img');
+                    img.src = imgSrc;
+                    img.alt = ACHIEVEMENT_CATEGORY_NAMES[cat] || cat;
+                    header.appendChild(img);
+                } else {
+                    header.textContent = ACHIEVEMENT_CATEGORY_NAMES[cat] || cat;
+                }
                 achievementsContainer.appendChild(header);
                 groups[cat].forEach(a => {
                     const item = document.createElement('div');
