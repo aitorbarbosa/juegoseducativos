@@ -5271,22 +5271,32 @@ function setupSlider(slider, display) {
         let profileTab = 'general';
         // --- Fin Configuración de Comestibles ---
 
-        const ACHIEVEMENT_TYPE_NAMES = {
-            coins: 'Monedas conseguidas',
-            points: 'Puntos conseguidos',
-            mazeStars: 'Estrellas de laberinto',
-            mazeLevels: 'Niveles de laberinto',
-            worlds: 'Mundos superados',
-            freeGames: 'Partidas en modo libre',
-            classificationGames: 'Partidas de clasificación',
-            novicePoints: 'Puntos en nivel Novato',
-            explorerPoints: 'Puntos en nivel Explorador',
-            veteranPoints: 'Puntos en nivel Veterano',
-            legendaryPoints: 'Puntos en nivel Legendario',
-            skinsUnlocked: 'Disfraces desbloqueados',
-            foodsUnlocked: 'Comestibles desbloqueados',
-            scenesUnlocked: 'Escenarios desbloqueados',
-            playersAdded: 'Añade un jugador'
+        const ACHIEVEMENT_CATEGORY_NAMES = {
+            adventure: 'Modo aventura',
+            maze: 'Modo laberinto',
+            classification: 'Modo Clasificación',
+            free: 'Modo libre',
+            unlockables: 'Desbloqueables',
+            specials: 'Especiales',
+            others: 'Otros'
+        };
+
+        const ACHIEVEMENT_TYPE_TO_CATEGORY = {
+            coins: 'adventure',
+            points: 'adventure',
+            worlds: 'adventure',
+            mazeStars: 'maze',
+            mazeLevels: 'maze',
+            classificationGames: 'classification',
+            novicePoints: 'classification',
+            explorerPoints: 'classification',
+            veteranPoints: 'classification',
+            legendaryPoints: 'classification',
+            freeGames: 'free',
+            foodsUnlocked: 'unlockables',
+            skinsUnlocked: 'unlockables',
+            scenesUnlocked: 'unlockables',
+            playersAdded: 'specials'
         };
 
         const ACHIEVEMENTS = [
@@ -10124,18 +10134,25 @@ function setupSlider(slider, display) {
             achievementsContainer.innerHTML = '';
             const groups = {};
             ACHIEVEMENTS.forEach(a => {
-                if (!groups[a.type]) groups[a.type] = [];
-                groups[a.type].push(a);
+                const category = ACHIEVEMENT_TYPE_TO_CATEGORY[a.type] || 'others';
+                if (!groups[category]) groups[category] = [];
+                groups[category].push(a);
             });
-            const orderedTypes = ['points', 'coins'];
-            Object.keys(groups).forEach(t => {
-                if (!orderedTypes.includes(t)) orderedTypes.push(t);
-            });
-            orderedTypes.forEach(type => {
+            const orderedCategories = [
+                'adventure',
+                'maze',
+                'classification',
+                'free',
+                'unlockables',
+                'specials',
+                'others'
+            ];
+            orderedCategories.forEach(cat => {
+                if (!groups[cat]) return;
                 const header = document.createElement('h4');
-                header.textContent = ACHIEVEMENT_TYPE_NAMES[type] || type;
+                header.textContent = ACHIEVEMENT_CATEGORY_NAMES[cat] || cat;
                 achievementsContainer.appendChild(header);
-                groups[type].forEach(a => {
+                groups[cat].forEach(a => {
                     const item = document.createElement('div');
                     item.className = 'achievement-item';
 
