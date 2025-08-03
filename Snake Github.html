@@ -1481,6 +1481,15 @@
             border-radius: 50%;
             display: none;
         }
+        #achievements-menu-button {
+            overflow: visible;
+        }
+
+        #achievements-menu-button .notification-dot {
+            top: 0;
+            right: 0;
+            transform: translate(50%, -50%);
+        }
         .icon-button-pressed {
             transform: scale(0.90) translateY(2px);
             filter: brightness(0.7);
@@ -1596,6 +1605,7 @@
             flex-direction: column;
             gap: 15px;
             padding-right: 0;
+            box-sizing: border-box;
         }
         .scroll-padding { padding-right: 4px; }
 
@@ -1605,6 +1615,10 @@
         }
         #store-panel .panel-content {
             padding-right: 10px;
+        }
+        #config-menu-panel .panel-content {
+            padding-right: 16px;
+            overflow-x: hidden;
         }
         #achievements-panel {
             max-height: 90vh;
