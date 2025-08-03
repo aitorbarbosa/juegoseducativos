@@ -2967,15 +2967,13 @@
           font-family: 'Press Start 2P', sans-serif;
           font-size: 0.7rem;
           padding: 4px 6px;
-          border: 2px solid #8f66af;
-          border-radius: 6px;
-          background-color: #1F2937;
-          color: #C084FC;
+          width: auto;
+          height: auto;
         }
 
         .store-tab.active {
-          background-color: #8f66af;
-          color: #1F2937;
+          filter: brightness(0.5);
+          transform: translateY(2px);
         }
 
         #purchase-item-preview {
@@ -3572,10 +3570,10 @@
     </div>
     <div class="panel-content">
         <div id="profile-tabs" class="flex justify-center gap-2 mb-2">
-            <button data-tab="general" id="profile-tab-general" class="store-tab active">PERFIL</button>
-            <button data-tab="comida" id="profile-tab-comida" class="store-tab">COMIDA</button>
-            <button data-tab="disfraces" id="profile-tab-disfraces" class="store-tab">DISFRACES</button>
-            <button data-tab="escenarios" id="profile-tab-escenarios" class="store-tab">ESCENARIOS</button>
+            <button data-tab="general" id="profile-tab-general" class="store-tab menu-option-button active">PERFIL</button>
+            <button data-tab="comida" id="profile-tab-comida" class="store-tab menu-option-button">COMIDA</button>
+            <button data-tab="disfraces" id="profile-tab-disfraces" class="store-tab menu-option-button">DISFRACES</button>
+            <button data-tab="escenarios" id="profile-tab-escenarios" class="store-tab menu-option-button">ESCENARIOS</button>
         </div>
 
         <div id="profile-general-content">
@@ -3677,10 +3675,10 @@
                 </div>
                 <div class="panel-content">
                     <div id="store-tabs" class="flex justify-center gap-2 mb-2">
-                        <button data-tab="general" id="store-tab-general" class="store-tab active">GENERAL</button>
-                        <button data-tab="comida" id="store-tab-comida" class="store-tab">COMIDA</button>
-                        <button data-tab="disfraces" id="store-tab-disfraces" class="store-tab">DISFRACES</button>
-                        <button data-tab="escenarios" id="store-tab-escenarios" class="store-tab">ESCENARIOS</button>
+                        <button data-tab="general" id="store-tab-general" class="store-tab menu-option-button active">GENERAL</button>
+                        <button data-tab="comida" id="store-tab-comida" class="store-tab menu-option-button">COMIDA</button>
+                        <button data-tab="disfraces" id="store-tab-disfraces" class="store-tab menu-option-button">DISFRACES</button>
+                        <button data-tab="escenarios" id="store-tab-escenarios" class="store-tab menu-option-button">ESCENARIOS</button>
                     </div>
                 <div id="store-items-container" class="grid grid-cols-3 gap-4 w-full"></div>
                 </div>
