@@ -35,3 +35,12 @@ Este documento describe la nueva estructura propuesta para el **Modo Clasificaci
 - **Tiempo de desaparición de la comida** se reduce desde Explorador hasta Legendario.
 
 Este planteamiento tiene como objetivo proporcionar un reto creciente y diferenciado para los jugadores que busquen superarse en el Modo Clasificación.
+
+## Logros por puntuación
+
+Se han añadido logros específicos que recompensan alcanzar determinadas puntuaciones según la dificultad:
+
+- **Novato**: 500, 750 y 1k puntos.
+- **Explorador**: 500, 750, 1k, 1.5k y 2k puntos.
+- **Veterano**: 500, 750, 1k, 1.5k y 2k puntos.
+- **Legendario**: 500, 750, 1k, 1.5k y 2k puntos.
