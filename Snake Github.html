@@ -1469,8 +1469,18 @@
         #backButton { padding: 0; background-color: transparent; flex: 0 0 auto; width: auto; min-width: 0; }
         #backButtonIcon { height: 100%; width: auto; display: block; transition: transform 0.05s ease-out, filter 0.05s ease-out; }
         #restartMazeButtonIcon { height: 100%; width: auto; display: block; transition: transform 0.05s ease-out, filter 0.05s ease-out; }
-        #configButton { padding: 0; background-color: transparent; flex: 0 0 auto; width: auto; min-width: 0; }
+        #configButton { position: relative; padding: 0; background-color: transparent; flex: 0 0 auto; width: auto; min-width: 0; }
         #configButtonIcon { height: 100%; width: auto; display: block; transition: transform 0.05s ease-out, filter 0.05s ease-out; }
+        .notification-dot {
+            position: absolute;
+            top: 2px;
+            right: 2px;
+            width: 10px;
+            height: 10px;
+            background-color: red;
+            border-radius: 50%;
+            display: none;
+        }
         .icon-button-pressed {
             transform: scale(0.90) translateY(2px);
             filter: brightness(0.7);
@@ -3949,6 +3959,16 @@
         const bonusesMenuButton = document.getElementById("bonuses-menu-button");
         const dailyMenuButton = document.getElementById("daily-menu-button");
         const wheelMenuButton = document.getElementById("wheel-menu-button");
+
+        const menuNotificationDot = document.createElement('span');
+        menuNotificationDot.className = 'notification-dot';
+        menuNotificationDot.style.display = 'none';
+        if (configButton) configButton.appendChild(menuNotificationDot);
+
+        const achievementsNotificationDot = document.createElement('span');
+        achievementsNotificationDot.className = 'notification-dot';
+        achievementsNotificationDot.style.display = 'none';
+        if (achievementsMenuButton) achievementsMenuButton.appendChild(achievementsNotificationDot);
 
         const storePanel = document.getElementById("store-panel");
         const profilePanel = document.getElementById("profile-panel");
@@ -10245,6 +10265,14 @@ function setupSlider(slider, display) {
                 achievementsProgress = { ...achievementsProgress };
                 achievementsState = {};
             }
+        updateAchievementsNotification();
+        }
+
+        function updateAchievementsNotification() {
+            const hasUnclaimed = Object.values(achievementsState).some(s => s.achieved && !s.claimed);
+            const display = hasUnclaimed ? 'block' : 'none';
+            if (menuNotificationDot) menuNotificationDot.style.display = display;
+            if (achievementsNotificationDot) achievementsNotificationDot.style.display = display;
         }
 
         function checkAchievements() {
@@ -10253,7 +10281,8 @@ function setupSlider(slider, display) {
                 const state = achievementsState[a.id] || { achieved: false, claimed: false };
                 if (!state.achieved && progressVal >= a.threshold) state.achieved = true;
                 achievementsState[a.id] = state;
-            });
+        });
+        updateAchievementsNotification();
         }
 
         function claimAchievement(id) {
@@ -10272,6 +10301,7 @@ function setupSlider(slider, display) {
                 achievementsState[id] = state;
                 saveAchievementsState();
                 populateAchievements();
+                updateAchievementsNotification();
             }
         }
 
@@ -10361,9 +10391,10 @@ function setupSlider(slider, display) {
                         item.classList.add('claimed');
                     }
 
-                    achievementsContainer.appendChild(item);
-                });
+                achievementsContainer.appendChild(item);
             });
+        });
+            updateAchievementsNotification();
         }
 
         function animateCoinGain(oldTotal, newTotal) {
