@@ -5100,6 +5100,7 @@ function setupSlider(slider, display) {
             }
         };
         let currentSkin = 'snake';
+        const DEFAULT_PLAYER_COUNT = 2;
         let playerProfiles = {};
         let playerNames = ['Snake', 'GamiSnake'];
         let currentPlayerName = 'Snake';
@@ -5390,6 +5391,9 @@ function setupSlider(slider, display) {
             gorroMagico: 'Gorro mágico',
             bolaDragon: 'Bola de dragón'
         };
+        const DEFAULT_FOOD_COUNT = 1;
+        const DEFAULT_SKIN_COUNT = 1;
+        const DEFAULT_SCENE_COUNT = 1;
         let unlockedFoods = { apple: true };
         let unlockedSkins = { snake: true };
         let unlockedScenes = { classic: true };
@@ -5491,7 +5495,7 @@ function setupSlider(slider, display) {
             { id: 'scenes_1', type: 'scenesUnlocked', threshold: 1, reward: 1, description: 'Desbloquea 1 escenario' },
             { id: 'scenes_2', type: 'scenesUnlocked', threshold: 2, reward: 1, description: 'Desbloquea 2 escenarios' },
             { id: 'scenes_5', type: 'scenesUnlocked', threshold: 5, reward: 3, description: 'Desbloquea 5 escenarios' },
-            { id: 'players_2', type: 'playersAdded', threshold: 2, reward: 1, description: 'Añade un jugador' }
+            { id: 'players_1', type: 'playersAdded', threshold: 1, reward: 1, description: 'Añade un jugador' }
         ];
 
         let achievementsProgress = {
@@ -11710,7 +11714,7 @@ async function startGame(isRestart = false) {
                 updateGameModeUI();
                 requestAnimationFrame(draw);
                 saveGameSettings();
-                achievementsProgress.playersAdded = Object.keys(playerProfiles).length;
+                achievementsProgress.playersAdded = Math.max(Object.keys(playerProfiles).length - DEFAULT_PLAYER_COUNT, 0);
                 checkAchievements();
                 saveAchievementsState();
             }
@@ -12050,7 +12054,7 @@ async function startGame(isRestart = false) {
 
         function saveUnlockedFoods() {
             localStorage.setItem('snakeGameUnlockedFoods', JSON.stringify(unlockedFoods));
-            achievementsProgress.foodsUnlocked = Object.keys(unlockedFoods).length;
+            achievementsProgress.foodsUnlocked = Math.max(Object.keys(unlockedFoods).length - DEFAULT_FOOD_COUNT, 0);
             checkAchievements();
             saveAchievementsState();
         }
@@ -12066,7 +12070,7 @@ async function startGame(isRestart = false) {
 
         function saveUnlockedSkins() {
             localStorage.setItem('snakeGameUnlockedSkins', JSON.stringify(unlockedSkins));
-            achievementsProgress.skinsUnlocked = Object.keys(unlockedSkins).length;
+            achievementsProgress.skinsUnlocked = Math.max(Object.keys(unlockedSkins).length - DEFAULT_SKIN_COUNT, 0);
             checkAchievements();
             saveAchievementsState();
         }
@@ -12082,7 +12086,7 @@ async function startGame(isRestart = false) {
 
         function saveUnlockedScenes() {
             localStorage.setItem('snakeGameUnlockedScenes', JSON.stringify(unlockedScenes));
-            achievementsProgress.scenesUnlocked = Object.keys(unlockedScenes).length;
+            achievementsProgress.scenesUnlocked = Math.max(Object.keys(unlockedScenes).length - DEFAULT_SCENE_COUNT, 0);
             checkAchievements();
             saveAchievementsState();
         }
