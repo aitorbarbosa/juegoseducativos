@@ -11739,6 +11739,25 @@ async function startGame(isRestart = false) {
                 newPlayerNameInput.value = '';
                 const keepDifficulty = difficultySelector.value;
                 applyProfile(playerProfiles[currentPlayerName]);
+
+                if (!gameIntervalId) {
+                    if (gameMode === 'freeMode') {
+                        screenState.showFreeModeCover = true;
+                    } else if (gameMode === 'levels') {
+                        screenState.showCoverForWorld = currentWorld;
+                        screenState.showWorldCompleteCover = 0;
+                        screenState.showLevelCompleteCover = 0;
+                        screenState.showDefeatCoverForWorld = 0;
+                        screenState.showTimeoutCover = false;
+                        drawStarProgress();
+                    } else if (gameMode === 'classification') {
+                        screenState.showClassificationCover = true;
+                    } else if (gameMode === 'maze') {
+                        screenState.showMazeCover = true;
+                        screenState.mazeResultType = '';
+                    }
+                }
+
                 if (gameMode === 'classification') {
                     difficultySelector.value = keepDifficulty;
                     classificationDifficultyIndex = CLASSIFICATION_DIFFICULTY_ORDER.indexOf(keepDifficulty);
