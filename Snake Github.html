@@ -479,10 +479,11 @@
             padding: 8px 10px;
             grid-column: 1 / 2;
             min-width: 80px;
-            min-height: 55px;
+            min-height: 48px;
             box-sizing: border-box;
             text-align: center;
             cursor: pointer;
+            overflow: hidden;
         }
          #current-world-info-group .info-label { 
             font-size: 0.65em; 
@@ -507,9 +508,10 @@
             justify-content: center;
             align-items: center;
             padding: 8px 10px;
-            min-height: 55px;
+            min-height: 48px;
             box-sizing: border-box;
             text-align: center;
+            overflow: hidden;
         }
 
         #star-progress-wrapper.bar-mode {
@@ -524,6 +526,9 @@
             display: flex;
             justify-content: center;
             align-items: center;
+            height: 100%;
+            box-sizing: border-box;
+            overflow: hidden;
         }
 
         #star-progress-wrapper.bar-mode .value-box {
@@ -547,9 +552,10 @@
             border-radius: 8px;
             padding: 6px 8px 6px 22px;
             min-width: 90px;
-            min-height: 48px;
+            min-height: 44px;
             box-sizing: border-box;
             width: 100%;
+            overflow: hidden;
         }
 
         #progress-lives-info-group .value-box {
@@ -558,6 +564,9 @@
             padding: 6px 8px 6px 22px;
             width: 100%;
             text-align: center;
+            height: 100%;
+            box-sizing: border-box;
+            overflow: hidden;
         }
 
         #progress-lives-info-group .info-icon-wrapper {
@@ -2026,11 +2035,13 @@
             #main-info-title,
             #specific-info-title { font-size: 0.9em; }
 
-            #current-world-info-group { min-height: 30px; padding: 1px 4px 1px 14px; min-width: 70px; cursor: pointer;}
+            #progress-panel .panel-card { padding: 0; }
+
+            #current-world-info-group { min-height: 30px; padding: 6px 4px 6px 14px; min-width: 70px; cursor: pointer; overflow: hidden; }
             #current-world-info-group .info-label { font-size: 0.6em; }
             #current-world-info-group .info-value { font-size: 0.8em; }
             #progress-panel.classification-mode #current-world-info-group .info-value { font-size: 0.7em; }
-            #star-progress-wrapper { min-height: 28px; padding: 1px 2px; }
+            #star-progress-wrapper { min-height: 30px; padding: 6px 2px; overflow: hidden; }
             #star-progress-wrapper.bar-mode { padding: 0; }
             #star-progress-wrapper .value-box {
                 padding: 1px 2px;
@@ -2038,9 +2049,10 @@
                 display: flex;
                 justify-content: center;
                 align-items: center;
+                height: 100%;
             }
             #star-progress-wrapper.bar-mode .value-box { padding: 0; }
-            #progress-lives-info-group .info-group { min-height: 30px; padding: 1px 4px 1px 14px; }
+            #progress-lives-info-group .info-group { min-height: 30px; padding: 6px 4px 6px 14px; overflow: hidden; }
             #progress-lives-info-group .value-box { padding: 1px 6px 1px 14px; }
             #progress-lives-info-group .info-value { font-size: 0.8em; }
             #progress-lives-info-group .info-icon-wrapper { width: 26px; height: 26px; transform: translate(10%, -50%); }
@@ -2186,8 +2198,8 @@
             #current-world-info-group .info-label { font-size: 0.55em; }
             #current-world-info-group .info-value { font-size: 0.7em; }
             #progress-panel.classification-mode #current-world-info-group .info-value { font-size: 0.6em; }
-            #current-world-info-group { min-width: 60px; min-height: 34px; padding: 2px 4px 2px 20px; cursor: pointer;}
-            #star-progress-wrapper { min-height: 30px; padding: 2px 2px; }
+            #current-world-info-group { min-width: 60px; min-height: 32px; padding: 4px 4px 4px 20px; cursor: pointer; overflow: hidden;}
+            #star-progress-wrapper { min-height: 32px; padding: 4px 2px; overflow: hidden; }
             #star-progress-wrapper.bar-mode { padding: 0; }
             #star-progress-wrapper .value-box {
                 padding: 5px 5px;
@@ -2195,9 +2207,10 @@
                 display: flex;
                 justify-content: center;
                 align-items: center;
+                height: 100%;
             }
             #star-progress-wrapper.bar-mode .value-box { padding: 0; }
-            #progress-lives-info-group .info-group { min-height: 36px; padding: 2px 4px 2px 20px; }
+            #progress-lives-info-group .info-group { min-height: 36px; padding: 2px 4px 2px 20px; overflow: hidden; }
             #progress-lives-info-group .value-box { padding: 2px 5px 2px 20px; }
             #progress-lives-info-group .info-value { font-size: 0.7em; }
             #progress-lives-info-group .info-icon-wrapper { width: 32px; height: 32px; transform: translate(12%, -50%); }
