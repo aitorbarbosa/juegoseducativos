@@ -1038,11 +1038,6 @@
             top: -2px;
         }
 
-        .ad-timer-icon {
-            height: calc(100% - 10px);
-            margin: 5px 0;
-            width: auto;
-        }
 
 
         #earnedCoinsMessage {
@@ -2880,6 +2875,14 @@
           filter: grayscale(100%);
           opacity: 0.7;
         }
+        .store-item.locked .store-item-status {
+          color: #cccccc;
+          opacity: 0.7;
+        }
+        .store-item.locked .store-item-status img {
+          filter: grayscale(100%);
+          opacity: 0.7;
+        }
         .store-item.purchased {
           pointer-events: none;
         }
@@ -3055,6 +3058,19 @@
           text-shadow: 1px 1px 2px black;
           font-family: 'Press Start 2P', sans-serif;
           z-index: 2;
+        }
+
+        .store-item-cooldown {
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          color: #ffffff;
+          font-size: 0.9rem;
+          text-shadow: 1px 1px 2px black;
+          font-family: 'Press Start 2P', sans-serif;
+          z-index: 3;
+          pointer-events: none;
         }
 
         .store-tab {
@@ -5700,9 +5716,8 @@ function setupSlider(slider, display) {
         let playerLives = MAX_LIVES;
         let lifeRestoreQueue = [];
         let infiniteLivesEnd = 0;
-        let adsWatched = 0;
-        let adCounterExpiry = 0;
-        let adCooldownExpiry = 0;
+        let adsWatched = { adLife: 0, adChest: 0, adInfinite: 0 };
+        let adCooldownExpiry = { adLife: 0, adChest: 0, adInfinite: 0 };
         let adTimerInterval = null;
         let gameOver = false;
         let gameOverByTimeout = false;
@@ -7404,6 +7419,7 @@ function setupSlider(slider, display) {
                 ];
                 items.forEach(({ type, img }) => {
                     const item = document.createElement('div');
+                    item.id = `store-item-${type}`;
                     item.className = 'store-item';
                     const imgEl = document.createElement('img');
                     imgEl.className = 'store-item-img lives-img';
@@ -7419,34 +7435,17 @@ function setupSlider(slider, display) {
                     adImg.alt = 'Anuncio';
                     adImg.className = 'ad-cost-icon';
                     status.appendChild(adImg);
+                    const cooldown = document.createElement('div');
+                    cooldown.id = `ad-cooldown-${type}`;
+                    cooldown.className = 'store-item-cooldown hidden';
+                    item.appendChild(cooldown);
                     item.addEventListener('click', () => openPurchaseConfirm(type));
                     addIconPressEvents(item, item);
                     item.appendChild(status);
                     storeItemsContainer.appendChild(item);
                 });
-                const timerContainer = document.createElement('div');
-                timerContainer.id = 'ad-timer-container';
-                timerContainer.className = 'col-span-3 flex flex-col items-center';
-                const timerBox = document.createElement('div');
-                timerBox.className = 'menu-option-button w-32 flex items-center justify-center gap-1';
-                const timerIcon = document.createElement('img');
-                timerIcon.src = 'https://i.imgur.com/9BfNTJh.png';
-                timerIcon.alt = 'Anuncio';
-                timerIcon.className = 'ad-timer-icon';
-                timerBox.appendChild(timerIcon);
-                const timerText = document.createElement('span');
-                timerText.id = 'ad-timer-value';
-                timerText.textContent = formatTime(600);
-                timerBox.appendChild(timerText);
-                timerContainer.appendChild(timerBox);
-                const timerNote = document.createElement('p');
-                timerNote.id = 'ad-timer-note';
-                timerNote.textContent = 'Al finalizar el tiempo, se reiniciarán los anuncios visualizados';
-                timerNote.className = 'text-xs text-center mt-1';
-                timerContainer.appendChild(timerNote);
-                storeItemsContainer.appendChild(timerContainer);
                 updateAdStatuses();
-                updateAdTimerDisplay();
+                updateAdCooldownDisplays();
             } else {
                 const generalItems = [
                     { key: 'heart', price: HEART_PRICE, img: 'https://i.imgur.com/WrI2XXx.png' },
@@ -7479,12 +7478,12 @@ function setupSlider(slider, display) {
 
 let purchaseInfo = null;
 function openPurchaseConfirm(type, key) {
-    if ((type === 'adLife' || type === 'adChest' || type === 'adInfinite' || (type === 'general' && key === 'heart')) && playerLives >= MAX_LIVES) {
+    if ((type === 'adLife' || type === 'adChest' || (type === 'general' && key === 'heart')) && playerLives >= MAX_LIVES) {
         showInsufficientFundsToast('Vidas al máximo');
         return;
     }
-    if ((type === 'adLife' || type === 'adChest' || type === 'adInfinite') && adsUnavailable()) {
-        showInsufficientFundsToast('Visualización de anuncios actualmente no disponible');
+    if ((type === 'adLife' || type === 'adChest' || type === 'adInfinite') && isOnCooldown(type)) {
+        showInsufficientFundsToast('Elemento no disponible actualmente');
         return;
     }
     purchaseInfo = { type, key };
@@ -7636,32 +7635,21 @@ function openPurchaseConfirm(type, key) {
                 showInsufficientFundsToast('Función no disponible');
                 return;
             } else if (purchaseInfo.type === 'adLife' || purchaseInfo.type === 'adChest' || purchaseInfo.type === 'adInfinite') {
-                if (playerLives >= MAX_LIVES) {
-                    closePurchaseConfirm();
-                    showInsufficientFundsToast('Vidas al máximo');
-                    return;
-                }
                 const type = purchaseInfo.type;
-                if (adsUnavailable()) {
+                if (isOnCooldown(type)) {
                     closePurchaseConfirm();
-                    showInsufficientFundsToast('Visualización de anuncios actualmente no disponible');
+                    showInsufficientFundsToast('Elemento no disponible actualmente');
                     return;
                 }
                 closePurchaseConfirm();
                 showInsufficientFundsToast('Ahora se estaría mostrando tu anuncio, aprovecha mientras no te obliguemos a verlo');
-                adsWatched = Math.min(adsWatched + 1, AD_ITEMS.adInfinite.ads);
-                if (adsWatched === 1) {
-                    adCounterExpiry = Date.now() + 10 * 60 * 1000;
-                    startAdTimer();
-                } else {
-                    updateAdTimerDisplay();
-                }
+                adsWatched[type] = Math.min(adsWatched[type] + 1, AD_ITEMS[type].ads);
                 saveAdProgress();
                 updateAdStatuses();
-                if (adsWatched >= AD_ITEMS[type].ads) {
+                if (adsWatched[type] >= AD_ITEMS[type].ads) {
                     if (type === 'adLife') {
+                        const prevLives = playerLives;
                         if (playerLives < MAX_LIVES) {
-                            const prevLives = playerLives;
                             playerLives++;
                             if (lifeRestoreQueue.length > 0) lifeRestoreQueue.pop();
                             if (playerLives >= MAX_LIVES) lifeRestoreQueue = [];
@@ -7688,9 +7676,11 @@ function openPurchaseConfirm(type, key) {
                         updateLivesDisplay();
                         updateLifeTimerDisplay();
                     }
-                }
-                if (adsWatched >= AD_ITEMS.adInfinite.ads) {
-                    enterAdCooldown();
+                    adsWatched[type] = 0;
+                    adCooldownExpiry[type] = Date.now() + 60 * 60 * 1000;
+                    saveAdProgress();
+                    updateAdCooldownDisplays();
+                    startCooldownTimer();
                 }
                 return;
             }
@@ -10993,92 +10983,71 @@ function openPurchaseConfirm(type, key) {
         }
 
         function saveAdProgress() {
-            localStorage.setItem('snakeGameAdsWatched', adsWatched.toString());
-            localStorage.setItem('snakeGameAdExpiry', adCounterExpiry.toString());
-            localStorage.setItem('snakeGameAdCooldown', adCooldownExpiry.toString());
+            for (const type in AD_ITEMS) {
+                localStorage.setItem(`snakeGameAdsWatched_${type}`, adsWatched[type].toString());
+                localStorage.setItem(`snakeGameAdCooldown_${type}`, adCooldownExpiry[type].toString());
+            }
         }
 
         function loadAdProgress() {
-            adsWatched = parseInt(localStorage.getItem('snakeGameAdsWatched'), 10) || 0;
-            adCounterExpiry = parseInt(localStorage.getItem('snakeGameAdExpiry'), 10) || 0;
-            adCooldownExpiry = parseInt(localStorage.getItem('snakeGameAdCooldown'), 10) || 0;
             const now = Date.now();
-            if (adCooldownExpiry > now) {
-                startAdTimer();
-            } else if (adsWatched > 0 && adCounterExpiry > now) {
-                startAdTimer();
-            } else {
-                adsWatched = 0;
-                adCounterExpiry = 0;
-                adCooldownExpiry = 0;
+            for (const type in AD_ITEMS) {
+                adsWatched[type] = parseInt(localStorage.getItem(`snakeGameAdsWatched_${type}`), 10) || 0;
+                adCooldownExpiry[type] = parseInt(localStorage.getItem(`snakeGameAdCooldown_${type}`), 10) || 0;
+            }
+            updateAdStatuses();
+            updateAdCooldownDisplays();
+            if (Object.values(adCooldownExpiry).some(exp => exp > now)) {
+                startCooldownTimer();
             }
         }
 
-        function adsUnavailable() {
-            return adCooldownExpiry > Date.now();
+        function isOnCooldown(type) {
+            return adCooldownExpiry[type] > Date.now();
         }
 
-        function enterAdCooldown() {
-            adCooldownExpiry = Date.now() + 60 * 60 * 1000;
-            adCounterExpiry = 0;
-            saveAdProgress();
-            startAdTimer();
-        }
-
-        function startAdTimer() {
+        function startCooldownTimer() {
             if (!adTimerInterval) {
-                adTimerInterval = setInterval(updateAdTimerDisplay, 1000);
+                adTimerInterval = setInterval(updateAdCooldownDisplays, 1000);
             }
-            updateAdTimerDisplay();
         }
 
-        function updateAdTimerDisplay() {
+        function updateAdCooldownDisplays() {
             const now = Date.now();
-            const timerEl = document.getElementById('ad-timer-value');
-            const noteEl = document.getElementById('ad-timer-note');
-            if (!timerEl) return;
-            if (adCooldownExpiry > now) {
-                const remainingCd = adCooldownExpiry - now;
-                timerEl.textContent = formatTime(Math.ceil(remainingCd / 1000));
-                if (noteEl) noteEl.textContent = 'Visualización de anuncios actualmente no disponible';
-                return;
-            }
-            if (adCooldownExpiry > 0) {
-                adCooldownExpiry = 0;
-                adsWatched = 0;
-                saveAdProgress();
-                updateAdStatuses();
-            }
-            if (adsWatched > 0) {
-                if (adCounterExpiry <= now) {
-                    enterAdCooldown();
-                    if (noteEl) noteEl.textContent = 'Visualización de anuncios actualmente no disponible';
-                    return;
+            let anyActive = false;
+            for (const type in AD_ITEMS) {
+                const cooldownEl = document.getElementById(`ad-cooldown-${type}`);
+                const itemEl = document.getElementById(`store-item-${type}`);
+                if (adCooldownExpiry[type] > now) {
+                    anyActive = true;
+                    const remaining = adCooldownExpiry[type] - now;
+                    if (cooldownEl) {
+                        cooldownEl.textContent = formatTime(Math.ceil(remaining / 1000));
+                        cooldownEl.classList.remove('hidden');
+                    }
+                    if (itemEl) itemEl.classList.add('locked');
+                } else {
+                    if (cooldownEl) cooldownEl.classList.add('hidden');
+                    if (itemEl) itemEl.classList.remove('locked');
                 }
-                const remaining = adCounterExpiry - now;
-                timerEl.textContent = formatTime(Math.ceil(remaining / 1000));
-                if (noteEl) noteEl.textContent = 'Al finalizar el tiempo, se reiniciarán los anuncios visualizados';
-            } else {
-                timerEl.textContent = formatTime(600);
-                if (noteEl) noteEl.textContent = 'Al finalizar el tiempo, se reiniciarán los anuncios visualizados';
-                if (adTimerInterval) {
-                    clearInterval(adTimerInterval);
-                    adTimerInterval = null;
-                }
+            }
+            if (!anyActive && adTimerInterval) {
+                clearInterval(adTimerInterval);
+                adTimerInterval = null;
             }
         }
 
         function updateAdStatuses() {
             const lifeStatus = document.getElementById('ad-status-adLife');
-            if (lifeStatus) lifeStatus.textContent = `${Math.min(adsWatched, AD_ITEMS.adLife.ads)}/${AD_ITEMS.adLife.ads}`;
+            if (lifeStatus) lifeStatus.textContent = `${adsWatched.adLife}/${AD_ITEMS.adLife.ads}`;
             const chestStatus = document.getElementById('ad-status-adChest');
-            if (chestStatus) chestStatus.textContent = `${Math.min(adsWatched, AD_ITEMS.adChest.ads)}/${AD_ITEMS.adChest.ads}`;
+            if (chestStatus) chestStatus.textContent = `${adsWatched.adChest}/${AD_ITEMS.adChest.ads}`;
             const infStatus = document.getElementById('ad-status-adInfinite');
-            if (infStatus) infStatus.textContent = `${Math.min(adsWatched, AD_ITEMS.adInfinite.ads)}/${AD_ITEMS.adInfinite.ads}`;
+            if (infStatus) infStatus.textContent = `${adsWatched.adInfinite}/${AD_ITEMS.adInfinite.ads}`;
         }
         function updateTargetScoreDisplay() {
             if (targetScoreValueDisplay && targetScoreDivider) {
-                 if (gameMode === 'levels' || gameMode === 'maze') { 
+                 if (gameMode === 'levels' || gameMode === 'maze') {
                     // Use displayTargetScore which is updated at the start of a game or when settings change
                     targetScoreValueDisplay.textContent = displayTargetScore;
                     targetScoreValueDisplay.classList.remove('hidden');
