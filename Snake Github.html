@@ -584,6 +584,10 @@
             color: #f5f5f5;
         }
 
+        .life-number.infinite {
+            font-size: 1.3em !important;
+        }
+
         #progress-lives-info-group .info-value {
             font-size: 0.85em;
             color: #f5f5f5;
@@ -1038,11 +1042,6 @@
             top: -2px;
         }
 
-        .ad-timer-icon {
-            height: calc(100% - 10px);
-            margin: 5px 0;
-            width: auto;
-        }
 
 
         #earnedCoinsMessage {
@@ -1109,12 +1108,12 @@
 
         #earnedLivesMessage.show {
             opacity: 1;
-            transform: translateX(-65px) translateY(-50%);
+            transform: translateX(-45px) translateY(-50%);
         }
 
         #earnedLivesMessage.hide {
             opacity: 0;
-            transform: translateX(-130px) translateY(-50%);
+            transform: translateX(-100px) translateY(-50%);
         }
 
         #livesValue {
@@ -2049,10 +2048,10 @@
                 transform: translateX(-30px) translateY(-50%);
             }
             #earnedLivesMessage.show {
-                transform: translateX(-55px) translateY(-50%);
+                transform: translateX(-25px) translateY(-50%);
             }
             #earnedLivesMessage.hide {
-                transform: translateX(-110px) translateY(-50%);
+                transform: translateX(-70px) translateY(-50%);
             }
 
 
@@ -2222,10 +2221,10 @@
                 transform: translateX(-25px) translateY(-40%);
             }
             #earnedLivesMessage.show {
-                transform: translateX(-50px) translateY(-40%);
+                transform: translateX(-22px) translateY(-40%);
             }
             #earnedLivesMessage.hide {
-                transform: translateX(-100px) translateY(-40%);
+                transform: translateX(-60px) translateY(-40%);
             }
 
             #title-panel { min-height: 36px; padding: 6px; }
@@ -2880,6 +2879,14 @@
           filter: grayscale(100%);
           opacity: 0.7;
         }
+        .store-item.locked .store-item-status {
+          color: #cccccc;
+          opacity: 0.7;
+        }
+        .store-item.locked .store-item-status img {
+          filter: grayscale(100%);
+          opacity: 0.7;
+        }
         .store-item.purchased {
           pointer-events: none;
         }
@@ -3055,6 +3062,19 @@
           text-shadow: 1px 1px 2px black;
           font-family: 'Press Start 2P', sans-serif;
           z-index: 2;
+        }
+
+        .store-item-cooldown {
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          color: #ffffff;
+          font-size: 0.9rem;
+          text-shadow: 1px 1px 2px black;
+          font-family: 'Press Start 2P', sans-serif;
+          z-index: 3;
+          pointer-events: none;
         }
 
         .store-tab {
@@ -5558,6 +5578,11 @@ function setupSlider(slider, display) {
             adChest: { img: 'https://i.imgur.com/Q5hONzD.png', ads: 2, label: 'un cofre de vidas' },
             adInfinite: { img: 'https://i.imgur.com/QUXDBHx.png', ads: 3, label: 'vidas infinitas durante 1 hora' }
         };
+        const COIN_LIFE_ITEMS = {
+            coinLife: { img: AD_ITEMS.adLife.img, cost: HEART_PRICE, label: 'una vida' },
+            coinChest: { img: AD_ITEMS.adChest.img, cost: 250, label: 'un cofre de vidas' },
+            coinInfinite: { img: AD_ITEMS.adInfinite.img, cost: 500, label: 'vidas infinitas durante 1 hora' }
+        };
         let storeTab = 'general';
         let profileTab = 'general';
         // --- Fin Configuración de Comestibles ---
@@ -5700,9 +5725,8 @@ function setupSlider(slider, display) {
         let playerLives = MAX_LIVES;
         let lifeRestoreQueue = [];
         let infiniteLivesEnd = 0;
-        let adsWatched = 0;
-        let adCounterExpiry = 0;
-        let adCooldownExpiry = 0;
+        let adsWatched = { adLife: 0, adChest: 0, adInfinite: 0 };
+        let adCooldownExpiry = { adLife: 0, adChest: 0, adInfinite: 0 };
         let adTimerInterval = null;
         let gameOver = false;
         let gameOverByTimeout = false;
@@ -7404,6 +7428,7 @@ function setupSlider(slider, display) {
                 ];
                 items.forEach(({ type, img }) => {
                     const item = document.createElement('div');
+                    item.id = `store-item-${type}`;
                     item.className = 'store-item';
                     const imgEl = document.createElement('img');
                     imgEl.className = 'store-item-img lives-img';
@@ -7419,34 +7444,45 @@ function setupSlider(slider, display) {
                     adImg.alt = 'Anuncio';
                     adImg.className = 'ad-cost-icon';
                     status.appendChild(adImg);
+                    const cooldown = document.createElement('div');
+                    cooldown.id = `ad-cooldown-${type}`;
+                    cooldown.className = 'store-item-cooldown hidden';
+                    item.appendChild(cooldown);
                     item.addEventListener('click', () => openPurchaseConfirm(type));
                     addIconPressEvents(item, item);
                     item.appendChild(status);
                     storeItemsContainer.appendChild(item);
                 });
-                const timerContainer = document.createElement('div');
-                timerContainer.id = 'ad-timer-container';
-                timerContainer.className = 'col-span-3 flex flex-col items-center';
-                const timerBox = document.createElement('div');
-                timerBox.className = 'menu-option-button w-32 flex items-center justify-center gap-1';
-                const timerIcon = document.createElement('img');
-                timerIcon.src = 'https://i.imgur.com/9BfNTJh.png';
-                timerIcon.alt = 'Anuncio';
-                timerIcon.className = 'ad-timer-icon';
-                timerBox.appendChild(timerIcon);
-                const timerText = document.createElement('span');
-                timerText.id = 'ad-timer-value';
-                timerText.textContent = formatTime(600);
-                timerBox.appendChild(timerText);
-                timerContainer.appendChild(timerBox);
-                const timerNote = document.createElement('p');
-                timerNote.id = 'ad-timer-note';
-                timerNote.textContent = 'Al finalizar el tiempo, se reiniciarán los anuncios visualizados';
-                timerNote.className = 'text-xs text-center mt-1';
-                timerContainer.appendChild(timerNote);
-                storeItemsContainer.appendChild(timerContainer);
                 updateAdStatuses();
-                updateAdTimerDisplay();
+                updateAdCooldownDisplays();
+                const coinItems = [
+                    { type: 'coinLife', data: COIN_LIFE_ITEMS.coinLife },
+                    { type: 'coinChest', data: COIN_LIFE_ITEMS.coinChest },
+                    { type: 'coinInfinite', data: COIN_LIFE_ITEMS.coinInfinite }
+                ];
+                coinItems.forEach(({ type, data }) => {
+                    const item = document.createElement('div');
+                    item.id = `store-item-${type}`;
+                    item.className = 'store-item';
+                    const imgEl = document.createElement('img');
+                    imgEl.className = 'store-item-img lives-img';
+                    imgEl.src = data.img;
+                    item.appendChild(imgEl);
+                    const status = document.createElement('div');
+                    status.className = 'store-item-status';
+                    const span = document.createElement('span');
+                    span.textContent = data.cost.toString();
+                    status.appendChild(span);
+                    const coinImg = document.createElement('img');
+                    coinImg.src = 'https://i.imgur.com/lnc1Mwu.png';
+                    coinImg.alt = 'Moneda';
+                    coinImg.className = 'coin-cost-icon';
+                    status.appendChild(coinImg);
+                    item.addEventListener('click', () => openPurchaseConfirm(type));
+                    addIconPressEvents(item, item);
+                    item.appendChild(status);
+                    storeItemsContainer.appendChild(item);
+                });
             } else {
                 const generalItems = [
                     { key: 'heart', price: HEART_PRICE, img: 'https://i.imgur.com/WrI2XXx.png' },
@@ -7479,12 +7515,12 @@ function setupSlider(slider, display) {
 
 let purchaseInfo = null;
 function openPurchaseConfirm(type, key) {
-    if ((type === 'adLife' || type === 'adChest' || type === 'adInfinite' || (type === 'general' && key === 'heart')) && playerLives >= MAX_LIVES) {
+    if ((type === 'adLife' || type === 'adChest' || type === 'coinLife' || type === 'coinChest' || (type === 'general' && key === 'heart')) && playerLives >= MAX_LIVES) {
         showInsufficientFundsToast('Vidas al máximo');
         return;
     }
-    if ((type === 'adLife' || type === 'adChest' || type === 'adInfinite') && adsUnavailable()) {
-        showInsufficientFundsToast('Visualización de anuncios actualmente no disponible');
+    if ((type === 'adLife' || type === 'adChest' || type === 'adInfinite') && isOnCooldown(type)) {
+        showInsufficientFundsToast('Elemento no disponible actualmente');
         return;
     }
     purchaseInfo = { type, key };
@@ -7510,6 +7546,8 @@ function openPurchaseConfirm(type, key) {
                     img.src = GEM_PACKS[key]?.img || '';
                 } else if (type === 'adLife' || type === 'adChest' || type === 'adInfinite') {
                     img.src = AD_ITEMS[type]?.img || '';
+                } else if (type === 'coinLife' || type === 'coinChest' || type === 'coinInfinite') {
+                    img.src = COIN_LIFE_ITEMS[type]?.img || '';
                 }
                 purchaseItemPreview.appendChild(img);
             }
@@ -7545,6 +7583,11 @@ function openPurchaseConfirm(type, key) {
                 const nAds = config.ads;
                 const plural = nAds === 1 ? '' : 's';
                 if (purchaseConfirmationText) purchaseConfirmationText.innerHTML = `¿Ver ${nAds} anuncio${plural} para obtener ${name}?`;
+            } else if (type === 'coinLife' || type === 'coinChest' || type === 'coinInfinite') {
+                const config = COIN_LIFE_ITEMS[type];
+                price = config.cost;
+                name = config.label;
+                if (purchaseConfirmationText) purchaseConfirmationText.innerHTML = `¿Comprar ${name} por <strong>${price}</strong> monedas?`;
             }
             purchaseConfirmationPanel.classList.add('centered-panel');
             togglePanel(purchaseConfirmationPanel, purchaseConfirmationPanel.querySelector('.panel-content'), true);
@@ -7596,8 +7639,10 @@ function openPurchaseConfirm(type, key) {
                         if (playerLives >= MAX_LIVES) lifeRestoreQueue = [];
                         saveLives();
                         updateLifeTimerDisplay();
-                        animateLifeGain(prevLives, playerLives);
                         showEarnedLivesMessage(playerLives - prevLives);
+                        setTimeout(() => {
+                            animateLifeGain(prevLives, playerLives);
+                        }, COIN_MESSAGE_DISPLAY_TIME);
                         success = true;
                     } else if (playerLives >= MAX_LIVES) {
                         failureMessage = 'Vidas al máximo';
@@ -7615,6 +7660,54 @@ function openPurchaseConfirm(type, key) {
                         }, COIN_MESSAGE_DISPLAY_TIME);
                         success = true;
                     }
+                }
+            } else if (purchaseInfo.type === 'coinLife' || purchaseInfo.type === 'coinChest' || purchaseInfo.type === 'coinInfinite') {
+                const config = COIN_LIFE_ITEMS[purchaseInfo.type];
+                price = config.cost;
+                if (totalCoins >= price) {
+                    if (purchaseInfo.type === 'coinLife') {
+                        if (playerLives < MAX_LIVES) {
+                            totalCoins -= price;
+                            const prevLives = playerLives;
+                            playerLives++;
+                            if (lifeRestoreQueue.length > 0) lifeRestoreQueue.pop();
+                            if (playerLives >= MAX_LIVES) lifeRestoreQueue = [];
+                            saveLives();
+                            updateLifeTimerDisplay();
+                            showEarnedLivesMessage(playerLives - prevLives);
+                            setTimeout(() => {
+                                animateLifeGain(prevLives, playerLives);
+                            }, COIN_MESSAGE_DISPLAY_TIME);
+                            success = true;
+                        } else {
+                            failureMessage = 'Vidas al máximo';
+                        }
+                    } else if (purchaseInfo.type === 'coinChest') {
+                        totalCoins -= price;
+                        const gain = Math.floor(Math.random() * 5) + 1;
+                        const prevLives = playerLives;
+                        playerLives = Math.min(MAX_LIVES, playerLives + gain);
+                        const actualGain = playerLives - prevLives;
+                        if (playerLives >= MAX_LIVES) lifeRestoreQueue = [];
+                        saveLives();
+                        updateLifeTimerDisplay();
+                        if (actualGain > 0) showEarnedLivesMessage(actualGain);
+                        setTimeout(() => {
+                            animateLifeGain(prevLives, playerLives);
+                        }, COIN_MESSAGE_DISPLAY_TIME);
+                        success = true;
+                    } else if (purchaseInfo.type === 'coinInfinite') {
+                        totalCoins -= price;
+                        infiniteLivesEnd = Date.now() + 60 * 60 * 1000;
+                        playerLives = MAX_LIVES;
+                        lifeRestoreQueue = [];
+                        saveLives();
+                        updateLivesDisplay();
+                        updateLifeTimerDisplay();
+                        success = true;
+                    }
+                } else {
+                    failureMessage = 'Monedas insuficientes';
                 }
             } else if (purchaseInfo.type === 'coinPack') {
                 const pack = COIN_PACKS[purchaseInfo.key];
@@ -7636,39 +7729,30 @@ function openPurchaseConfirm(type, key) {
                 showInsufficientFundsToast('Función no disponible');
                 return;
             } else if (purchaseInfo.type === 'adLife' || purchaseInfo.type === 'adChest' || purchaseInfo.type === 'adInfinite') {
-                if (playerLives >= MAX_LIVES) {
-                    closePurchaseConfirm();
-                    showInsufficientFundsToast('Vidas al máximo');
-                    return;
-                }
                 const type = purchaseInfo.type;
-                if (adsUnavailable()) {
+                if (isOnCooldown(type)) {
                     closePurchaseConfirm();
-                    showInsufficientFundsToast('Visualización de anuncios actualmente no disponible');
+                    showInsufficientFundsToast('Elemento no disponible actualmente');
                     return;
                 }
                 closePurchaseConfirm();
                 showInsufficientFundsToast('Ahora se estaría mostrando tu anuncio, aprovecha mientras no te obliguemos a verlo');
-                adsWatched = Math.min(adsWatched + 1, AD_ITEMS.adInfinite.ads);
-                if (adsWatched === 1) {
-                    adCounterExpiry = Date.now() + 10 * 60 * 1000;
-                    startAdTimer();
-                } else {
-                    updateAdTimerDisplay();
-                }
+                adsWatched[type] = Math.min(adsWatched[type] + 1, AD_ITEMS[type].ads);
                 saveAdProgress();
                 updateAdStatuses();
-                if (adsWatched >= AD_ITEMS[type].ads) {
+                if (adsWatched[type] >= AD_ITEMS[type].ads) {
                     if (type === 'adLife') {
+                        const prevLives = playerLives;
                         if (playerLives < MAX_LIVES) {
-                            const prevLives = playerLives;
                             playerLives++;
                             if (lifeRestoreQueue.length > 0) lifeRestoreQueue.pop();
                             if (playerLives >= MAX_LIVES) lifeRestoreQueue = [];
                             saveLives();
                             updateLifeTimerDisplay();
-                            animateLifeGain(prevLives, playerLives);
                             showEarnedLivesMessage(playerLives - prevLives);
+                            setTimeout(() => {
+                                animateLifeGain(prevLives, playerLives);
+                            }, COIN_MESSAGE_DISPLAY_TIME);
                         }
                     } else if (type === 'adChest') {
                         const gain = Math.floor(Math.random() * 5) + 1;
@@ -7678,8 +7762,10 @@ function openPurchaseConfirm(type, key) {
                         if (playerLives >= MAX_LIVES) lifeRestoreQueue = [];
                         saveLives();
                         updateLifeTimerDisplay();
-                        animateLifeGain(prevLives, playerLives);
                         if (actualGain > 0) showEarnedLivesMessage(actualGain);
+                        setTimeout(() => {
+                            animateLifeGain(prevLives, playerLives);
+                        }, COIN_MESSAGE_DISPLAY_TIME);
                     } else if (type === 'adInfinite') {
                         infiniteLivesEnd = Date.now() + 60 * 60 * 1000;
                         playerLives = MAX_LIVES;
@@ -7688,9 +7774,11 @@ function openPurchaseConfirm(type, key) {
                         updateLivesDisplay();
                         updateLifeTimerDisplay();
                     }
-                }
-                if (adsWatched >= AD_ITEMS.adInfinite.ads) {
-                    enterAdCooldown();
+                    adsWatched[type] = 0;
+                    adCooldownExpiry[type] = Date.now() + 60 * 60 * 1000;
+                    saveAdProgress();
+                    updateAdCooldownDisplays();
+                    startCooldownTimer();
                 }
                 return;
             }
@@ -10931,10 +11019,13 @@ function openPurchaseConfirm(type, key) {
         }
 
         function updateLivesDisplay() {
-            const displayValue = hasInfiniteLives() ? '∞' : playerLives;
-            if (livesValueDisplay) livesValueDisplay.textContent = displayValue;
-            if (selectorLivesValueDisplay) selectorLivesValueDisplay.textContent = displayValue;
-            if (progressLivesValueDisplay) progressLivesValueDisplay.textContent = displayValue;
+            const infinite = hasInfiniteLives();
+            const displayValue = infinite ? '∞' : playerLives;
+            [livesValueDisplay, selectorLivesValueDisplay, progressLivesValueDisplay].forEach(el => {
+                if (!el) return;
+                el.textContent = displayValue;
+                el.classList.toggle('infinite', infinite);
+            });
         }
 
         function updateLifeTimerDisplay() {
@@ -10993,92 +11084,71 @@ function openPurchaseConfirm(type, key) {
         }
 
         function saveAdProgress() {
-            localStorage.setItem('snakeGameAdsWatched', adsWatched.toString());
-            localStorage.setItem('snakeGameAdExpiry', adCounterExpiry.toString());
-            localStorage.setItem('snakeGameAdCooldown', adCooldownExpiry.toString());
+            for (const type in AD_ITEMS) {
+                localStorage.setItem(`snakeGameAdsWatched_${type}`, adsWatched[type].toString());
+                localStorage.setItem(`snakeGameAdCooldown_${type}`, adCooldownExpiry[type].toString());
+            }
         }
 
         function loadAdProgress() {
-            adsWatched = parseInt(localStorage.getItem('snakeGameAdsWatched'), 10) || 0;
-            adCounterExpiry = parseInt(localStorage.getItem('snakeGameAdExpiry'), 10) || 0;
-            adCooldownExpiry = parseInt(localStorage.getItem('snakeGameAdCooldown'), 10) || 0;
             const now = Date.now();
-            if (adCooldownExpiry > now) {
-                startAdTimer();
-            } else if (adsWatched > 0 && adCounterExpiry > now) {
-                startAdTimer();
-            } else {
-                adsWatched = 0;
-                adCounterExpiry = 0;
-                adCooldownExpiry = 0;
+            for (const type in AD_ITEMS) {
+                adsWatched[type] = parseInt(localStorage.getItem(`snakeGameAdsWatched_${type}`), 10) || 0;
+                adCooldownExpiry[type] = parseInt(localStorage.getItem(`snakeGameAdCooldown_${type}`), 10) || 0;
+            }
+            updateAdStatuses();
+            updateAdCooldownDisplays();
+            if (Object.values(adCooldownExpiry).some(exp => exp > now)) {
+                startCooldownTimer();
             }
         }
 
-        function adsUnavailable() {
-            return adCooldownExpiry > Date.now();
+        function isOnCooldown(type) {
+            return adCooldownExpiry[type] > Date.now();
         }
 
-        function enterAdCooldown() {
-            adCooldownExpiry = Date.now() + 60 * 60 * 1000;
-            adCounterExpiry = 0;
-            saveAdProgress();
-            startAdTimer();
-        }
-
-        function startAdTimer() {
+        function startCooldownTimer() {
             if (!adTimerInterval) {
-                adTimerInterval = setInterval(updateAdTimerDisplay, 1000);
+                adTimerInterval = setInterval(updateAdCooldownDisplays, 1000);
             }
-            updateAdTimerDisplay();
         }
 
-        function updateAdTimerDisplay() {
+        function updateAdCooldownDisplays() {
             const now = Date.now();
-            const timerEl = document.getElementById('ad-timer-value');
-            const noteEl = document.getElementById('ad-timer-note');
-            if (!timerEl) return;
-            if (adCooldownExpiry > now) {
-                const remainingCd = adCooldownExpiry - now;
-                timerEl.textContent = formatTime(Math.ceil(remainingCd / 1000));
-                if (noteEl) noteEl.textContent = 'Visualización de anuncios actualmente no disponible';
-                return;
-            }
-            if (adCooldownExpiry > 0) {
-                adCooldownExpiry = 0;
-                adsWatched = 0;
-                saveAdProgress();
-                updateAdStatuses();
-            }
-            if (adsWatched > 0) {
-                if (adCounterExpiry <= now) {
-                    enterAdCooldown();
-                    if (noteEl) noteEl.textContent = 'Visualización de anuncios actualmente no disponible';
-                    return;
+            let anyActive = false;
+            for (const type in AD_ITEMS) {
+                const cooldownEl = document.getElementById(`ad-cooldown-${type}`);
+                const itemEl = document.getElementById(`store-item-${type}`);
+                if (adCooldownExpiry[type] > now) {
+                    anyActive = true;
+                    const remaining = adCooldownExpiry[type] - now;
+                    if (cooldownEl) {
+                        cooldownEl.textContent = formatTime(Math.ceil(remaining / 1000));
+                        cooldownEl.classList.remove('hidden');
+                    }
+                    if (itemEl) itemEl.classList.add('locked');
+                } else {
+                    if (cooldownEl) cooldownEl.classList.add('hidden');
+                    if (itemEl) itemEl.classList.remove('locked');
                 }
-                const remaining = adCounterExpiry - now;
-                timerEl.textContent = formatTime(Math.ceil(remaining / 1000));
-                if (noteEl) noteEl.textContent = 'Al finalizar el tiempo, se reiniciarán los anuncios visualizados';
-            } else {
-                timerEl.textContent = formatTime(600);
-                if (noteEl) noteEl.textContent = 'Al finalizar el tiempo, se reiniciarán los anuncios visualizados';
-                if (adTimerInterval) {
-                    clearInterval(adTimerInterval);
-                    adTimerInterval = null;
-                }
+            }
+            if (!anyActive && adTimerInterval) {
+                clearInterval(adTimerInterval);
+                adTimerInterval = null;
             }
         }
 
         function updateAdStatuses() {
             const lifeStatus = document.getElementById('ad-status-adLife');
-            if (lifeStatus) lifeStatus.textContent = `${Math.min(adsWatched, AD_ITEMS.adLife.ads)}/${AD_ITEMS.adLife.ads}`;
+            if (lifeStatus) lifeStatus.textContent = `${adsWatched.adLife}/${AD_ITEMS.adLife.ads}`;
             const chestStatus = document.getElementById('ad-status-adChest');
-            if (chestStatus) chestStatus.textContent = `${Math.min(adsWatched, AD_ITEMS.adChest.ads)}/${AD_ITEMS.adChest.ads}`;
+            if (chestStatus) chestStatus.textContent = `${adsWatched.adChest}/${AD_ITEMS.adChest.ads}`;
             const infStatus = document.getElementById('ad-status-adInfinite');
-            if (infStatus) infStatus.textContent = `${Math.min(adsWatched, AD_ITEMS.adInfinite.ads)}/${AD_ITEMS.adInfinite.ads}`;
+            if (infStatus) infStatus.textContent = `${adsWatched.adInfinite}/${AD_ITEMS.adInfinite.ads}`;
         }
         function updateTargetScoreDisplay() {
             if (targetScoreValueDisplay && targetScoreDivider) {
-                 if (gameMode === 'levels' || gameMode === 'maze') { 
+                 if (gameMode === 'levels' || gameMode === 'maze') {
                     // Use displayTargetScore which is updated at the start of a game or when settings change
                     targetScoreValueDisplay.textContent = displayTargetScore;
                     targetScoreValueDisplay.classList.remove('hidden');
