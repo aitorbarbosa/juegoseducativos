@@ -585,7 +585,8 @@
         }
 
         .life-number.infinite {
-            font-size: 1.3em !important;
+            font-size: 2.5em !important;
+            transform: translate(-50%, -64%) !important;
         }
 
         #progress-lives-info-group .info-value {
@@ -7523,6 +7524,10 @@ function openPurchaseConfirm(type, key) {
         showInsufficientFundsToast('Elemento no disponible');
         return;
     }
+    if (type === 'coinInfinite' && hasInfiniteLives()) {
+        showInsufficientFundsToast('Ya está activado');
+        return;
+    }
     purchaseInfo = { type, key };
             if (purchaseItemPreview) {
                 purchaseItemPreview.innerHTML = '';
@@ -7639,10 +7644,7 @@ function openPurchaseConfirm(type, key) {
                         if (playerLives >= MAX_LIVES) lifeRestoreQueue = [];
                         saveLives();
                         updateLifeTimerDisplay();
-                        showEarnedLivesMessage(playerLives - prevLives);
-                        setTimeout(() => {
-                            animateLifeGain(prevLives, playerLives);
-                        }, COIN_MESSAGE_DISPLAY_TIME);
+                        animateLifeGain(prevLives, playerLives);
                         success = true;
                     } else if (playerLives >= MAX_LIVES) {
                         failureMessage = 'Vidas al máximo';
@@ -7674,10 +7676,7 @@ function openPurchaseConfirm(type, key) {
                             if (playerLives >= MAX_LIVES) lifeRestoreQueue = [];
                             saveLives();
                             updateLifeTimerDisplay();
-                            showEarnedLivesMessage(playerLives - prevLives);
-                            setTimeout(() => {
-                                animateLifeGain(prevLives, playerLives);
-                            }, COIN_MESSAGE_DISPLAY_TIME);
+                            animateLifeGain(prevLives, playerLives);
                             success = true;
                         } else {
                             failureMessage = 'Vidas al máximo';
@@ -7691,10 +7690,7 @@ function openPurchaseConfirm(type, key) {
                         if (playerLives >= MAX_LIVES) lifeRestoreQueue = [];
                         saveLives();
                         updateLifeTimerDisplay();
-                        if (actualGain > 0) showEarnedLivesMessage(actualGain);
-                        setTimeout(() => {
-                            animateLifeGain(prevLives, playerLives);
-                        }, COIN_MESSAGE_DISPLAY_TIME);
+                        animateLifeGain(prevLives, playerLives);
                         success = true;
                     } else if (purchaseInfo.type === 'coinInfinite') {
                         totalCoins -= price;
@@ -7749,10 +7745,7 @@ function openPurchaseConfirm(type, key) {
                             if (playerLives >= MAX_LIVES) lifeRestoreQueue = [];
                             saveLives();
                             updateLifeTimerDisplay();
-                            showEarnedLivesMessage(playerLives - prevLives);
-                            setTimeout(() => {
-                                animateLifeGain(prevLives, playerLives);
-                            }, COIN_MESSAGE_DISPLAY_TIME);
+                            animateLifeGain(prevLives, playerLives);
                         }
                     } else if (type === 'adChest') {
                         const gain = Math.floor(Math.random() * 5) + 1;
@@ -7762,10 +7755,7 @@ function openPurchaseConfirm(type, key) {
                         if (playerLives >= MAX_LIVES) lifeRestoreQueue = [];
                         saveLives();
                         updateLifeTimerDisplay();
-                        if (actualGain > 0) showEarnedLivesMessage(actualGain);
-                        setTimeout(() => {
-                            animateLifeGain(prevLives, playerLives);
-                        }, COIN_MESSAGE_DISPLAY_TIME);
+                        animateLifeGain(prevLives, playerLives);
                     } else if (type === 'adInfinite') {
                         infiniteLivesEnd = Date.now() + 60 * 60 * 1000;
                         playerLives = MAX_LIVES;
@@ -10944,6 +10934,7 @@ function openPurchaseConfirm(type, key) {
                 updateLivesDisplay();
                 return;
             }
+            showEarnedLivesMessage(diff);
             const duration = Math.min(2000, diff * 60);
             const start = performance.now();
             if (areSfxEnabled) playSound('coinAdd', duration / 1000);
