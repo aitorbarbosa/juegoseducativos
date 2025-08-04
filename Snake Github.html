@@ -1020,8 +1020,8 @@
         .gem-cost-icon {
             width: 16px;
             height: 16px;
-            margin-left: 4px;
-            vertical-align: middle;
+            position: relative;
+            top: -1px;
         }
 
 
@@ -2796,6 +2796,9 @@
           background-image: url('https://i.imgur.com/YKjPhxX.png');
           z-index: 1;
         }
+        .store-item.currency-item::before {
+          background-image: url('https://i.imgur.com/YKjPhxX.png');
+        }
         .store-item:hover::before { filter: brightness(0.95); }
         .store-item.icon-button-pressed::before { filter: brightness(0.5); }
         .store-item.locked {
@@ -2836,6 +2839,10 @@
           left: 50%;
           transform: translate(-50%, -50%);
           object-fit: cover;
+        }
+        .store-item-img.currency-img {
+          width: 95%;
+          height: 95%;
         }
         .achievement-item {
           display: flex;
@@ -2963,7 +2970,10 @@
           bottom: 16px;
           left: 0;
           right: 0;
-          text-align: center;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          gap: 2px;
           font-size: 0.7rem;
           color: #C084FC;
           text-shadow: 1px 1px 2px black;
@@ -3698,7 +3708,7 @@
                     <div id="store-tabs" class="flex gap-2 mb-2">
                         <button data-tab="general" id="store-tab-general" class="store-tab menu-option-button active">GENERAL</button>
                         <button data-tab="divisas" id="store-tab-divisas" class="store-tab menu-option-button">
-                            <img src="https://i.imgur.com/WDpRCFy.png" alt="Divisas">
+                            <img src="https://i.imgur.com/NdBJqwT.png" alt="Divisas">
                         </button>
                         <button data-tab="comida" id="store-tab-comida" class="store-tab menu-option-button">
                             <img src="https://i.imgur.com/fOSSwUX.png" alt="Comida">
@@ -5453,14 +5463,14 @@ function setupSlider(slider, display) {
         const HEART_PRICE = 100;
         const GEM_PRICE = 1000;
         const COIN_PACKS = {
-            coin1000: { img: 'https://i.imgur.com/walqd0H.png', costGems: 1, amount: 1000, name: 'Monedas' },
-            coin7500: { img: 'https://i.imgur.com/iGzWFgy.png', costGems: 5, amount: 7500, name: 'Bolsa de Monedas' },
-            coin20000: { img: 'https://i.imgur.com/FNDmDcR.png', costGems: 10, amount: 20000, name: 'Cofre de Monedas' }
+            coin1000: { img: 'https://i.imgur.com/fMa30Nl.png', costGems: 1, amount: 1000, name: 'Monedas' },
+            coin7500: { img: 'https://i.imgur.com/KnP5MXr.png', costGems: 5, amount: 7500, name: 'Bolsa de Monedas' },
+            coin20000: { img: 'https://i.imgur.com/3tiAqwx.png', costGems: 10, amount: 20000, name: 'Cofre de Monedas' }
         };
         const GEM_PACKS = {
-            gem10: { img: 'https://i.imgur.com/Qoo648i.png', price: '0.99€', amount: 10, name: 'Gemas' },
-            gem50: { img: 'https://i.imgur.com/Sk6SMrC.png', price: '2.99€', amount: 50, name: 'Bolsa de Gemas' },
-            gem100: { img: 'https://i.imgur.com/w15V6yf.png', price: '4.99€', amount: 100, name: 'Cofre de Gemas' }
+            gem10: { img: 'https://i.imgur.com/K5ntwBh.png', price: '0.99€', amount: 10, name: 'Gemas' },
+            gem50: { img: 'https://i.imgur.com/vhkvsPO.png', price: '2.99€', amount: 50, name: 'Bolsa de Gemas' },
+            gem100: { img: 'https://i.imgur.com/P59q9kH.png', price: '4.99€', amount: 100, name: 'Cofre de Gemas' }
         };
         let storeTab = 'general';
         let profileTab = 'general';
@@ -7249,17 +7259,20 @@ function setupSlider(slider, display) {
                 ];
                 items.forEach(({ key, pack, type }) => {
                     const item = document.createElement('div');
-                    item.className = 'store-item';
+                    item.className = 'store-item currency-item';
                     const img = document.createElement('img');
-                    img.className = 'store-item-img';
+                    img.className = 'store-item-img currency-img';
                     img.src = pack.img;
                     item.appendChild(img);
                     const status = document.createElement('div');
                     status.className = 'store-item-status';
                     if (type === 'coinPack') {
-                        status.textContent = pack.costGems.toString();
+                        const costSpan = document.createElement('span');
+                        costSpan.textContent = pack.costGems.toString();
+                        status.appendChild(costSpan);
                         const gemImg = document.createElement('img');
-                        gemImg.src = GEM_PACKS.gem10.img;
+                        gemImg.src = 'https://i.imgur.com/gPGsaCO.png';
+                        gemImg.alt = 'Gema';
                         gemImg.className = 'gem-cost-icon';
                         status.appendChild(gemImg);
                         item.addEventListener('click', () => openPurchaseConfirm('coinPack', key));
@@ -7299,7 +7312,7 @@ function setupSlider(slider, display) {
             purchaseInfo = { type, key };
             if (purchaseItemPreview) {
                 purchaseItemPreview.innerHTML = '';
-                purchaseItemPreview.className = 'store-item' + (type === 'scene' ? ' scene-item' : '');
+                purchaseItemPreview.className = 'store-item' + (type === 'scene' ? ' scene-item' : (type === 'coinPack' || type === 'gemPack' ? ' currency-item' : ''));
                 const img = document.createElement('img');
                 img.className = 'store-item-img';
                 if (type === 'food') {
@@ -7312,8 +7325,10 @@ function setupSlider(slider, display) {
                 } else if (type === 'general') {
                     img.src = key === 'heart' ? 'https://i.imgur.com/WrI2XXx.png' : 'https://i.imgur.com/gPGsaCO.png';
                 } else if (type === 'coinPack') {
+                    img.classList.add('currency-img');
                     img.src = COIN_PACKS[key]?.img || '';
                 } else if (type === 'gemPack') {
+                    img.classList.add('currency-img');
                     img.src = GEM_PACKS[key]?.img || '';
                 }
                 purchaseItemPreview.appendChild(img);
