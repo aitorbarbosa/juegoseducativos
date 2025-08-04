@@ -1031,6 +1031,13 @@
             top: -2px;
         }
 
+        .ad-cost-icon {
+            width: 16px;
+            height: 16px;
+            position: relative;
+            top: -2px;
+        }
+
 
         #earnedCoinsMessage {
             position: absolute;
@@ -3721,6 +3728,9 @@
                 <div class="panel-content">
                     <div id="store-tabs" class="flex gap-2 mb-2">
                         <button data-tab="general" id="store-tab-general" class="store-tab menu-option-button active">GENERAL</button>
+                        <button data-tab="vidas" id="store-tab-vidas" class="store-tab menu-option-button">
+                            <img src="https://i.imgur.com/9HHOgFe.png" alt="Vidas">
+                        </button>
                         <button data-tab="divisas" id="store-tab-divisas" class="store-tab menu-option-button">
                             <img src="https://i.imgur.com/NdBJqwT.png" alt="Divisas">
                         </button>
@@ -3734,7 +3744,11 @@
                             <img src="https://i.imgur.com/DPBCWp1.png" alt="Escenarios">
                         </button>
                     </div>
-                <div id="store-items-container" class="grid grid-cols-3 gap-4 w-full"></div>
+                    <div id="store-items-container" class="grid grid-cols-3 gap-4 w-full"></div>
+                    <div id="ad-progress-container" class="flex flex-col items-center w-full hidden">
+                        <div id="ad-timer" class="menu-option-button mb-1">10:00</div>
+                        <p class="text-xs text-center">Al finalizar el tiempo, se reiniciarán los anuncios visualizados</p>
+                    </div>
                 </div>
             </div>
             <div id="achievements-panel" class="achievements-panel-hidden">
@@ -4031,6 +4045,8 @@
         const closeAchievementsPanelButton = document.getElementById("close-achievements-panel");
         const achievementsContainer = document.getElementById("achievements-container");
         const storeItemsContainer = document.getElementById("store-items-container");
+        const adProgressContainer = document.getElementById('ad-progress-container');
+        const adTimerDisplay = document.getElementById('ad-timer');
         const storeTabButtons = document.querySelectorAll('#store-tabs .store-tab');
         const closeStorePanelButton = document.getElementById("close-store-panel");
         const purchaseConfirmationPanel = document.getElementById("purchase-confirmation-panel");
@@ -5476,6 +5492,7 @@ function setupSlider(slider, display) {
         let totalGems = 0;
         const HEART_PRICE = 100;
         const GEM_PRICE = 1000;
+        const AD_ICON = 'https://i.imgur.com/9BfNTJh.png';
         const COIN_PACKS = {
             coin1000: { img: 'https://i.imgur.com/fMa30Nl.png', costGems: 1, amount: 1000, name: 'Monedas' },
             coin7500: { img: 'https://i.imgur.com/KnP5MXr.png', costGems: 5, amount: 7500, name: 'Bolsa de Monedas' },
@@ -5488,6 +5505,10 @@ function setupSlider(slider, display) {
         };
         let storeTab = 'general';
         let profileTab = 'general';
+        let adsWatched = 0;
+        let adsExpireTime = 0;
+        let adTimerInterval = null;
+        let infiniteLivesUntil = 0;
         // --- Fin Configuración de Comestibles ---
 
         const ACHIEVEMENT_CATEGORY_NAMES = {
@@ -7190,6 +7211,7 @@ function setupSlider(slider, display) {
         function populateStoreItems() {
             if (!storeItemsContainer) return;
             storeItemsContainer.innerHTML = '';
+            if (adProgressContainer) adProgressContainer.classList.add('hidden');
             if (storeTab === 'comida') {
                 FOOD_ORDER.forEach(key => {
                     const item = document.createElement('div');
@@ -7319,6 +7341,35 @@ function setupSlider(slider, display) {
                     item.appendChild(status);
                     storeItemsContainer.appendChild(item);
                 });
+            } else if (storeTab === 'vidas') {
+                const items = [
+                    { key: 'life', img: 'https://i.imgur.com/bYgWlew.png', ads: 1 },
+                    { key: 'chest', img: 'https://i.imgur.com/Q5hONzD.png', ads: 2 },
+                    { key: 'infinite', img: 'https://i.imgur.com/QUXDBHx.png', ads: 3 }
+                ];
+                items.forEach(({ key, img, ads }) => {
+                    const item = document.createElement('div');
+                    item.className = 'store-item';
+                    const imgEl = document.createElement('img');
+                    imgEl.className = 'store-item-img';
+                    imgEl.src = img;
+                    item.appendChild(imgEl);
+                    const status = document.createElement('div');
+                    status.className = 'store-item-status';
+                    const countSpan = document.createElement('span');
+                    countSpan.textContent = `${Math.min(adsWatched, ads)}/${ads}`;
+                    status.appendChild(countSpan);
+                    const adImg = document.createElement('img');
+                    adImg.src = AD_ICON;
+                    adImg.alt = 'Anuncio';
+                    adImg.className = 'ad-cost-icon';
+                    status.appendChild(adImg);
+                    item.appendChild(status);
+                    item.addEventListener('click', () => handleLifePurchase(key, ads));
+                    addIconPressEvents(item, item);
+                    storeItemsContainer.appendChild(item);
+                });
+                updateAdTimerDisplay();
             } else {
                 const generalItems = [
                     { key: 'heart', price: HEART_PRICE, img: 'https://i.imgur.com/WrI2XXx.png' },
@@ -7347,6 +7398,75 @@ function setupSlider(slider, display) {
                     storeItemsContainer.appendChild(item);
                 });
             }
+        }
+
+        function watchAd() {
+            const now = Date.now();
+            if (now > adsExpireTime) {
+                adsWatched = 0;
+            }
+            if (adsWatched < 3) adsWatched++;
+            adsExpireTime = now + 10 * 60 * 1000;
+            startAdTimer();
+            populateStoreItems();
+        }
+
+        function startAdTimer() {
+            if (!adTimerDisplay || !adProgressContainer) return;
+            if (adTimerInterval) clearInterval(adTimerInterval);
+            const update = () => {
+                const remaining = Math.max(0, Math.ceil((adsExpireTime - Date.now()) / 1000));
+                if (remaining <= 0) {
+                    clearInterval(adTimerInterval);
+                    adTimerInterval = null;
+                    adsWatched = 0;
+                    adsExpireTime = 0;
+                    adProgressContainer.classList.add('hidden');
+                    populateStoreItems();
+                    return;
+                }
+                adTimerDisplay.textContent = formatTime(remaining);
+            };
+            adProgressContainer.classList.remove('hidden');
+            update();
+            adTimerInterval = setInterval(update, 1000);
+        }
+
+        function updateAdTimerDisplay() {
+            if (!adTimerDisplay || !adProgressContainer) return;
+            if (adsWatched > 0 && adsExpireTime > Date.now()) {
+                adProgressContainer.classList.remove('hidden');
+                adTimerDisplay.textContent = formatTime(Math.ceil((adsExpireTime - Date.now()) / 1000));
+                if (!adTimerInterval) startAdTimer();
+            } else {
+                adProgressContainer.classList.add('hidden');
+                if (adTimerInterval) { clearInterval(adTimerInterval); adTimerInterval = null; }
+            }
+        }
+
+        function handleLifePurchase(type, requiredAds) {
+            const now = Date.now();
+            if (now > adsExpireTime || adsWatched < requiredAds) {
+                watchAd();
+                return;
+            }
+            if (type === 'life') {
+                addLives(1);
+            } else if (type === 'chest') {
+                const gained = Math.floor(Math.random() * 5) + 1;
+                addLives(gained);
+            } else if (type === 'infinite') {
+                infiniteLivesUntil = Date.now() + 60 * 60 * 1000;
+                lifeRestoreQueue = [];
+                playerLives = MAX_LIVES;
+                updateLivesDisplay();
+                updateLifeTimerDisplay();
+            }
+            adsWatched = 0;
+            adsExpireTime = 0;
+            if (adTimerInterval) { clearInterval(adTimerInterval); adTimerInterval = null; }
+            adProgressContainer.classList.add('hidden');
+            populateStoreItems();
         }
 
         let purchaseInfo = null;
@@ -10680,27 +10800,44 @@ function setupSlider(slider, display) {
         }
 
         function updateLivesDisplay() {
-            if (livesValueDisplay) livesValueDisplay.textContent = playerLives;
-            if (selectorLivesValueDisplay) selectorLivesValueDisplay.textContent = playerLives;
-            if (progressLivesValueDisplay) progressLivesValueDisplay.textContent = playerLives;
+            const displayValue = (infiniteLivesUntil && Date.now() < infiniteLivesUntil) ? '∞' : playerLives;
+            if (livesValueDisplay) livesValueDisplay.textContent = displayValue;
+            if (selectorLivesValueDisplay) selectorLivesValueDisplay.textContent = displayValue;
+            if (progressLivesValueDisplay) progressLivesValueDisplay.textContent = displayValue;
         }
 
         function updateLifeTimerDisplay() {
             if (!(lifeTimerValueDisplay || selectorLifeTimerValueDisplay || progressLifeTimerValueDisplay)) return;
-            if (playerLives >= MAX_LIVES || lifeRestoreQueue.length === 0) {
+            const now = Date.now();
+            if (infiniteLivesUntil && now < infiniteLivesUntil) {
+                const remainingInf = Math.max(0, Math.ceil((infiniteLivesUntil - now) / 1000));
+                const formatted = formatTime(remainingInf);
+                if (lifeTimerValueDisplay) lifeTimerValueDisplay.textContent = formatted;
+                if (selectorLifeTimerValueDisplay) selectorLifeTimerValueDisplay.textContent = formatted;
+                if (progressLifeTimerValueDisplay) progressLifeTimerValueDisplay.textContent = formatted;
+            } else if (playerLives >= MAX_LIVES || lifeRestoreQueue.length === 0) {
                 if (lifeTimerValueDisplay) lifeTimerValueDisplay.textContent = 'Lleno';
                 if (selectorLifeTimerValueDisplay) selectorLifeTimerValueDisplay.textContent = 'Lleno';
                 if (progressLifeTimerValueDisplay) progressLifeTimerValueDisplay.textContent = 'Lleno';
             } else {
-                const remaining = Math.max(0, Math.ceil((lifeRestoreQueue[0] - Date.now()) / 1000));
-                if (lifeTimerValueDisplay) lifeTimerValueDisplay.textContent = formatTime(remaining);
-                if (selectorLifeTimerValueDisplay) selectorLifeTimerValueDisplay.textContent = formatTime(remaining);
-                if (progressLifeTimerValueDisplay) progressLifeTimerValueDisplay.textContent = formatTime(remaining);
+                const remaining = Math.max(0, Math.ceil((lifeRestoreQueue[0] - now) / 1000));
+                const formatted = formatTime(remaining);
+                if (lifeTimerValueDisplay) lifeTimerValueDisplay.textContent = formatted;
+                if (selectorLifeTimerValueDisplay) selectorLifeTimerValueDisplay.textContent = formatted;
+                if (progressLifeTimerValueDisplay) progressLifeTimerValueDisplay.textContent = formatted;
             }
         }
 
         function checkLifeRecovery(initial = false) {
             const now = Date.now();
+            if (infiniteLivesUntil && now < infiniteLivesUntil) {
+                updateLivesDisplay();
+                updateLifeTimerDisplay();
+                return;
+            }
+            if (infiniteLivesUntil && now >= infiniteLivesUntil) {
+                infiniteLivesUntil = 0;
+            }
             while (lifeRestoreQueue.length > 0 && lifeRestoreQueue[0] <= now && playerLives < MAX_LIVES) {
                 lifeRestoreQueue.shift();
                 playerLives++;
@@ -10714,9 +10851,18 @@ function setupSlider(slider, display) {
 
         function loseLife() {
             if (playerLives <= 0) return;
+            if (infiniteLivesUntil && Date.now() < infiniteLivesUntil) return;
             playerLives--;
             const lastTime = lifeRestoreQueue.length > 0 ? lifeRestoreQueue[lifeRestoreQueue.length - 1] : Date.now();
             lifeRestoreQueue.push(lastTime + LIFE_RECHARGE_TIME);
+            saveLives();
+            updateLivesDisplay();
+            updateLifeTimerDisplay();
+        }
+
+        function addLives(count) {
+            if (infiniteLivesUntil && Date.now() < infiniteLivesUntil) return;
+            playerLives = Math.min(MAX_LIVES, playerLives + count);
             saveLives();
             updateLivesDisplay();
             updateLifeTimerDisplay();
