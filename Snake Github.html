@@ -7694,12 +7694,13 @@ function openPurchaseConfirm(type, key) {
                         success = true;
                     } else if (purchaseInfo.type === 'coinInfinite') {
                         totalCoins -= price;
+                        const prevLives = playerLives;
                         infiniteLivesEnd = Date.now() + 60 * 60 * 1000;
                         playerLives = MAX_LIVES;
                         lifeRestoreQueue = [];
                         saveLives();
-                        updateLivesDisplay();
                         updateLifeTimerDisplay();
+                        animateLifeGain(prevLives, playerLives);
                         success = true;
                     }
                 } else {
@@ -7757,12 +7758,13 @@ function openPurchaseConfirm(type, key) {
                         updateLifeTimerDisplay();
                         animateLifeGain(prevLives, playerLives);
                     } else if (type === 'adInfinite') {
+                        const prevLives = playerLives;
                         infiniteLivesEnd = Date.now() + 60 * 60 * 1000;
                         playerLives = MAX_LIVES;
                         lifeRestoreQueue = [];
                         saveLives();
-                        updateLivesDisplay();
                         updateLifeTimerDisplay();
+                        animateLifeGain(prevLives, playerLives);
                     }
                     adsWatched[type] = 0;
                     adCooldownExpiry[type] = Date.now() + 60 * 60 * 1000;
