@@ -1017,6 +1017,13 @@
             margin-right: 4px;
         }
 
+        .coin-cost-icon {
+            width: 16px;
+            height: 16px;
+            position: relative;
+            top: -2px;
+        }
+
         .gem-cost-icon {
             width: 16px;
             height: 16px;
@@ -2785,12 +2792,13 @@
           content: '';
           position: absolute;
           inset: 0;
-          background-image: url('https://i.imgur.com/NNbtyMH.png');
+          background-image: url('https://i.imgur.com/YKjPhxX.png');
           background-size: contain;
           background-repeat: no-repeat;
           background-position: center;
           transition: filter 0.05s ease-out;
           pointer-events: none;
+          z-index: 1;
         }
         .store-item.scene-item::before {
           background-image: url('https://i.imgur.com/YKjPhxX.png');
@@ -2829,6 +2837,7 @@
           height: 60%;
           object-fit: contain;
           pointer-events: none;
+          z-index: 0;
         }
         .scene-item .store-item-img {
           z-index: 0;
@@ -2971,7 +2980,7 @@
         }
         .store-item-status {
           position: absolute;
-          bottom: 16px;
+          bottom: 4px;
           left: 0;
           right: 0;
           display: flex;
@@ -2979,9 +2988,10 @@
           align-items: center;
           gap: 2px;
           font-size: 0.7rem;
-          color: #C084FC;
+          color: #ffffff;
           text-shadow: 1px 1px 2px black;
           font-family: 'Press Start 2P', sans-serif;
+          z-index: 2;
         }
 
         .store-tab {
@@ -7196,7 +7206,14 @@ function setupSlider(slider, display) {
                         status.textContent = '';
                         item.classList.add('purchased');
                     } else {
-                        status.textContent = FOODS[key].price.toString();
+                        const costSpan = document.createElement('span');
+                        costSpan.textContent = FOODS[key].price.toString();
+                        status.appendChild(costSpan);
+                        const coinImg = document.createElement('img');
+                        coinImg.src = 'https://i.imgur.com/lnc1Mwu.png';
+                        coinImg.alt = 'Moneda';
+                        coinImg.className = 'coin-cost-icon';
+                        status.appendChild(coinImg);
                         item.classList.add('locked');
                         item.addEventListener('click', () => openPurchaseConfirm('food', key));
                         addIconPressEvents(item, item);
@@ -7220,7 +7237,14 @@ function setupSlider(slider, display) {
                         status.textContent = '';
                         item.classList.add('purchased');
                     } else {
-                        status.textContent = SKIN_PRICES[key].toString();
+                        const costSpan = document.createElement('span');
+                        costSpan.textContent = SKIN_PRICES[key].toString();
+                        status.appendChild(costSpan);
+                        const coinImg = document.createElement('img');
+                        coinImg.src = 'https://i.imgur.com/lnc1Mwu.png';
+                        coinImg.alt = 'Moneda';
+                        coinImg.className = 'coin-cost-icon';
+                        status.appendChild(coinImg);
                         item.classList.add('locked');
                         item.addEventListener('click', () => openPurchaseConfirm('skin', key));
                         addIconPressEvents(item, item);
@@ -7244,7 +7268,14 @@ function setupSlider(slider, display) {
                         status.textContent = '';
                         item.classList.add('purchased');
                     } else {
-                        status.textContent = SCENE_PRICES[key].toString();
+                        const costSpan = document.createElement('span');
+                        costSpan.textContent = SCENE_PRICES[key].toString();
+                        status.appendChild(costSpan);
+                        const coinImg = document.createElement('img');
+                        coinImg.src = 'https://i.imgur.com/lnc1Mwu.png';
+                        coinImg.alt = 'Moneda';
+                        coinImg.className = 'coin-cost-icon';
+                        status.appendChild(coinImg);
                         item.classList.add('locked');
                         item.addEventListener('click', () => openPurchaseConfirm('scene', key));
                         addIconPressEvents(item, item);
@@ -7302,7 +7333,14 @@ function setupSlider(slider, display) {
                     item.appendChild(img);
                     const status = document.createElement('div');
                     status.className = 'store-item-status';
-                    status.textContent = data.price.toString();
+                    const costSpan = document.createElement('span');
+                    costSpan.textContent = data.price.toString();
+                    status.appendChild(costSpan);
+                    const coinImg = document.createElement('img');
+                    coinImg.src = 'https://i.imgur.com/lnc1Mwu.png';
+                    coinImg.alt = 'Moneda';
+                    coinImg.className = 'coin-cost-icon';
+                    status.appendChild(coinImg);
                     item.addEventListener('click', () => openPurchaseConfirm('general', data.key));
                     addIconPressEvents(item, item);
                     item.appendChild(status);
