@@ -1097,7 +1097,7 @@
             position: absolute;
             top: 50%;
             left: 100%;
-            transform: translateX(-20px) translateY(-50%);
+            transform: translateX(10px) translateY(-50%);
             color: #4ade80;
             font-size: 1em;
             white-space: nowrap;
@@ -1109,7 +1109,7 @@
 
         #earnedLivesMessage.show {
             opacity: 1;
-            transform: translateX(-45px) translateY(-50%);
+            transform: translateX(-30px) translateY(-50%);
         }
 
         #earnedLivesMessage.hide {
@@ -2046,13 +2046,13 @@
 
             #earnedLivesMessage {
                 font-size: 0.8em;
-                transform: translateX(-30px) translateY(-50%);
+                transform: translateX(5px) translateY(-50%);
             }
             #earnedLivesMessage.show {
-                transform: translateX(-25px) translateY(-50%);
+                transform: translateX(-15px) translateY(-50%);
             }
             #earnedLivesMessage.hide {
-                transform: translateX(-70px) translateY(-50%);
+                transform: translateX(-60px) translateY(-50%);
             }
 
 
@@ -2219,10 +2219,10 @@
 
             #earnedLivesMessage {
                 font-size: 0.75em;
-                transform: translateX(-25px) translateY(-40%);
+                transform: translateX(5px) translateY(-40%);
             }
             #earnedLivesMessage.show {
-                transform: translateX(-22px) translateY(-40%);
+                transform: translateX(-15px) translateY(-40%);
             }
             #earnedLivesMessage.hide {
                 transform: translateX(-60px) translateY(-40%);
@@ -7637,14 +7637,25 @@ function openPurchaseConfirm(type, key) {
                     if (totalCoins >= price && playerLives < MAX_LIVES) {
                         totalCoins -= price;
                         const prevLives = playerLives;
-                        playerLives++;
+                        const newLives = Math.min(MAX_LIVES, playerLives + 1);
                         if (lifeRestoreQueue.length > 0) {
                             lifeRestoreQueue.pop();
                         }
-                        if (playerLives >= MAX_LIVES) lifeRestoreQueue = [];
-                        saveLives();
-                        updateLifeTimerDisplay();
-                        animateLifeGain(prevLives, playerLives);
+                        if (newLives >= MAX_LIVES) lifeRestoreQueue = [];
+                        const gain = newLives - prevLives;
+                        if (gain > 0) {
+                            showEarnedLivesMessage(gain);
+                            setTimeout(() => {
+                                playerLives = newLives;
+                                saveLives();
+                                updateLifeTimerDisplay();
+                                animateLifeGain(prevLives, newLives);
+                            }, COIN_MESSAGE_DISPLAY_TIME);
+                        } else {
+                            saveLives();
+                            updateLifeTimerDisplay();
+                            updateLivesDisplay();
+                        }
                         success = true;
                     } else if (playerLives >= MAX_LIVES) {
                         failureMessage = 'Vidas al máximo';
@@ -7671,12 +7682,23 @@ function openPurchaseConfirm(type, key) {
                         if (playerLives < MAX_LIVES) {
                             totalCoins -= price;
                             const prevLives = playerLives;
-                            playerLives++;
+                            const newLives = Math.min(MAX_LIVES, playerLives + 1);
                             if (lifeRestoreQueue.length > 0) lifeRestoreQueue.pop();
-                            if (playerLives >= MAX_LIVES) lifeRestoreQueue = [];
-                            saveLives();
-                            updateLifeTimerDisplay();
-                            animateLifeGain(prevLives, playerLives);
+                            if (newLives >= MAX_LIVES) lifeRestoreQueue = [];
+                            const gain = newLives - prevLives;
+                            if (gain > 0) {
+                                showEarnedLivesMessage(gain);
+                                setTimeout(() => {
+                                    playerLives = newLives;
+                                    saveLives();
+                                    updateLifeTimerDisplay();
+                                    animateLifeGain(prevLives, newLives);
+                                }, COIN_MESSAGE_DISPLAY_TIME);
+                            } else {
+                                saveLives();
+                                updateLifeTimerDisplay();
+                                updateLivesDisplay();
+                            }
                             success = true;
                         } else {
                             failureMessage = 'Vidas al máximo';
@@ -7685,12 +7707,22 @@ function openPurchaseConfirm(type, key) {
                         totalCoins -= price;
                         const gain = Math.floor(Math.random() * 5) + 1;
                         const prevLives = playerLives;
-                        playerLives = Math.min(MAX_LIVES, playerLives + gain);
-                        const actualGain = playerLives - prevLives;
-                        if (playerLives >= MAX_LIVES) lifeRestoreQueue = [];
-                        saveLives();
-                        updateLifeTimerDisplay();
-                        animateLifeGain(prevLives, playerLives);
+                        const newLives = Math.min(MAX_LIVES, playerLives + gain);
+                        if (newLives >= MAX_LIVES) lifeRestoreQueue = [];
+                        const actualGain = newLives - prevLives;
+                        if (actualGain > 0) {
+                            showEarnedLivesMessage(actualGain);
+                            setTimeout(() => {
+                                playerLives = newLives;
+                                saveLives();
+                                updateLifeTimerDisplay();
+                                animateLifeGain(prevLives, newLives);
+                            }, COIN_MESSAGE_DISPLAY_TIME);
+                        } else {
+                            saveLives();
+                            updateLifeTimerDisplay();
+                            updateLivesDisplay();
+                        }
                         success = true;
                     } else if (purchaseInfo.type === 'coinInfinite') {
                         totalCoins -= price;
@@ -7736,31 +7768,52 @@ function openPurchaseConfirm(type, key) {
                 adsWatched[type] = Math.min(adsWatched[type] + 1, AD_ITEMS[type].ads);
                 saveAdProgress();
                 updateAdStatuses();
-                if (adsWatched[type] >= AD_ITEMS[type].ads) {
-                    if (type === 'adLife') {
-                        const prevLives = playerLives;
-                        if (playerLives < MAX_LIVES) {
-                            playerLives++;
-                            if (lifeRestoreQueue.length > 0) lifeRestoreQueue.pop();
-                            if (playerLives >= MAX_LIVES) lifeRestoreQueue = [];
-                            saveLives();
-                            updateLifeTimerDisplay();
-                            animateLifeGain(prevLives, playerLives);
-                        }
-                    } else if (type === 'adChest') {
-                        const gain = Math.floor(Math.random() * 5) + 1;
-                        const prevLives = playerLives;
-                        playerLives = Math.min(MAX_LIVES, playerLives + gain);
-                        const actualGain = playerLives - prevLives;
-                        if (playerLives >= MAX_LIVES) lifeRestoreQueue = [];
-                        saveLives();
-                        updateLifeTimerDisplay();
-                        animateLifeGain(prevLives, playerLives);
-                    } else if (type === 'adInfinite') {
-                        infiniteLivesEnd = Date.now() + 60 * 60 * 1000;
-                        playerLives = MAX_LIVES;
-                        lifeRestoreQueue = [];
-                        saveLives();
+                        if (adsWatched[type] >= AD_ITEMS[type].ads) {
+                            if (type === 'adLife') {
+                                if (playerLives < MAX_LIVES) {
+                                    const prevLives = playerLives;
+                                    const newLives = Math.min(MAX_LIVES, playerLives + 1);
+                                    if (lifeRestoreQueue.length > 0) lifeRestoreQueue.pop();
+                                    if (newLives >= MAX_LIVES) lifeRestoreQueue = [];
+                                    const gain = newLives - prevLives;
+                                    if (gain > 0) {
+                                        showEarnedLivesMessage(gain);
+                                        setTimeout(() => {
+                                            playerLives = newLives;
+                                            saveLives();
+                                            updateLifeTimerDisplay();
+                                            animateLifeGain(prevLives, newLives);
+                                        }, COIN_MESSAGE_DISPLAY_TIME);
+                                    } else {
+                                        saveLives();
+                                        updateLifeTimerDisplay();
+                                        updateLivesDisplay();
+                                    }
+                                }
+                            } else if (type === 'adChest') {
+                                const gain = Math.floor(Math.random() * 5) + 1;
+                                const prevLives = playerLives;
+                                const newLives = Math.min(MAX_LIVES, playerLives + gain);
+                                if (newLives >= MAX_LIVES) lifeRestoreQueue = [];
+                                const actualGain = newLives - prevLives;
+                                if (actualGain > 0) {
+                                    showEarnedLivesMessage(actualGain);
+                                    setTimeout(() => {
+                                        playerLives = newLives;
+                                        saveLives();
+                                        updateLifeTimerDisplay();
+                                        animateLifeGain(prevLives, newLives);
+                                    }, COIN_MESSAGE_DISPLAY_TIME);
+                                } else {
+                                    saveLives();
+                                    updateLifeTimerDisplay();
+                                    updateLivesDisplay();
+                                }
+                            } else if (type === 'adInfinite') {
+                                infiniteLivesEnd = Date.now() + 60 * 60 * 1000;
+                                playerLives = MAX_LIVES;
+                                lifeRestoreQueue = [];
+                                saveLives();
                         updateLivesDisplay();
                         updateLifeTimerDisplay();
                     }
@@ -10934,7 +10987,6 @@ function openPurchaseConfirm(type, key) {
                 updateLivesDisplay();
                 return;
             }
-            showEarnedLivesMessage(diff);
             const duration = Math.min(2000, diff * 60);
             const start = performance.now();
             if (areSfxEnabled) playSound('coinAdd', duration / 1000);
