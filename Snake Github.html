@@ -3278,6 +3278,18 @@
             opacity: 1;
         }
 
+        @media (hover: none) and (pointer: coarse) {
+            .store-item-status {
+                font-size: 0.45rem;
+            }
+            .coin-cost-icon,
+            .gem-cost-icon,
+            .ad-cost-icon {
+                width: 10px;
+                height: 10px;
+            }
+        }
+
     </style>
 </head>
 <body>
@@ -3868,7 +3880,7 @@
             <div id="modal-overlay" class="hidden"></div>
             <div id="purchase-confirmation-panel" class="purchase-confirmation-panel-hidden">
                 <div class="reset-header">
-                    <h2>CONFIRMAR COMPRA</h2>
+                    <h2>CONFIRMAR</h2>
                 </div>
                 <div class="panel-content">
                     <div id="purchase-item-preview" class="store-item locked rarity-default"></div>
