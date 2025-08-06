@@ -1774,7 +1774,6 @@
         #store-panel.centered-panel,
         #profile-panel.centered-panel,
         #achievements-panel.centered-panel,
-        #purchase-confirmation-panel.centered-panel,
         #delete-confirmation-panel.centered-panel,
         #out-of-lives-panel.centered-panel,
         #select-confirmation-panel.centered-panel {
@@ -1790,7 +1789,6 @@
         #store-panel.centered-panel.panel-visible,
         #profile-panel.centered-panel.panel-visible,
         #achievements-panel.centered-panel.panel-visible,
-        #purchase-confirmation-panel.centered-panel.panel-visible,
         #delete-confirmation-panel.centered-panel.panel-visible,
         #out-of-lives-panel.centered-panel.panel-visible,
         #select-confirmation-panel.centered-panel.panel-visible {
@@ -6546,6 +6544,10 @@ function setupSlider(slider, display) {
                 positionPanel(profilePanel);
                 applyScrollbarPadding(profilePanel.querySelector('.panel-content'));
             }
+            if (purchaseConfirmationPanel && !purchaseConfirmationPanel.classList.contains("purchase-confirmation-panel-hidden")) {
+                positionPanel(purchaseConfirmationPanel);
+                applyScrollbarPadding(purchaseConfirmationPanel.querySelector('.panel-content'));
+            }
 
 
             if (ctx && (gameIntervalId || gameOver || snake.length > 0 || screenState.showCoverForWorld > 0 || screenState.showLevelCompleteCover > 0 || screenState.showWorldCompleteCover > 0 || screenState.showDefeatCoverForWorld > 0 || screenState.showFreeModeCover || screenState.showClassificationCover)) {
@@ -7674,8 +7676,20 @@ function openPurchaseConfirm(type, key) {
                 name = config.label;
                 if (purchaseConfirmationText) purchaseConfirmationText.innerHTML = `¿Comprar ${name} por <strong>${price}</strong> monedas?`;
             }
-            purchaseConfirmationPanel.classList.add('centered-panel');
+            purchaseConfirmationPanel.classList.remove('centered-panel');
             togglePanel(purchaseConfirmationPanel, purchaseConfirmationPanel.querySelector('.panel-content'), true);
+            const sourcePanel =
+                (storePanel && !storePanel.classList.contains('store-panel-hidden') && storePanel.classList.contains('panel-visible')) ? storePanel :
+                (profilePanel && !profilePanel.classList.contains('profile-panel-hidden') && profilePanel.classList.contains('panel-visible')) ? profilePanel :
+                (achievementsPanel && !achievementsPanel.classList.contains('achievements-panel-hidden') && achievementsPanel.classList.contains('panel-visible')) ? achievementsPanel :
+                (genericMenuPanel && !genericMenuPanel.classList.contains('generic-menu-panel-hidden') && genericMenuPanel.classList.contains('panel-visible')) ? genericMenuPanel :
+                (configMenuPanel && !configMenuPanel.classList.contains('config-menu-panel-hidden') && configMenuPanel.classList.contains('panel-visible')) ? configMenuPanel :
+                null;
+            if (sourcePanel) {
+                matchPanelSizeWithElement(sourcePanel, purchaseConfirmationPanel);
+            } else {
+                positionPanel(purchaseConfirmationPanel);
+            }
             if (modalOverlay) modalOverlay.classList.remove('hidden');
         }
 
@@ -7870,7 +7884,6 @@ function openPurchaseConfirm(type, key) {
 
         function closePurchaseConfirm() {
             togglePanel(purchaseConfirmationPanel, purchaseConfirmationPanel.querySelector('.panel-content'), false);
-            purchaseConfirmationPanel.classList.remove('centered-panel');
             if (purchaseItemPreview) purchaseItemPreview.innerHTML = '';
             if (modalOverlay) modalOverlay.classList.add('hidden');
             purchaseInfo = null;
