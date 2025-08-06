@@ -1017,28 +1017,28 @@
         }
 
         .coin-icon {
-            width: 16px;
-            height: 16px;
+            width: 14px;
+            height: 14px;
             margin-right: 4px;
         }
 
         .coin-cost-icon {
-            width: 16px;
-            height: 16px;
+            width: 14px;
+            height: 14px;
             position: relative;
             top: -2px;
         }
 
         .gem-cost-icon {
-            width: 16px;
-            height: 16px;
+            width: 14px;
+            height: 14px;
             position: relative;
             top: -2px;
         }
 
         .ad-cost-icon {
-            width: 16px;
-            height: 16px;
+            width: 14px;
+            height: 14px;
             position: relative;
             top: -2px;
         }
@@ -2840,19 +2840,19 @@
 
         /* --- Estilo de celdas de la tienda --- */
         .store-item {
-          width: 100%;
+          width: 90%;
           aspect-ratio: 1 / 1;
           position: relative;
           cursor: pointer;
           transition: transform 0.05s ease-out;
           z-index: 0;
+          margin: 0 auto;
         }
 
         .store-item::before {
           content: '';
           position: absolute;
           inset: 0;
-          background-image: url('https://i.imgur.com/YKjPhxX.png');
           background-size: contain;
           background-repeat: no-repeat;
           background-position: center;
@@ -2860,14 +2860,11 @@
           pointer-events: none;
           z-index: 2;
         }
-        .store-item.scene-item::before {
-          background-image: url('https://i.imgur.com/YKjPhxX.png');
-          z-index: 2;
-        }
-        .store-item.currency-item::before {
-          background-image: url('https://i.imgur.com/YKjPhxX.png');
-          z-index: 2;
-        }
+        .store-item.rarity-default::before { background-image: url('https://i.imgur.com/UwsZ1z5.png'); }
+        .store-item.rarity-common::before { background-image: url('https://i.imgur.com/a1HIP4u.png'); }
+        .store-item.rarity-rare::before { background-image: url('https://i.imgur.com/rUCQC5y.png'); }
+        .store-item.rarity-epic::before { background-image: url('https://i.imgur.com/EUXBiO4.png'); }
+        .store-item.rarity-legendary::before { background-image: url('https://i.imgur.com/ThkZoci.png'); }
 
         .store-item.highlight-bg::after {
           content: '';
@@ -2886,16 +2883,16 @@
           /* keep text sharp while dimming the icon */
         }
         .store-item.locked::before {
-          filter: grayscale(100%);
-          opacity: 0.7;
+          filter: none;
+          opacity: 1;
         }
         .store-item.locked::after {
-          filter: grayscale(100%);
-          opacity: 0.7;
+          filter: none;
+          opacity: 1;
         }
         .store-item.locked .store-item-img {
-          filter: grayscale(100%);
-          opacity: 0.7;
+          filter: contrast(60%);
+          opacity: 1;
         }
         .store-item.locked .store-item-status {
           color: #ffffff;
@@ -2916,8 +2913,8 @@
           top: 50%;
           left: 50%;
           transform: translate(-50%, -50%);
-          width: 60%;
-          height: 60%;
+          width: 55%;
+          height: 55%;
           object-fit: contain;
           pointer-events: none;
           z-index: 1;
@@ -2929,20 +2926,20 @@
           z-index: 1;
         }
         .store-item-img.scene-img-full {
-          width: 90%;
-          height: 90%;
+          width: 80%;
+          height: 80%;
           top: 50%;
           left: 50%;
           transform: translate(-50%, -50%);
           object-fit: cover;
         }
         .store-item-img.currency-img {
-          width: 80%;
-          height: 80%;
+          width: 70%;
+          height: 70%;
         }
         .store-item-img.lives-img {
-          width: 80%;
-          height: 80%;
+          width: 70%;
+          height: 70%;
         }
         .achievement-item {
           display: flex;
@@ -3074,7 +3071,7 @@
           justify-content: center;
           align-items: center;
           gap: 2px;
-          font-size: 0.7rem;
+          font-size: 0.6rem;
           color: #ffffff;
           text-shadow: 1px 1px 2px black;
           font-family: 'Press Start 2P', sans-serif;
@@ -3744,9 +3741,9 @@
             </div>
         </div>
         <div id="selected-items-row" class="grid grid-cols-3 gap-2 mb-2 mt-2 w-full">
-            <div id="selected-skin-item" class="store-item highlight-bg"></div>
-            <div id="selected-food-item" class="store-item highlight-bg"></div>
-            <div id="selected-scene-item" class="store-item scene-item highlight-bg"></div>
+            <div id="selected-skin-item" class="store-item highlight-bg rarity-default"></div>
+            <div id="selected-food-item" class="store-item highlight-bg rarity-default"></div>
+            <div id="selected-scene-item" class="store-item scene-item highlight-bg rarity-default"></div>
         </div>
 
         <div class="control-group hidden" id="skin-control-group">
@@ -3838,7 +3835,7 @@
                             <img src="https://i.imgur.com/DPBCWp1.png" alt="Escenarios">
                         </button>
                     </div>
-                <div id="store-items-container" class="grid grid-cols-3 gap-4 w-full"></div>
+                <div id="store-items-container" class="grid grid-cols-3 gap-2 w-full"></div>
                 </div>
             </div>
             <div id="achievements-panel" class="achievements-panel-hidden">
@@ -3856,7 +3853,7 @@
                     <h2>CONFIRMAR COMPRA</h2>
                 </div>
                 <div class="panel-content">
-                    <div id="purchase-item-preview" class="store-item locked"></div>
+                    <div id="purchase-item-preview" class="store-item locked rarity-default"></div>
                     <p id="purchase-confirmation-text">¿Comprar por <strong>0</strong> monedas?</p>
                     <div class="reset-buttons">
                         <button id="confirmPurchaseYes">SI</button>
@@ -5602,6 +5599,31 @@ function setupSlider(slider, display) {
         };
         let storeTab = 'general';
         let profileTab = 'general';
+        function getRarityClass(type, key) {
+            if (type === 'skin') {
+                if (key === 'snake') return 'rarity-default';
+                const price = SKIN_PRICES[key] || 0;
+                if (price >= 100) return 'rarity-legendary';
+                if (price >= 50) return 'rarity-epic';
+                if (price >= 30) return 'rarity-rare';
+                if (price >= 10) return 'rarity-common';
+            } else if (type === 'scene') {
+                if (key === 'classic') return 'rarity-default';
+                const price = SCENE_PRICES[key] || 0;
+                if (price >= 50) return 'rarity-legendary';
+                if (price >= 30) return 'rarity-epic';
+                if (price >= 10) return 'rarity-rare';
+                if (price >= 5) return 'rarity-common';
+            } else if (type === 'food') {
+                if (key === 'apple') return 'rarity-default';
+                const price = FOODS[key]?.price || 0;
+                if (price >= 50) return 'rarity-legendary';
+                if (price >= 30) return 'rarity-epic';
+                if (price >= 10) return 'rarity-rare';
+                if (price >= 5) return 'rarity-common';
+            }
+            return 'rarity-default';
+        }
         // --- Fin Configuración de Comestibles ---
 
         const ACHIEVEMENT_CATEGORY_NAMES = {
@@ -7311,7 +7333,8 @@ function setupSlider(slider, display) {
             if (storeTab === 'comida') {
                 FOOD_ORDER.forEach(key => {
                     const item = document.createElement('div');
-                    item.className = 'store-item highlight-bg';
+                    const rarityClass = getRarityClass('food', key);
+                    item.className = `store-item highlight-bg ${rarityClass}`;
 
                     const img = document.createElement('img');
                     img.className = 'store-item-img';
@@ -7342,7 +7365,8 @@ function setupSlider(slider, display) {
             } else if (storeTab === 'disfraces') {
                 SKIN_ORDER.forEach(key => {
                     const item = document.createElement('div');
-                    item.className = 'store-item highlight-bg';
+                    const rarityClass = getRarityClass('skin', key);
+                    item.className = `store-item highlight-bg ${rarityClass}`;
 
                     const img = document.createElement('img');
                     img.className = 'store-item-img';
@@ -7373,7 +7397,8 @@ function setupSlider(slider, display) {
             } else if (storeTab === 'escenarios') {
                 SCENE_ORDER.forEach(key => {
                     const item = document.createElement('div');
-                    item.className = 'store-item scene-item highlight-bg';
+                    const rarityClass = getRarityClass('scene', key);
+                    item.className = `store-item scene-item highlight-bg ${rarityClass}`;
 
                     const img = document.createElement('img');
                     img.className = 'store-item-img scene-img-full';
@@ -7412,7 +7437,7 @@ function setupSlider(slider, display) {
                 ];
                 items.forEach(({ key, pack, type }) => {
                     const item = document.createElement('div');
-                    item.className = 'store-item currency-item';
+                    item.className = 'store-item currency-item rarity-default';
                     const img = document.createElement('img');
                     img.className = 'store-item-img currency-img';
                     img.src = pack.img;
@@ -7446,7 +7471,7 @@ function setupSlider(slider, display) {
                 items.forEach(({ type, img }) => {
                     const item = document.createElement('div');
                     item.id = `store-item-${type}`;
-                    item.className = 'store-item';
+                    item.className = 'store-item rarity-default';
                     const imgEl = document.createElement('img');
                     imgEl.className = 'store-item-img lives-img';
                     imgEl.src = img;
@@ -7480,7 +7505,7 @@ function setupSlider(slider, display) {
                 coinItems.forEach(({ type, data }) => {
                     const item = document.createElement('div');
                     item.id = `store-item-${type}`;
-                    item.className = 'store-item';
+                    item.className = 'store-item rarity-default';
                     const imgEl = document.createElement('img');
                     imgEl.className = 'store-item-img lives-img';
                     imgEl.src = data.img;
@@ -7547,7 +7572,14 @@ function openPurchaseConfirm(type, key) {
     purchaseInfo = { type, key };
             if (purchaseItemPreview) {
                 purchaseItemPreview.innerHTML = '';
-                purchaseItemPreview.className = 'store-item' + (type === 'scene' ? ' scene-item highlight-bg' : ((type === 'food' || type === 'skin') ? ' highlight-bg' : ((type === 'coinPack' || type === 'gemPack') ? ' currency-item' : '')));
+                const rarityClass = getRarityClass(type, key);
+                purchaseItemPreview.className = 'store-item' + (type === 'scene'
+                    ? ` scene-item highlight-bg ${rarityClass}`
+                    : ((type === 'food' || type === 'skin')
+                        ? ` highlight-bg ${rarityClass}`
+                        : ((type === 'coinPack' || type === 'gemPack')
+                            ? ` currency-item ${rarityClass}`
+                            : ` ${rarityClass}`)));
                 const img = document.createElement('img');
                 img.className = 'store-item-img';
                 if (type === 'food') {
@@ -12827,7 +12859,7 @@ async function startGame(isRestart = false) {
         function updateProfileSelectedItems() {
             if (profileSelectedSkin) {
                 profileSelectedSkin.innerHTML = '';
-                profileSelectedSkin.className = 'store-item purchased profile-clickable highlight-bg';
+                profileSelectedSkin.className = 'store-item purchased profile-clickable highlight-bg ' + getRarityClass('skin', getSelectedSkin());
                 const img = document.createElement('img');
                 img.className = 'store-item-img';
                 img.src = SKINS[getSelectedSkin()]?.snakeHeadAsset?.upDown?.src || '';
@@ -12835,7 +12867,7 @@ async function startGame(isRestart = false) {
             }
             if (profileSelectedFood) {
                 profileSelectedFood.innerHTML = '';
-                profileSelectedFood.className = 'store-item purchased profile-clickable highlight-bg';
+                profileSelectedFood.className = 'store-item purchased profile-clickable highlight-bg ' + getRarityClass('food', getSelectedFood());
                 const img = document.createElement('img');
                 img.className = 'store-item-img';
                 img.src = FOODS[getSelectedFood()]?.asset?.src || '';
@@ -12843,7 +12875,7 @@ async function startGame(isRestart = false) {
             }
             if (profileSelectedScene) {
                 profileSelectedScene.innerHTML = '';
-                profileSelectedScene.className = 'store-item purchased profile-clickable scene-item highlight-bg';
+                profileSelectedScene.className = 'store-item purchased profile-clickable scene-item highlight-bg ' + getRarityClass('scene', getSelectedScene());
                 const img = document.createElement('img');
                 img.className = 'store-item-img scene-img-full';
                 img.src = SCENES[getSelectedScene()]?.icon || '';
@@ -12857,7 +12889,8 @@ async function startGame(isRestart = false) {
             profileFoodLocked.innerHTML = '';
             FOOD_ORDER.forEach(key => {
                 const item = document.createElement('div');
-                item.className = 'store-item highlight-bg';
+                const rarityClass = getRarityClass('food', key);
+                item.className = `store-item highlight-bg ${rarityClass}`;
                 const img = document.createElement('img');
                 img.className = 'store-item-img';
                 img.src = FOODS[key]?.asset?.src || '';
@@ -12880,7 +12913,8 @@ async function startGame(isRestart = false) {
             profileSkinLocked.innerHTML = '';
             SKIN_ORDER.forEach(key => {
                 const item = document.createElement('div');
-                item.className = 'store-item highlight-bg';
+                const rarityClass = getRarityClass('skin', key);
+                item.className = `store-item highlight-bg ${rarityClass}`;
                 const img = document.createElement('img');
                 img.className = 'store-item-img';
                 img.src = SKINS[key]?.snakeHeadAsset?.upDown?.src || '';
@@ -12903,7 +12937,8 @@ async function startGame(isRestart = false) {
             profileSceneLocked.innerHTML = '';
             SCENE_ORDER.forEach(key => {
                 const item = document.createElement('div');
-                item.className = 'store-item scene-item highlight-bg';
+                const rarityClass = getRarityClass('scene', key);
+                item.className = `store-item scene-item highlight-bg ${rarityClass}`;
                 const img = document.createElement('img');
                 img.className = 'store-item-img scene-img-full';
                 img.src = SCENES[key]?.icon || '';
