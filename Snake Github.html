@@ -2882,8 +2882,7 @@
           /* keep text sharp while dimming the icon */
         }
         .store-item.locked::before {
-          filter: grayscale(100%);
-          opacity: 0.7;
+          filter: contrast(30%);
         }
         .store-item.locked::after {
           filter: grayscale(100%);
@@ -2909,11 +2908,11 @@
         }
         .store-item-img {
           position: absolute;
-          top: 50%;
+          top: 47%;
           left: 50%;
           transform: translate(-50%, -50%);
-          width: 60%;
-          height: 60%;
+          width: 50%;
+          height: 50%;
           object-fit: contain;
           pointer-events: none;
           z-index: 1;
@@ -2933,12 +2932,14 @@
           object-fit: cover;
         }
         .store-item-img.currency-img {
-          width: 80%;
-          height: 80%;
+          width: 70%;
+          height: 70%;
+          top: 38%;
         }
         .store-item-img.lives-img {
-          width: 80%;
-          height: 80%;
+          width: 70%;
+          height: 70%;
+          top: 45%;
         }
         .achievement-item {
           display: flex;
@@ -3070,7 +3071,7 @@
           justify-content: center;
           align-items: center;
           gap: 2px;
-          font-size: 0.7rem;
+          font-size: 0.6rem;
           color: #ffffff;
           text-shadow: 1px 1px 2px black;
           font-family: 'Press Start 2P', sans-serif;
