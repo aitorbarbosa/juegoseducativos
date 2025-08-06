@@ -3854,7 +3854,9 @@
                 </div>
                 <div class="panel-content">
                     <div id="store-tabs" class="flex gap-2 mb-2">
-                        <button data-tab="general" id="store-tab-general" class="store-tab menu-option-button active">GENERAL</button>
+                        <button data-tab="cofres" id="store-tab-cofres" class="store-tab menu-option-button active">
+                            <img src="https://i.imgur.com/QND7wuI.png" alt="Cofres">
+                        </button>
                         <button data-tab="vidas" id="store-tab-vidas" class="store-tab menu-option-button">
                             <img src="https://i.imgur.com/WrI2XXx.png" alt="Vidas">
                         </button>
@@ -3894,6 +3896,7 @@
                     <div class="reset-buttons">
                         <button id="confirmPurchaseYes">SI</button>
                         <button id="confirmPurchaseNo">NO</button>
+                        <button id="collectPurchaseReward" class="menu-option-button hidden">RECOGER</button>
                     </div>
                 </div>
             </div>
@@ -4175,6 +4178,7 @@
         const purchaseConfirmationText = document.getElementById("purchase-confirmation-text");
         const confirmPurchaseYesButton = document.getElementById("confirmPurchaseYes");
         const confirmPurchaseNoButton = document.getElementById("confirmPurchaseNo");
+        const collectPurchaseRewardButton = document.getElementById("collectPurchaseReward");
         const deleteConfirmationPanel = document.getElementById("delete-confirmation-panel");
         const deleteConfirmationText = document.getElementById("delete-confirmation-text");
         const confirmDeleteYesButton = document.getElementById("confirmDeleteYes");
@@ -5633,7 +5637,22 @@ function setupSlider(slider, display) {
             coinChest: { img: AD_ITEMS.adChest.img, cost: 250, label: 'un cofre de vidas' },
             coinInfinite: { img: AD_ITEMS.adInfinite.img, cost: 500, label: 'vidas infinitas durante 1 hora' }
         };
-        let storeTab = 'general';
+        const CHEST_DISPLAY_NAMES = {
+            common: 'Cofre Común',
+            rare: 'Cofre Raro',
+            epic: 'Cofre Épico',
+            legendary: 'Cofre Legendario'
+        };
+        const ITEM_TYPE_DISPLAY = { food: 'comestible', scene: 'escenario', skin: 'disfraz' };
+        const RARITY_DISPLAY_NAMES = { common: 'Común', rare: 'Raro', epic: 'Épico', legendary: 'Legendario' };
+        const CHESTS = {
+            common: { img: 'https://i.imgur.com/CVheg4k.png', cost: 1000, coinRange: [10, 100], gemChance: 0.5, gemRange: [1, 1], rarity: { common: 70, rare: 20, epic: 9, legendary: 1 } },
+            rare: { img: 'https://i.imgur.com/ldTAquf.png', cost: 2500, coinRange: [100, 250], gemChance: 1, gemRange: [1, 3], rarity: { common: 10, rare: 70, epic: 15, legendary: 5 } },
+            epic: { img: 'https://i.imgur.com/4iQctwM.png', cost: 5000, coinRange: [250, 500], gemChance: 1, gemRange: [3, 5], rarity: { common: 5, rare: 10, epic: 70, legendary: 15 } },
+            legendary: { img: 'https://i.imgur.com/QND7wuI.png', cost: 10000, coinRange: [500, 1000], gemChance: 1, gemRange: [5, 10], rarity: { common: 5, rare: 10, epic: 15, legendary: 70 } }
+        };
+        const CHEST_ORDER = ['common', 'rare', 'epic', 'legendary'];
+        let storeTab = 'cofres';
         let profileTab = 'general';
         function getRarityClass(type, key) {
             if (type === 'skin') {
@@ -7329,7 +7348,7 @@ function setupSlider(slider, display) {
             setTimeout(updateMainButtonStates, 0);
         }
 
-        function openStoreMenu(defaultTab = 'general') {
+        function openStoreMenu(defaultTab = 'cofres') {
             if (!storePanel) return;
             storeTab = defaultTab;
             if (storeTabButtons && storeTabButtons.length) {
@@ -7370,7 +7389,32 @@ function setupSlider(slider, display) {
         function populateStoreItems() {
             if (!storeItemsContainer) return;
             storeItemsContainer.innerHTML = '';
-            if (storeTab === 'comida') {
+            storeItemsContainer.className = storeTab === 'cofres' ? 'grid grid-cols-2 gap-4 w-full' : 'grid grid-cols-3 gap-4 w-full';
+            if (storeTab === 'cofres') {
+                CHEST_ORDER.forEach(key => {
+                    const chest = CHESTS[key];
+                    const item = document.createElement('div');
+                    item.className = 'store-item currency-item rarity-default';
+                    const img = document.createElement('img');
+                    img.className = 'store-item-img currency-img';
+                    img.src = chest.img;
+                    item.appendChild(img);
+                    const status = document.createElement('div');
+                    status.className = 'store-item-status';
+                    const span = document.createElement('span');
+                    span.textContent = chest.cost.toString();
+                    status.appendChild(span);
+                    const coinImg = document.createElement('img');
+                    coinImg.src = 'https://i.imgur.com/lnc1Mwu.png';
+                    coinImg.alt = 'Moneda';
+                    coinImg.className = 'coin-cost-icon';
+                    status.appendChild(coinImg);
+                    item.addEventListener('click', () => openPurchaseConfirm('chest', key));
+                    addIconPressEvents(item, item);
+                    item.appendChild(status);
+                    storeItemsContainer.appendChild(item);
+                });
+            } else if (storeTab === 'comida') {
                 FOOD_ORDER.forEach(key => {
                     const item = document.createElement('div');
                     const rarityClass = getRarityClass('food', key);
@@ -7565,39 +7609,146 @@ function setupSlider(slider, display) {
                     item.appendChild(status);
                     storeItemsContainer.appendChild(item);
                 });
-            } else {
-                const generalItems = [
-                    { key: 'heart', price: HEART_PRICE, img: 'https://i.imgur.com/WrI2XXx.png' },
-                    { key: 'gem', price: GEM_PRICE, img: 'https://i.imgur.com/gPGsaCO.png' }
-                ];
-                generalItems.forEach(data => {
-                    const item = document.createElement('div');
-                    item.className = 'store-item';
-                    const img = document.createElement('img');
-                    img.className = 'store-item-img';
-                    img.src = data.img;
-                    item.appendChild(img);
-                    const status = document.createElement('div');
-                    status.className = 'store-item-status';
-                    const costSpan = document.createElement('span');
-                    costSpan.textContent = data.price.toString();
-                    status.appendChild(costSpan);
-                    const coinImg = document.createElement('img');
-                    coinImg.src = 'https://i.imgur.com/lnc1Mwu.png';
-                    coinImg.alt = 'Moneda';
-                    coinImg.className = 'coin-cost-icon';
-                    status.appendChild(coinImg);
-                    item.addEventListener('click', () => openPurchaseConfirm('general', data.key));
-                    addIconPressEvents(item, item);
-                    item.appendChild(status);
-                    storeItemsContainer.appendChild(item);
-                });
             }
         }
 
+        function randInt(min, max) {
+            return Math.floor(Math.random() * (max - min + 1)) + min;
+        }
+
+        function getRandomRarity(chances) {
+            const roll = Math.random() * 100;
+            let acc = 0;
+            for (const [rarity, prob] of Object.entries(chances)) {
+                acc += prob;
+                if (roll < acc) return rarity;
+            }
+            return 'common';
+        }
+
+        function getItemsByTypeAndRarity(type, rarity) {
+            let keys = [];
+            if (type === 'food') {
+                keys = FOOD_ORDER.filter(k => {
+                    const p = FOODS[k].price;
+                    if (rarity === 'common') return p >= 5 && p < 10;
+                    if (rarity === 'rare') return p >= 10 && p < 30;
+                    if (rarity === 'epic') return p >= 30 && p < 50;
+                    return p >= 50;
+                });
+            } else if (type === 'scene') {
+                keys = SCENE_ORDER.filter(k => {
+                    const p = SCENE_PRICES[k];
+                    if (rarity === 'common') return p >= 5 && p < 10;
+                    if (rarity === 'rare') return p >= 10 && p < 30;
+                    if (rarity === 'epic') return p >= 30 && p < 50;
+                    return p >= 50;
+                });
+            } else if (type === 'skin') {
+                keys = SKIN_ORDER.filter(k => {
+                    const p = SKIN_PRICES[k];
+                    if (rarity === 'common') return p >= 10 && p < 30;
+                    if (rarity === 'rare') return p >= 30 && p < 50;
+                    if (rarity === 'epic') return p >= 50 && p < 100;
+                    return p >= 100;
+                });
+            }
+            return keys;
+        }
+
+        function getRandomChestItem(chestKey) {
+            const typeRoll = Math.random();
+            const itemType = typeRoll < 0.4 ? 'food' : (typeRoll < 0.8 ? 'scene' : 'skin');
+            const rarity = getRandomRarity(CHESTS[chestKey].rarity);
+            let items = getItemsByTypeAndRarity(itemType, rarity);
+            if (items.length === 0) {
+                items = getItemsByTypeAndRarity(itemType, 'common');
+            }
+            if (items.length === 0) return null;
+            const itemKey = items[randInt(0, items.length - 1)];
+            return { itemType, itemKey, rarity };
+        }
+
+        function grantChestItem(item) {
+            if (!item) return;
+            const { itemType, itemKey } = item;
+            if (itemType === 'food') {
+                unlockedFoods[itemKey] = true;
+                saveUnlockedFoods();
+                updateFoodSelectorAvailability();
+            } else if (itemType === 'scene') {
+                unlockedScenes[itemKey] = true;
+                saveUnlockedScenes();
+                updateSceneSelectorAvailability();
+            } else if (itemType === 'skin') {
+                unlockedSkins[itemKey] = true;
+                saveUnlockedSkins();
+                updateSkinSelectorAvailability();
+            }
+        }
+
+        function displayChestRewardPreview(reward) {
+            if (!purchaseItemPreview) return;
+            purchaseItemPreview.innerHTML = '';
+            const items = [];
+
+            const coinItem = document.createElement('div');
+            coinItem.className = 'store-item currency-item rarity-default';
+            const coinImg = document.createElement('img');
+            coinImg.className = 'store-item-img currency-img';
+            coinImg.src = COIN_PACKS.coin1000.img;
+            coinItem.appendChild(coinImg);
+            const coinStatus = document.createElement('div');
+            coinStatus.className = 'store-item-status';
+            const coinSpan = document.createElement('span');
+            coinSpan.textContent = `+${reward.coinGain}`;
+            coinStatus.appendChild(coinSpan);
+            coinItem.appendChild(coinStatus);
+            items.push(coinItem);
+
+            if (reward.gemGain > 0) {
+                const gemItem = document.createElement('div');
+                gemItem.className = 'store-item currency-item rarity-default';
+                const gemImg = document.createElement('img');
+                gemImg.className = 'store-item-img currency-img';
+                gemImg.src = GEM_PACKS.gem10.img;
+                gemItem.appendChild(gemImg);
+                const gemStatus = document.createElement('div');
+                gemStatus.className = 'store-item-status';
+                const gemSpan = document.createElement('span');
+                gemSpan.textContent = `+${reward.gemGain}`;
+                gemStatus.appendChild(gemSpan);
+                gemItem.appendChild(gemStatus);
+                items.push(gemItem);
+            }
+
+            if (reward.item) {
+                const rarityClass = getRarityClass(reward.item.itemType, reward.item.itemKey);
+                const itemDiv = document.createElement('div');
+                itemDiv.className = `store-item ${reward.item.itemType}-item highlight-bg ${rarityClass}`;
+                const img = document.createElement('img');
+                img.className = 'store-item-img';
+                if (reward.item.itemType === 'food') {
+                    img.src = FOODS[reward.item.itemKey]?.asset?.src || '';
+                } else if (reward.item.itemType === 'skin') {
+                    img.src = SKINS[reward.item.itemKey]?.snakeHeadAsset?.upDown?.src || '';
+                } else if (reward.item.itemType === 'scene') {
+                    img.classList.add('scene-img-full');
+                    img.src = SCENES[reward.item.itemKey]?.icon || '';
+                }
+                itemDiv.appendChild(img);
+                items.push(itemDiv);
+            }
+
+            const cols = items.length === 3 ? 'grid-cols-3' : (items.length === 2 ? 'grid-cols-2' : 'grid-cols-1');
+            purchaseItemPreview.className = `grid ${cols} gap-4 w-full`;
+            items.forEach(el => purchaseItemPreview.appendChild(el));
+        }
+
 let purchaseInfo = null;
+let pendingChestRewards = null;
 function openPurchaseConfirm(type, key) {
-    if ((type === 'adLife' || type === 'adChest' || type === 'coinLife' || type === 'coinChest' || (type === 'general' && key === 'heart')) && playerLives >= MAX_LIVES) {
+    if ((type === 'adLife' || type === 'adChest' || type === 'coinLife' || type === 'coinChest') && playerLives >= MAX_LIVES) {
         showInsufficientFundsToast('Vidas al máximo');
         return;
     }
@@ -7610,6 +7761,10 @@ function openPurchaseConfirm(type, key) {
         return;
     }
     purchaseInfo = { type, key };
+    pendingChestRewards = null;
+    if (confirmPurchaseYesButton) confirmPurchaseYesButton.classList.remove('hidden');
+    if (confirmPurchaseNoButton) confirmPurchaseNoButton.classList.remove('hidden');
+    if (collectPurchaseRewardButton) collectPurchaseRewardButton.classList.add('hidden');
             if (purchaseItemPreview) {
                 purchaseItemPreview.innerHTML = '';
                 const rarityClass = getRarityClass(type, key);
@@ -7619,7 +7774,7 @@ function openPurchaseConfirm(type, key) {
                         ? ` food-item highlight-bg ${rarityClass}`
                         : (type === 'skin'
                             ? ` skin-item highlight-bg ${rarityClass}`
-                            : ((type === 'coinPack' || type === 'gemPack')
+                            : ((type === 'coinPack' || type === 'gemPack' || type === 'chest')
                                 ? ` currency-item ${rarityClass}`
                                 : ` ${rarityClass}`))));
                 const img = document.createElement('img');
@@ -7631,8 +7786,9 @@ function openPurchaseConfirm(type, key) {
                 } else if (type === 'scene') {
                     img.classList.add('scene-img-full');
                     img.src = SCENES[key]?.icon || '';
-                } else if (type === 'general') {
-                    img.src = key === 'heart' ? 'https://i.imgur.com/WrI2XXx.png' : 'https://i.imgur.com/gPGsaCO.png';
+                } else if (type === 'chest') {
+                    img.classList.add('currency-img');
+                    img.src = CHESTS[key]?.img || '';
                 } else if (type === 'coinPack') {
                     img.classList.add('currency-img');
                     img.src = COIN_PACKS[key]?.img || '';
@@ -7660,9 +7816,9 @@ function openPurchaseConfirm(type, key) {
                 price = SCENE_PRICES[key];
                 name = SCENE_DISPLAY_NAMES[key];
                 if (purchaseConfirmationText) purchaseConfirmationText.innerHTML = `¿Comprar ${name} por <strong>${price}</strong> gemas?`;
-            } else if (type === 'general') {
-                price = key === 'heart' ? HEART_PRICE : GEM_PRICE;
-                name = key === 'heart' ? 'coraz\u00F3n' : 'gema';
+            } else if (type === 'chest') {
+                price = CHESTS[key].cost;
+                name = CHEST_DISPLAY_NAMES[key];
                 if (purchaseConfirmationText) purchaseConfirmationText.innerHTML = `¿Comprar ${name} por <strong>${price}</strong> monedas?`;
             } else if (type === 'coinPack') {
                 price = COIN_PACKS[key].costGems;
@@ -7739,37 +7895,33 @@ function openPurchaseConfirm(type, key) {
                 } else {
                     failureMessage = 'Gemas insuficientes';
                 }
-            } else if (purchaseInfo.type === 'general') {
-                if (purchaseInfo.key === 'heart') {
-                    price = HEART_PRICE;
-                    if (totalCoins >= price && playerLives < MAX_LIVES) {
-                        totalCoins -= price;
-                        const prevLives = playerLives;
-                        playerLives++;
-                        if (lifeRestoreQueue.length > 0) {
-                            lifeRestoreQueue.pop();
-                        }
-                        if (playerLives >= MAX_LIVES) lifeRestoreQueue = [];
-                        saveLives();
-                        updateLifeTimerDisplay();
-                        animateLifeGain(prevLives, playerLives);
-                        success = true;
-                    } else if (playerLives >= MAX_LIVES) {
-                        failureMessage = 'Vidas al máximo';
+            } else if (purchaseInfo.type === 'chest') {
+                const chest = CHESTS[purchaseInfo.key];
+                price = chest.cost;
+                if (totalCoins >= price) {
+                    totalCoins -= price;
+                    const coinGain = randInt(chest.coinRange[0], chest.coinRange[1]);
+                    const gemGain = Math.random() < chest.gemChance ? randInt(chest.gemRange[0], chest.gemRange[1]) : 0;
+                    const item = getRandomChestItem(purchaseInfo.key);
+                    pendingChestRewards = { coinGain, gemGain, item };
+                    displayChestRewardPreview(pendingChestRewards);
+                    if (purchaseConfirmationText && item) {
+                        const typeName = ITEM_TYPE_DISPLAY[item.itemType] || '';
+                        const rarityName = RARITY_DISPLAY_NAMES[item.rarity] || '';
+                        let itemName = '';
+                        if (item.itemType === 'food') itemName = FOOD_DISPLAY_NAMES[item.itemKey];
+                        else if (item.itemType === 'skin') itemName = SKIN_DISPLAY_NAMES[item.itemKey];
+                        else if (item.itemType === 'scene') itemName = SCENE_DISPLAY_NAMES[item.itemKey];
+                        purchaseConfirmationText.innerHTML = `¡Enhorabuena! Has obtenido el ${typeName} ${rarityName} <strong>${itemName}</strong>.`;
+                    } else if (purchaseConfirmationText) {
+                        purchaseConfirmationText.textContent = '¡Has obtenido!';
                     }
-                } else if (purchaseInfo.key === 'gem') {
-                    price = GEM_PRICE;
-                    if (totalCoins >= price) {
-                        totalCoins -= price;
-                        const prev = totalGems;
-                        totalGems++;
-                        saveGems();
-                        showEarnedGemsMessage(1);
-                        setTimeout(() => {
-                            animateGemGain(prev, totalGems);
-                        }, COIN_MESSAGE_DISPLAY_TIME);
-                        success = true;
-                    }
+                    if (confirmPurchaseYesButton) confirmPurchaseYesButton.classList.add('hidden');
+                    if (confirmPurchaseNoButton) confirmPurchaseNoButton.classList.add('hidden');
+                    if (collectPurchaseRewardButton) collectPurchaseRewardButton.classList.remove('hidden');
+                    success = true;
+                } else {
+                    failureMessage = 'Monedas insuficientes';
                 }
             } else if (purchaseInfo.type === 'coinLife' || purchaseInfo.type === 'coinChest' || purchaseInfo.type === 'coinInfinite') {
                 const config = COIN_LIFE_ITEMS[purchaseInfo.type];
@@ -7879,15 +8031,46 @@ function openPurchaseConfirm(type, key) {
                 return;
             }
             if (success) {
-                localStorage.setItem('snakeGameCoins', totalCoins.toString());
-                saveGems();
-                updateCoinDisplay();
-                updateGemDisplay();
-                populateStoreItems();
-                closePurchaseConfirm();
+                if (purchaseInfo.type === 'chest') {
+                    localStorage.setItem('snakeGameCoins', totalCoins.toString());
+                    updateCoinDisplay();
+                    populateStoreItems();
+                } else {
+                    localStorage.setItem('snakeGameCoins', totalCoins.toString());
+                    saveGems();
+                    updateCoinDisplay();
+                    updateGemDisplay();
+                    populateStoreItems();
+                    closePurchaseConfirm();
+                }
             } else {
                 showInsufficientFundsToast(failureMessage);
             }
+        }
+
+        function collectPurchaseReward() {
+            if (!pendingChestRewards) { closePurchaseConfirm(); return; }
+            const { coinGain, gemGain, item } = pendingChestRewards;
+            const prevCoins = totalCoins;
+            totalCoins += coinGain;
+            showEarnedCoinsMessage(coinGain);
+            animateCoinGain(prevCoins, totalCoins);
+            if (gemGain > 0) {
+                const prevGems = totalGems;
+                totalGems += gemGain;
+                saveGems();
+                showEarnedGemsMessage(gemGain);
+                animateGemGain(prevGems, totalGems);
+            }
+            grantChestItem(item);
+            updateCoinDisplay();
+            updateGemDisplay();
+            populateStoreItems();
+            pendingChestRewards = null;
+            if (collectPurchaseRewardButton) collectPurchaseRewardButton.classList.add('hidden');
+            if (confirmPurchaseYesButton) confirmPurchaseYesButton.classList.remove('hidden');
+            if (confirmPurchaseNoButton) confirmPurchaseNoButton.classList.remove('hidden');
+            closePurchaseConfirm();
         }
 
         function closePurchaseConfirm() {
@@ -7895,6 +8078,10 @@ function openPurchaseConfirm(type, key) {
             if (purchaseItemPreview) purchaseItemPreview.innerHTML = '';
             if (modalOverlay) modalOverlay.classList.add('hidden');
             purchaseInfo = null;
+            pendingChestRewards = null;
+            if (collectPurchaseRewardButton) collectPurchaseRewardButton.classList.add('hidden');
+            if (confirmPurchaseYesButton) confirmPurchaseYesButton.classList.remove('hidden');
+            if (confirmPurchaseNoButton) confirmPurchaseNoButton.classList.remove('hidden');
         }
 
         let playerToDelete = null;
@@ -8014,6 +8201,7 @@ function openPurchaseConfirm(type, key) {
         if (closeProfilePanelButton) closeProfilePanelButton.addEventListener('click', closeProfileMenu);
         if (confirmPurchaseYesButton) confirmPurchaseYesButton.addEventListener('click', confirmPurchase);
         if (confirmPurchaseNoButton) confirmPurchaseNoButton.addEventListener('click', closePurchaseConfirm);
+        if (collectPurchaseRewardButton) collectPurchaseRewardButton.addEventListener('click', collectPurchaseReward);
         if (confirmDeleteYesButton) confirmDeleteYesButton.addEventListener('click', confirmDelete);
         if (confirmDeleteNoButton) confirmDeleteNoButton.addEventListener('click', closeDeleteConfirm);
         if (closeOutOfLivesPanelButton) closeOutOfLivesPanelButton.addEventListener('click', closeOutOfLivesPanel);
@@ -13077,6 +13265,7 @@ async function startGame(isRestart = false) {
         addIconPressEvents(confirmResetNoButton, confirmResetNoButton);
         addIconPressEvents(confirmPurchaseYesButton, confirmPurchaseYesButton);
         addIconPressEvents(confirmPurchaseNoButton, confirmPurchaseNoButton);
+        addIconPressEvents(collectPurchaseRewardButton, collectPurchaseRewardButton);
         addIconPressEvents(confirmDeleteYesButton, confirmDeleteYesButton);
         addIconPressEvents(confirmDeleteNoButton, confirmDeleteNoButton);
         addIconPressEvents(confirmSelectYesButton, confirmSelectYesButton);
