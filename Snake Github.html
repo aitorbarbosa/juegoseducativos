@@ -2845,6 +2845,7 @@
           position: relative;
           cursor: pointer;
           transition: transform 0.05s ease-out;
+          z-index: 0;
         }
 
         .store-item::before {
@@ -2857,15 +2858,27 @@
           background-position: center;
           transition: filter 0.05s ease-out;
           pointer-events: none;
-          z-index: 1;
+          z-index: 2;
         }
         .store-item.scene-item::before {
           background-image: url('https://i.imgur.com/YKjPhxX.png');
-          z-index: 1;
+          z-index: 2;
         }
         .store-item.currency-item::before {
           background-image: url('https://i.imgur.com/YKjPhxX.png');
-          z-index: 1;
+          z-index: 2;
+        }
+
+        .store-item.highlight-bg::after {
+          content: '';
+          position: absolute;
+          inset: 0;
+          background-image: url('https://i.imgur.com/n1Fb83c.png');
+          background-size: 90% 90%;
+          background-repeat: no-repeat;
+          background-position: center;
+          pointer-events: none;
+          z-index: 0;
         }
         .store-item:hover::before { filter: brightness(0.95); }
         .store-item.icon-button-pressed::before { filter: brightness(0.5); }
@@ -2876,17 +2889,19 @@
           filter: grayscale(100%);
           opacity: 0.7;
         }
+        .store-item.locked::after {
+          filter: grayscale(100%);
+          opacity: 0.7;
+        }
         .store-item.locked .store-item-img {
           filter: grayscale(100%);
           opacity: 0.7;
         }
         .store-item.locked .store-item-status {
           color: #cccccc;
-          opacity: 0.7;
         }
         .store-item.locked .store-item-status img {
-          filter: grayscale(100%);
-          opacity: 0.7;
+          filter: none;
         }
         .store-item.purchased {
           pointer-events: none;
@@ -2904,13 +2919,13 @@
           height: 60%;
           object-fit: contain;
           pointer-events: none;
-          z-index: 0;
+          z-index: 1;
         }
         .scene-item .store-item-img {
-          z-index: 0;
+          z-index: 1;
         }
         .currency-item .store-item-img {
-          z-index: 0;
+          z-index: 1;
         }
         .store-item-img.scene-img-full {
           width: 90%;
@@ -3062,7 +3077,7 @@
           color: #ffffff;
           text-shadow: 1px 1px 2px black;
           font-family: 'Press Start 2P', sans-serif;
-          z-index: 2;
+          z-index: 1;
         }
 
         .store-item-cooldown {
@@ -3728,9 +3743,9 @@
             </div>
         </div>
         <div id="selected-items-row" class="grid grid-cols-3 gap-2 mb-2 mt-2 w-full">
-            <div id="selected-skin-item" class="store-item"></div>
-            <div id="selected-food-item" class="store-item"></div>
-            <div id="selected-scene-item" class="store-item scene-item"></div>
+            <div id="selected-skin-item" class="store-item highlight-bg"></div>
+            <div id="selected-food-item" class="store-item highlight-bg"></div>
+            <div id="selected-scene-item" class="store-item scene-item highlight-bg"></div>
         </div>
 
         <div class="control-group hidden" id="skin-control-group">
@@ -7295,7 +7310,7 @@ function setupSlider(slider, display) {
             if (storeTab === 'comida') {
                 FOOD_ORDER.forEach(key => {
                     const item = document.createElement('div');
-                    item.className = 'store-item';
+                    item.className = 'store-item highlight-bg';
 
                     const img = document.createElement('img');
                     img.className = 'store-item-img';
@@ -7326,7 +7341,7 @@ function setupSlider(slider, display) {
             } else if (storeTab === 'disfraces') {
                 SKIN_ORDER.forEach(key => {
                     const item = document.createElement('div');
-                    item.className = 'store-item';
+                    item.className = 'store-item highlight-bg';
 
                     const img = document.createElement('img');
                     img.className = 'store-item-img';
@@ -7357,7 +7372,7 @@ function setupSlider(slider, display) {
             } else if (storeTab === 'escenarios') {
                 SCENE_ORDER.forEach(key => {
                     const item = document.createElement('div');
-                    item.className = 'store-item scene-item';
+                    item.className = 'store-item scene-item highlight-bg';
 
                     const img = document.createElement('img');
                     img.className = 'store-item-img scene-img-full';
@@ -7531,7 +7546,7 @@ function openPurchaseConfirm(type, key) {
     purchaseInfo = { type, key };
             if (purchaseItemPreview) {
                 purchaseItemPreview.innerHTML = '';
-                purchaseItemPreview.className = 'store-item' + (type === 'scene' ? ' scene-item' : (type === 'coinPack' || type === 'gemPack' ? ' currency-item' : ''));
+                purchaseItemPreview.className = 'store-item' + (type === 'scene' ? ' scene-item highlight-bg' : ((type === 'food' || type === 'skin') ? ' highlight-bg' : ((type === 'coinPack' || type === 'gemPack') ? ' currency-item' : '')));
                 const img = document.createElement('img');
                 img.className = 'store-item-img';
                 if (type === 'food') {
@@ -12811,7 +12826,7 @@ async function startGame(isRestart = false) {
         function updateProfileSelectedItems() {
             if (profileSelectedSkin) {
                 profileSelectedSkin.innerHTML = '';
-                profileSelectedSkin.className = 'store-item purchased profile-clickable';
+                profileSelectedSkin.className = 'store-item purchased profile-clickable highlight-bg';
                 const img = document.createElement('img');
                 img.className = 'store-item-img';
                 img.src = SKINS[getSelectedSkin()]?.snakeHeadAsset?.upDown?.src || '';
@@ -12819,7 +12834,7 @@ async function startGame(isRestart = false) {
             }
             if (profileSelectedFood) {
                 profileSelectedFood.innerHTML = '';
-                profileSelectedFood.className = 'store-item purchased profile-clickable';
+                profileSelectedFood.className = 'store-item purchased profile-clickable highlight-bg';
                 const img = document.createElement('img');
                 img.className = 'store-item-img';
                 img.src = FOODS[getSelectedFood()]?.asset?.src || '';
@@ -12827,7 +12842,7 @@ async function startGame(isRestart = false) {
             }
             if (profileSelectedScene) {
                 profileSelectedScene.innerHTML = '';
-                profileSelectedScene.className = 'store-item purchased profile-clickable scene-item';
+                profileSelectedScene.className = 'store-item purchased profile-clickable scene-item highlight-bg';
                 const img = document.createElement('img');
                 img.className = 'store-item-img scene-img-full';
                 img.src = SCENES[getSelectedScene()]?.icon || '';
@@ -12841,7 +12856,7 @@ async function startGame(isRestart = false) {
             profileFoodLocked.innerHTML = '';
             FOOD_ORDER.forEach(key => {
                 const item = document.createElement('div');
-                item.className = 'store-item';
+                item.className = 'store-item highlight-bg';
                 const img = document.createElement('img');
                 img.className = 'store-item-img';
                 img.src = FOODS[key]?.asset?.src || '';
@@ -12864,7 +12879,7 @@ async function startGame(isRestart = false) {
             profileSkinLocked.innerHTML = '';
             SKIN_ORDER.forEach(key => {
                 const item = document.createElement('div');
-                item.className = 'store-item';
+                item.className = 'store-item highlight-bg';
                 const img = document.createElement('img');
                 img.className = 'store-item-img';
                 img.src = SKINS[key]?.snakeHeadAsset?.upDown?.src || '';
@@ -12887,7 +12902,7 @@ async function startGame(isRestart = false) {
             profileSceneLocked.innerHTML = '';
             SCENE_ORDER.forEach(key => {
                 const item = document.createElement('div');
-                item.className = 'store-item scene-item';
+                item.className = 'store-item scene-item highlight-bg';
                 const img = document.createElement('img');
                 img.className = 'store-item-img scene-img-full';
                 img.src = SCENES[key]?.icon || '';
