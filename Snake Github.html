@@ -2882,8 +2882,7 @@
           /* keep text sharp while dimming the icon */
         }
         .store-item.locked::before {
-          filter: grayscale(100%);
-          opacity: 0.7;
+          filter: contrast(50%);
         }
         .store-item.locked::after {
           filter: grayscale(100%);
@@ -3070,7 +3069,7 @@
           justify-content: center;
           align-items: center;
           gap: 2px;
-          font-size: 0.7rem;
+          font-size: 0.6rem;
           color: #ffffff;
           text-shadow: 1px 1px 2px black;
           font-family: 'Press Start 2P', sans-serif;
