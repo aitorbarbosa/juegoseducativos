@@ -1033,7 +1033,7 @@
             width: 12px;
             height: 12px;
             position: relative;
-            top: -2px;
+            top: -1px;
         }
 
         .ad-cost-icon {
@@ -2846,6 +2846,7 @@
           cursor: pointer;
           transition: transform 0.05s ease-out;
           z-index: 0;
+          --status-bottom: 6%;
         }
 
         .store-item::before {
@@ -2860,10 +2861,27 @@
           z-index: 2;
         }
         .store-item.rarity-default::before { background-image: url('https://i.imgur.com/UwsZ1z5.png'); }
-        .store-item.rarity-common::before { background-image: url('https://i.imgur.com/a1HIP4u.png'); }
+        .store-item.rarity-common::before { background-image: url('https://i.imgur.com/pACZeU1.png'); }
         .store-item.rarity-rare::before { background-image: url('https://i.imgur.com/rUCQC5y.png'); }
         .store-item.rarity-epic::before { background-image: url('https://i.imgur.com/EUXBiO4.png'); }
         .store-item.rarity-legendary::before { background-image: url('https://i.imgur.com/ThkZoci.png'); }
+        .store-item.rarity-default.skin-item::before,
+        .store-item.rarity-default.food-item::before,
+        .store-item.rarity-default.scene-item::before {
+          background-image: url('https://i.imgur.com/MoWtcZA.png');
+        }
+        .store-item.rarity-common {
+          --status-bottom: 5%;
+        }
+        .store-item.rarity-rare {
+          --status-bottom: 6%;
+        }
+        .store-item.rarity-legendary {
+          --status-bottom: 5.5%;
+        }
+        .store-item.rarity-epic {
+          --status-bottom: 3%;
+        }
 
         .store-item.highlight-bg::after {
           content: '';
@@ -3064,7 +3082,7 @@
         }
         .store-item-status {
           position: absolute;
-          bottom: 7px;
+          bottom: var(--status-bottom);
           left: 0;
           right: 0;
           display: flex;
@@ -3741,8 +3759,8 @@
             </div>
         </div>
         <div id="selected-items-row" class="grid grid-cols-3 gap-2 mb-2 mt-2 w-full">
-            <div id="selected-skin-item" class="store-item highlight-bg rarity-default"></div>
-            <div id="selected-food-item" class="store-item highlight-bg rarity-default"></div>
+            <div id="selected-skin-item" class="store-item skin-item highlight-bg rarity-default"></div>
+            <div id="selected-food-item" class="store-item food-item highlight-bg rarity-default"></div>
             <div id="selected-scene-item" class="store-item scene-item highlight-bg rarity-default"></div>
         </div>
 
@@ -7334,7 +7352,7 @@ function setupSlider(slider, display) {
                 FOOD_ORDER.forEach(key => {
                     const item = document.createElement('div');
                     const rarityClass = getRarityClass('food', key);
-                    item.className = `store-item highlight-bg ${rarityClass}`;
+                    item.className = `store-item food-item highlight-bg ${rarityClass}`;
 
                     const img = document.createElement('img');
                     img.className = 'store-item-img';
@@ -7366,7 +7384,7 @@ function setupSlider(slider, display) {
                 SKIN_ORDER.forEach(key => {
                     const item = document.createElement('div');
                     const rarityClass = getRarityClass('skin', key);
-                    item.className = `store-item highlight-bg ${rarityClass}`;
+                    item.className = `store-item skin-item highlight-bg ${rarityClass}`;
 
                     const img = document.createElement('img');
                     img.className = 'store-item-img';
@@ -7575,11 +7593,13 @@ function openPurchaseConfirm(type, key) {
                 const rarityClass = getRarityClass(type, key);
                 purchaseItemPreview.className = 'store-item' + (type === 'scene'
                     ? ` scene-item highlight-bg ${rarityClass}`
-                    : ((type === 'food' || type === 'skin')
-                        ? ` highlight-bg ${rarityClass}`
-                        : ((type === 'coinPack' || type === 'gemPack')
-                            ? ` currency-item ${rarityClass}`
-                            : ` ${rarityClass}`)));
+                    : (type === 'food'
+                        ? ` food-item highlight-bg ${rarityClass}`
+                        : (type === 'skin'
+                            ? ` skin-item highlight-bg ${rarityClass}`
+                            : ((type === 'coinPack' || type === 'gemPack')
+                                ? ` currency-item ${rarityClass}`
+                                : ` ${rarityClass}`))));
                 const img = document.createElement('img');
                 img.className = 'store-item-img';
                 if (type === 'food') {
@@ -12859,7 +12879,7 @@ async function startGame(isRestart = false) {
         function updateProfileSelectedItems() {
             if (profileSelectedSkin) {
                 profileSelectedSkin.innerHTML = '';
-                profileSelectedSkin.className = 'store-item purchased profile-clickable highlight-bg ' + getRarityClass('skin', getSelectedSkin());
+                profileSelectedSkin.className = 'store-item skin-item purchased profile-clickable highlight-bg ' + getRarityClass('skin', getSelectedSkin());
                 const img = document.createElement('img');
                 img.className = 'store-item-img';
                 img.src = SKINS[getSelectedSkin()]?.snakeHeadAsset?.upDown?.src || '';
@@ -12867,7 +12887,7 @@ async function startGame(isRestart = false) {
             }
             if (profileSelectedFood) {
                 profileSelectedFood.innerHTML = '';
-                profileSelectedFood.className = 'store-item purchased profile-clickable highlight-bg ' + getRarityClass('food', getSelectedFood());
+                profileSelectedFood.className = 'store-item food-item purchased profile-clickable highlight-bg ' + getRarityClass('food', getSelectedFood());
                 const img = document.createElement('img');
                 img.className = 'store-item-img';
                 img.src = FOODS[getSelectedFood()]?.asset?.src || '';
