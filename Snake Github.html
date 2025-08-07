@@ -1615,10 +1615,10 @@
             display: block;
         }
 
-        .settings-panel-hidden, .info-panel-hidden, .specific-info-panel-hidden, .free-settings-panel-hidden, .reset-panel-hidden, .config-menu-panel-hidden, .generic-menu-panel-hidden, .store-panel-hidden, .profile-panel-hidden, .achievements-panel-hidden, .purchase-confirmation-panel-hidden, .delete-confirmation-panel-hidden, .out-of-lives-panel-hidden, .select-confirmation-panel-hidden {
+        .settings-panel-hidden, .info-panel-hidden, .specific-info-panel-hidden, .free-settings-panel-hidden, .reset-panel-hidden, .config-menu-panel-hidden, .generic-menu-panel-hidden, .store-panel-hidden, .profile-panel-hidden, .achievements-panel-hidden, .purchase-confirmation-panel-hidden, .chest-info-panel-hidden, .delete-confirmation-panel-hidden, .out-of-lives-panel-hidden, .select-confirmation-panel-hidden {
             display: none !important;
         }
-        #settings-panel, #info-panel, #specific-info-panel, #free-settings-panel, #reset-confirmation-panel, #config-menu-panel, #generic-menu-panel, #store-panel, #profile-panel, #achievements-panel, #purchase-confirmation-panel, #delete-confirmation-panel, #out-of-lives-panel, #select-confirmation-panel {
+        #settings-panel, #info-panel, #specific-info-panel, #free-settings-panel, #reset-confirmation-panel, #config-menu-panel, #generic-menu-panel, #store-panel, #profile-panel, #achievements-panel, #purchase-confirmation-panel, #chest-info-panel, #delete-confirmation-panel, #out-of-lives-panel, #select-confirmation-panel {
             position: fixed;
             left: 0;
             transform: scale(0);
@@ -1805,6 +1805,7 @@
         #profile-panel.panel-visible,
         #achievements-panel.panel-visible,
         #purchase-confirmation-panel.panel-visible,
+        #chest-info-panel.panel-visible,
         #delete-confirmation-panel.panel-visible,
         #out-of-lives-panel.panel-visible,
         #select-confirmation-panel.panel-visible {
@@ -2390,6 +2391,7 @@
         #profile-panel { z-index: 2101; }
         #achievements-panel { z-index: 2101; }
         #purchase-confirmation-panel { z-index: 2103; }
+        #chest-info-panel { z-index: 2103; }
         #delete-confirmation-panel { z-index: 2103; }
         #select-confirmation-panel { z-index: 2103; }
         #out-of-lives-panel {
@@ -2437,8 +2439,10 @@
 
         #reset-confirmation-panel p { text-align: center; margin: 0 0 10px 0; }
         #purchase-confirmation-panel p { text-align: center; margin: 0 0 2px 0; font-size: 0.8em; }
+        #chest-info-panel p { text-align: left; margin: 0 0 10px 0; font-size: 0.8em; }
         #reset-confirmation-panel .reset-buttons,
         #purchase-confirmation-panel .reset-buttons,
+        #chest-info-panel .reset-buttons,
         #delete-confirmation-panel .reset-buttons {
             display: flex;
             gap: 15px;
@@ -2449,7 +2453,9 @@
             gap: 25px;
             justify-content: center;
         }
-        #reset-confirmation-panel .reset-buttons button {
+        #reset-confirmation-panel .reset-buttons button,
+        #purchase-confirmation-panel .reset-buttons button,
+        #chest-info-panel .reset-buttons button {
             flex: 0 0 auto;
             min-width: 130px;
             position: relative;
@@ -2532,7 +2538,8 @@
 
         /* Estilos de botones para confirmar compra */
         #confirmPurchaseYes,
-        #confirmPurchaseNo {
+        #confirmPurchaseNo,
+        #chest-info-close {
             flex: 0 0 auto;
             min-width: 130px;
             position: relative;
@@ -2551,7 +2558,8 @@
             box-sizing: border-box;
         }
         #confirmPurchaseYes::before,
-        #confirmPurchaseNo::before {
+        #confirmPurchaseNo::before,
+        #chest-info-close::before {
             content: '';
             position: absolute;
             left: -2px;
@@ -2563,7 +2571,8 @@
             z-index: -2;
         }
         #confirmPurchaseYes::after,
-        #confirmPurchaseNo::after {
+        #confirmPurchaseNo::after,
+        #chest-info-close::after {
             content: '';
             position: absolute;
             top: 50%;
@@ -2594,7 +2603,8 @@
         #confirmPurchaseYes::after {
             background-color: #81c784;
         }
-        #confirmPurchaseNo {
+        #confirmPurchaseNo,
+        #chest-info-close {
             border: 2px solid #7f1d1d;
             text-shadow: 0px 0px 1px #422E58,
                          -1px -1px 0 #7f1d1d,
@@ -2602,7 +2612,8 @@
                          -1px 1px 0 #7f1d1d,
                           1px 1px 0 #7f1d1d;
         }
-        #confirmPurchaseNo::before {
+        #confirmPurchaseNo::before,
+        #chest-info-close::before {
             background: linear-gradient(
                 #fecaca 0%,
                 #fecaca 50%,
@@ -2610,13 +2621,21 @@
                 #b91c1c 100%
             );
         }
-        #confirmPurchaseNo::after {
+        #confirmPurchaseNo::after,
+        #chest-info-close::after {
             background-color: #f87171;
         }
         #confirmPurchaseYes:hover,
-        #confirmPurchaseNo:hover { filter: brightness(0.95); }
+        #confirmPurchaseNo:hover,
+        #chest-info-close:hover { filter: brightness(0.95); }
         #confirmPurchaseYes:disabled,
-        #confirmPurchaseNo:disabled { filter: brightness(0.6); cursor: not-allowed; }
+        #confirmPurchaseNo:disabled,
+        #chest-info-close:disabled { filter: brightness(0.6); cursor: not-allowed; }
+        #chest-info-button {
+            top: 0;
+            right: 0;
+            transform: none;
+        }
 
         /* Estilos de botones para confirmación de selección o ir a tienda */
         #confirmSelectYes,
@@ -3159,6 +3178,11 @@
         }
 
         #purchase-confirmation-panel .panel-content {
+          justify-content: center;
+          align-items: center;
+          position: relative;
+        }
+        #chest-info-panel .panel-content {
           justify-content: center;
           align-items: center;
         }
@@ -3918,6 +3942,9 @@
             <div id="purchase-confirmation-panel" class="purchase-confirmation-panel-hidden">
                 <div class="reset-header">
                     <h2>CONFIRMAR</h2>
+                    <button id="chest-info-button" class="setting-info-button hidden" aria-label="Información del cofre">
+                        <img class="setting-info-icon" src="https://i.imgur.com/rWe7Ylp.png" alt="info" onerror="this.src='https://placehold.co/24x24/02030D/FFFFFF?text=Err';">
+                    </button>
                 </div>
                 <div class="panel-content">
                     <div id="purchase-item-preview" class="store-item locked rarity-default"></div>
@@ -3926,6 +3953,17 @@
                         <button id="confirmPurchaseYes">SI</button>
                         <button id="confirmPurchaseNo">NO</button>
                         <button id="collectPurchaseReward" class="menu-option-button hidden"> RECOGER</button>
+                    </div>
+                </div>
+            </div>
+            <div id="chest-info-panel" class="chest-info-panel-hidden">
+                <div class="reset-header">
+                    <h2 id="chest-info-title">Cofre común</h2>
+                </div>
+                <div class="panel-content">
+                    <div id="chest-info-text"></div>
+                    <div class="reset-buttons">
+                        <button id="chest-info-close">VOLVER</button>
                     </div>
                 </div>
             </div>
@@ -4208,6 +4246,11 @@
         const confirmPurchaseYesButton = document.getElementById("confirmPurchaseYes");
         const confirmPurchaseNoButton = document.getElementById("confirmPurchaseNo");
         const collectPurchaseRewardButton = document.getElementById("collectPurchaseReward");
+        const chestInfoButton = document.getElementById("chest-info-button");
+        const chestInfoPanel = document.getElementById("chest-info-panel");
+        const chestInfoTitle = document.getElementById("chest-info-title");
+        const chestInfoText = document.getElementById("chest-info-text");
+        const chestInfoCloseButton = document.getElementById("chest-info-close");
         const deleteConfirmationPanel = document.getElementById("delete-confirmation-panel");
         const deleteConfirmationText = document.getElementById("delete-confirmation-text");
         const confirmDeleteYesButton = document.getElementById("confirmDeleteYes");
@@ -6604,6 +6647,10 @@ function setupSlider(slider, display) {
                 positionPanel(purchaseConfirmationPanel);
                 applyScrollbarPadding(purchaseConfirmationPanel.querySelector('.panel-content'));
             }
+            if (chestInfoPanel && !chestInfoPanel.classList.contains("chest-info-panel-hidden")) {
+                positionPanel(chestInfoPanel);
+                applyScrollbarPadding(chestInfoPanel.querySelector('.panel-content'));
+            }
 
 
             if (ctx && (gameIntervalId || gameOver || snake.length > 0 || screenState.showCoverForWorld > 0 || screenState.showLevelCompleteCover > 0 || screenState.showWorldCompleteCover > 0 || screenState.showDefeatCoverForWorld > 0 || screenState.showFreeModeCover || screenState.showClassificationCover)) {
@@ -6779,6 +6826,7 @@ function setupSlider(slider, display) {
             else if (panelId === "profile-panel") hiddenClassName = "profile-panel-hidden";
             else if (panelId === "achievements-panel") hiddenClassName = "achievements-panel-hidden";
             else if (panelId === "purchase-confirmation-panel") hiddenClassName = "purchase-confirmation-panel-hidden";
+            else if (panelId === "chest-info-panel") hiddenClassName = "chest-info-panel-hidden";
             else if (panelId === "delete-confirmation-panel") hiddenClassName = "delete-confirmation-panel-hidden";
             else if (panelId === "out-of-lives-panel") hiddenClassName = "out-of-lives-panel-hidden";
             else if (panelId === "select-confirmation-panel") hiddenClassName = "select-confirmation-panel-hidden";
@@ -7791,9 +7839,14 @@ function openPurchaseConfirm(type, key) {
     }
     purchaseInfo = { type, key };
     pendingChestRewards = null;
+    if (chestInfoPanel) togglePanel(chestInfoPanel, chestInfoPanel.querySelector('.panel-content'), false, true);
     if (confirmPurchaseYesButton) confirmPurchaseYesButton.classList.remove('hidden');
     if (confirmPurchaseNoButton) confirmPurchaseNoButton.classList.remove('hidden');
     if (collectPurchaseRewardButton) collectPurchaseRewardButton.classList.add('hidden');
+    if (chestInfoButton) {
+        if (type === 'chest') chestInfoButton.classList.remove('hidden');
+        else chestInfoButton.classList.add('hidden');
+    }
             if (purchaseItemPreview) {
                 purchaseItemPreview.innerHTML = '';
                 if (type === 'chest') {
@@ -7889,6 +7942,37 @@ function openPurchaseConfirm(type, key) {
                 positionPanel(purchaseConfirmationPanel);
             }
             if (modalOverlay) modalOverlay.classList.remove('hidden');
+        }
+
+        function openChestInfo() {
+            if (!purchaseInfo || purchaseInfo.type !== 'chest') return;
+            const key = purchaseInfo.key;
+            const chest = CHESTS[key];
+            if (!chest) return;
+            if (chestInfoTitle) chestInfoTitle.textContent = CHEST_DISPLAY_NAMES[key] || '';
+            if (chestInfoText) {
+                const coinText = `${chest.coinRange[0]}-${chest.coinRange[1]}`;
+                const gemChance = Math.round((chest.gemChance || 0) * 100);
+                const gemRange = chest.gemRange[0] === chest.gemRange[1]
+                    ? `${chest.gemRange[0]} ${chest.gemRange[0] === 1 ? 'Gema' : 'Gemas'}`
+                    : `${chest.gemRange[0]}-${chest.gemRange[1]} Gemas`;
+                const rarityLines = Object.entries(chest.rarity)
+                    .map(([r, v]) => `- ${RARITY_DISPLAY_NAMES[r]} = ${v}%`)
+                    .join('<br>');
+                chestInfoText.innerHTML = `<p>Rango de monedas recibidas<br>- ${coinText}.</p>` +
+                    `<p>Gemas recibidas<br>- ${gemChance}% de posibilidades de conseguir ${gemRange}.</p>` +
+                    `<p>Elementos de cada rareza<br>${rarityLines}.</p>`;
+            }
+            matchPanelSizeWithElement(purchaseConfirmationPanel, chestInfoPanel);
+            positionPanel(chestInfoPanel);
+            togglePanel(purchaseConfirmationPanel, purchaseConfirmationPanel.querySelector('.panel-content'), false, true);
+            togglePanel(chestInfoPanel, chestInfoPanel.querySelector('.panel-content'), true);
+        }
+
+        function closeChestInfo() {
+            togglePanel(chestInfoPanel, chestInfoPanel.querySelector('.panel-content'), false);
+            togglePanel(purchaseConfirmationPanel, purchaseConfirmationPanel.querySelector('.panel-content'), true);
+            positionPanel(purchaseConfirmationPanel);
         }
 
         function confirmPurchase() {
@@ -8109,6 +8193,7 @@ function openPurchaseConfirm(type, key) {
 
         function closePurchaseConfirm() {
             togglePanel(purchaseConfirmationPanel, purchaseConfirmationPanel.querySelector('.panel-content'), false);
+            if (chestInfoPanel) togglePanel(chestInfoPanel, chestInfoPanel.querySelector('.panel-content'), false);
             if (purchaseItemPreview) purchaseItemPreview.innerHTML = '';
             if (modalOverlay) modalOverlay.classList.add('hidden');
             purchaseInfo = null;
@@ -8116,6 +8201,7 @@ function openPurchaseConfirm(type, key) {
             if (collectPurchaseRewardButton) collectPurchaseRewardButton.classList.add('hidden');
             if (confirmPurchaseYesButton) confirmPurchaseYesButton.classList.remove('hidden');
             if (confirmPurchaseNoButton) confirmPurchaseNoButton.classList.remove('hidden');
+            if (chestInfoButton) chestInfoButton.classList.add('hidden');
         }
 
         let playerToDelete = null;
@@ -8236,6 +8322,8 @@ function openPurchaseConfirm(type, key) {
         if (confirmPurchaseYesButton) confirmPurchaseYesButton.addEventListener('click', confirmPurchase);
         if (confirmPurchaseNoButton) confirmPurchaseNoButton.addEventListener('click', closePurchaseConfirm);
         if (collectPurchaseRewardButton) collectPurchaseRewardButton.addEventListener('click', collectPurchaseReward);
+        if (chestInfoButton) chestInfoButton.addEventListener('click', openChestInfo);
+        if (chestInfoCloseButton) chestInfoCloseButton.addEventListener('click', closeChestInfo);
         if (confirmDeleteYesButton) confirmDeleteYesButton.addEventListener('click', confirmDelete);
         if (confirmDeleteNoButton) confirmDeleteNoButton.addEventListener('click', closeDeleteConfirm);
         if (closeOutOfLivesPanelButton) closeOutOfLivesPanelButton.addEventListener('click', closeOutOfLivesPanel);
@@ -13299,6 +13387,8 @@ async function startGame(isRestart = false) {
         addIconPressEvents(confirmResetNoButton, confirmResetNoButton);
         addIconPressEvents(confirmPurchaseYesButton, confirmPurchaseYesButton);
         addIconPressEvents(confirmPurchaseNoButton, confirmPurchaseNoButton);
+        addIconPressEvents(chestInfoButton, chestInfoButton);
+        addIconPressEvents(chestInfoCloseButton, chestInfoCloseButton);
         addIconPressEvents(collectPurchaseRewardButton, collectPurchaseRewardButton);
         addIconPressEvents(confirmDeleteYesButton, confirmDeleteYesButton);
         addIconPressEvents(confirmDeleteNoButton, confirmDeleteNoButton);
