@@ -3882,7 +3882,7 @@
                     </button>
                 </div>
                 <div class="panel-content">
-                    <div id="store-tabs" class="flex gap-2 mb-2">
+                    <div id="store-tabs" class="flex gap-1 mb-2">
                         <button data-tab="cofres" id="store-tab-cofres" class="store-tab menu-option-button active">
                             <img src="https://i.imgur.com/QND7wuI.png" alt="Cofres">
                         </button>
@@ -3925,7 +3925,7 @@
                     <div class="reset-buttons">
                         <button id="confirmPurchaseYes">SI</button>
                         <button id="confirmPurchaseNo">NO</button>
-                        <button id="collectPurchaseReward" class="menu-option-button hidden">RECOGER</button>
+                        <button id="collectPurchaseReward" class="menu-option-button hidden"> RECOGER</button>
                     </div>
                 </div>
             </div>
@@ -7418,7 +7418,7 @@ function setupSlider(slider, display) {
         function populateStoreItems() {
             if (!storeItemsContainer) return;
             storeItemsContainer.innerHTML = '';
-            storeItemsContainer.className = storeTab === 'cofres' ? 'grid grid-cols-2 gap-2 w-full justify-items-center' : 'grid grid-cols-3 gap-4 w-full';
+            storeItemsContainer.className = storeTab === 'cofres' ? 'grid grid-cols-2 gap-2 w-full justify-items-center' : 'grid grid-cols-3 gap-2 w-full';
             if (storeTab === 'cofres') {
                 CHEST_ORDER.forEach(key => {
                     const chest = CHESTS[key];
