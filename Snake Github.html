@@ -3775,7 +3775,6 @@
                     <button class="menu-option-button" id="profile-menu-button">PERFIL</button>
                     <button class="menu-option-button" id="store-menu-button">TIENDA</button>
                     <button class="menu-option-button" id="achievements-menu-button">LOGROS</button>
-                    <button class="menu-option-button" id="bonuses-menu-button">BONIFICACIONES</button>
                     <button class="menu-option-button" id="daily-menu-button">PREMIOS DIARIOS</button>
                     <button class="menu-option-button" id="wheel-menu-button">RULETA DE PREMIOS</button>
                 </div>
@@ -4012,7 +4011,6 @@
                     <p>¿Quieres conseguir más?</p>
                     <div class="reset-buttons">
                         <img id="get-lives-store-button" class="get-lives-button" src="https://i.imgur.com/9HHOgFe.png" alt="Tienda">
-                        <img id="get-lives-bonuses-button" class="get-lives-button" src="https://i.imgur.com/3dvvN2k.png" alt="Bonificaciones">
                     </div>
                 </div>
             </div>
@@ -4226,7 +4224,6 @@
         const profileMenuButton = document.getElementById("profile-menu-button");
         const storeMenuButton = document.getElementById("store-menu-button");
         const achievementsMenuButton = document.getElementById("achievements-menu-button");
-        const bonusesMenuButton = document.getElementById("bonuses-menu-button");
         const dailyMenuButton = document.getElementById("daily-menu-button");
         const wheelMenuButton = document.getElementById("wheel-menu-button");
 
@@ -4269,7 +4266,6 @@
         const outOfLivesPanel = document.getElementById("out-of-lives-panel");
         const closeOutOfLivesPanelButton = document.getElementById("close-out-of-lives-panel");
         const getLivesStoreButton = document.getElementById("get-lives-store-button");
-        const getLivesBonusesButton = document.getElementById("get-lives-bonuses-button");
 
         const profileTabButtons = document.querySelectorAll('#profile-tabs .store-tab');
         const profileGeneralContent = document.getElementById('profile-general-content');
@@ -7363,7 +7359,6 @@ function setupSlider(slider, display) {
         if (profileMenuButton) profileMenuButton.addEventListener('click', openProfileMenu);
         if (storeMenuButton) storeMenuButton.addEventListener('click', () => openStoreMenu());
         if (achievementsMenuButton) achievementsMenuButton.addEventListener('click', openAchievementsMenu);
-        if (bonusesMenuButton) bonusesMenuButton.addEventListener('click', () => { openGenericMenuPanel('Bonificaciones'); });
         if (dailyMenuButton) dailyMenuButton.addEventListener('click', () => { openGenericMenuPanel('Premios diarios'); });
         if (wheelMenuButton) wheelMenuButton.addEventListener('click', () => { openGenericMenuPanel('Ruleta de premios'); });
         if (closeAchievementsPanelButton) closeAchievementsPanelButton.addEventListener('click', closeAchievementsMenu);
@@ -8345,7 +8340,6 @@ function openPurchaseConfirm(type, key) {
         if (confirmDeleteNoButton) confirmDeleteNoButton.addEventListener('click', closeDeleteConfirm);
         if (closeOutOfLivesPanelButton) closeOutOfLivesPanelButton.addEventListener('click', closeOutOfLivesPanel);
         if (getLivesStoreButton) getLivesStoreButton.addEventListener('click', () => { closeOutOfLivesPanel(); openStoreMenu('vidas'); });
-        if (getLivesBonusesButton) getLivesBonusesButton.addEventListener('click', () => { closeOutOfLivesPanel(); openGenericMenuPanel('Bonificaciones'); });
 
         storeTabButtons.forEach(btn => {
             btn.addEventListener('click', () => {
@@ -13425,7 +13419,6 @@ async function startGame(isRestart = false) {
         addIconPressEvents(closeAchievementsPanelButton, closeAchievementsPanelButton);
         addIconPressEvents(closeOutOfLivesPanelButton, closeOutOfLivesPanelButton);
         addIconPressEvents(getLivesStoreButton, getLivesStoreButton);
-        addIconPressEvents(getLivesBonusesButton, getLivesBonusesButton);
 
         // Original click listeners for D-Pad 
         upButton.addEventListener("click", () => changeDirection("up"));
