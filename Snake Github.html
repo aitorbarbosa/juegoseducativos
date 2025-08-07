@@ -3961,7 +3961,7 @@
                     <h2 id="chest-info-title">Cofre común</h2>
                 </div>
                 <div class="panel-content">
-                    <div id="chest-info-text"></div>
+                    <div id="chest-info-text" style="margin-left:10px;"></div>
                     <div class="reset-buttons">
                         <button id="chest-info-close">VOLVER</button>
                     </div>
@@ -7951,16 +7951,22 @@ function openPurchaseConfirm(type, key) {
             if (!chest) return;
             if (chestInfoTitle) chestInfoTitle.textContent = CHEST_DISPLAY_NAMES[key] || '';
             if (chestInfoText) {
-                const coinText = `${chest.coinRange[0]}-${chest.coinRange[1]}`;
+                const coinText = `<strong>${chest.coinRange[0]}-${chest.coinRange[1]}</strong>`;
                 const gemChance = Math.round((chest.gemChance || 0) * 100);
                 const gemRange = chest.gemRange[0] === chest.gemRange[1]
+                    ? `${chest.gemRange[0]}`
+                    : `${chest.gemRange[0]}-${chest.gemRange[1]}`;
+                const gemRangeWithUnits = chest.gemRange[0] === chest.gemRange[1]
                     ? `${chest.gemRange[0]} ${chest.gemRange[0] === 1 ? 'Gema' : 'Gemas'}`
                     : `${chest.gemRange[0]}-${chest.gemRange[1]} Gemas`;
                 const rarityLines = Object.entries(chest.rarity)
-                    .map(([r, v]) => `- ${RARITY_DISPLAY_NAMES[r]} = ${v}%`)
+                    .map(([r, v]) => `- ${RARITY_DISPLAY_NAMES[r]} = <strong>${v}%</strong>`)
                     .join('<br>');
+                const gemText = chest.gemChance < 1
+                    ? `<p>Gemas recibidas<br>- <strong>${gemChance}%</strong> de posibilidades de conseguir <strong>${gemRangeWithUnits}</strong>.</p>`
+                    : `<p>Rango de gemas recibidas<br>- <strong>${gemRange}</strong>.</p>`;
                 chestInfoText.innerHTML = `<p>Rango de monedas recibidas<br>- ${coinText}.</p>` +
-                    `<p>Gemas recibidas<br>- ${gemChance}% de posibilidades de conseguir ${gemRange}.</p>` +
+                    gemText +
                     `<p>Elementos de cada rareza<br>${rarityLines}.</p>`;
             }
             matchPanelSizeWithElement(purchaseConfirmationPanel, chestInfoPanel);
