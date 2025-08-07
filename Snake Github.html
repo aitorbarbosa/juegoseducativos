@@ -3902,7 +3902,7 @@
                             <img src="https://i.imgur.com/DPBCWp1.png" alt="Escenarios">
                         </button>
                     </div>
-                <div id="store-items-container" class="grid grid-cols-3 gap-4 w-full"></div>
+                <div id="store-items-container" class="grid grid-cols-2 gap-2 w-full max-w-xs mx-auto"></div>
                 </div>
             </div>
             <div id="achievements-panel" class="achievements-panel-hidden">
@@ -7418,7 +7418,9 @@ function setupSlider(slider, display) {
         function populateStoreItems() {
             if (!storeItemsContainer) return;
             storeItemsContainer.innerHTML = '';
-            storeItemsContainer.className = storeTab === 'cofres' ? 'grid grid-cols-4 gap-2 w-full' : 'grid grid-cols-3 gap-2 w-full';
+            storeItemsContainer.className = storeTab === 'cofres'
+                ? 'grid grid-cols-2 gap-2 w-full max-w-xs mx-auto'
+                : 'grid grid-cols-3 gap-2 w-full';
             if (storeTab === 'cofres') {
                 CHEST_ORDER.forEach(key => {
                     const chest = CHESTS[key];
