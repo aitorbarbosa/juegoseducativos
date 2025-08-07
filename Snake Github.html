@@ -3164,12 +3164,12 @@
         }
 
         .chest-grid-item {
-          width: 65%;
+          width: 100%;
         }
 
         @media screen and (min-width: 800px) {
           .chest-grid-item {
-            width: 70%;
+            width: 100%;
           }
         }
 
@@ -7418,7 +7418,7 @@ function setupSlider(slider, display) {
         function populateStoreItems() {
             if (!storeItemsContainer) return;
             storeItemsContainer.innerHTML = '';
-            storeItemsContainer.className = storeTab === 'cofres' ? 'grid grid-cols-2 gap-2 w-full justify-items-center' : 'grid grid-cols-3 gap-2 w-full';
+            storeItemsContainer.className = storeTab === 'cofres' ? 'grid grid-cols-2 gap-2 w-2/3 mx-auto justify-items-center' : 'grid grid-cols-3 gap-2 w-full';
             if (storeTab === 'cofres') {
                 CHEST_ORDER.forEach(key => {
                     const chest = CHESTS[key];
