@@ -3956,7 +3956,7 @@
                 </div>
                 <div class="panel-content">
                     <div id="purchase-item-preview" class="store-item locked rarity-default"></div>
-                    <p id="purchase-confirmation-text">¿Comprar por <strong>0</strong> monedas?</p>
+                    <p id="purchase-confirmation-text">¿Comprar?</p>
                     <div class="reset-buttons">
                         <button id="confirmPurchaseYes">SI</button>
                         <button id="confirmPurchaseNo">NO</button>
@@ -7851,6 +7851,43 @@ function openPurchaseConfirm(type, key) {
         if (type === 'chest') chestInfoButton.classList.remove('hidden');
         else chestInfoButton.classList.add('hidden');
     }
+    let price = 0;
+    let name = '';
+    let costIcon = null;
+    if (type === 'food') {
+        price = FOODS[key].price;
+        name = FOOD_DISPLAY_NAMES[key];
+        costIcon = 'gem';
+    } else if (type === 'skin') {
+        price = SKIN_PRICES[key];
+        name = SKIN_DISPLAY_NAMES[key];
+        costIcon = 'gem';
+    } else if (type === 'scene') {
+        price = SCENE_PRICES[key];
+        name = SCENE_DISPLAY_NAMES[key];
+        costIcon = 'gem';
+    } else if (type === 'chest') {
+        price = CHESTS[key].cost;
+        name = CHEST_DISPLAY_NAMES[key];
+        costIcon = 'coin';
+    } else if (type === 'coinPack') {
+        price = COIN_PACKS[key].costGems;
+        name = `${COIN_PACKS[key].amount} monedas`;
+        costIcon = 'gem';
+    } else if (type === 'gemPack') {
+        price = GEM_PACKS[key].price;
+        name = `${GEM_PACKS[key].amount} gemas`;
+    } else if (type === 'adLife' || type === 'adChest' || type === 'adInfinite') {
+        const config = AD_ITEMS[type];
+        price = config.ads;
+        name = config.label;
+        costIcon = 'ad';
+    } else if (type === 'coinLife' || type === 'coinChest' || type === 'coinInfinite') {
+        const config = COIN_LIFE_ITEMS[type];
+        price = config.cost;
+        name = config.label;
+        costIcon = 'coin';
+    }
             if (purchaseItemPreview) {
                 purchaseItemPreview.innerHTML = '';
                 if (type === 'chest') {
@@ -7891,45 +7928,44 @@ function openPurchaseConfirm(type, key) {
                         img.src = COIN_LIFE_ITEMS[type]?.img || '';
                     }
                     purchaseItemPreview.appendChild(img);
+                    const status = document.createElement('div');
+                    status.className = 'store-item-status';
+                    if (type === 'gemPack') {
+                        status.textContent = price;
+                    } else {
+                        const costSpan = document.createElement('span');
+                        costSpan.textContent = price.toString();
+                        status.appendChild(costSpan);
+                        if (costIcon === 'gem') {
+                            const gemImg = document.createElement('img');
+                            gemImg.src = 'https://i.imgur.com/gPGsaCO.png';
+                            gemImg.alt = 'Gema';
+                            gemImg.className = 'gem-cost-icon';
+                            status.appendChild(gemImg);
+                        } else if (costIcon === 'coin') {
+                            const coinImg = document.createElement('img');
+                            coinImg.src = 'https://i.imgur.com/lnc1Mwu.png';
+                            coinImg.alt = 'Moneda';
+                            coinImg.className = 'coin-cost-icon';
+                            status.appendChild(coinImg);
+                        } else if (costIcon === 'ad') {
+                            const adImg = document.createElement('img');
+                            adImg.src = 'https://i.imgur.com/9BfNTJh.png';
+                            adImg.alt = 'Anuncio';
+                            adImg.className = 'ad-cost-icon';
+                            status.appendChild(adImg);
+                        }
+                    }
+                    purchaseItemPreview.appendChild(status);
                 }
             }
-            let price = 0;
-            let name = '';
-            if (type === 'food') {
-                price = FOODS[key].price;
-                name = FOOD_DISPLAY_NAMES[key];
-                if (purchaseConfirmationText) purchaseConfirmationText.innerHTML = `¿Comprar ${name} por <strong>${price}</strong> gemas?`;
-            } else if (type === 'skin') {
-                price = SKIN_PRICES[key];
-                name = SKIN_DISPLAY_NAMES[key];
-                if (purchaseConfirmationText) purchaseConfirmationText.innerHTML = `¿Comprar ${name} por <strong>${price}</strong> gemas?`;
-            } else if (type === 'scene') {
-                price = SCENE_PRICES[key];
-                name = SCENE_DISPLAY_NAMES[key];
-                if (purchaseConfirmationText) purchaseConfirmationText.innerHTML = `¿Comprar ${name} por <strong>${price}</strong> gemas?`;
-            } else if (type === 'chest') {
-                price = CHESTS[key].cost;
-                name = CHEST_DISPLAY_NAMES[key];
+            if (type === 'chest') {
                 if (purchaseConfirmationText) purchaseConfirmationText.innerHTML = `¿Comprar ${name} por <strong>${price}</strong> monedas?`;
-            } else if (type === 'coinPack') {
-                price = COIN_PACKS[key].costGems;
-                name = `${COIN_PACKS[key].amount} monedas`;
-                if (purchaseConfirmationText) purchaseConfirmationText.innerHTML = `¿Comprar ${name} por <strong>${price}</strong> gemas?`;
-            } else if (type === 'gemPack') {
-                price = GEM_PACKS[key].price;
-                name = `${GEM_PACKS[key].amount} gemas`;
-                if (purchaseConfirmationText) purchaseConfirmationText.innerHTML = `¿Comprar ${name} por <strong>${price}</strong>?`;
             } else if (type === 'adLife' || type === 'adChest' || type === 'adInfinite') {
-                const config = AD_ITEMS[type];
-                name = config.label;
-                const nAds = config.ads;
-                const plural = nAds === 1 ? '' : 's';
-                if (purchaseConfirmationText) purchaseConfirmationText.innerHTML = `¿Ver ${nAds} anuncio${plural} para obtener ${name}?`;
-            } else if (type === 'coinLife' || type === 'coinChest' || type === 'coinInfinite') {
-                const config = COIN_LIFE_ITEMS[type];
-                price = config.cost;
-                name = config.label;
-                if (purchaseConfirmationText) purchaseConfirmationText.innerHTML = `¿Comprar ${name} por <strong>${price}</strong> monedas?`;
+                const adWord = price === 1 ? 'un anuncio' : 'anuncios';
+                if (purchaseConfirmationText) purchaseConfirmationText.innerHTML = `¿Ver ${adWord} para obtener ${name}?`;
+            } else {
+                if (purchaseConfirmationText) purchaseConfirmationText.innerHTML = `¿Comprar ${name}?`;
             }
             purchaseConfirmationPanel.classList.remove('centered-panel');
             togglePanel(purchaseConfirmationPanel, purchaseConfirmationPanel.querySelector('.panel-content'), true);
