@@ -2949,10 +2949,18 @@
           object-fit: cover;
         }
         .store-item-img.currency-img {
-          width: 70%;
-          height: 70%;
+          width: 65%;
+          height: 65%;
           top: 38%;
         }
+
+        @media screen and (min-width: 800px) {
+          .store-item-img.currency-img {
+            width: 70%;
+            height: 70%;
+          }
+        }
+
         .store-item-img.lives-img {
           width: 70%;
           height: 70%;
@@ -3902,7 +3910,7 @@
                             <img src="https://i.imgur.com/DPBCWp1.png" alt="Escenarios">
                         </button>
                     </div>
-                <div id="store-items-container" class="grid grid-cols-2 gap-2 w-full max-w-xs mx-auto"></div>
+                <div id="store-items-container" class="grid grid-cols-4 gap-2 w-full"></div>
                 </div>
             </div>
             <div id="achievements-panel" class="achievements-panel-hidden">
@@ -7419,7 +7427,7 @@ function setupSlider(slider, display) {
             if (!storeItemsContainer) return;
             storeItemsContainer.innerHTML = '';
             storeItemsContainer.className = storeTab === 'cofres'
-                ? 'grid grid-cols-2 gap-2 w-full max-w-xs mx-auto'
+                ? 'grid grid-cols-4 gap-2 w-full'
                 : 'grid grid-cols-3 gap-2 w-full';
             if (storeTab === 'cofres') {
                 CHEST_ORDER.forEach(key => {
