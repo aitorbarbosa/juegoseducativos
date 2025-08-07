@@ -5647,9 +5647,9 @@ function setupSlider(slider, display) {
         const HEART_PRICE = 100;
         const GEM_PRICE = 1000;
         const COIN_PACKS = {
-            coin1000: { img: 'https://i.imgur.com/fMa30Nl.png', costGems: 1, amount: 1000, name: 'Monedas' },
-            coin7500: { img: 'https://i.imgur.com/KnP5MXr.png', costGems: 5, amount: 7500, name: 'Bolsa de Monedas' },
-            coin20000: { img: 'https://i.imgur.com/3tiAqwx.png', costGems: 10, amount: 20000, name: 'Cofre de Monedas' }
+            coin500: { img: 'https://i.imgur.com/fMa30Nl.png', costGems: 1, amount: 500, name: 'Monedas' },
+            coin4000: { img: 'https://i.imgur.com/KnP5MXr.png', costGems: 5, amount: 4000, name: 'Bolsa de Monedas' },
+            coin10000: { img: 'https://i.imgur.com/3tiAqwx.png', costGems: 10, amount: 10000, name: 'Cofre de Monedas' }
         };
         const GEM_PACKS = {
             gem10: { img: 'https://i.imgur.com/K5ntwBh.png', price: '0.99€', amount: 10, name: 'Gemas' },
@@ -7541,9 +7541,9 @@ function setupSlider(slider, display) {
                 });
             } else if (storeTab === 'divisas') {
                 const items = [
-                    { key: 'coin1000', pack: COIN_PACKS.coin1000, type: 'coinPack' },
-                    { key: 'coin7500', pack: COIN_PACKS.coin7500, type: 'coinPack' },
-                    { key: 'coin20000', pack: COIN_PACKS.coin20000, type: 'coinPack' },
+                    { key: 'coin500', pack: COIN_PACKS.coin500, type: 'coinPack' },
+                    { key: 'coin4000', pack: COIN_PACKS.coin4000, type: 'coinPack' },
+                    { key: 'coin10000', pack: COIN_PACKS.coin10000, type: 'coinPack' },
                     { key: 'gem10', pack: GEM_PACKS.gem10, type: 'gemPack' },
                     { key: 'gem50', pack: GEM_PACKS.gem50, type: 'gemPack' },
                     { key: 'gem100', pack: GEM_PACKS.gem100, type: 'gemPack' }
@@ -7725,7 +7725,7 @@ function setupSlider(slider, display) {
             coinItem.className = 'store-item currency-item rarity-default';
             const coinImg = document.createElement('img');
             coinImg.className = 'store-item-img currency-img';
-            coinImg.src = COIN_PACKS.coin1000.img;
+            coinImg.src = COIN_PACKS.coin500.img;
             coinItem.appendChild(coinImg);
             const coinStatus = document.createElement('div');
             coinStatus.className = 'store-item-status';
