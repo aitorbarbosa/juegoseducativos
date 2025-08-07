@@ -7768,6 +7768,24 @@ function setupSlider(slider, display) {
             }
         }
 
+        function scaleStoreItemStatus(item) {
+            if (!item) return;
+            const status = item.querySelector('.store-item-status');
+            if (!status) return;
+            const width = item.offsetWidth;
+            const scale = width / 140;
+            status.style.fontSize = `${0.5 * scale}rem`;
+            const baseBottom = parseFloat(getComputedStyle(item).getPropertyValue('--status-bottom')) || 6;
+            const bottomPx = width * baseBottom / 100;
+            status.style.bottom = `${bottomPx}px`;
+            const icons = status.querySelectorAll('.coin-cost-icon, .gem-cost-icon, .ad-cost-icon');
+            icons.forEach(icon => {
+                icon.style.width = `${12 * scale}px`;
+                icon.style.height = `${12 * scale}px`;
+                icon.style.top = `${-1 * scale}px`;
+            });
+        }
+
         function displayChestRewardPreview(reward) {
             if (!purchaseItemPreview) return;
             purchaseItemPreview.innerHTML = '';
@@ -7823,7 +7841,10 @@ function setupSlider(slider, display) {
 
             const cols = items.length === 3 ? 'grid-cols-3' : (items.length === 2 ? 'grid-cols-2' : 'grid-cols-1');
             purchaseItemPreview.className = `grid ${cols} gap-4 w-full`;
-            items.forEach(el => purchaseItemPreview.appendChild(el));
+            items.forEach(el => {
+                purchaseItemPreview.appendChild(el);
+                scaleStoreItemStatus(el);
+            });
         }
 
 let purchaseInfo = null;
@@ -7934,7 +7955,11 @@ function openPurchaseConfirm(type, key) {
                         status.textContent = price;
                     } else {
                         const costSpan = document.createElement('span');
-                        costSpan.textContent = price.toString();
+                        if (costIcon === 'ad') {
+                            costSpan.textContent = `${adsWatched[type]}/${price}`;
+                        } else {
+                            costSpan.textContent = price.toString();
+                        }
                         status.appendChild(costSpan);
                         if (costIcon === 'gem') {
                             const gemImg = document.createElement('img');
@@ -7957,6 +7982,7 @@ function openPurchaseConfirm(type, key) {
                         }
                     }
                     purchaseItemPreview.appendChild(status);
+                    scaleStoreItemStatus(purchaseItemPreview);
                 }
             }
             if (type === 'chest') {
