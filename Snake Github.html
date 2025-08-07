@@ -2439,7 +2439,10 @@
 
         #reset-confirmation-panel p { text-align: center; margin: 0 0 10px 0; }
         #purchase-confirmation-panel p { text-align: center; margin: 0 0 2px 0; font-size: 0.8em; }
-        #chest-info-panel p { text-align: left; margin: 15px 0 10px 10px; font-size: 0.8em; }
+        #chest-info-panel p { text-align: left; margin: 8px 0 10px 10px; font-size: 0.8em; }
+        #chest-info-panel .reset-header { margin-bottom: 0; }
+        #chest-info-button { background-color: transparent; border-radius: 0; top: 0; right: 0; transform: none; height: 100%; }
+        #chest-info-button .setting-info-icon { width: 100%; height: 100%; }
         #reset-confirmation-panel .reset-buttons,
         #purchase-confirmation-panel .reset-buttons,
         #chest-info-panel .reset-buttons,
@@ -7959,9 +7962,11 @@ function openPurchaseConfirm(type, key) {
                     .map(([r, v]) => `- ${RARITY_DISPLAY_NAMES[r]} = <strong>${v}%</strong>`)
                     .join('<br>');
                 const gemText = chest.gemChance < 1
-                    ? `<p>Gemas recibidas<br>- <strong>${gemChance}%</strong> de posibilidades de conseguir <strong>${gemRangeWithUnits}</strong>.</p>`
-                    : `<p>Rango de gemas recibidas<br>- <strong>${gemRange}</strong>.</p>`;
-                chestInfoText.innerHTML = `<p>Rango de monedas recibidas<br>- ${coinText}.</p>` +
+                    ? (key === 'common'
+                        ? `<p>Gemas recibidas<br>- <strong>${gemChance}% | ${gemRangeWithUnits}</strong>.</p>`
+                        : `<p>Gemas recibidas<br>- <strong>${gemChance}%</strong> de posibilidades de conseguir <strong>${gemRangeWithUnits}</strong>.</p>`)
+                    : `<p>Gemas recibidas<br>- <strong>${gemRange}</strong>.</p>`;
+                chestInfoText.innerHTML = `<p>Monedas recibidas<br>- ${coinText}.</p>` +
                     gemText +
                     `<p>Elementos de cada rareza<br>${rarityLines}.</p>`;
             }
