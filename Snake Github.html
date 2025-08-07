@@ -2440,6 +2440,7 @@
         #reset-confirmation-panel p { text-align: center; margin: 0 0 10px 0; }
         #purchase-confirmation-panel p { text-align: center; margin: 0 0 2px 0; font-size: 0.8em; }
         #chest-info-panel p { text-align: left; margin: 0 0 10px 0; font-size: 0.8em; }
+        .chest-subtitle { display: block; margin-bottom: 4px; font-size: 0.9em; }
         #reset-confirmation-panel .reset-buttons,
         #purchase-confirmation-panel .reset-buttons,
         #chest-info-panel .reset-buttons,
@@ -3961,7 +3962,7 @@
                     <h2 id="chest-info-title">Cofre común</h2>
                 </div>
                 <div class="panel-content">
-                    <div id="chest-info-text" style="margin-left:10px;"></div>
+                    <div id="chest-info-text" style="margin-left:8px;"></div>
                     <div class="reset-buttons">
                         <button id="chest-info-close">VOLVER</button>
                     </div>
@@ -7963,11 +7964,11 @@ function openPurchaseConfirm(type, key) {
                     .map(([r, v]) => `- ${RARITY_DISPLAY_NAMES[r]} = <strong>${v}%</strong>`)
                     .join('<br>');
                 const gemText = chest.gemChance < 1
-                    ? `<p>Gemas recibidas<br>- <strong>${gemChance}%</strong> de posibilidades de conseguir <strong>${gemRangeWithUnits}</strong>.</p>`
-                    : `<p>Rango de gemas recibidas<br>- <strong>${gemRange}</strong>.</p>`;
-                chestInfoText.innerHTML = `<p>Rango de monedas recibidas<br>- ${coinText}.</p>` +
+                    ? `<p><strong class="chest-subtitle">Gemas recibidas</strong><br>- <strong>${gemChance}%</strong> de posibilidades de conseguir <strong>${gemRangeWithUnits}</strong>.</p>`
+                    : `<p><strong class="chest-subtitle">Rango de gemas recibidas</strong><br>- <strong>${gemRange}</strong>.</p>`;
+                chestInfoText.innerHTML = `<p><strong class="chest-subtitle">Rango de monedas recibidas</strong><br>- ${coinText}.</p>` +
                     gemText +
-                    `<p>Elementos de cada rareza<br>${rarityLines}.</p>`;
+                    `<p><strong class="chest-subtitle">Elementos de cada rareza</strong><br>${rarityLines}.</p>`;
             }
             matchPanelSizeWithElement(purchaseConfirmationPanel, chestInfoPanel);
             positionPanel(chestInfoPanel);
