@@ -2439,7 +2439,7 @@
 
         #reset-confirmation-panel p { text-align: center; margin: 0 0 10px 0; }
         #purchase-confirmation-panel p { text-align: center; margin: 0 0 2px 0; font-size: 0.8em; }
-        #purchase-confirmation-panel .reset-header { margin-bottom: 0; }
+        #purchase-confirmation-panel.chest-purchase .reset-header { margin-bottom: 0; }
         #chest-info-panel p { text-align: left; margin: 8px 0 10px 10px; font-size: 0.8em; }
         #chest-info-panel .reset-header { margin-bottom: 0; }
         #chest-info-button { background-color: transparent; border-radius: 0; top: 0; right: 0; transform: none; height: 100%; }
@@ -3198,9 +3198,12 @@
         }
 
         #purchase-confirmation-panel .panel-content {
-          justify-content: flex-start;
+          justify-content: center;
           align-items: center;
           position: relative;
+        }
+        #purchase-confirmation-panel.chest-purchase .panel-content {
+          justify-content: flex-start;
         }
 
         .chest-grid-item {
@@ -7897,6 +7900,10 @@ function openPurchaseConfirm(type, key) {
         if (type === 'chest') chestInfoButton.classList.remove('hidden');
         else chestInfoButton.classList.add('hidden');
     }
+    if (purchaseConfirmationPanel) {
+        if (type === 'chest') purchaseConfirmationPanel.classList.add('chest-purchase');
+        else purchaseConfirmationPanel.classList.remove('chest-purchase');
+    }
               if (purchaseItemPreview) {
                   purchaseItemPreview.innerHTML = '';
                   purchaseItemPreview.style.backgroundImage = '';
@@ -8330,6 +8337,7 @@ function openPurchaseConfirm(type, key) {
             if (confirmPurchaseYesButton) confirmPurchaseYesButton.classList.remove('hidden');
             if (confirmPurchaseNoButton) confirmPurchaseNoButton.classList.remove('hidden');
             if (chestInfoButton) chestInfoButton.classList.add('hidden');
+            if (purchaseConfirmationPanel) purchaseConfirmationPanel.classList.remove('chest-purchase');
         }
 
         let playerToDelete = null;
