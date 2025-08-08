@@ -5829,7 +5829,7 @@ function setupSlider(slider, display) {
             longestSession: 'specials',
             competitiveFriends: 'specials',
             evasionMaster: 'specials',
-            afkFreeMode: 'free',
+            afkFreeMode: 'specials',
             perimeterRun: 'specials',
             playersAdded: 'specials'
         };
@@ -10256,7 +10256,6 @@ function openPurchaseConfirm(type, key) {
             localStorage.setItem('snakeGameCoins', totalCoins.toString());
             achievementsProgress.coins = totalCoins;
             achievementsProgress.points += score;
-            achievementsProgress.totalPlayTime = (achievementsProgress.totalPlayTime || 0) + Math.floor(gameTimeElapsed / 60000);
             const sessionMinutes = Math.floor((Date.now() - sessionStartTime) / 60000);
             achievementsProgress.longestSession = Math.max(achievementsProgress.longestSession || 0, sessionMinutes);
             if (gameMode === 'freeMode') {
@@ -11480,6 +11479,14 @@ function openPurchaseConfirm(type, key) {
                 achievementsState[a.id] = state;
         });
         updateAchievementsNotification();
+        }
+
+        function startTotalPlayTimeTimer() {
+            setInterval(() => {
+                achievementsProgress.totalPlayTime = (achievementsProgress.totalPlayTime || 0) + 1;
+                checkAchievements();
+                saveAchievementsState();
+            }, 60000);
         }
 
         function claimAchievement(id) {
@@ -13947,6 +13954,7 @@ async function startGame(isRestart = false) {
             updateUnlockableAchievementProgress();
             checkAchievements();
             saveAchievementsState();
+            startTotalPlayTimeTimer();
             updateFoodSelectorOptions(playerProfiles[currentPlayerName]?.food || 'apple');
             updateSceneSelectorOptions(playerProfiles[currentPlayerName]?.scene || 'classic');
             updatePlayerNameSelectors(currentPlayerName);
