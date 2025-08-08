@@ -5803,6 +5803,10 @@ function setupSlider(slider, display) {
         const ACHIEVEMENT_TYPE_TO_CATEGORY = {
             points: 'general',
             coins: 'general',
+            commonChests: 'general',
+            rareChests: 'general',
+            epicChests: 'general',
+            legendaryChests: 'general',
             worlds: 'adventure',
             mazeStars: 'maze',
             mazeLevels: 'maze',
@@ -5837,6 +5841,30 @@ function setupSlider(slider, display) {
             { id: 'coins_10000', type: 'coins', threshold: 10000, reward: 15, description: 'Acumula 10k monedas' },
             { id: 'coins_50000', type: 'coins', threshold: 50000, reward: 20, description: 'Acumula 50k monedas' },
             { id: 'coins_100000', type: 'coins', threshold: 100000, reward: 30, description: 'Acumula 100k monedas' },
+            { id: 'commonChests_1', type: 'commonChests', threshold: 1, reward: 1, description: 'Abre 1 cofre común' },
+            { id: 'commonChests_3', type: 'commonChests', threshold: 3, reward: 2, description: 'Abre 3 cofres comunes' },
+            { id: 'commonChests_5', type: 'commonChests', threshold: 5, reward: 3, description: 'Abre 5 cofres comunes' },
+            { id: 'commonChests_10', type: 'commonChests', threshold: 10, reward: 5, description: 'Abre 10 cofres comunes' },
+            { id: 'commonChests_25', type: 'commonChests', threshold: 25, reward: 10, description: 'Abre 25 cofres comunes' },
+            { id: 'commonChests_50', type: 'commonChests', threshold: 50, reward: 15, description: 'Abre 50 cofres comunes' },
+            { id: 'rareChests_1', type: 'rareChests', threshold: 1, reward: 2, description: 'Abre 1 cofre raro' },
+            { id: 'rareChests_3', type: 'rareChests', threshold: 3, reward: 3, description: 'Abre 3 cofres raros' },
+            { id: 'rareChests_5', type: 'rareChests', threshold: 5, reward: 5, description: 'Abre 5 cofres raros' },
+            { id: 'rareChests_10', type: 'rareChests', threshold: 10, reward: 10, description: 'Abre 10 cofres raros' },
+            { id: 'rareChests_25', type: 'rareChests', threshold: 25, reward: 15, description: 'Abre 25 cofres raros' },
+            { id: 'rareChests_50', type: 'rareChests', threshold: 50, reward: 20, description: 'Abre 50 cofres raros' },
+            { id: 'epicChests_1', type: 'epicChests', threshold: 1, reward: 3, description: 'Abre 1 cofre épico' },
+            { id: 'epicChests_3', type: 'epicChests', threshold: 3, reward: 5, description: 'Abre 3 cofres épicos' },
+            { id: 'epicChests_5', type: 'epicChests', threshold: 5, reward: 10, description: 'Abre 5 cofres épicos' },
+            { id: 'epicChests_10', type: 'epicChests', threshold: 10, reward: 15, description: 'Abre 10 cofres épicos' },
+            { id: 'epicChests_25', type: 'epicChests', threshold: 25, reward: 20, description: 'Abre 25 cofres épicos' },
+            { id: 'epicChests_50', type: 'epicChests', threshold: 50, reward: 25, description: 'Abre 50 cofres épicos' },
+            { id: 'legendaryChests_1', type: 'legendaryChests', threshold: 1, reward: 5, description: 'Abre 1 cofre legendario' },
+            { id: 'legendaryChests_3', type: 'legendaryChests', threshold: 3, reward: 10, description: 'Abre 3 cofres legendarios' },
+            { id: 'legendaryChests_5', type: 'legendaryChests', threshold: 5, reward: 15, description: 'Abre 5 cofres legendarios' },
+            { id: 'legendaryChests_10', type: 'legendaryChests', threshold: 10, reward: 20, description: 'Abre 10 cofres legendarios' },
+            { id: 'legendaryChests_25', type: 'legendaryChests', threshold: 25, reward: 25, description: 'Abre 25 cofres legendarios' },
+            { id: 'legendaryChests_50', type: 'legendaryChests', threshold: 50, reward: 30, description: 'Abre 50 cofres legendarios' },
             { id: 'mazeStars_10', type: 'mazeStars', threshold: 10, reward: 1, description: 'Obtén 10 estrellas' },
             { id: 'mazeStars_25', type: 'mazeStars', threshold: 25, reward: 3, description: 'Obtén 25 estrellas' },
             { id: 'mazeStars_50', type: 'mazeStars', threshold: 50, reward: 5, description: 'Obtén 50 estrellas' },
@@ -5951,6 +5979,10 @@ function setupSlider(slider, display) {
             rareUnlocked: 0,
             epicUnlocked: 0,
             legendaryUnlocked: 0,
+            commonChests: 0,
+            rareChests: 0,
+            epicChests: 0,
+            legendaryChests: 0,
             playersAdded: 0
         };
 
@@ -8378,6 +8410,14 @@ function openPurchaseConfirm(type, key) {
                 animateGemGain(prevGems, totalGems);
             }
             grantChestItem(item);
+            if (purchaseInfo && purchaseInfo.type === 'chest') {
+                if (purchaseInfo.key === 'common') achievementsProgress.commonChests = (achievementsProgress.commonChests || 0) + 1;
+                else if (purchaseInfo.key === 'rare') achievementsProgress.rareChests = (achievementsProgress.rareChests || 0) + 1;
+                else if (purchaseInfo.key === 'epic') achievementsProgress.epicChests = (achievementsProgress.epicChests || 0) + 1;
+                else if (purchaseInfo.key === 'legendary') achievementsProgress.legendaryChests = (achievementsProgress.legendaryChests || 0) + 1;
+                checkAchievements();
+                saveAchievementsState();
+            }
             updateCoinDisplay();
             updateGemDisplay();
             populateStoreItems();
@@ -11335,7 +11375,8 @@ function openPurchaseConfirm(type, key) {
 
         function loadAchievementsState() {
             try {
-                achievementsProgress = JSON.parse(localStorage.getItem('snakeAchievementsProgress')) || achievementsProgress;
+                const savedProgress = JSON.parse(localStorage.getItem('snakeAchievementsProgress')) || {};
+                achievementsProgress = { ...achievementsProgress, ...savedProgress };
                 achievementsState = JSON.parse(localStorage.getItem('snakeAchievementsState')) || {};
             } catch (e) {
                 achievementsProgress = { ...achievementsProgress };
