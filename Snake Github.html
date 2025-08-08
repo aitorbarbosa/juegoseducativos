@@ -3141,7 +3141,7 @@
           left: 50%;
           transform: translate(-50%, -50%);
           color: #ffffff;
-          font-size: 0.9rem;
+          font-size: 0.8rem;
           text-shadow: 1px 1px 2px black;
           font-family: 'Press Start 2P', sans-serif;
           z-index: 3;
@@ -4106,8 +4106,12 @@
         }
 
         function formatTime(totalSeconds) {
-            const minutes = Math.floor(totalSeconds / 60);
+            const hours = Math.floor(totalSeconds / 3600);
+            const minutes = Math.floor((totalSeconds % 3600) / 60);
             const seconds = totalSeconds % 60;
+            if (hours > 0) {
+                return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+            }
             return `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
         }
 
@@ -7763,7 +7767,7 @@ function setupSlider(slider, display) {
                     if (rarity === 'rare') return p >= 10 && p < 30;
                     if (rarity === 'epic') return p >= 30 && p < 50;
                     return p >= 50;
-                });
+                }).filter(k => k !== 'apple');
             } else if (type === 'scene') {
                 keys = SCENE_ORDER.filter(k => {
                     const p = SCENE_PRICES[k];
@@ -7771,7 +7775,7 @@ function setupSlider(slider, display) {
                     if (rarity === 'rare') return p >= 10 && p < 30;
                     if (rarity === 'epic') return p >= 30 && p < 50;
                     return p >= 50;
-                });
+                }).filter(k => k !== 'classic');
             } else if (type === 'skin') {
                 keys = SKIN_ORDER.filter(k => {
                     const p = SKIN_PRICES[k];
@@ -7779,7 +7783,7 @@ function setupSlider(slider, display) {
                     if (rarity === 'rare') return p >= 30 && p < 50;
                     if (rarity === 'epic') return p >= 50 && p < 100;
                     return p >= 100;
-                });
+                }).filter(k => k !== 'snake');
             }
             return keys;
         }
@@ -8283,7 +8287,7 @@ function openPurchaseConfirm(type, key) {
                         updateLifeTimerDisplay();
                     }
                     adsWatched[type] = 0;
-                    adCooldownExpiry[type] = Date.now() + 60 * 60 * 1000;
+                    adCooldownExpiry[type] = Date.now() + 4 * 60 * 60 * 1000;
                     saveAdProgress();
                     updateAdCooldownDisplays();
                     startCooldownTimer();
