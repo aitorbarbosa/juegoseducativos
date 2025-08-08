@@ -5823,6 +5823,14 @@ function setupSlider(slider, display) {
             rareUnlocked: 'unlockables',
             epicUnlocked: 'unlockables',
             legendaryUnlocked: 'unlockables',
+            maxSnakeLength: 'specials',
+            bestStreak: 'specials',
+            totalPlayTime: 'specials',
+            longestSession: 'specials',
+            competitiveFriends: 'specials',
+            evasionMaster: 'specials',
+            afkFreeMode: 'free',
+            perimeterRun: 'specials',
             playersAdded: 'specials'
         };
 
@@ -5957,7 +5965,15 @@ function setupSlider(slider, display) {
             { id: 'legendary_10', type: 'legendaryUnlocked', threshold: 10, reward: 5, description: 'Consigue 10 elementos legendarios' },
             { id: 'legendary_25', type: 'legendaryUnlocked', threshold: 25, reward: 10, description: 'Consigue 25 elementos legendarios' },
             { id: 'legendary_50', type: 'legendaryUnlocked', threshold: 50, reward: 15, description: 'Consigue 50 elementos legendarios' },
-            { id: 'players_1', type: 'playersAdded', threshold: 1, reward: 1, description: 'Añade un jugador' }
+            { id: 'players_1', type: 'playersAdded', threshold: 1, reward: 3, description: '¡Con amigos es más divertido!' },
+            { id: 'competitive_friends', type: 'competitiveFriends', threshold: 3, reward: 5, description: '¡Amigos competitivos! Juega con tres jugadores diferentes en un mismo nivel de dificultad' },
+            { id: 'afk_freemode', type: 'afkFreeMode', threshold: 1, reward: 10, description: '¡Te hemos pillado! Permanece inactivo en modo libre durante 30 segundos' },
+            { id: 'playtime_10h', type: 'totalPlayTime', threshold: 600, reward: 10, description: '¡El tiempo es oro! Juega 10 horas en total' },
+            { id: 'session_1h', type: 'longestSession', threshold: 60, reward: 10, description: 'Maratón serpentina - Juega 1 hora seguida sin cerrar el juego' },
+            { id: 'snake_100', type: 'maxSnakeLength', threshold: 100, reward: 10, description: '¡Rey de la pantalla! Alcanza una longitud de 100' },
+            { id: 'streak_25', type: 'bestStreak', threshold: 25, reward: 10, description: 'Racha demoledora - Come 25 frutas seguidas sin perder la racha' },
+            { id: 'evasion_master', type: 'evasionMaster', threshold: 1, reward: 5, description: 'Maestro de la evasión - Completa una partida de aventura o laberinto sin comer' },
+            { id: 'perimeter_run', type: 'perimeterRun', threshold: 1, reward: 5, description: 'Vuelta al mundo - Recorre todo el perímetro del tablero sin chocar' }
         ];
 
         let achievementsProgress = {
@@ -5983,10 +5999,24 @@ function setupSlider(slider, display) {
             rareChests: 0,
             epicChests: 0,
             legendaryChests: 0,
-            playersAdded: 0
+            playersAdded: 0,
+            competitiveFriends: 0,
+            totalPlayTime: 0,
+            longestSession: 0,
+            maxSnakeLength: 0,
+            bestStreak: 0,
+            evasionMaster: 0,
+            afkFreeMode: 0,
+            perimeterRun: 0,
+            competitiveFriendPlayers: {}
         };
 
         let achievementsState = {};
+
+        let sessionStartTime = Date.now();
+        let streakCount = 0;
+        let perimeterPath = new Set();
+        let itemsEatenThisGame = 0;
 
 
         // Estado del juego
@@ -7129,6 +7159,7 @@ function setupSlider(slider, display) {
                 
                 score = 0; // Reset internal score
                 streakMultiplier = 1; // Reset internal streak
+                streakCount = 0;
                 
                 if (gameMode === 'levels' || gameMode === 'maze') {
                     screenState.showCoverForWorld = currentWorld;
@@ -7370,6 +7401,7 @@ function setupSlider(slider, display) {
                 }
                 score = 0;
                 streakMultiplier = 1;
+                streakCount = 0;
 
                 if (gameMode === 'levels' || gameMode === 'maze') {
                     screenState.showCoverForWorld = currentWorld;
@@ -9133,6 +9165,7 @@ function openPurchaseConfirm(type, key) {
             console.log("¡Comida no recogida! Racha perdida."); 
             if (areSfxEnabled) playSound('timeout');
             streakMultiplier = 1;
+            streakCount = 0;
             const classRank = CLASSIFICATION_RANKS[difficulty] || 0;
             if ((gameMode === 'levels' && currentWorld >= 6) ||
                 (gameMode === 'classification' && classRank >= 2) ||
@@ -10139,6 +10172,8 @@ function openPurchaseConfirm(type, key) {
 
             gameOver = true;
             screenState.gameActuallyStarted = false; // Game is no longer "actually started"
+            const wasTimeout = gameOverByTimeout;
+            const wasInactivity = gameOverByInactivity;
 
             // Crucial for Free Mode: Ensure cover is not shown when game ends, so classification appears
             if (gameMode === 'freeMode') {
@@ -10221,13 +10256,29 @@ function openPurchaseConfirm(type, key) {
             localStorage.setItem('snakeGameCoins', totalCoins.toString());
             achievementsProgress.coins = totalCoins;
             achievementsProgress.points += score;
-            if (gameMode === 'freeMode') achievementsProgress.freeGames++;
+            achievementsProgress.totalPlayTime = (achievementsProgress.totalPlayTime || 0) + Math.floor(gameTimeElapsed / 60000);
+            const sessionMinutes = Math.floor((Date.now() - sessionStartTime) / 60000);
+            achievementsProgress.longestSession = Math.max(achievementsProgress.longestSession || 0, sessionMinutes);
+            if (gameMode === 'freeMode') {
+                achievementsProgress.freeGames++;
+                if (wasInactivity) achievementsProgress.afkFreeMode = 1;
+            }
             if (gameMode === 'classification') {
                 achievementsProgress.classificationGames++;
+                achievementsProgress.competitiveFriendPlayers = achievementsProgress.competitiveFriendPlayers || {};
+                const list = achievementsProgress.competitiveFriendPlayers[difficulty] || [];
+                if (!list.includes(currentPlayerName)) {
+                    list.push(currentPlayerName);
+                    achievementsProgress.competitiveFriendPlayers[difficulty] = list;
+                }
+                achievementsProgress.competitiveFriends = Math.max(achievementsProgress.competitiveFriends || 0, list.length);
                 if (difficulty === 'principiante') achievementsProgress.novicePoints = Math.max(achievementsProgress.novicePoints, score);
                 else if (difficulty === 'explorador') achievementsProgress.explorerPoints = Math.max(achievementsProgress.explorerPoints, score);
                 else if (difficulty === 'veterano') achievementsProgress.veteranPoints = Math.max(achievementsProgress.veteranPoints, score);
                 else if (difficulty === 'legendario') achievementsProgress.legendaryPoints = Math.max(achievementsProgress.legendaryPoints, score);
+            }
+            if ((gameMode === 'levels' || gameMode === 'maze') && wasTimeout && itemsEatenThisGame === 0) {
+                achievementsProgress.evasionMaster = 1;
             }
             checkAchievements();
             saveAchievementsState();
@@ -11265,6 +11316,13 @@ function openPurchaseConfirm(type, key) {
                 scheduleEatReaction(currentFoodItem.isGolden ? 'eatGolden' : 'eat');
 
                 growth = 1;
+                itemsEatenThisGame++;
+                streakCount++;
+                if (streakCount > (achievementsProgress.bestStreak || 0)) {
+                    achievementsProgress.bestStreak = streakCount;
+                    checkAchievements();
+                    saveAchievementsState();
+                }
                 clearTimeout(foodDisappearTimeoutId);
                 clearInterval(foodVisualTimerIntervalId);
                 foodTimeRemaining = 0;
@@ -11297,8 +11355,10 @@ function openPurchaseConfirm(type, key) {
             for (let i = falseFoodItems.length - 1; i >= 0; i--) {
                 const ff = falseFoodItems[i];
                 if (nextHead.x === ff.x && nextHead.y === ff.y) {
+                    itemsEatenThisGame++;
                     score = Math.max(0, score - 25);
                     streakMultiplier = 1;
+                    streakCount = 0;
                     const rank = CLASSIFICATION_RANKS[difficulty] || 0;
                     if ((gameMode === 'levels' && currentWorld >= 6) ||
                         (gameMode === 'classification' && rank >= 2) ||
@@ -11313,6 +11373,7 @@ function openPurchaseConfirm(type, key) {
             for (let i = lightningItems.length - 1; i >= 0; i--) {
                 const lt = lightningItems[i];
                 if (nextHead.x === lt.x && nextHead.y === lt.y) {
+                    itemsEatenThisGame++;
                     activateSpeedBoost(lt.color);
                     removeLightningItem(lt);
                     if (areSfxEnabled) playSound('eat');
@@ -11322,6 +11383,7 @@ function openPurchaseConfirm(type, key) {
             for (let i = mirrorItems.length - 1; i >= 0; i--) {
                 const mi = mirrorItems[i];
                 if (nextHead.x === mi.x && nextHead.y === mi.y) {
+                    itemsEatenThisGame++;
                     if (speedBoost.active) {
                         applySpeedChange(-speedBoost.change);
                         speedBoost = { active: false, color: '', change: 0, startTime: 0 };
@@ -11346,6 +11408,23 @@ function openPurchaseConfirm(type, key) {
             }
 
             snake.unshift(nextHead);
+            if (snake.length > (achievementsProgress.maxSnakeLength || 0)) {
+                achievementsProgress.maxSnakeLength = snake.length;
+                checkAchievements();
+                saveAchievementsState();
+            }
+            const onBorder = nextHead.x === 0 || nextHead.y === 0 || nextHead.x === tileCountX - 1 || nextHead.y === tileCountY - 1;
+            if (onBorder) {
+                perimeterPath.add(`${nextHead.x},${nextHead.y}`);
+                const perimNeeded = tileCountX * 2 + tileCountY * 2 - 4;
+                if (perimeterPath.size >= perimNeeded && achievementsProgress.perimeterRun === 0) {
+                    achievementsProgress.perimeterRun = 1;
+                    checkAchievements();
+                    saveAchievementsState();
+                }
+            } else {
+                perimeterPath.clear();
+            }
             if (growth === 0) { snake.pop(); }
 
             updateScoreDisplay(); 
@@ -12409,6 +12488,9 @@ async function startGame(isRestart = false) {
     streakAnimation.active = false;
     gameOverByTimeout = false;
     gameOverByInactivity = false;
+    itemsEatenThisGame = 0;
+    streakCount = 0;
+    perimeterPath.clear();
 
     // Reset any lingering speed boost or mirror effect from a previous game
     speedBoost = { active: false, color: '', change: 0, startTime: 0 };
@@ -12466,6 +12548,7 @@ async function startGame(isRestart = false) {
                     }
                     score = 0; // Reset score when transitioning to new world cover
                     streakMultiplier = 1; // Reset streak
+                    streakCount = 0;
                     updateScoreDisplay(); // Update UI to show 0 score & x1 streak
 
                     // Update UI elements that depend on display variables
@@ -12619,6 +12702,7 @@ async function startGame(isRestart = false) {
 
             score = 0;
             streakMultiplier = 1;
+            streakCount = 0;
             gameOver = false;
             updateScoreDisplay();
             direction = "right"; 
@@ -13203,6 +13287,7 @@ async function startGame(isRestart = false) {
                 if (splashScreen) splashScreen.classList.remove('hidden');
                 score = 0;
                 streakMultiplier = 1;
+                streakCount = 0;
                 updateScoreDisplay();
             } else {
                 // Return to mode selection
@@ -13243,6 +13328,7 @@ async function startGame(isRestart = false) {
                 draw();
                 score = 0;
                 streakMultiplier = 1;
+                streakCount = 0;
                 updateScoreDisplay();
             }
             updateGameModeUI();
