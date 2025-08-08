@@ -5815,6 +5815,10 @@ function setupSlider(slider, display) {
             foodsUnlocked: 'unlockables',
             skinsUnlocked: 'unlockables',
             scenesUnlocked: 'unlockables',
+            commonUnlocked: 'unlockables',
+            rareUnlocked: 'unlockables',
+            epicUnlocked: 'unlockables',
+            legendaryUnlocked: 'unlockables',
             playersAdded: 'specials'
         };
 
@@ -5823,41 +5827,41 @@ function setupSlider(slider, display) {
             { id: 'points_5000', type: 'points', threshold: 5000, reward: 3, description: 'Consigue 5k puntos' },
             { id: 'points_10000', type: 'points', threshold: 10000, reward: 5, description: 'Consigue 10k puntos' },
             { id: 'points_50000', type: 'points', threshold: 50000, reward: 10, description: 'Consigue 50k puntos' },
-            { id: 'points_100000', type: 'points', threshold: 100000, reward: 20, description: 'Consigue 100k puntos' },
-            { id: 'points_1000000', type: 'points', threshold: 1000000, reward: 40, description: 'Consigue 1M puntos' },
+            { id: 'points_100000', type: 'points', threshold: 100000, reward: 15, description: 'Consigue 100k puntos' },
+            { id: 'points_1000000', type: 'points', threshold: 1000000, reward: 30, description: 'Consigue 1M puntos' },
             { id: 'coins_100', type: 'coins', threshold: 100, reward: 1, description: 'Acumula 100 monedas' },
-            { id: 'coins_500', type: 'coins', threshold: 500, reward: 2, description: 'Acumula 500 monedas' },
+            { id: 'coins_500', type: 'coins', threshold: 500, reward: 3, description: 'Acumula 500 monedas' },
             { id: 'coins_1000', type: 'coins', threshold: 1000, reward: 5, description: 'Acumula 1k monedas' },
             { id: 'coins_5000', type: 'coins', threshold: 5000, reward: 10, description: 'Acumula 5k monedas' },
-            { id: 'coins_10000', type: 'coins', threshold: 10000, reward: 20, description: 'Acumula 10k monedas' },
-            { id: 'coins_100000', type: 'coins', threshold: 100000, reward: 40, description: 'Acumula 100k monedas' },
-            { id: 'mazeStars_10', type: 'mazeStars', threshold: 10, reward: 2, description: 'Obtén 10 estrellas' },
-            { id: 'mazeStars_25', type: 'mazeStars', threshold: 25, reward: 4, description: 'Obtén 25 estrellas' },
-            { id: 'mazeStars_50', type: 'mazeStars', threshold: 50, reward: 6, description: 'Obtén 50 estrellas' },
-            { id: 'mazeStars_100', type: 'mazeStars', threshold: 100, reward: 8, description: 'Obtén 100 estrellas' },
-            { id: 'mazeStars_200', type: 'mazeStars', threshold: 200, reward: 12, description: 'Obtén 200 estrellas' },
-            { id: 'mazeLevels_10', type: 'mazeLevels', threshold: 10, reward: 2, description: 'Supera 10 niveles' },
-            { id: 'mazeLevels_20', type: 'mazeLevels', threshold: 20, reward: 4, description: 'Supera 20 niveles' },
+            { id: 'coins_10000', type: 'coins', threshold: 10000, reward: 15, description: 'Acumula 10k monedas' },
+            { id: 'coins_100000', type: 'coins', threshold: 100000, reward: 30, description: 'Acumula 100k monedas' },
+            { id: 'mazeStars_10', type: 'mazeStars', threshold: 10, reward: 1, description: 'Obtén 10 estrellas' },
+            { id: 'mazeStars_25', type: 'mazeStars', threshold: 25, reward: 3, description: 'Obtén 25 estrellas' },
+            { id: 'mazeStars_50', type: 'mazeStars', threshold: 50, reward: 5, description: 'Obtén 50 estrellas' },
+            { id: 'mazeStars_100', type: 'mazeStars', threshold: 100, reward: 10, description: 'Obtén 100 estrellas' },
+            { id: 'mazeStars_200', type: 'mazeStars', threshold: 200, reward: 20, description: 'Obtén 200 estrellas' },
+            { id: 'mazeLevels_10', type: 'mazeLevels', threshold: 10, reward: 1, description: 'Supera 10 niveles' },
+            { id: 'mazeLevels_20', type: 'mazeLevels', threshold: 20, reward: 3, description: 'Supera 20 niveles' },
             { id: 'mazeLevels_30', type: 'mazeLevels', threshold: 30, reward: 6, description: 'Supera 30 niveles' },
-            { id: 'mazeLevels_40', type: 'mazeLevels', threshold: 40, reward: 8, description: 'Supera 40 niveles' },
+            { id: 'mazeLevels_40', type: 'mazeLevels', threshold: 40, reward: 10, description: 'Supera 40 niveles' },
             { id: 'world_1', type: 'worlds', threshold: 1, reward: 1, description: 'Completa el Mundo 1' },
             { id: 'world_5', type: 'worlds', threshold: 5, reward: 5, description: 'Completa 5 mundos' },
             { id: 'world_10', type: 'worlds', threshold: 10, reward: 10, description: 'Completa 10 mundos' },
             { id: 'free_1', type: 'freeGames', threshold: 1, reward: 1, description: 'Juega una partida' },
             { id: 'free_10', type: 'freeGames', threshold: 10, reward: 3, description: 'Juega 10 partidas' },
-            { id: 'free_50', type: 'freeGames', threshold: 50, reward: 8, description: 'Juega 50 partidas' },
-            { id: 'free_100', type: 'freeGames', threshold: 100, reward: 15, description: 'Juega 100 partidas' },
+            { id: 'free_50', type: 'freeGames', threshold: 50, reward: 5, description: 'Juega 50 partidas' },
+            { id: 'free_100', type: 'freeGames', threshold: 100, reward: 10, description: 'Juega 100 partidas' },
             { id: 'free_500', type: 'freeGames', threshold: 500, reward: 30, description: 'Juega 500 partidas' },
-            { id: 'free_1000', type: 'freeGames', threshold: 1000, reward: 60, description: 'Juega 1000 partidas' },
+            { id: 'free_1000', type: 'freeGames', threshold: 1000, reward: 50, description: 'Juega 1000 partidas' },
             { id: 'class_1', type: 'classificationGames', threshold: 1, reward: 1, description: 'Juega una partida' },
             { id: 'class_10', type: 'classificationGames', threshold: 10, reward: 3, description: 'Juega 10 partidas' },
-            { id: 'class_50', type: 'classificationGames', threshold: 50, reward: 8, description: 'Juega 50 partidas' },
-            { id: 'class_100', type: 'classificationGames', threshold: 100, reward: 15, description: 'Juega 100 partidas' },
+            { id: 'class_50', type: 'classificationGames', threshold: 50, reward: 5, description: 'Juega 50 partidas' },
+            { id: 'class_100', type: 'classificationGames', threshold: 100, reward: 10, description: 'Juega 100 partidas' },
             { id: 'class_500', type: 'classificationGames', threshold: 500, reward: 30, description: 'Juega 500 partidas' },
-            { id: 'class_1000', type: 'classificationGames', threshold: 1000, reward: 60, description: 'Juega 1000 partidas' },
+            { id: 'class_1000', type: 'classificationGames', threshold: 1000, reward: 50, description: 'Juega 1000 partidas' },
             { id: 'novice_500', type: 'novicePoints', threshold: 500, reward: 1, description: '500 puntos en Novato' },
-            { id: 'novice_750', type: 'novicePoints', threshold: 750, reward: 1, description: '750 puntos en Novato' },
-            { id: 'novice_1000', type: 'novicePoints', threshold: 1000, reward: 1, description: '1k puntos en Novato' },
+            { id: 'novice_750', type: 'novicePoints', threshold: 750, reward: 3, description: '750 puntos en Novato' },
+            { id: 'novice_1000', type: 'novicePoints', threshold: 1000, reward: 5, description: '1k puntos en Novato' },
             { id: 'explorer_500', type: 'explorerPoints', threshold: 500, reward: 1, description: '500 puntos en Explorador' },
             { id: 'explorer_750', type: 'explorerPoints', threshold: 750, reward: 1, description: '750 puntos en Explorador' },
             { id: 'explorer_1000', type: 'explorerPoints', threshold: 1000, reward: 1, description: '1k puntos en Explorador' },
@@ -5874,14 +5878,47 @@ function setupSlider(slider, display) {
             { id: 'legend_1500', type: 'legendaryPoints', threshold: 1500, reward: 3, description: '1.5k puntos en Legendario' },
             { id: 'legend_2000', type: 'legendaryPoints', threshold: 2000, reward: 3, description: '2k puntos en Legendario' },
             { id: 'skins_1', type: 'skinsUnlocked', threshold: 1, reward: 1, description: 'Desbloquea 1 disfraz' },
-            { id: 'skins_2', type: 'skinsUnlocked', threshold: 2, reward: 1, description: 'Desbloquea 2 disfraces' },
+            { id: 'skins_3', type: 'skinsUnlocked', threshold: 3, reward: 2, description: 'Desbloquea 3 disfraces' },
             { id: 'skins_5', type: 'skinsUnlocked', threshold: 5, reward: 3, description: 'Desbloquea 5 disfraces' },
+            { id: 'skins_10', type: 'skinsUnlocked', threshold: 10, reward: 5, description: 'Desbloquea 10 disfraces' },
+            { id: 'skins_25', type: 'skinsUnlocked', threshold: 25, reward: 10, description: 'Desbloquea 25 disfraces' },
+            { id: 'skins_50', type: 'skinsUnlocked', threshold: 50, reward: 15, description: 'Desbloquea 50 disfraces' },
             { id: 'foods_1', type: 'foodsUnlocked', threshold: 1, reward: 1, description: 'Desbloquea 1 comestible' },
-            { id: 'foods_2', type: 'foodsUnlocked', threshold: 2, reward: 1, description: 'Desbloquea 2 comestibles' },
+            { id: 'foods_3', type: 'foodsUnlocked', threshold: 3, reward: 2, description: 'Desbloquea 3 comestibles' },
             { id: 'foods_5', type: 'foodsUnlocked', threshold: 5, reward: 3, description: 'Desbloquea 5 comestibles' },
+            { id: 'foods_10', type: 'foodsUnlocked', threshold: 10, reward: 5, description: 'Desbloquea 10 comestibles' },
+            { id: 'foods_25', type: 'foodsUnlocked', threshold: 25, reward: 10, description: 'Desbloquea 25 comestibles' },
+            { id: 'foods_50', type: 'foodsUnlocked', threshold: 50, reward: 15, description: 'Desbloquea 50 comestibles' },
             { id: 'scenes_1', type: 'scenesUnlocked', threshold: 1, reward: 1, description: 'Desbloquea 1 escenario' },
-            { id: 'scenes_2', type: 'scenesUnlocked', threshold: 2, reward: 1, description: 'Desbloquea 2 escenarios' },
+            { id: 'scenes_3', type: 'scenesUnlocked', threshold: 3, reward: 2, description: 'Desbloquea 3 escenarios' },
             { id: 'scenes_5', type: 'scenesUnlocked', threshold: 5, reward: 3, description: 'Desbloquea 5 escenarios' },
+            { id: 'scenes_10', type: 'scenesUnlocked', threshold: 10, reward: 5, description: 'Desbloquea 10 escenarios' },
+            { id: 'scenes_25', type: 'scenesUnlocked', threshold: 25, reward: 10, description: 'Desbloquea 25 escenarios' },
+            { id: 'scenes_50', type: 'scenesUnlocked', threshold: 50, reward: 15, description: 'Desbloquea 50 escenarios' },
+            { id: 'common_1', type: 'commonUnlocked', threshold: 1, reward: 1, description: 'Consigue 1 elemento común' },
+            { id: 'common_3', type: 'commonUnlocked', threshold: 3, reward: 2, description: 'Consigue 3 elementos comunes' },
+            { id: 'common_5', type: 'commonUnlocked', threshold: 5, reward: 3, description: 'Consigue 5 elementos comunes' },
+            { id: 'common_10', type: 'commonUnlocked', threshold: 10, reward: 5, description: 'Consigue 10 elementos comunes' },
+            { id: 'common_25', type: 'commonUnlocked', threshold: 25, reward: 10, description: 'Consigue 25 elementos comunes' },
+            { id: 'common_50', type: 'commonUnlocked', threshold: 50, reward: 15, description: 'Consigue 50 elementos comunes' },
+            { id: 'rare_1', type: 'rareUnlocked', threshold: 1, reward: 1, description: 'Consigue 1 elemento raro' },
+            { id: 'rare_3', type: 'rareUnlocked', threshold: 3, reward: 2, description: 'Consigue 3 elementos raros' },
+            { id: 'rare_5', type: 'rareUnlocked', threshold: 5, reward: 3, description: 'Consigue 5 elementos raros' },
+            { id: 'rare_10', type: 'rareUnlocked', threshold: 10, reward: 5, description: 'Consigue 10 elementos raros' },
+            { id: 'rare_25', type: 'rareUnlocked', threshold: 25, reward: 10, description: 'Consigue 25 elementos raros' },
+            { id: 'rare_50', type: 'rareUnlocked', threshold: 50, reward: 15, description: 'Consigue 50 elementos raros' },
+            { id: 'epic_1', type: 'epicUnlocked', threshold: 1, reward: 1, description: 'Consigue 1 elemento épico' },
+            { id: 'epic_3', type: 'epicUnlocked', threshold: 3, reward: 2, description: 'Consigue 3 elementos épicos' },
+            { id: 'epic_5', type: 'epicUnlocked', threshold: 5, reward: 3, description: 'Consigue 5 elementos épicos' },
+            { id: 'epic_10', type: 'epicUnlocked', threshold: 10, reward: 5, description: 'Consigue 10 elementos épicos' },
+            { id: 'epic_25', type: 'epicUnlocked', threshold: 25, reward: 10, description: 'Consigue 25 elementos épicos' },
+            { id: 'epic_50', type: 'epicUnlocked', threshold: 50, reward: 15, description: 'Consigue 50 elementos épicos' },
+            { id: 'legendary_1', type: 'legendaryUnlocked', threshold: 1, reward: 1, description: 'Consigue 1 elemento legendario' },
+            { id: 'legendary_3', type: 'legendaryUnlocked', threshold: 3, reward: 2, description: 'Consigue 3 elementos legendarios' },
+            { id: 'legendary_5', type: 'legendaryUnlocked', threshold: 5, reward: 3, description: 'Consigue 5 elementos legendarios' },
+            { id: 'legendary_10', type: 'legendaryUnlocked', threshold: 10, reward: 5, description: 'Consigue 10 elementos legendarios' },
+            { id: 'legendary_25', type: 'legendaryUnlocked', threshold: 25, reward: 10, description: 'Consigue 25 elementos legendarios' },
+            { id: 'legendary_50', type: 'legendaryUnlocked', threshold: 50, reward: 15, description: 'Consigue 50 elementos legendarios' },
             { id: 'players_1', type: 'playersAdded', threshold: 1, reward: 1, description: 'Añade un jugador' }
         ];
 
@@ -5900,6 +5937,10 @@ function setupSlider(slider, display) {
             skinsUnlocked: 0,
             foodsUnlocked: 0,
             scenesUnlocked: 0,
+            commonUnlocked: 0,
+            rareUnlocked: 0,
+            epicUnlocked: 0,
+            legendaryUnlocked: 0,
             playersAdded: 0
         };
 
@@ -13262,9 +13303,32 @@ async function startGame(isRestart = false) {
             btn.addEventListener('touchcancel', removePressed);
         }
 
+        function updateUnlockableAchievementProgress() {
+            achievementsProgress.foodsUnlocked = Math.max(Object.keys(unlockedFoods).length - DEFAULT_FOOD_COUNT, 0);
+            achievementsProgress.skinsUnlocked = Math.max(Object.keys(unlockedSkins).length - DEFAULT_SKIN_COUNT, 0);
+            achievementsProgress.scenesUnlocked = Math.max(Object.keys(unlockedScenes).length - DEFAULT_SCENE_COUNT, 0);
+
+            const rarityCounts = { common: 0, rare: 0, epic: 0, legendary: 0 };
+            const accumulate = (type, items, defaultKey) => {
+                for (const key of Object.keys(items)) {
+                    if (key === defaultKey) continue;
+                    const rarity = getRarityClass(type, key).replace('rarity-', '');
+                    if (rarityCounts[rarity] !== undefined) rarityCounts[rarity]++;
+                }
+            };
+            accumulate('food', unlockedFoods, 'apple');
+            accumulate('skin', unlockedSkins, 'snake');
+            accumulate('scene', unlockedScenes, 'classic');
+
+            achievementsProgress.commonUnlocked = rarityCounts.common;
+            achievementsProgress.rareUnlocked = rarityCounts.rare;
+            achievementsProgress.epicUnlocked = rarityCounts.epic;
+            achievementsProgress.legendaryUnlocked = rarityCounts.legendary;
+        }
+
         function saveUnlockedFoods() {
             localStorage.setItem('snakeGameUnlockedFoods', JSON.stringify(unlockedFoods));
-            achievementsProgress.foodsUnlocked = Math.max(Object.keys(unlockedFoods).length - DEFAULT_FOOD_COUNT, 0);
+            updateUnlockableAchievementProgress();
             checkAchievements();
             saveAchievementsState();
         }
@@ -13280,7 +13344,7 @@ async function startGame(isRestart = false) {
 
         function saveUnlockedSkins() {
             localStorage.setItem('snakeGameUnlockedSkins', JSON.stringify(unlockedSkins));
-            achievementsProgress.skinsUnlocked = Math.max(Object.keys(unlockedSkins).length - DEFAULT_SKIN_COUNT, 0);
+            updateUnlockableAchievementProgress();
             checkAchievements();
             saveAchievementsState();
         }
@@ -13296,7 +13360,7 @@ async function startGame(isRestart = false) {
 
         function saveUnlockedScenes() {
             localStorage.setItem('snakeGameUnlockedScenes', JSON.stringify(unlockedScenes));
-            achievementsProgress.scenesUnlocked = Math.max(Object.keys(unlockedScenes).length - DEFAULT_SCENE_COUNT, 0);
+            updateUnlockableAchievementProgress();
             checkAchievements();
             saveAchievementsState();
         }
@@ -13741,6 +13805,9 @@ async function startGame(isRestart = false) {
             loadUnlockedSkins();
             loadUnlockedScenes();
             loadAchievementsState();
+            updateUnlockableAchievementProgress();
+            checkAchievements();
+            saveAchievementsState();
             updateFoodSelectorOptions(playerProfiles[currentPlayerName]?.food || 'apple');
             updateSceneSelectorOptions(playerProfiles[currentPlayerName]?.scene || 'classic');
             updatePlayerNameSelectors(currentPlayerName);
