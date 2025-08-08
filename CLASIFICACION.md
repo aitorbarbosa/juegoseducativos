@@ -44,3 +44,39 @@ Se han añadido logros específicos que recompensan alcanzar determinadas puntua
 - **Explorador**: 500, 750, 1k, 1.5k y 2k puntos.
 - **Veterano**: 500, 750, 1k, 1.5k y 2k puntos.
 - **Legendario**: 500, 750, 1k, 1.5k y 2k puntos.
+
+## Logros generales
+
+Se incorporan logros por abrir cofres de distintas rarezas. Los hitos se alcanzan al abrir 1, 3, 5, 10, 25 y 50 cofres de cada tipo, otorgando gemas como recompensa:
+
+- **Cofres Comunes**
+  - Abrir 1 cofre: 1 gema
+  - Abrir 3 cofres: 2 gemas
+  - Abrir 5 cofres: 3 gemas
+  - Abrir 10 cofres: 5 gemas
+  - Abrir 25 cofres: 10 gemas
+  - Abrir 50 cofres: 15 gemas
+
+- **Cofres Raros**
+  - Abrir 1 cofre: 2 gemas
+  - Abrir 3 cofres: 3 gemas
+  - Abrir 5 cofres: 5 gemas
+  - Abrir 10 cofres: 10 gemas
+  - Abrir 25 cofres: 15 gemas
+  - Abrir 50 cofres: 20 gemas
+
+- **Cofres Épicos**
+  - Abrir 1 cofre: 3 gemas
+  - Abrir 3 cofres: 5 gemas
+  - Abrir 5 cofres: 10 gemas
+  - Abrir 10 cofres: 15 gemas
+  - Abrir 25 cofres: 20 gemas
+  - Abrir 50 cofres: 25 gemas
+
+- **Cofres Legendarios**
+  - Abrir 1 cofre: 5 gemas
+  - Abrir 3 cofres: 10 gemas
+  - Abrir 5 cofres: 15 gemas
+  - Abrir 10 cofres: 20 gemas
+  - Abrir 25 cofres: 25 gemas
+  - Abrir 50 cofres: 30 gemas
