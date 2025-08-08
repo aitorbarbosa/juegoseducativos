@@ -7887,9 +7887,13 @@ function openPurchaseConfirm(type, key) {
         if (type === 'chest') chestInfoButton.classList.remove('hidden');
         else chestInfoButton.classList.add('hidden');
     }
-            if (purchaseItemPreview) {
-                purchaseItemPreview.innerHTML = '';
-                if (type === 'chest') {
+              if (purchaseItemPreview) {
+                  purchaseItemPreview.innerHTML = '';
+                  purchaseItemPreview.style.backgroundImage = '';
+                  purchaseItemPreview.style.backgroundSize = '';
+                  purchaseItemPreview.style.backgroundPosition = '';
+                  purchaseItemPreview.style.backgroundRepeat = '';
+                  if (type === 'chest') {
                     purchaseItemPreview.className = '';
                     const img = document.createElement('img');
                     img.className = 'chest-preview-img';
@@ -7906,27 +7910,46 @@ function openPurchaseConfirm(type, key) {
                                 : ((type === 'coinPack' || type === 'gemPack')
                                     ? ` currency-item ${rarityClass}`
                                     : ` ${rarityClass}`))));
-                    const img = document.createElement('img');
-                    img.className = 'store-item-img';
-                    if (type === 'food') {
-                        img.src = FOODS[key]?.asset?.src || '';
-                    } else if (type === 'skin') {
-                        img.src = SKINS[key]?.snakeHeadAsset?.upDown?.src || '';
-                    } else if (type === 'scene') {
-                        img.classList.add('scene-img-full');
-                        img.src = SCENES[key]?.icon || '';
-                    } else if (type === 'coinPack') {
-                        img.classList.add('currency-img');
-                        img.src = COIN_PACKS[key]?.img || '';
-                    } else if (type === 'gemPack') {
-                        img.classList.add('currency-img');
-                        img.src = GEM_PACKS[key]?.img || '';
-                    } else if (type === 'adLife' || type === 'adChest' || type === 'adInfinite') {
-                        img.src = AD_ITEMS[type]?.img || '';
-                    } else if (type === 'coinLife' || type === 'coinChest' || type === 'coinInfinite') {
-                        img.src = COIN_LIFE_ITEMS[type]?.img || '';
-                    }
-                    purchaseItemPreview.appendChild(img);
+                      const img = document.createElement('img');
+                      img.className = 'store-item-img';
+                      if (type === 'food') {
+                          img.src = FOODS[key]?.asset?.src || '';
+                      } else if (type === 'skin') {
+                          img.src = SKINS[key]?.snakeHeadAsset?.upDown?.src || '';
+                      } else if (type === 'scene') {
+                          img.classList.add('scene-img-full');
+                          img.src = SCENES[key]?.icon || '';
+                      } else if (type === 'coinPack') {
+                          img.classList.add('currency-img');
+                          img.src = COIN_PACKS[key]?.img || '';
+                      } else if (type === 'gemPack') {
+                          img.classList.add('currency-img');
+                          img.src = GEM_PACKS[key]?.img || '';
+                      } else if (type === 'adLife' || type === 'adChest' || type === 'adInfinite') {
+                          img.classList.add('lives-img');
+                          img.src = AD_ITEMS[type]?.img || '';
+                      } else if (type === 'coinLife' || type === 'coinChest' || type === 'coinInfinite') {
+                          img.classList.add('lives-img');
+                          img.src = COIN_LIFE_ITEMS[type]?.img || '';
+                      }
+                      purchaseItemPreview.appendChild(img);
+                      const bgMap = {
+                          coinPack: "url('https://i.imgur.com/kOHjgb7.png')",
+                          gemPack: "url('https://i.imgur.com/kOHjgb7.png')",
+                          adLife: "url('https://i.imgur.com/fxOqXOM.png')",
+                          adChest: "url('https://i.imgur.com/fxOqXOM.png')",
+                          adInfinite: "url('https://i.imgur.com/fxOqXOM.png')",
+                          coinLife: "url('https://i.imgur.com/fxOqXOM.png')",
+                          coinChest: "url('https://i.imgur.com/fxOqXOM.png')",
+                          coinInfinite: "url('https://i.imgur.com/fxOqXOM.png')"
+                      };
+                      const bg = bgMap[type];
+                      if (bg) {
+                          purchaseItemPreview.style.backgroundImage = bg;
+                          purchaseItemPreview.style.backgroundSize = '80% 80%';
+                          purchaseItemPreview.style.backgroundPosition = 'center';
+                          purchaseItemPreview.style.backgroundRepeat = 'no-repeat';
+                      }
             }
         }
             let price = 0;
