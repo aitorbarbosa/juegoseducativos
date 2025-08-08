@@ -38,9 +38,9 @@ Este planteamiento tiene como objetivo proporcionar un reto creciente y diferenc
 
 ## Logros por puntuación
 
-Se han añadido logros específicos que recompensan alcanzar determinadas puntuaciones según la dificultad:
+Se han añadido logros específicos que recompensan alcanzar determinadas puntuaciones según la dificultad. Las puntuaciones deben lograrse en una única partida del modo clasificación, sin acumular resultados de partidas diferentes:
 
-- **Novato**: 500, 750 y 1k puntos.
-- **Explorador**: 500, 750, 1k, 1.5k y 2k puntos.
-- **Veterano**: 500, 750, 1k, 1.5k y 2k puntos.
-- **Legendario**: 500, 750, 1k, 1.5k y 2k puntos.
+- **Novato**: 500, 750, 1k y 1.5k puntos.
+- **Explorador**: 750, 1k, 1.5k, 2k y 2.5k puntos.
+- **Veterano**: 750, 1k, 1.5k, 2k y 2.5k puntos.
+- **Legendario**: 750, 1k, 1.5k, 2k y 2.5k puntos.
