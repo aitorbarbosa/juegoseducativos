@@ -1657,11 +1657,6 @@
         #store-panel .panel-content {
             padding-right: 10px;
         }
-        #store-items-container {
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
-        }
         #achievements-panel {
             max-height: 90vh;
             box-sizing: border-box;
@@ -7488,12 +7483,17 @@ function setupSlider(slider, display) {
                 divisas: "url('https://i.imgur.com/kOHjgb7.png')"
             };
             const bg = backgrounds[storeTab] || '';
-            storeItemsContainer.style.backgroundImage = bg;
             if (storeTab === 'cofres') {
                 CHEST_ORDER.forEach(key => {
                     const chest = CHESTS[key];
                     const item = document.createElement('div');
                     item.className = 'store-item currency-item rarity-default chest-grid-item';
+                    if (bg) {
+                        item.style.backgroundImage = bg;
+                        item.style.backgroundSize = 'cover';
+                        item.style.backgroundPosition = 'center';
+                        item.style.backgroundRepeat = 'no-repeat';
+                    }
                     const img = document.createElement('img');
                     img.className = 'store-item-img currency-img';
                     img.src = chest.img;
@@ -7621,6 +7621,12 @@ function setupSlider(slider, display) {
                 items.forEach(({ key, pack, type }) => {
                     const item = document.createElement('div');
                     item.className = 'store-item currency-item rarity-default';
+                    if (bg) {
+                        item.style.backgroundImage = bg;
+                        item.style.backgroundSize = 'cover';
+                        item.style.backgroundPosition = 'center';
+                        item.style.backgroundRepeat = 'no-repeat';
+                    }
                     const img = document.createElement('img');
                     img.className = 'store-item-img currency-img';
                     img.src = pack.img;
@@ -7655,6 +7661,12 @@ function setupSlider(slider, display) {
                     const item = document.createElement('div');
                     item.id = `store-item-${type}`;
                     item.className = 'store-item rarity-default';
+                    if (bg) {
+                        item.style.backgroundImage = bg;
+                        item.style.backgroundSize = 'cover';
+                        item.style.backgroundPosition = 'center';
+                        item.style.backgroundRepeat = 'no-repeat';
+                    }
                     const imgEl = document.createElement('img');
                     imgEl.className = 'store-item-img lives-img';
                     imgEl.src = img;
@@ -7689,6 +7701,12 @@ function setupSlider(slider, display) {
                     const item = document.createElement('div');
                     item.id = `store-item-${type}`;
                     item.className = 'store-item rarity-default';
+                    if (bg) {
+                        item.style.backgroundImage = bg;
+                        item.style.backgroundSize = 'cover';
+                        item.style.backgroundPosition = 'center';
+                        item.style.backgroundRepeat = 'no-repeat';
+                    }
                     const imgEl = document.createElement('img');
                     imgEl.className = 'store-item-img lives-img';
                     imgEl.src = data.img;
