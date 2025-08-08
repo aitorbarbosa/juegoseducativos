@@ -3922,7 +3922,7 @@
                 <div class="panel-content">
                     <div id="store-tabs" class="flex gap-1 mb-2">
                         <button data-tab="cofres" id="store-tab-cofres" class="store-tab menu-option-button active">
-                            <img src="https://i.imgur.com/QND7wuI.png" alt="Cofres">
+                            <img src="https://i.imgur.com/qF71FNE.png" alt="Cofres">
                         </button>
                         <button data-tab="vidas" id="store-tab-vidas" class="store-tab menu-option-button">
                             <img src="https://i.imgur.com/WrI2XXx.png" alt="Vidas">
@@ -7808,9 +7808,14 @@ function setupSlider(slider, display) {
             if (!purchaseItemPreview) return;
             purchaseItemPreview.innerHTML = '';
             const items = [];
+            const currencyBg = "url('https://i.imgur.com/kOHjgb7.png')";
 
             const coinItem = document.createElement('div');
             coinItem.className = 'store-item currency-item rarity-default';
+            coinItem.style.backgroundImage = currencyBg;
+            coinItem.style.backgroundSize = '80% 80%';
+            coinItem.style.backgroundPosition = 'center';
+            coinItem.style.backgroundRepeat = 'no-repeat';
             const coinImg = document.createElement('img');
             coinImg.className = 'store-item-img currency-img';
             coinImg.src = COIN_PACKS.coin500.img;
@@ -7826,6 +7831,10 @@ function setupSlider(slider, display) {
             if (reward.gemGain > 0) {
                 const gemItem = document.createElement('div');
                 gemItem.className = 'store-item currency-item rarity-default';
+                gemItem.style.backgroundImage = currencyBg;
+                gemItem.style.backgroundSize = '80% 80%';
+                gemItem.style.backgroundPosition = 'center';
+                gemItem.style.backgroundRepeat = 'no-repeat';
                 const gemImg = document.createElement('img');
                 gemImg.className = 'store-item-img currency-img';
                 gemImg.src = GEM_PACKS.gem10.img;
