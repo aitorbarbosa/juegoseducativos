@@ -1622,10 +1622,10 @@
             display: block;
         }
 
-        .settings-panel-hidden, .info-panel-hidden, .specific-info-panel-hidden, .free-settings-panel-hidden, .reset-panel-hidden, .config-menu-panel-hidden, .generic-menu-panel-hidden, .store-panel-hidden, .profile-panel-hidden, .achievements-panel-hidden, .purchase-confirmation-panel-hidden, .chest-info-panel-hidden, .delete-confirmation-panel-hidden, .out-of-lives-panel-hidden, .select-confirmation-panel-hidden {
+        .settings-panel-hidden, .info-panel-hidden, .specific-info-panel-hidden, .free-settings-panel-hidden, .reset-panel-hidden, .config-menu-panel-hidden, .generic-menu-panel-hidden, .store-panel-hidden, .profile-panel-hidden, .achievements-panel-hidden, .daily-panel-hidden, .purchase-confirmation-panel-hidden, .chest-info-panel-hidden, .delete-confirmation-panel-hidden, .out-of-lives-panel-hidden, .select-confirmation-panel-hidden {
             display: none !important;
         }
-        #settings-panel, #info-panel, #specific-info-panel, #free-settings-panel, #reset-confirmation-panel, #config-menu-panel, #generic-menu-panel, #store-panel, #profile-panel, #achievements-panel, #purchase-confirmation-panel, #chest-info-panel, #delete-confirmation-panel, #out-of-lives-panel, #select-confirmation-panel {
+        #settings-panel, #info-panel, #specific-info-panel, #free-settings-panel, #reset-confirmation-panel, #config-menu-panel, #generic-menu-panel, #store-panel, #profile-panel, #achievements-panel, #daily-panel, #purchase-confirmation-panel, #chest-info-panel, #delete-confirmation-panel, #out-of-lives-panel, #select-confirmation-panel {
             position: fixed;
             left: 0;
             transform: scale(0);
@@ -2397,6 +2397,7 @@
         #store-panel { z-index: 2101; }
         #profile-panel { z-index: 2101; }
         #achievements-panel { z-index: 2101; }
+        #daily-panel { z-index: 2101; }
         #purchase-confirmation-panel { z-index: 2103; }
         #chest-info-panel { z-index: 2103; }
         #delete-confirmation-panel { z-index: 2103; }
@@ -3923,9 +3924,9 @@
     </div>
 </div>
 </div>
-            <div id="store-panel" class="store-panel-hidden">
-                <div class="settings-header">
-                    <h2>TIENDA</h2>
+                <div id="store-panel" class="store-panel-hidden">
+                    <div class="settings-header">
+                        <h2>TIENDA</h2>
                     <button id="close-store-panel" class="close-button" aria-label="Cerrar">
                         <img src="https://i.imgur.com/w5E6xdU.png" alt="Cerrar">
                     </button>
@@ -3952,6 +3953,17 @@
                         </button>
                     </div>
                 <div id="store-items-container" class="grid grid-cols-3 gap-4 w-full"></div>
+                </div>
+                </div>
+            <div id="daily-panel" class="daily-panel-hidden">
+                <div class="settings-header">
+                    <h2>PREMIOS DIARIOS</h2>
+                    <button id="close-daily-panel" class="close-button" aria-label="Cerrar">
+                        <img src="https://i.imgur.com/w5E6xdU.png" alt="Cerrar">
+                    </button>
+                </div>
+                <div class="panel-content">
+                    <div id="daily-rewards-container" class="grid grid-cols-3 gap-4 w-full"></div>
                 </div>
             </div>
             <div id="achievements-panel" class="achievements-panel-hidden">
@@ -4264,6 +4276,9 @@
         const achievementsPanel = document.getElementById("achievements-panel");
         const closeAchievementsPanelButton = document.getElementById("close-achievements-panel");
         const achievementsContainer = document.getElementById("achievements-container");
+        const dailyPanel = document.getElementById("daily-panel");
+        const closeDailyPanelButton = document.getElementById("close-daily-panel");
+        const dailyRewardsContainer = document.getElementById("daily-rewards-container");
         const storeItemsContainer = document.getElementById("store-items-container");
         const storeTabButtons = document.querySelectorAll('#store-tabs .store-tab');
         const closeStorePanelButton = document.getElementById("close-store-panel");
@@ -5750,8 +5765,18 @@ function setupSlider(slider, display) {
             legendary: { img: 'https://i.imgur.com/4kOPIdx.png', cost: 10000, coinRange: [500, 1000], gemChance: 1, gemRange: [5, 10], rarity: { common: 5, rare: 10, epic: 15, legendary: 70 } }
         };
         const CHEST_ORDER = ['common', 'rare', 'epic', 'legendary'];
+        const DAILY_REWARDS = [
+            { type: 'lives', min: 1, max: 5, img: AD_ITEMS.adLife.img, bg: "url('https://i.imgur.com/fxOqXOM.png')" },
+            { type: 'coins', min: 100, max: 1000, img: COIN_PACKS.coin500.img, bg: "url('https://i.imgur.com/kOHjgb7.png')" },
+            { type: 'gems', min: 1, max: 10, img: GEM_PACKS.gem10.img, bg: "url('https://i.imgur.com/kOHjgb7.png')" },
+            { type: 'chest', chest: 'common', img: CHESTS.common.img, bg: "url('https://i.imgur.com/ovDIW0W.png')" },
+            { type: 'chest', chest: 'rare', img: CHESTS.rare.img, bg: "url('https://i.imgur.com/ovDIW0W.png')" },
+            { type: 'chest', chest: 'epic', img: CHESTS.epic.img, bg: "url('https://i.imgur.com/ovDIW0W.png')" },
+            { type: 'chest', chest: 'legendary', img: CHESTS.legendary.img, bg: "url('https://i.imgur.com/ovDIW0W.png')" }
+        ];
         let storeTab = 'cofres';
         let profileTab = 'general';
+        let dailyRewardState = { day: 1, lastClaimDate: null };
         function getRarityClass(type, key) {
             if (type === 'skin') {
                 if (key === 'snake') return 'rarity-default';
@@ -6778,6 +6803,10 @@ function setupSlider(slider, display) {
                 positionPanel(storePanel);
                 applyScrollbarPadding(storePanel.querySelector('.panel-content'));
             }
+            if (dailyPanel && !dailyPanel.classList.contains("daily-panel-hidden")) {
+                positionPanel(dailyPanel);
+                applyScrollbarPadding(dailyPanel.querySelector('.panel-content'));
+            }
             if (profilePanel && !profilePanel.classList.contains("profile-panel-hidden")) {
                 positionPanel(profilePanel);
                 applyScrollbarPadding(profilePanel.querySelector('.panel-content'));
@@ -6846,7 +6875,8 @@ function setupSlider(slider, display) {
             const isStoreVisible = storePanel && !storePanel.classList.contains("store-panel-hidden") && storePanel.classList.contains("panel-visible");
             const isProfileVisible = profilePanel && !profilePanel.classList.contains("profile-panel-hidden") && profilePanel.classList.contains("panel-visible");
             const isAchievementsVisible = achievementsPanel && !achievementsPanel.classList.contains("achievements-panel-hidden") && achievementsPanel.classList.contains("panel-visible");
-            const isAnyMainPanelEffectivelyOpen = isSettingsVisible || isInfoVisible || isFreeSettingsVisible || isConfigMenuVisible || isGenericMenuVisible || isStoreVisible || isProfileVisible || isAchievementsVisible;
+            const isDailyVisible = dailyPanel && !dailyPanel.classList.contains("daily-panel-hidden") && dailyPanel.classList.contains("panel-visible");
+            const isAnyMainPanelEffectivelyOpen = isSettingsVisible || isInfoVisible || isFreeSettingsVisible || isConfigMenuVisible || isGenericMenuVisible || isStoreVisible || isProfileVisible || isAchievementsVisible || isDailyVisible;
 
             if (isAnyMainPanelEffectivelyOpen) {
                 startButton.disabled = true;
@@ -7495,7 +7525,7 @@ function setupSlider(slider, display) {
         if (profileMenuButton) profileMenuButton.addEventListener('click', openProfileMenu);
         if (storeMenuButton) storeMenuButton.addEventListener('click', () => openStoreMenu());
         if (achievementsMenuButton) achievementsMenuButton.addEventListener('click', openAchievementsMenu);
-        if (dailyMenuButton) dailyMenuButton.addEventListener('click', () => { openGenericMenuPanel('Premios diarios'); });
+        if (dailyMenuButton) dailyMenuButton.addEventListener('click', openDailyMenu);
         if (wheelMenuButton) wheelMenuButton.addEventListener('click', () => { openGenericMenuPanel('Ruleta de premios'); });
         if (closeAchievementsPanelButton) closeAchievementsPanelButton.addEventListener('click', closeAchievementsMenu);
         if (applyFreeSettingsBottomButton) applyFreeSettingsBottomButton.addEventListener('click', applyFreeSettings);
@@ -7560,9 +7590,159 @@ function setupSlider(slider, display) {
             }
         }
 
-        function closeGenericMenuPanel() {
-            togglePanel(genericMenuPanel, genericMenuPanel.querySelector('.panel-content'), false);
+       function closeGenericMenuPanel() {
+           togglePanel(genericMenuPanel, genericMenuPanel.querySelector('.panel-content'), false);
+           setTimeout(updateMainButtonStates, 0);
+       }
+
+        function openDailyMenu() {
+            loadDailyRewards();
+            populateDailyRewards();
+            const isConfigMenuVisible = !configMenuPanel.classList.contains('config-menu-panel-hidden') && configMenuPanel.classList.contains('panel-visible');
+            dailyPanel.classList.remove('centered-panel');
+            togglePanel(dailyPanel, dailyPanel.querySelector('.panel-content'), true);
+            if (isConfigMenuVisible) {
+                matchPanelSizeWithElement(configMenuPanel, dailyPanel);
+            }
+        }
+
+        function closeDailyMenu() {
+            togglePanel(dailyPanel, dailyPanel.querySelector('.panel-content'), false);
             setTimeout(updateMainButtonStates, 0);
+        }
+
+        function dayDiff(d1, d2) {
+            const a = new Date(d1);
+            const b = new Date(d2);
+            a.setHours(0,0,0,0);
+            b.setHours(0,0,0,0);
+            return Math.floor((b - a) / (1000 * 60 * 60 * 24));
+        }
+
+        function loadDailyRewards() {
+            try {
+                const data = JSON.parse(localStorage.getItem('snakeGameDailyRewards') || '{}');
+                dailyRewardState.day = data.day || 1;
+                dailyRewardState.lastClaimDate = data.lastClaimDate || null;
+            } catch (e) {
+                dailyRewardState = { day: 1, lastClaimDate: null };
+            }
+            const todayStr = new Date().toISOString().split('T')[0];
+            if (dailyRewardState.lastClaimDate) {
+                const diff = dayDiff(dailyRewardState.lastClaimDate, todayStr);
+                if (diff > 1) {
+                    dailyRewardState.day = 1;
+                    dailyRewardState.lastClaimDate = null;
+                    saveDailyRewards();
+                }
+            }
+        }
+
+        function saveDailyRewards() {
+            localStorage.setItem('snakeGameDailyRewards', JSON.stringify(dailyRewardState));
+        }
+
+        function populateDailyRewards() {
+            if (!dailyRewardsContainer) return;
+            dailyRewardsContainer.innerHTML = '';
+            for (let i = 1; i <= 7; i++) {
+                const reward = DAILY_REWARDS[i - 1];
+                const item = document.createElement('div');
+                item.className = 'store-item currency-item rarity-default';
+                if (reward.bg) {
+                    item.style.backgroundImage = reward.bg;
+                    item.style.backgroundSize = '80% 80%';
+                    item.style.backgroundPosition = 'center';
+                    item.style.backgroundRepeat = 'no-repeat';
+                }
+                const img = document.createElement('img');
+                img.className = reward.type === 'chest' ? 'chest-preview-img' : 'store-item-img currency-img';
+                img.src = reward.img;
+                item.appendChild(img);
+                const status = document.createElement('div');
+                status.className = 'store-item-status';
+                const span = document.createElement('span');
+                span.textContent = `Día ${i}`;
+                status.appendChild(span);
+                item.appendChild(status);
+                item.addEventListener('click', () => onDailyRewardClick(i));
+                addIconPressEvents(item, item);
+                dailyRewardsContainer.appendChild(item);
+            }
+        }
+
+        function onDailyRewardClick(day) {
+            const todayStr = new Date().toISOString().split('T')[0];
+            if (day < dailyRewardState.day) {
+                showInsufficientFundsToast('Ya obtenido');
+                return;
+            }
+            if (day > dailyRewardState.day) {
+                showInsufficientFundsToast('Todavía no disponible');
+                return;
+            }
+            if (dailyRewardState.lastClaimDate === todayStr) {
+                showInsufficientFundsToast('Disponible mañana');
+                return;
+            }
+            openDailyRewardConfirm(day);
+        }
+
+        function openDailyRewardConfirm(day) {
+            const reward = DAILY_REWARDS[day - 1];
+            purchaseInfo = { type: 'dailyReward', day };
+            pendingChestRewards = null;
+            if (confirmPurchaseYesButton) confirmPurchaseYesButton.classList.remove('hidden');
+            if (confirmPurchaseNoButton) confirmPurchaseNoButton.classList.remove('hidden');
+            if (collectPurchaseRewardButton) collectPurchaseRewardButton.classList.add('hidden');
+            if (chestInfoButton) chestInfoButton.classList.add('hidden');
+            if (purchaseItemPreview) {
+                purchaseItemPreview.innerHTML = '';
+                purchaseItemPreview.className = '';
+                purchaseItemPreview.style.backgroundImage = '';
+                purchaseItemPreview.style.backgroundSize = '';
+                purchaseItemPreview.style.backgroundPosition = '';
+                purchaseItemPreview.style.backgroundRepeat = '';
+                if (reward.type === 'chest') {
+                    const img = document.createElement('img');
+                    img.className = 'chest-preview-img';
+                    img.src = reward.img;
+                    purchaseItemPreview.appendChild(img);
+                    purchaseItemPreview.style.backgroundImage = reward.bg;
+                    purchaseItemPreview.style.backgroundSize = '80% 80%';
+                    purchaseItemPreview.style.backgroundPosition = 'center';
+                    purchaseItemPreview.style.backgroundRepeat = 'no-repeat';
+                } else {
+                    purchaseItemPreview.className = 'store-item currency-item rarity-default';
+                    const img = document.createElement('img');
+                    img.className = 'store-item-img currency-img';
+                    img.src = reward.img;
+                    purchaseItemPreview.appendChild(img);
+                    if (reward.bg) {
+                        purchaseItemPreview.style.backgroundImage = reward.bg;
+                        purchaseItemPreview.style.backgroundSize = '80% 80%';
+                        purchaseItemPreview.style.backgroundPosition = 'center';
+                        purchaseItemPreview.style.backgroundRepeat = 'no-repeat';
+                    }
+                }
+            }
+            if (purchaseConfirmationText) purchaseConfirmationText.textContent = '¿Quieres ver un anuncio para conseguir el premio diario?';
+            purchaseConfirmationPanel.classList.remove('centered-panel');
+            togglePanel(purchaseConfirmationPanel, purchaseConfirmationPanel.querySelector('.panel-content'), true);
+            matchPanelSizeWithElement(dailyPanel, purchaseConfirmationPanel);
+            if (modalOverlay) modalOverlay.classList.remove('hidden');
+        }
+
+        function advanceDailyReward() {
+            const todayStr = new Date().toISOString().split('T')[0];
+            if (dailyRewardState.day >= 7) {
+                dailyRewardState.day = 1;
+            } else {
+                dailyRewardState.day += 1;
+            }
+            dailyRewardState.lastClaimDate = todayStr;
+            saveDailyRewards();
+            populateDailyRewards();
         }
 
         function openStoreMenu(defaultTab = 'cofres') {
@@ -8302,6 +8482,61 @@ function openPurchaseConfirm(type, key) {
                 } else {
                     failureMessage = 'Monedas insuficientes';
                 }
+            } else if (purchaseInfo.type === 'dailyReward') {
+                const reward = DAILY_REWARDS[purchaseInfo.day - 1];
+                if (reward.type === 'lives') {
+                    const gain = randInt(reward.min, reward.max);
+                    const prevLives = playerLives;
+                    playerLives = Math.min(MAX_LIVES, playerLives + gain);
+                    if (playerLives >= MAX_LIVES) lifeRestoreQueue = [];
+                    if (lifeRestoreQueue.length > 0) lifeRestoreQueue = lifeRestoreQueue.slice(0, Math.max(0, lifeRestoreQueue.length - gain));
+                    saveLives();
+                    updateLifeTimerDisplay();
+                    animateLifeGain(prevLives, playerLives);
+                    success = true;
+                    advanceDailyReward();
+                    closePurchaseConfirm();
+                    return;
+                } else if (reward.type === 'coins') {
+                    const gain = randInt(reward.min, reward.max);
+                    const prevCoins = totalCoins;
+                    totalCoins += gain;
+                    localStorage.setItem('snakeGameCoins', totalCoins.toString());
+                    achievementsProgress.coins = totalCoins;
+                    showEarnedCoinsMessage(gain);
+                    animateCoinGain(prevCoins, totalCoins);
+                    updateCoinDisplay();
+                    success = true;
+                    advanceDailyReward();
+                    closePurchaseConfirm();
+                    return;
+                } else if (reward.type === 'gems') {
+                    const gain = randInt(reward.min, reward.max);
+                    const prevGems = totalGems;
+                    totalGems += gain;
+                    saveGems();
+                    showEarnedGemsMessage(gain);
+                    animateGemGain(prevGems, totalGems);
+                    updateGemDisplay();
+                    success = true;
+                    advanceDailyReward();
+                    closePurchaseConfirm();
+                    return;
+                } else if (reward.type === 'chest') {
+                    const chest = CHESTS[reward.chest];
+                    const coinGain = randInt(chest.coinRange[0], chest.coinRange[1]);
+                    const gemGain = Math.random() < chest.gemChance ? randInt(chest.gemRange[0], chest.gemRange[1]) : 0;
+                    const item = getRandomChestItem(reward.chest);
+                    pendingChestRewards = { coinGain, gemGain, item };
+                    displayChestRewardPreview(pendingChestRewards);
+                    if (purchaseConfirmationText) purchaseConfirmationText.textContent = '¡Has obtenido!';
+                    if (confirmPurchaseYesButton) confirmPurchaseYesButton.classList.add('hidden');
+                    if (confirmPurchaseNoButton) confirmPurchaseNoButton.classList.add('hidden');
+                    if (collectPurchaseRewardButton) collectPurchaseRewardButton.classList.remove('hidden');
+                    purchaseInfo.type = 'dailyChest';
+                    purchaseInfo.key = reward.chest;
+                    success = true;
+                }
             } else if (purchaseInfo.type === 'coinLife' || purchaseInfo.type === 'coinChest' || purchaseInfo.type === 'coinInfinite') {
                 const config = COIN_LIFE_ITEMS[purchaseInfo.type];
                 price = config.cost;
@@ -8414,6 +8649,8 @@ function openPurchaseConfirm(type, key) {
                     localStorage.setItem('snakeGameCoins', totalCoins.toString());
                     updateCoinDisplay();
                     populateStoreItems();
+                } else if (purchaseInfo.type === 'dailyChest') {
+                    // reward preview shown, waiting for collect
                 } else {
                     localStorage.setItem('snakeGameCoins', totalCoins.toString());
                     saveGems();
@@ -8457,7 +8694,11 @@ function openPurchaseConfirm(type, key) {
             if (collectPurchaseRewardButton) collectPurchaseRewardButton.classList.add('hidden');
             if (confirmPurchaseYesButton) confirmPurchaseYesButton.classList.remove('hidden');
             if (confirmPurchaseNoButton) confirmPurchaseNoButton.classList.remove('hidden');
+            const daily = purchaseInfo && purchaseInfo.type === 'dailyChest';
             closePurchaseConfirm();
+            if (daily) {
+                advanceDailyReward();
+            }
         }
 
         function closePurchaseConfirm() {
@@ -8589,6 +8830,7 @@ function openPurchaseConfirm(type, key) {
 
         if (closeStorePanelButton) closeStorePanelButton.addEventListener('click', closeStoreMenu);
         if (closeProfilePanelButton) closeProfilePanelButton.addEventListener('click', closeProfileMenu);
+        if (closeDailyPanelButton) closeDailyPanelButton.addEventListener('click', closeDailyMenu);
         if (confirmPurchaseYesButton) confirmPurchaseYesButton.addEventListener('click', confirmPurchase);
         if (confirmPurchaseNoButton) confirmPurchaseNoButton.addEventListener('click', closePurchaseConfirm);
         if (collectPurchaseRewardButton) collectPurchaseRewardButton.addEventListener('click', collectPurchaseReward);

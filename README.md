@@ -17,6 +17,7 @@ Open `Snake Github.html` directly in your favorite web browser. You can either d
 - **Audio** – Select between Activado, Sólo Música, Sólo Efectos o Desactivado y ajusta por separado los volúmenes de música y efectos.
 - **Maze Stars** – Each maze level tracks the stars you've earned so you can work toward a perfect 5-star score over multiple attempts.
 - **Coins** – Earn coins at the end of every game. Your total coins accumulate across all game modes and sessions.
+- **Daily Rewards** – Claim a different prize each day by logging in for seven consecutive days.
 
 For details on the upcoming Classification mode revamp, see [CLASIFICACION.md](CLASIFICACION.md).
 
