@@ -3207,6 +3207,25 @@
           }
         }
 
+        #daily-panel .chest-preview-img,
+        #purchase-confirmation-panel.daily-reward #purchase-item-preview .chest-preview-img {
+          width: 100px;
+          height: 100px;
+        }
+
+        @media screen and (min-width: 800px) {
+          #daily-panel .chest-preview-img,
+          #purchase-confirmation-panel.daily-reward #purchase-item-preview .chest-preview-img {
+            width: 140px;
+            height: 140px;
+          }
+        }
+
+        #daily-panel .heart-preview-img,
+        #purchase-confirmation-panel.daily-reward .heart-preview-img {
+          top: 55%;
+        }
+
         #purchase-confirmation-panel .panel-content {
           justify-content: center;
           align-items: center;
@@ -7661,7 +7680,13 @@ function setupSlider(slider, display) {
                     item.style.backgroundRepeat = 'no-repeat';
                 }
                 const img = document.createElement('img');
-                img.className = reward.type === 'chest' ? 'chest-preview-img' : 'store-item-img currency-img';
+                if (reward.type === 'chest') {
+                    img.className = 'chest-preview-img';
+                } else if (reward.type === 'lives') {
+                    img.className = 'store-item-img currency-img heart-preview-img';
+                } else {
+                    img.className = 'store-item-img currency-img';
+                }
                 img.src = reward.img;
                 item.appendChild(img);
                 const status = document.createElement('div');
@@ -7720,7 +7745,7 @@ function setupSlider(slider, display) {
                 } else {
                     purchaseItemPreview.className = 'store-item currency-item rarity-default';
                     const img = document.createElement('img');
-                    img.className = 'store-item-img currency-img';
+                    img.className = reward.type === 'lives' ? 'store-item-img currency-img heart-preview-img' : 'store-item-img currency-img';
                     img.src = reward.img;
                     purchaseItemPreview.appendChild(img);
                     if (reward.bg) {
@@ -7732,6 +7757,7 @@ function setupSlider(slider, display) {
                 }
             }
             if (purchaseConfirmationText) purchaseConfirmationText.textContent = '¿Quieres ver un anuncio para conseguir el premio diario?';
+            purchaseConfirmationPanel.classList.add('daily-reward');
             purchaseConfirmationPanel.classList.remove('centered-panel');
             togglePanel(purchaseConfirmationPanel, purchaseConfirmationPanel.querySelector('.panel-content'), true);
             matchPanelSizeWithElement(dailyPanel, purchaseConfirmationPanel);
@@ -8203,6 +8229,7 @@ function openPurchaseConfirm(type, key) {
     }
     purchaseInfo = { type, key };
     pendingChestRewards = null;
+    if (purchaseConfirmationPanel) purchaseConfirmationPanel.classList.remove('daily-reward');
     if (chestInfoPanel) togglePanel(chestInfoPanel, chestInfoPanel.querySelector('.panel-content'), false, true);
     if (confirmPurchaseYesButton) confirmPurchaseYesButton.classList.remove('hidden');
     if (confirmPurchaseNoButton) confirmPurchaseNoButton.classList.remove('hidden');
@@ -8717,7 +8744,10 @@ function openPurchaseConfirm(type, key) {
             if (confirmPurchaseYesButton) confirmPurchaseYesButton.classList.remove('hidden');
             if (confirmPurchaseNoButton) confirmPurchaseNoButton.classList.remove('hidden');
             if (chestInfoButton) chestInfoButton.classList.add('hidden');
-            if (purchaseConfirmationPanel) purchaseConfirmationPanel.classList.remove('chest-purchase');
+            if (purchaseConfirmationPanel) {
+                purchaseConfirmationPanel.classList.remove('chest-purchase');
+                purchaseConfirmationPanel.classList.remove('daily-reward');
+            }
         }
 
         let playerToDelete = null;
