@@ -7661,7 +7661,7 @@ function setupSlider(slider, display) {
                     item.style.backgroundRepeat = 'no-repeat';
                 }
                 const img = document.createElement('img');
-                img.className = reward.type === 'chest' ? 'chest-preview-img' : 'store-item-img currency-img';
+                img.className = 'store-item-img ' + (reward.type === 'lives' ? 'lives-img' : 'currency-img');
                 img.src = reward.img;
                 item.appendChild(img);
                 const status = document.createElement('div');
@@ -7720,7 +7720,7 @@ function setupSlider(slider, display) {
                 } else {
                     purchaseItemPreview.className = 'store-item currency-item rarity-default';
                     const img = document.createElement('img');
-                    img.className = 'store-item-img currency-img';
+                    img.className = 'store-item-img ' + (reward.type === 'lives' ? 'lives-img' : 'currency-img');
                     img.src = reward.img;
                     purchaseItemPreview.appendChild(img);
                     if (reward.bg) {
