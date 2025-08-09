@@ -7604,7 +7604,9 @@ function setupSlider(slider, display) {
             togglePanel(dailyPanel, dailyPanel.querySelector('.panel-content'), true);
             if (isConfigMenuVisible) {
                 matchPanelSizeWithElement(configMenuPanel, dailyPanel);
+                togglePanel(configMenuPanel, configMenuPanel.querySelector('.panel-content'), false);
             }
+            setTimeout(updateMainButtonStates, 0);
         }
 
         function closeDailyMenu() {
