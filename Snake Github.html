@@ -7684,17 +7684,8 @@ function setupSlider(slider, display) {
         }
 
         function onDailyRewardClick(day) {
-            const todayStr = new Date().toISOString().split('T')[0];
             if (day < dailyRewardState.day) {
                 showInsufficientFundsToast('Ya obtenido');
-                return;
-            }
-            if (day > dailyRewardState.day) {
-                showInsufficientFundsToast('Todavía no disponible');
-                return;
-            }
-            if (dailyRewardState.lastClaimDate === todayStr) {
-                showInsufficientFundsToast('Disponible mañana');
                 return;
             }
             openDailyRewardConfirm(day);
@@ -8495,7 +8486,19 @@ function openPurchaseConfirm(type, key) {
                     failureMessage = 'Monedas insuficientes';
                 }
             } else if (purchaseInfo.type === 'dailyReward') {
-                const reward = DAILY_REWARDS[purchaseInfo.day - 1];
+                const day = purchaseInfo.day;
+                const todayStr = new Date().toISOString().split('T')[0];
+                if (day > dailyRewardState.day) {
+                    showInsufficientFundsToast('Todavía no disponible');
+                    closePurchaseConfirm();
+                    return;
+                }
+                if (dailyRewardState.lastClaimDate === todayStr) {
+                    showInsufficientFundsToast('Disponible mañana');
+                    closePurchaseConfirm();
+                    return;
+                }
+                const reward = DAILY_REWARDS[day - 1];
                 if (reward.type === 'lives') {
                     const gain = randInt(reward.min, reward.max);
                     const prevLives = playerLives;
