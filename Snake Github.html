@@ -7650,6 +7650,7 @@ function setupSlider(slider, display) {
         function populateDailyRewards() {
             if (!dailyRewardsContainer) return;
             dailyRewardsContainer.innerHTML = '';
+            const todayStr = new Date().toISOString().split('T')[0];
             for (let i = 1; i <= 7; i++) {
                 const reward = DAILY_REWARDS[i - 1];
                 const item = document.createElement('div');
@@ -7670,6 +7671,13 @@ function setupSlider(slider, display) {
                 span.textContent = `Día ${i}`;
                 status.appendChild(span);
                 item.appendChild(status);
+                if (i > dailyRewardState.day || (i === dailyRewardState.day && dailyRewardState.lastClaimDate === todayStr)) {
+                    item.classList.add('locked');
+                    const cooldown = document.createElement('div');
+                    cooldown.className = 'store-item-cooldown';
+                    cooldown.textContent = 'Bloqueado';
+                    item.appendChild(cooldown);
+                }
                 item.addEventListener('click', () => onDailyRewardClick(i));
                 addIconPressEvents(item, item);
                 dailyRewardsContainer.appendChild(item);
