@@ -7671,7 +7671,7 @@ function setupSlider(slider, display) {
                 span.textContent = `Día ${i}`;
                 status.appendChild(span);
                 item.appendChild(status);
-                if (i < dailyRewardState.day || (i === dailyRewardState.day && dailyRewardState.lastClaimDate === todayStr)) {
+                if (i < dailyRewardState.day) {
                     item.classList.add('locked');
                 }
                 item.addEventListener('click', () => onDailyRewardClick(i));
