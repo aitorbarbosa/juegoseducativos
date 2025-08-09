@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Premios Diarios</title>
+  <style>
+    #premios {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+      max-width: 600px;
+    }
+    .premio {
+      border: 1px solid #333;
+      padding: 20px;
+      text-align: center;
+      cursor: pointer;
+      user-select: none;
+    }
+    .bloqueado {
+      opacity: 0.5;
+      pointer-events: none;
+    }
+    .reclamado {
+      background: #eee;
+      cursor: default;
+    }
+  </style>
+</head>
+<body>
+  <h1>Premios diarios</h1>
+  <div id="premios"></div>
+  <script src="premios_diarios.js"></script>
+</body>
+</html>
