@@ -1958,6 +1958,7 @@
         #free-settings-panel .panel-content::-webkit-scrollbar,
         #reset-confirmation-panel .panel-content::-webkit-scrollbar,
         #store-panel .panel-content::-webkit-scrollbar,
+        #daily-panel .panel-content::-webkit-scrollbar,
         #achievements-panel .panel-content::-webkit-scrollbar,
         #profile-panel .panel-content::-webkit-scrollbar {
             width: 8px;
@@ -1970,6 +1971,7 @@
         #free-settings-panel .panel-content::-webkit-scrollbar-track,
         #reset-confirmation-panel .panel-content::-webkit-scrollbar-track,
         #store-panel .panel-content::-webkit-scrollbar-track,
+        #daily-panel .panel-content::-webkit-scrollbar-track,
         #achievements-panel .panel-content::-webkit-scrollbar-track,
         #profile-panel .panel-content::-webkit-scrollbar-track {
             background: #2d1d3a;
@@ -1983,6 +1985,7 @@
         #free-settings-panel .panel-content::-webkit-scrollbar-thumb,
         #reset-confirmation-panel .panel-content::-webkit-scrollbar-thumb,
         #store-panel .panel-content::-webkit-scrollbar-thumb,
+        #daily-panel .panel-content::-webkit-scrollbar-thumb,
         #achievements-panel .panel-content::-webkit-scrollbar-thumb,
         #profile-panel .panel-content::-webkit-scrollbar-thumb {
             background: #442F58;
@@ -2004,6 +2007,8 @@
         #reset-confirmation-panel .panel-content::-webkit-scrollbar-thumb:active,
         #store-panel .panel-content::-webkit-scrollbar-thumb:hover,
         #store-panel .panel-content::-webkit-scrollbar-thumb:active,
+        #daily-panel .panel-content::-webkit-scrollbar-thumb:hover,
+        #daily-panel .panel-content::-webkit-scrollbar-thumb:active,
         #achievements-panel .panel-content::-webkit-scrollbar-thumb:hover,
         #achievements-panel .panel-content::-webkit-scrollbar-thumb:active,
         #profile-panel .panel-content::-webkit-scrollbar-thumb:hover,
@@ -3136,6 +3141,13 @@
           text-shadow: 1px 1px 2px black;
           font-family: 'Press Start 2P', sans-serif;
           z-index: 3;
+        }
+
+        .store-item-status.reward-amount img {
+          width: 1.3em;
+          height: 1.3em;
+          position: relative;
+          top: -0.1em;
         }
 
         .store-item-cooldown {
@@ -7606,9 +7618,7 @@ function setupSlider(slider, display) {
             togglePanel(dailyPanel, dailyPanel.querySelector('.panel-content'), true);
             if (isConfigMenuVisible) {
                 matchPanelSizeWithElement(configMenuPanel, dailyPanel);
-                togglePanel(configMenuPanel, configMenuPanel.querySelector('.panel-content'), false);
             }
-            setTimeout(updateMainButtonStates, 0);
         }
 
         function closeDailyMenu() {
@@ -7650,6 +7660,7 @@ function setupSlider(slider, display) {
         function populateDailyRewards() {
             if (!dailyRewardsContainer) return;
             dailyRewardsContainer.innerHTML = '';
+            const todayStr = new Date().toISOString().split('T')[0];
             for (let i = 1; i <= 7; i++) {
                 const reward = DAILY_REWARDS[i - 1];
                 const item = document.createElement('div');
@@ -7661,7 +7672,7 @@ function setupSlider(slider, display) {
                     item.style.backgroundRepeat = 'no-repeat';
                 }
                 const img = document.createElement('img');
-                img.className = reward.type === 'chest' ? 'chest-preview-img' : 'store-item-img currency-img';
+                img.className = 'store-item-img ' + (reward.type === 'lives' ? 'lives-img' : 'currency-img');
                 img.src = reward.img;
                 item.appendChild(img);
                 const status = document.createElement('div');
@@ -7670,6 +7681,9 @@ function setupSlider(slider, display) {
                 span.textContent = `Día ${i}`;
                 status.appendChild(span);
                 item.appendChild(status);
+                if (i < dailyRewardState.day) {
+                    item.classList.add('locked');
+                }
                 item.addEventListener('click', () => onDailyRewardClick(i));
                 addIconPressEvents(item, item);
                 dailyRewardsContainer.appendChild(item);
@@ -7677,17 +7691,8 @@ function setupSlider(slider, display) {
         }
 
         function onDailyRewardClick(day) {
-            const todayStr = new Date().toISOString().split('T')[0];
             if (day < dailyRewardState.day) {
                 showInsufficientFundsToast('Ya obtenido');
-                return;
-            }
-            if (day > dailyRewardState.day) {
-                showInsufficientFundsToast('Todavía no disponible');
-                return;
-            }
-            if (dailyRewardState.lastClaimDate === todayStr) {
-                showInsufficientFundsToast('Disponible mañana');
                 return;
             }
             openDailyRewardConfirm(day);
@@ -7713,16 +7718,29 @@ function setupSlider(slider, display) {
                     img.className = 'chest-preview-img';
                     img.src = reward.img;
                     purchaseItemPreview.appendChild(img);
-                    purchaseItemPreview.style.backgroundImage = reward.bg;
-                    purchaseItemPreview.style.backgroundSize = '80% 80%';
-                    purchaseItemPreview.style.backgroundPosition = 'center';
-                    purchaseItemPreview.style.backgroundRepeat = 'no-repeat';
                 } else {
                     purchaseItemPreview.className = 'store-item currency-item rarity-default';
                     const img = document.createElement('img');
-                    img.className = 'store-item-img currency-img';
+                    img.className = 'store-item-img ' + (reward.type === 'lives' ? 'lives-img' : 'currency-img');
                     img.src = reward.img;
                     purchaseItemPreview.appendChild(img);
+                    if (reward.type === 'lives' || reward.type === 'coins' || reward.type === 'gems') {
+                        const status = document.createElement('div');
+                        status.className = 'store-item-status reward-amount';
+                        const amountSpan = document.createElement('span');
+                        const minText = reward.type === 'coins' && reward.min === 1000 ? '1k' : reward.min;
+                        const maxText = reward.type === 'coins' && reward.max === 1000 ? '1k' : reward.max;
+                        amountSpan.textContent = reward.min === reward.max ? `${maxText}` : `${minText}-${maxText}`;
+                        status.appendChild(amountSpan);
+                        const icon = document.createElement('img');
+                        icon.src = reward.type === 'lives'
+                            ? 'https://i.imgur.com/WrI2XXx.png'
+                            : reward.type === 'coins'
+                                ? 'https://i.imgur.com/lnc1Mwu.png'
+                                : 'https://i.imgur.com/gPGsaCO.png';
+                        status.appendChild(icon);
+                        purchaseItemPreview.appendChild(status);
+                    }
                     if (reward.bg) {
                         purchaseItemPreview.style.backgroundImage = reward.bg;
                         purchaseItemPreview.style.backgroundSize = '80% 80%';
@@ -8488,7 +8506,19 @@ function openPurchaseConfirm(type, key) {
                     failureMessage = 'Monedas insuficientes';
                 }
             } else if (purchaseInfo.type === 'dailyReward') {
-                const reward = DAILY_REWARDS[purchaseInfo.day - 1];
+                const day = purchaseInfo.day;
+                const todayStr = new Date().toISOString().split('T')[0];
+                if (day > dailyRewardState.day) {
+                    showInsufficientFundsToast('Todavía no disponible');
+                    closePurchaseConfirm();
+                    return;
+                }
+                if (dailyRewardState.lastClaimDate === todayStr) {
+                    showInsufficientFundsToast('Disponible mañana');
+                    closePurchaseConfirm();
+                    return;
+                }
+                const reward = DAILY_REWARDS[day - 1];
                 if (reward.type === 'lives') {
                     const gain = randInt(reward.min, reward.max);
                     const prevLives = playerLives;
