@@ -10256,8 +10256,6 @@ function openPurchaseConfirm(type, key) {
             localStorage.setItem('snakeGameCoins', totalCoins.toString());
             achievementsProgress.coins = totalCoins;
             achievementsProgress.points += score;
-            const sessionMinutes = Math.floor((Date.now() - sessionStartTime) / 60000);
-            achievementsProgress.longestSession = Math.max(achievementsProgress.longestSession || 0, sessionMinutes);
             if (gameMode === 'freeMode') {
                 achievementsProgress.freeGames++;
                 if (wasInactivity) achievementsProgress.afkFreeMode = 1;
@@ -11488,6 +11486,22 @@ function openPurchaseConfirm(type, key) {
                 saveAchievementsState();
             }, 60000);
         }
+
+        function startSessionTimer() {
+            sessionStartTime = Date.now();
+            setInterval(() => {
+                const sessionMinutes = Math.floor((Date.now() - sessionStartTime) / 60000);
+                achievementsProgress.longestSession = Math.max(achievementsProgress.longestSession || 0, sessionMinutes);
+                checkAchievements();
+                saveAchievementsState();
+            }, 60000);
+        }
+
+        window.addEventListener('beforeunload', () => {
+            const sessionMinutes = Math.floor((Date.now() - sessionStartTime) / 60000);
+            achievementsProgress.longestSession = Math.max(achievementsProgress.longestSession || 0, sessionMinutes);
+            saveAchievementsState();
+        });
 
         function claimAchievement(id) {
             const a = ACHIEVEMENTS.find(ac => ac.id === id);
@@ -13955,6 +13969,7 @@ async function startGame(isRestart = false) {
             checkAchievements();
             saveAchievementsState();
             startTotalPlayTimeTimer();
+            startSessionTimer();
             updateFoodSelectorOptions(playerProfiles[currentPlayerName]?.food || 'apple');
             updateSceneSelectorOptions(playerProfiles[currentPlayerName]?.scene || 'classic');
             updatePlayerNameSelectors(currentPlayerName);
