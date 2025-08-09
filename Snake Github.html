@@ -7727,6 +7727,11 @@ function setupSlider(slider, display) {
                     if (reward.type === 'lives' || reward.type === 'coins' || reward.type === 'gems') {
                         const status = document.createElement('div');
                         status.className = 'store-item-status reward-amount';
+                        const amountSpan = document.createElement('span');
+                        const minText = reward.type === 'coins' && reward.min === 1000 ? '1k' : reward.min;
+                        const maxText = reward.type === 'coins' && reward.max === 1000 ? '1k' : reward.max;
+                        amountSpan.textContent = reward.min === reward.max ? `${maxText}` : `${minText}-${maxText}`;
+                        status.appendChild(amountSpan);
                         const icon = document.createElement('img');
                         icon.src = reward.type === 'lives'
                             ? 'https://i.imgur.com/WrI2XXx.png'
@@ -7734,9 +7739,6 @@ function setupSlider(slider, display) {
                                 ? 'https://i.imgur.com/lnc1Mwu.png'
                                 : 'https://i.imgur.com/gPGsaCO.png';
                         status.appendChild(icon);
-                        const amountSpan = document.createElement('span');
-                        amountSpan.textContent = reward.min === reward.max ? `${reward.min}` : `${reward.min}-${reward.max}`;
-                        status.appendChild(amountSpan);
                         purchaseItemPreview.appendChild(status);
                     }
                     if (reward.bg) {
