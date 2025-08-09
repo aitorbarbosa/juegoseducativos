@@ -3143,12 +3143,7 @@
           z-index: 3;
         }
 
-        .store-item-status.daily-reward-amount {
-          top: 8%;
-          bottom: auto;
-        }
-
-        .store-item-status.daily-reward-amount img {
+        .store-item-status.reward-amount img {
           width: 1.3em;
           height: 1.3em;
           position: relative;
@@ -7680,21 +7675,6 @@ function setupSlider(slider, display) {
                 img.className = 'store-item-img ' + (reward.type === 'lives' ? 'lives-img' : 'currency-img');
                 img.src = reward.img;
                 item.appendChild(img);
-                if (reward.type === 'lives' || reward.type === 'coins' || reward.type === 'gems') {
-                    const value = document.createElement('div');
-                    value.className = 'store-item-status daily-reward-amount';
-                    const icon = document.createElement('img');
-                    icon.src = reward.type === 'lives'
-                        ? 'https://i.imgur.com/WrI2XXx.png'
-                        : reward.type === 'coins'
-                            ? 'https://i.imgur.com/lnc1Mwu.png'
-                            : 'https://i.imgur.com/gPGsaCO.png';
-                    value.appendChild(icon);
-                    const valueSpan = document.createElement('span');
-                    valueSpan.textContent = reward.min === reward.max ? `${reward.min}` : `${reward.min}-${reward.max}`;
-                    value.appendChild(valueSpan);
-                    item.appendChild(value);
-                }
                 const status = document.createElement('div');
                 status.className = 'store-item-status';
                 const span = document.createElement('span');
@@ -7744,19 +7724,21 @@ function setupSlider(slider, display) {
                     img.className = 'store-item-img ' + (reward.type === 'lives' ? 'lives-img' : 'currency-img');
                     img.src = reward.img;
                     purchaseItemPreview.appendChild(img);
-                    const amount = document.createElement('div');
-                    amount.className = 'store-item-status daily-reward-amount';
-                    const icon = document.createElement('img');
-                    icon.src = reward.type === 'lives'
-                        ? 'https://i.imgur.com/WrI2XXx.png'
-                        : reward.type === 'coins'
-                            ? 'https://i.imgur.com/lnc1Mwu.png'
-                            : 'https://i.imgur.com/gPGsaCO.png';
-                    amount.appendChild(icon);
-                    const amountSpan = document.createElement('span');
-                    amountSpan.textContent = reward.min === reward.max ? `${reward.min}` : `${reward.min}-${reward.max}`;
-                    amount.appendChild(amountSpan);
-                    purchaseItemPreview.appendChild(amount);
+                    if (reward.type === 'lives' || reward.type === 'coins' || reward.type === 'gems') {
+                        const status = document.createElement('div');
+                        status.className = 'store-item-status reward-amount';
+                        const icon = document.createElement('img');
+                        icon.src = reward.type === 'lives'
+                            ? 'https://i.imgur.com/WrI2XXx.png'
+                            : reward.type === 'coins'
+                                ? 'https://i.imgur.com/lnc1Mwu.png'
+                                : 'https://i.imgur.com/gPGsaCO.png';
+                        status.appendChild(icon);
+                        const amountSpan = document.createElement('span');
+                        amountSpan.textContent = reward.min === reward.max ? `${reward.min}` : `${reward.min}-${reward.max}`;
+                        status.appendChild(amountSpan);
+                        purchaseItemPreview.appendChild(status);
+                    }
                     if (reward.bg) {
                         purchaseItemPreview.style.backgroundImage = reward.bg;
                         purchaseItemPreview.style.backgroundSize = '80% 80%';
