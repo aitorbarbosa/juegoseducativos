@@ -3398,7 +3398,7 @@
         #wheel-wrapper {
             position: relative;
             border-radius: 50%;
-            box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+            box-shadow: 0 0 15px rgba(128, 0, 128, 0.5);
         }
         #wheel-pointer {
             position: absolute;
@@ -3409,7 +3409,7 @@
             height: 0;
             border-top: 15px solid transparent;
             border-bottom: 15px solid transparent;
-            border-right: 30px solid red;
+            border-right: 30px solid #8e44ad;
             z-index: 10;
         }
         #wheel-canvas {
@@ -3430,7 +3430,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            background-color: rgba(0, 0, 0, 0.5);
+            background-color: rgba(142, 68, 173, 0.5);
             color: white;
             font-size: 1.2rem;
             border-radius: 50%;
@@ -14497,12 +14497,12 @@ async function startGame(isRestart = false) {
                 wheelCtx.moveTo(150, 150);
                 wheelCtx.arc(150, 150, 150, start, start + angle);
                 wheelCtx.closePath();
-                wheelCtx.fillStyle = `hsl(${i * 36},60%,80%)`;
+                wheelCtx.fillStyle = `hsl(${260 + i * 5},60%,80%)`;
                 wheelCtx.fill();
 
                 // thin beveled separator between segments
                 wheelCtx.lineWidth = 3;
-                wheelCtx.strokeStyle = '#222';
+                wheelCtx.strokeStyle = '#4c1a70';
                 wheelCtx.stroke();
                 wheelCtx.lineWidth = 1;
                 wheelCtx.strokeStyle = 'rgba(255,255,255,0.6)';
@@ -14535,7 +14535,7 @@ async function startGame(isRestart = false) {
             wheelCtx.beginPath();
             wheelCtx.arc(150, 150, 150, 0, 2 * Math.PI);
             wheelCtx.lineWidth = 10;
-            wheelCtx.strokeStyle = '#222';
+            wheelCtx.strokeStyle = '#4c1a70';
             wheelCtx.stroke();
             wheelCtx.beginPath();
             wheelCtx.arc(150, 150, 145, 0, 2 * Math.PI);
