@@ -3401,7 +3401,7 @@
         #wheel-pointer {
             position: absolute;
             top: 50%;
-            right: -30px;
+            right: -15px;
             transform: translateY(-50%);
             width: 0;
             height: 0;
@@ -14491,17 +14491,23 @@ async function startGame(isRestart = false) {
                 wheelCtx.closePath();
                 wheelCtx.fillStyle = `hsl(${i * 36},70%,50%)`;
                 wheelCtx.fill();
+
+                const mid = start + angle / 2;
+                const r = 120;
+                const x = 150 + r * Math.cos(mid);
+                const y = 150 + r * Math.sin(mid);
+
                 wheelCtx.save();
-                wheelCtx.translate(150, 150);
-                wheelCtx.rotate(start + angle / 2);
+                wheelCtx.translate(x, y);
+                wheelCtx.rotate(mid + Math.PI / 2);
                 if (p.img && p.img.complete) {
-                    wheelCtx.drawImage(p.img, 110, -15, 30, 30);
+                    wheelCtx.drawImage(p.img, -15, -30, 30, 30);
                     if (p.type === 'life' || p.type === 'coins' || p.type === 'gems') {
                         wheelCtx.fillStyle = '#fff';
                         wheelCtx.font = '12px sans-serif';
-                        wheelCtx.textAlign = 'right';
-                        wheelCtx.textBaseline = 'middle';
-                        wheelCtx.fillText(`${p.min}-${p.max}`, 105, 0);
+                        wheelCtx.textAlign = 'center';
+                        wheelCtx.textBaseline = 'top';
+                        wheelCtx.fillText(`${p.min}-${p.max}`, 0, 2);
                     }
                 }
                 wheelCtx.restore();
