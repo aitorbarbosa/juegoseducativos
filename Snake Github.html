@@ -14486,6 +14486,7 @@ async function startGame(isRestart = false) {
 
         function drawWheel() {
             if (!wheelCtx) return;
+            wheelCtx.clearRect(0, 0, 300, 300);
             const angle = (2 * Math.PI) / wheelPrizes.length;
             let start = 0;
             wheelPrizes.forEach((p, i) => {
@@ -14495,6 +14496,14 @@ async function startGame(isRestart = false) {
                 wheelCtx.closePath();
                 wheelCtx.fillStyle = `hsl(${i * 36},70%,50%)`;
                 wheelCtx.fill();
+
+                // thin beveled separator between segments
+                wheelCtx.lineWidth = 3;
+                wheelCtx.strokeStyle = '#222';
+                wheelCtx.stroke();
+                wheelCtx.lineWidth = 1;
+                wheelCtx.strokeStyle = 'rgba(255,255,255,0.6)';
+                wheelCtx.stroke();
 
                 const mid = start + angle / 2;
                 const r = 100;
@@ -14518,6 +14527,18 @@ async function startGame(isRestart = false) {
                 wheelCtx.restore();
                 start += angle;
             });
+
+            // outer beveled border
+            wheelCtx.beginPath();
+            wheelCtx.arc(150, 150, 150, 0, 2 * Math.PI);
+            wheelCtx.lineWidth = 10;
+            wheelCtx.strokeStyle = '#222';
+            wheelCtx.stroke();
+            wheelCtx.beginPath();
+            wheelCtx.arc(150, 150, 145, 0, 2 * Math.PI);
+            wheelCtx.lineWidth = 5;
+            wheelCtx.strokeStyle = 'rgba(255,255,255,0.6)';
+            wheelCtx.stroke();
         }
 
         function selectPrize() {
