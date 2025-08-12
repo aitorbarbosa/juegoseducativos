@@ -3397,6 +3397,8 @@
         }
         #wheel-wrapper {
             position: relative;
+            border-radius: 50%;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
         }
         #wheel-pointer {
             position: absolute;
@@ -3414,6 +3416,7 @@
             transition: transform 4s cubic-bezier(0.33, 1, 0.68, 1);
             background: none;
             border: none;
+            border-radius: 50%;
         }
         #spin-button:disabled {
             opacity: 0.5;
@@ -14494,7 +14497,7 @@ async function startGame(isRestart = false) {
                 wheelCtx.moveTo(150, 150);
                 wheelCtx.arc(150, 150, 150, start, start + angle);
                 wheelCtx.closePath();
-                wheelCtx.fillStyle = `hsl(${i * 36},70%,50%)`;
+                wheelCtx.fillStyle = `hsl(${i * 36},60%,80%)`;
                 wheelCtx.fill();
 
                 // thin beveled separator between segments
