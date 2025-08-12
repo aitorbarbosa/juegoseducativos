@@ -2015,6 +2015,59 @@
         #profile-panel .panel-content::-webkit-scrollbar-thumb:active {
             background: #8f66af;
         }
+        /* Daily roulette styles */
+        #daily-roulette-section {
+            margin-top: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        #daily-roulette-wheel {
+            width: 200px;
+            height: 200px;
+            transition: transform 4s cubic-bezier(0.33, 1, 0.68, 1);
+        }
+        #daily-roulette-bottom {
+            display: flex;
+            align-items: center;
+            margin-top: 10px;
+        }
+        #daily-roulette-spin {
+            background-color: #c00;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        #daily-roulette-spin:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        #daily-roulette-result {
+            display: flex;
+            align-items: center;
+            margin-left: 15px;
+            min-height: 40px;
+        }
+        #daily-roulette-result img {
+            width: 40px;
+            height: 40px;
+            margin-right: 10px;
+        }
+        #daily-roulette-open,
+        #daily-roulette-collect {
+            margin-top: 10px;
+        }
+        #daily-roulette-cooldown {
+            margin-top: 10px;
+            font-size: 0.9em;
+        }
+        .roulette-locked {
+            opacity: 0.5;
+            pointer-events: none;
+        }
+
 
 
         @media screen and (max-width: 600px) {
@@ -3978,6 +4031,17 @@
                 </div>
                 <div class="panel-content">
                     <div id="daily-rewards-container" class="grid grid-cols-3 gap-4 w-full"></div>
+                    <div id="daily-roulette-section">
+                        <h3>Ruleta diaria</h3>
+                        <canvas id="daily-roulette-wheel" width="200" height="200"></canvas>
+                        <div id="daily-roulette-bottom">
+                            <button id="daily-roulette-spin">GIRAR</button>
+                            <div id="daily-roulette-result"></div>
+                        </div>
+                        <button id="daily-roulette-open" class="hidden">Abrir</button>
+                        <button id="daily-roulette-collect" class="hidden">Recoger</button>
+                        <div id="daily-roulette-cooldown" class="hidden"></div>
+                    </div>
                 </div>
             </div>
             <div id="achievements-panel" class="achievements-panel-hidden">
@@ -4293,6 +4357,12 @@
         const dailyPanel = document.getElementById("daily-panel");
         const closeDailyPanelButton = document.getElementById("close-daily-panel");
         const dailyRewardsContainer = document.getElementById("daily-rewards-container");
+        const dailyRouletteWheel = document.getElementById("daily-roulette-wheel");
+        const dailyRouletteSpin = document.getElementById("daily-roulette-spin");
+        const dailyRouletteResult = document.getElementById("daily-roulette-result");
+        const dailyRouletteOpen = document.getElementById("daily-roulette-open");
+        const dailyRouletteCollect = document.getElementById("daily-roulette-collect");
+        const dailyRouletteCooldownEl = document.getElementById("daily-roulette-cooldown");
         const storeItemsContainer = document.getElementById("store-items-container");
         const storeTabButtons = document.querySelectorAll('#store-tabs .store-tab');
         const closeStorePanelButton = document.getElementById("close-store-panel");
@@ -5791,6 +5861,22 @@ function setupSlider(slider, display) {
         let storeTab = 'cofres';
         let profileTab = 'general';
         let dailyRewardState = { day: 1, lastClaimDate: null };
+
+        const DAILY_ROULETTE_PRIZES = [
+            { type: 'reroll', name: 'Tirar de nuevo', prob: 0.1, color: '#bbbbbb' },
+            { type: 'life', name: 'Vida', prob: 0.25, min: 1, max: 5, img: AD_ITEMS.adLife.img, color: '#ff4d4d' },
+            { type: 'coins', name: 'Monedas', prob: 0.2, min: 10, max: 100, img: COIN_PACKS.coin500.img, color: '#ffd700' },
+            { type: 'coins', name: 'Monedas', prob: 0.1, min: 100, max: 1000, img: COIN_PACKS.coin500.img, color: '#e1a95f' },
+            { type: 'gems', name: 'Gemas', prob: 0.1, min: 1, max: 5, img: GEM_PACKS.gem10.img, color: '#5cd6ff' },
+            { type: 'gems', name: 'Gemas', prob: 0.05, min: 5, max: 10, img: GEM_PACKS.gem10.img, color: '#008cff' },
+            { type: 'chest', name: 'Cofre común', prob: 0.1, chest: 'common', img: CHESTS.common.img, color: '#b87333' },
+            { type: 'chest', name: 'Cofre raro', prob: 0.06, chest: 'rare', img: CHESTS.rare.img, color: '#6ec6ff' },
+            { type: 'chest', name: 'Cofre épico', prob: 0.03, chest: 'epic', img: CHESTS.epic.img, color: '#9b59b6' },
+            { type: 'chest', name: 'Cofre legendario', prob: 0.01, chest: 'legendary', img: CHESTS.legendary.img, color: '#ffa500' }
+        ];
+        const ROULETTE_COOLDOWN = 4 * 60 * 60 * 1000;
+        let rouletteCooldownUntil = parseInt(localStorage.getItem('dailyRouletteCooldown') || '0', 10);
+        let currentRoulettePrize = null;
         function getRarityClass(type, key) {
             if (type === 'skin') {
                 if (key === 'snake') return 'rarity-default';
@@ -7542,6 +7628,10 @@ function setupSlider(slider, display) {
         if (achievementsMenuButton) achievementsMenuButton.addEventListener('click', openAchievementsMenu);
         if (dailyMenuButton) dailyMenuButton.addEventListener('click', openDailyMenu);
         if (wheelMenuButton) wheelMenuButton.addEventListener('click', () => { openGenericMenuPanel('Ruleta de premios'); });
+        if (dailyRouletteSpin) dailyRouletteSpin.addEventListener('click', spinDailyRoulette);
+        if (dailyRouletteOpen) dailyRouletteOpen.addEventListener('click', openRouletteChest);
+        if (dailyRouletteCollect) dailyRouletteCollect.addEventListener('click', collectRouletteReward);
+        setInterval(updateRouletteCooldown, 1000);
         if (closeAchievementsPanelButton) closeAchievementsPanelButton.addEventListener('click', closeAchievementsMenu);
         if (applyFreeSettingsBottomButton) applyFreeSettingsBottomButton.addEventListener('click', applyFreeSettings);
         if (freeDifficultySelector) freeDifficultySelector.addEventListener('change', () => {
@@ -8200,9 +8290,237 @@ function setupSlider(slider, display) {
             }
 
             const cols = items.length === 3 ? 'grid-cols-3' : (items.length === 2 ? 'grid-cols-2' : 'grid-cols-1');
-            purchaseItemPreview.className = `grid ${cols} gap-4 w-full`;
-            items.forEach(el => purchaseItemPreview.appendChild(el));
+        purchaseItemPreview.className = `grid ${cols} gap-4 w-full`;
+        items.forEach(el => purchaseItemPreview.appendChild(el));
         }
+
+        // --- Daily Roulette Logic ---
+        function drawRouletteWheel() {
+            if (!dailyRouletteWheel) return;
+            const ctx = dailyRouletteWheel.getContext('2d');
+            const size = dailyRouletteWheel.width;
+            const center = size / 2;
+            const slice = (2 * Math.PI) / DAILY_ROULETTE_PRIZES.length;
+            ctx.clearRect(0, 0, size, size);
+            DAILY_ROULETTE_PRIZES.forEach((p, i) => {
+                ctx.beginPath();
+                ctx.moveTo(center, center);
+                ctx.fillStyle = p.color;
+                ctx.arc(center, center, center, i * slice, (i + 1) * slice);
+                ctx.fill();
+                ctx.save();
+                ctx.translate(center, center);
+                ctx.rotate((i + 0.5) * slice);
+                ctx.textAlign = 'right';
+                ctx.fillStyle = '#000';
+                ctx.font = '10px sans-serif';
+                ctx.fillText(p.name, center - 10, 0);
+                ctx.restore();
+            });
+        }
+
+        function getRandomRoulettePrize() {
+            const roll = Math.random();
+            let acc = 0;
+            for (let i = 0; i < DAILY_ROULETTE_PRIZES.length; i++) {
+                acc += DAILY_ROULETTE_PRIZES[i].prob;
+                if (roll < acc) return { ...DAILY_ROULETTE_PRIZES[i], index: i };
+            }
+            return { ...DAILY_ROULETTE_PRIZES[0], index: 0 };
+        }
+
+        let wheelRotation = 0;
+        function spinDailyRoulette() {
+            if (Date.now() < rouletteCooldownUntil) return;
+            dailyRouletteSpin.disabled = true;
+            dailyRouletteResult.innerHTML = '';
+            dailyRouletteOpen.classList.add('hidden');
+            dailyRouletteCollect.classList.add('hidden');
+            currentRoulettePrize = getRandomRoulettePrize();
+            const segmentAngle = 360 / DAILY_ROULETTE_PRIZES.length;
+            const targetAngle = 360 - currentRoulettePrize.index * segmentAngle - segmentAngle / 2;
+            wheelRotation += 360 * 5 + targetAngle - (wheelRotation % 360);
+            dailyRouletteWheel.style.transform = `rotate(${wheelRotation}deg)`;
+            setTimeout(() => {
+                showRoulettePrize();
+            }, 4000);
+        }
+
+        function showRoulettePrize() {
+            if (!currentRoulettePrize) return;
+            const prize = currentRoulettePrize;
+            if (prize.type === 'reroll') {
+                const span = document.createElement('span');
+                span.textContent = '¡Tira de nuevo!';
+                dailyRouletteResult.appendChild(span);
+                dailyRouletteSpin.disabled = false;
+                currentRoulettePrize = null;
+                return;
+            }
+            const img = document.createElement('img');
+            img.src = prize.img || '';
+            dailyRouletteResult.appendChild(img);
+            const span = document.createElement('span');
+            if (prize.type === 'life') {
+                prize.amount = randInt(prize.min, prize.max);
+                span.textContent = `+${prize.amount} Vida${prize.amount > 1 ? 's' : ''}`;
+            } else if (prize.type === 'coins') {
+                prize.amount = randInt(prize.min, prize.max);
+                span.textContent = `+${prize.amount} Monedas`;
+            } else if (prize.type === 'gems') {
+                prize.amount = randInt(prize.min, prize.max);
+                span.textContent = `+${prize.amount} Gemas`;
+            } else if (prize.type === 'chest') {
+                span.textContent = prize.name;
+                dailyRouletteOpen.classList.remove('hidden');
+            }
+            dailyRouletteResult.appendChild(span);
+            if (prize.type !== 'chest') {
+                dailyRouletteCollect.classList.remove('hidden');
+            }
+        }
+
+        function generateChestRewards(chestKey) {
+            const chest = CHESTS[chestKey];
+            const coinGain = randInt(chest.coinRange[0], chest.coinRange[1]);
+            const gemGain = Math.random() < chest.gemChance ? randInt(chest.gemRange[0], chest.gemRange[1]) : 0;
+            const item = getRandomChestItem(chestKey);
+            return { coinGain, gemGain, item };
+        }
+
+        function openRouletteChest() {
+            if (!currentRoulettePrize || currentRoulettePrize.type !== 'chest') return;
+            const rewards = generateChestRewards(currentRoulettePrize.chest);
+            currentRoulettePrize.rewards = rewards;
+            dailyRouletteResult.innerHTML = '';
+            const items = [];
+            const coinDiv = document.createElement('div');
+            coinDiv.style.display = 'flex';
+            coinDiv.style.alignItems = 'center';
+            const coinImg = document.createElement('img');
+            coinImg.src = COIN_PACKS.coin500.img;
+            coinImg.style.width = '40px';
+            coinImg.style.height = '40px';
+            coinDiv.appendChild(coinImg);
+            const coinSpan = document.createElement('span');
+            coinSpan.textContent = `+${rewards.coinGain} Monedas`;
+            coinDiv.appendChild(coinSpan);
+            items.push(coinDiv);
+            if (rewards.gemGain > 0) {
+                const gemDiv = document.createElement('div');
+                gemDiv.style.display = 'flex';
+                gemDiv.style.alignItems = 'center';
+                const gemImg = document.createElement('img');
+                gemImg.src = GEM_PACKS.gem10.img;
+                gemImg.style.width = '40px';
+                gemImg.style.height = '40px';
+                gemDiv.appendChild(gemImg);
+                const gemSpan = document.createElement('span');
+                gemSpan.textContent = `+${rewards.gemGain} Gemas`;
+                gemDiv.appendChild(gemSpan);
+                items.push(gemDiv);
+            }
+            if (rewards.item) {
+                const itemDiv = document.createElement('div');
+                itemDiv.style.display = 'flex';
+                itemDiv.style.alignItems = 'center';
+                const itemImg = document.createElement('img');
+                if (rewards.item.itemType === 'food') itemImg.src = FOODS[rewards.item.itemKey]?.asset?.src || '';
+                else if (rewards.item.itemType === 'skin') itemImg.src = SKINS[rewards.item.itemKey]?.snakeHeadAsset?.upDown?.src || '';
+                else if (rewards.item.itemType === 'scene') { itemImg.src = SCENES[rewards.item.itemKey]?.icon || ''; itemImg.classList.add('scene-img-full'); }
+                itemImg.style.width = '40px';
+                itemImg.style.height = '40px';
+                itemDiv.appendChild(itemImg);
+                const itemSpan = document.createElement('span');
+                let itemName = '';
+                if (rewards.item.itemType === 'food') itemName = FOOD_DISPLAY_NAMES[rewards.item.itemKey];
+                else if (rewards.item.itemType === 'skin') itemName = SKIN_DISPLAY_NAMES[rewards.item.itemKey];
+                else if (rewards.item.itemType === 'scene') itemName = SCENE_DISPLAY_NAMES[rewards.item.itemKey];
+                itemSpan.textContent = itemName || 'Objeto';
+                itemDiv.appendChild(itemSpan);
+                items.push(itemDiv);
+            }
+            items.forEach(el => dailyRouletteResult.appendChild(el));
+            dailyRouletteOpen.classList.add('hidden');
+            dailyRouletteCollect.classList.remove('hidden');
+        }
+
+        function collectRouletteReward() {
+            if (!currentRoulettePrize) return;
+            const prize = currentRoulettePrize;
+            if (prize.type === 'life') {
+                const gain = prize.amount;
+                const prevLives = playerLives;
+                playerLives = Math.min(MAX_LIVES, playerLives + gain);
+                if (playerLives >= MAX_LIVES) lifeRestoreQueue = [];
+                if (lifeRestoreQueue.length > 0) lifeRestoreQueue = lifeRestoreQueue.slice(0, Math.max(0, lifeRestoreQueue.length - gain));
+                saveLives();
+                animateLifeGain(prevLives, playerLives);
+                updateLifeTimerDisplay();
+            } else if (prize.type === 'coins') {
+                const prevCoins = totalCoins;
+                totalCoins += prize.amount;
+                localStorage.setItem('snakeGameCoins', totalCoins.toString());
+                achievementsProgress.coins = totalCoins;
+                showEarnedCoinsMessage(prize.amount);
+                animateCoinGain(prevCoins, totalCoins);
+                updateCoinDisplay();
+            } else if (prize.type === 'gems') {
+                const prevGems = totalGems;
+                totalGems += prize.amount;
+                saveGems();
+                showEarnedGemsMessage(prize.amount);
+                animateGemGain(prevGems, totalGems);
+                updateGemDisplay();
+            } else if (prize.type === 'chest' && prize.rewards) {
+                const { coinGain, gemGain, item } = prize.rewards;
+                const prevCoins = totalCoins;
+                totalCoins += coinGain;
+                showEarnedCoinsMessage(coinGain);
+                animateCoinGain(prevCoins, totalCoins);
+                if (gemGain > 0) {
+                    const prevGems = totalGems;
+                    totalGems += gemGain;
+                    saveGems();
+                    showEarnedGemsMessage(gemGain);
+                    animateGemGain(prevGems, totalGems);
+                }
+                grantChestItem(item);
+            }
+            currentRoulettePrize = null;
+            startRouletteCooldown();
+            updateCoinDisplay();
+            updateGemDisplay();
+            dailyRouletteResult.innerHTML = '';
+            dailyRouletteCollect.classList.add('hidden');
+        }
+
+        function startRouletteCooldown() {
+            rouletteCooldownUntil = Date.now() + ROULETTE_COOLDOWN;
+            localStorage.setItem('dailyRouletteCooldown', rouletteCooldownUntil.toString());
+            updateRouletteCooldown();
+        }
+
+        function updateRouletteCooldown() {
+            const now = Date.now();
+            if (now >= rouletteCooldownUntil) {
+                dailyRouletteCooldownEl.classList.add('hidden');
+                dailyRouletteWheel.classList.remove('roulette-locked');
+                dailyRouletteSpin.disabled = false;
+            } else {
+                const remaining = rouletteCooldownUntil - now;
+                const hrs = Math.floor(remaining / 3600000);
+                const mins = Math.floor((remaining % 3600000) / 60000);
+                const secs = Math.floor((remaining % 60000) / 1000);
+                dailyRouletteCooldownEl.textContent = `Disponible en ${hrs}h ${mins}m ${secs}s`;
+                dailyRouletteCooldownEl.classList.remove('hidden');
+                dailyRouletteSpin.disabled = true;
+                dailyRouletteWheel.classList.add('roulette-locked');
+            }
+        }
+
+        drawRouletteWheel();
+        updateRouletteCooldown();
 
 let purchaseInfo = null;
 let pendingChestRewards = null;
