@@ -1622,10 +1622,10 @@
             display: block;
         }
 
-        .settings-panel-hidden, .info-panel-hidden, .specific-info-panel-hidden, .free-settings-panel-hidden, .reset-panel-hidden, .config-menu-panel-hidden, .generic-menu-panel-hidden, .store-panel-hidden, .profile-panel-hidden, .achievements-panel-hidden, .daily-panel-hidden, .purchase-confirmation-panel-hidden, .chest-info-panel-hidden, .delete-confirmation-panel-hidden, .out-of-lives-panel-hidden, .select-confirmation-panel-hidden {
+        .settings-panel-hidden, .info-panel-hidden, .specific-info-panel-hidden, .free-settings-panel-hidden, .reset-panel-hidden, .config-menu-panel-hidden, .generic-menu-panel-hidden, .store-panel-hidden, .profile-panel-hidden, .achievements-panel-hidden, .daily-panel-hidden, .wheel-panel-hidden, .purchase-confirmation-panel-hidden, .chest-info-panel-hidden, .delete-confirmation-panel-hidden, .out-of-lives-panel-hidden, .select-confirmation-panel-hidden {
             display: none !important;
         }
-        #settings-panel, #info-panel, #specific-info-panel, #free-settings-panel, #reset-confirmation-panel, #config-menu-panel, #generic-menu-panel, #store-panel, #profile-panel, #achievements-panel, #daily-panel, #purchase-confirmation-panel, #chest-info-panel, #delete-confirmation-panel, #out-of-lives-panel, #select-confirmation-panel {
+        #settings-panel, #info-panel, #specific-info-panel, #free-settings-panel, #reset-confirmation-panel, #config-menu-panel, #generic-menu-panel, #store-panel, #profile-panel, #achievements-panel, #daily-panel, #wheel-panel, #purchase-confirmation-panel, #chest-info-panel, #delete-confirmation-panel, #out-of-lives-panel, #select-confirmation-panel {
             position: fixed;
             left: 0;
             transform: scale(0);
@@ -1797,6 +1797,7 @@
         #profile-panel.centered-panel.panel-visible,
         #achievements-panel.centered-panel.panel-visible,
         #daily-panel.centered-panel.panel-visible,
+        #wheel-panel.centered-panel.panel-visible,
         #delete-confirmation-panel.centered-panel.panel-visible,
         #out-of-lives-panel.centered-panel.panel-visible,
         #select-confirmation-panel.centered-panel.panel-visible {
@@ -1813,6 +1814,7 @@
         #profile-panel.panel-visible,
         #achievements-panel.panel-visible,
         #daily-panel.panel-visible,
+        #wheel-panel.panel-visible,
         #purchase-confirmation-panel.panel-visible,
         #chest-info-panel.panel-visible,
         #delete-confirmation-panel.panel-visible,
@@ -2405,6 +2407,7 @@
         #profile-panel { z-index: 2101; }
         #achievements-panel { z-index: 2101; }
         #daily-panel { z-index: 2101; }
+        #wheel-panel { z-index: 2101; }
         #purchase-confirmation-panel { z-index: 2103; }
         #chest-info-panel { z-index: 2103; }
         #delete-confirmation-panel { z-index: 2103; }
@@ -3390,6 +3393,14 @@
             }
         }
 
+        #wheel-area { position: relative; width: 200px; height: 200px; }
+        #prize-wheel { width: 100%; height: 100%; border-radius: 50%; }
+        #wheel-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); color: #fff; display: flex; align-items: center; justify-content: center; border-radius: 50%; }
+        #wheel-controls { width: 100%; margin-top: 10px; display: flex; align-items: center; justify-content: center; gap: 10px; }
+        #spin-wheel-button { background-color: #dc2626; }
+        #wheel-result { min-height: 50px; display: flex; align-items: center; justify-content: center; }
+        #wheel-result img { width: 32px; height: 32px; margin-right: 4px; }
+
     </style>
 </head>
 <body>
@@ -3980,6 +3991,27 @@
                     <div id="daily-rewards-container" class="grid grid-cols-3 gap-4 w-full"></div>
                 </div>
             </div>
+            <div id="wheel-panel" class="wheel-panel-hidden">
+                <div class="settings-header">
+                    <h2>RULETA DIARIA</h2>
+                    <button id="close-wheel-panel" class="close-button" aria-label="Cerrar">
+                        <img src="https://i.imgur.com/w5E6xdU.png" alt="Cerrar">
+                    </button>
+                </div>
+                <div class="panel-content flex flex-col items-center">
+                    <div id="wheel-area" class="mb-4">
+                        <canvas id="prize-wheel" width="200" height="200"></canvas>
+                        <div id="wheel-overlay" class="hidden">BLOQUEADO</div>
+                    </div>
+                    <div id="wheel-controls" class="w-full flex justify-center items-center gap-4">
+                        <button id="spin-wheel-button" class="menu-option-button">GIRAR</button>
+                        <div id="wheel-result" class="flex items-center justify-center border-2 border-purple-800 rounded p-2 w-1/2 text-xs text-center"></div>
+                    </div>
+                    <div id="chest-rewards" class="hidden mb-4 text-center"></div>
+                    <button id="open-chest-button" class="menu-option-button hidden mt-4">ABRIR</button>
+                    <button id="collect-wheel-button" class="menu-option-button hidden mt-4">RECOGER</button>
+                </div>
+            </div>
             <div id="achievements-panel" class="achievements-panel-hidden">
                 <div class="settings-header">
                     <h2>LOGROS</h2>
@@ -4293,6 +4325,16 @@
         const dailyPanel = document.getElementById("daily-panel");
         const closeDailyPanelButton = document.getElementById("close-daily-panel");
         const dailyRewardsContainer = document.getElementById("daily-rewards-container");
+        const wheelPanel = document.getElementById("wheel-panel");
+        const closeWheelPanelButton = document.getElementById("close-wheel-panel");
+        const spinWheelButton = document.getElementById("spin-wheel-button");
+        const wheelResult = document.getElementById("wheel-result");
+        const openChestButton = document.getElementById("open-chest-button");
+        const collectWheelButton = document.getElementById("collect-wheel-button");
+        const wheelCanvas = document.getElementById("prize-wheel");
+        const wheelOverlay = document.getElementById("wheel-overlay");
+        const wheelArea = document.getElementById("wheel-area");
+        const chestRewardsDiv = document.getElementById("chest-rewards");
         const storeItemsContainer = document.getElementById("store-items-container");
         const storeTabButtons = document.querySelectorAll('#store-tabs .store-tab');
         const closeStorePanelButton = document.getElementById("close-store-panel");
@@ -5788,9 +5830,26 @@ function setupSlider(slider, display) {
             { type: 'chest', chest: 'epic', img: CHESTS.epic.img, bg: "url('https://i.imgur.com/ovDIW0W.png')" },
             { type: 'chest', chest: 'legendary', img: CHESTS.legendary.img, bg: "url('https://i.imgur.com/ovDIW0W.png')" }
         ];
+        const WHEEL_PRIZES = [
+            { type: 'reroll', label: 'Tirar de nuevo', prob: 0.1, img: 'https://placehold.co/32x32/02030D/FFFFFF?text=R' },
+            { type: 'lives', label: 'Vida', min: 1, max: 5, prob: 0.25, img: AD_ITEMS.adLife.img },
+            { type: 'coins_small', label: 'Monedas', min: 10, max: 100, prob: 0.2, img: COIN_PACKS.coin500.img },
+            { type: 'coins_big', label: 'Monedas', min: 100, max: 1000, prob: 0.1, img: COIN_PACKS.coin10000.img },
+            { type: 'gems_small', label: 'Gemas', min: 1, max: 5, prob: 0.1, img: GEM_PACKS.gem10.img },
+            { type: 'gems_big', label: 'Gemas', min: 5, max: 10, prob: 0.05, img: GEM_PACKS.gem100.img },
+            { type: 'chest', label: 'Cofre común', chest: 'common', prob: 0.1, img: CHESTS.common.img },
+            { type: 'chest', label: 'Cofre raro', chest: 'rare', prob: 0.06, img: CHESTS.rare.img },
+            { type: 'chest', label: 'Cofre épico', chest: 'epic', prob: 0.03, img: CHESTS.epic.img },
+            { type: 'chest', label: 'Cofre legendario', chest: 'legendary', prob: 0.01, img: CHESTS.legendary.img }
+        ];
         let storeTab = 'cofres';
         let profileTab = 'general';
         let dailyRewardState = { day: 1, lastClaimDate: null };
+        let pendingWheelReward = null;
+        let wheelDegree = 0;
+        let wheelSpinning = false;
+        let wheelCooldownEnd = parseInt(localStorage.getItem('wheelCooldown') || '0');
+        let wheelCooldownTimer = null;
         function getRarityClass(type, key) {
             if (type === 'skin') {
                 if (key === 'snake') return 'rarity-default';
@@ -7541,7 +7600,11 @@ function setupSlider(slider, display) {
         if (storeMenuButton) storeMenuButton.addEventListener('click', () => openStoreMenu());
         if (achievementsMenuButton) achievementsMenuButton.addEventListener('click', openAchievementsMenu);
         if (dailyMenuButton) dailyMenuButton.addEventListener('click', openDailyMenu);
-        if (wheelMenuButton) wheelMenuButton.addEventListener('click', () => { openGenericMenuPanel('Ruleta de premios'); });
+        if (wheelMenuButton) wheelMenuButton.addEventListener('click', openWheelMenu);
+        if (closeWheelPanelButton) closeWheelPanelButton.addEventListener('click', closeWheelMenu);
+        if (spinWheelButton) spinWheelButton.addEventListener('click', spinWheel);
+        if (openChestButton) openChestButton.addEventListener('click', openChestReward);
+        if (collectWheelButton) collectWheelButton.addEventListener('click', collectWheelReward);
         if (closeAchievementsPanelButton) closeAchievementsPanelButton.addEventListener('click', closeAchievementsMenu);
         if (applyFreeSettingsBottomButton) applyFreeSettingsBottomButton.addEventListener('click', applyFreeSettings);
         if (freeDifficultySelector) freeDifficultySelector.addEventListener('change', () => {
@@ -7767,6 +7830,175 @@ function setupSlider(slider, display) {
             saveDailyRewards();
             populateDailyRewards();
         }
+
+        function openWheelMenu() {
+            const isConfigMenuVisible = !configMenuPanel.classList.contains('config-menu-panel-hidden') && configMenuPanel.classList.contains('panel-visible');
+            wheelPanel.classList.remove('centered-panel');
+            togglePanel(wheelPanel, wheelPanel.querySelector('.panel-content'), true);
+            if (isConfigMenuVisible) {
+                matchPanelSizeWithElement(configMenuPanel, wheelPanel);
+            }
+            updateWheelCooldown();
+        }
+
+        function closeWheelMenu() {
+            togglePanel(wheelPanel, wheelPanel.querySelector('.panel-content'), false);
+            setTimeout(updateMainButtonStates, 0);
+        }
+
+        function weightedRandom(items) {
+            const r = Math.random();
+            let acc = 0;
+            for (const item of items) {
+                acc += item.prob;
+                if (r < acc) return item;
+            }
+            return items[items.length - 1];
+        }
+
+        function drawWheel() {
+            if (!wheelCanvas) return;
+            const ctx = wheelCanvas.getContext('2d');
+            const radius = wheelCanvas.width / 2;
+            const colors = ['#8C64AF', '#D3BAE8'];
+            const angle = (2 * Math.PI) / WHEEL_PRIZES.length;
+            for (let i = 0; i < WHEEL_PRIZES.length; i++) {
+                const start = i * angle;
+                const end = start + angle;
+                ctx.beginPath();
+                ctx.moveTo(radius, radius);
+                ctx.arc(radius, radius, radius, start, end);
+                ctx.fillStyle = colors[i % colors.length];
+                ctx.fill();
+                ctx.save();
+                ctx.translate(radius, radius);
+                ctx.rotate(start + angle / 2);
+                ctx.fillStyle = '#fff';
+                ctx.font = '7px "Press Start 2P"';
+                ctx.textAlign = 'right';
+                ctx.fillText(WHEEL_PRIZES[i].label.toUpperCase(), radius - 10, 3);
+                ctx.restore();
+            }
+        }
+
+        function spinWheel() {
+            if (wheelSpinning || (wheelCooldownEnd && wheelCooldownEnd > Date.now())) return;
+            wheelResult.innerHTML = '';
+            openChestButton.classList.add('hidden');
+            collectWheelButton.classList.add('hidden');
+            wheelSpinning = true;
+            spinWheelButton.disabled = true;
+            const prize = weightedRandom(WHEEL_PRIZES);
+            const rotateTo = wheelDegree + 360 * 5 + Math.floor(Math.random() * 360);
+            wheelCanvas.style.transition = 'transform 4s ease-out';
+            wheelCanvas.style.transform = `rotate(${rotateTo}deg)`;
+            wheelDegree = rotateTo;
+            wheelCanvas.addEventListener('transitionend', () => {
+                wheelSpinning = false;
+                displayWheelPrize(prize);
+            }, { once: true });
+        }
+
+        function displayWheelPrize(prize) {
+            if (!wheelResult) return;
+            pendingWheelReward = null;
+            let text = prize.label;
+            if (prize.type === 'lives') {
+                const amount = randInt(prize.min, prize.max);
+                text = `${amount} Vida${amount > 1 ? 's' : ''}`;
+                pendingWheelReward = { lives: amount };
+            } else if (prize.type === 'coins_small' || prize.type === 'coins_big') {
+                const amount = randInt(prize.min, prize.max);
+                text = `${amount} Monedas`;
+                pendingWheelReward = { coins: amount };
+            } else if (prize.type === 'gems_small' || prize.type === 'gems_big') {
+                const amount = randInt(prize.min, prize.max);
+                text = `${amount} Gemas`;
+                pendingWheelReward = { gems: amount };
+            } else if (prize.type === 'chest') {
+                text = prize.label;
+                pendingWheelReward = { chest: prize.chest };
+                openChestButton.classList.remove('hidden');
+            } else if (prize.type === 'reroll') {
+                spinWheelButton.disabled = false;
+            }
+            wheelResult.innerHTML = `<img src="${prize.img}" alt="premio" class="w-8 h-8 mr-2"><span>${text}</span>`;
+            if (prize.type !== 'chest' && prize.type !== 'reroll') {
+                collectWheelButton.classList.remove('hidden');
+            }
+        }
+
+        function openChestReward() {
+            if (!pendingWheelReward || !pendingWheelReward.chest) return;
+            const chest = CHESTS[pendingWheelReward.chest];
+            const coinGain = randInt(chest.coinRange[0], chest.coinRange[1]);
+            const gemGain = Math.random() < chest.gemChance ? randInt(chest.gemRange[0], chest.gemRange[1]) : 0;
+            pendingWheelReward = { coins: coinGain, gems: gemGain };
+            chestRewardsDiv.textContent = `+${coinGain} monedas${gemGain > 0 ? ' y +' + gemGain + ' gemas' : ''}`;
+            wheelArea.classList.add('hidden');
+            chestRewardsDiv.classList.remove('hidden');
+            openChestButton.classList.add('hidden');
+            collectWheelButton.classList.remove('hidden');
+        }
+
+        function collectWheelReward() {
+            if (pendingWheelReward) {
+                if (pendingWheelReward.coins) {
+                    const prev = totalCoins;
+                    totalCoins += pendingWheelReward.coins;
+                    localStorage.setItem('snakeGameCoins', totalCoins.toString());
+                    animateCoinGain(prev, totalCoins);
+                }
+                if (pendingWheelReward.gems) {
+                    const prevG = totalGems;
+                    totalGems += pendingWheelReward.gems;
+                    localStorage.setItem('snakeGameGems', totalGems.toString());
+                    animateGemGain(prevG, totalGems);
+                }
+                if (pendingWheelReward.lives) {
+                    const prevL = playerLives;
+                    playerLives = Math.min(MAX_LIVES, playerLives + pendingWheelReward.lives);
+                    animateLifeGain(prevL, playerLives);
+                }
+            }
+            pendingWheelReward = null;
+            wheelArea.classList.remove('hidden');
+            chestRewardsDiv.classList.add('hidden');
+            collectWheelButton.classList.add('hidden');
+            startWheelCooldown();
+        }
+
+        function startWheelCooldown() {
+            wheelCooldownEnd = Date.now() + 4 * 60 * 60 * 1000;
+            localStorage.setItem('wheelCooldown', wheelCooldownEnd.toString());
+            updateWheelCooldown();
+        }
+
+        function updateWheelCooldown() {
+            if (wheelCooldownTimer) clearInterval(wheelCooldownTimer);
+            function refresh() {
+                const remaining = wheelCooldownEnd - Date.now();
+                if (remaining <= 0) {
+                    wheelOverlay.classList.add('hidden');
+                    spinWheelButton.disabled = false;
+                    wheelResult.textContent = '';
+                    clearInterval(wheelCooldownTimer);
+                    wheelCooldownTimer = null;
+                } else {
+                    const h = Math.floor(remaining / 3600000);
+                    const m = Math.floor((remaining % 3600000) / 60000);
+                    const s = Math.floor((remaining % 60000) / 1000);
+                    wheelResult.textContent = `Disponible en ${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+                    wheelOverlay.classList.remove('hidden');
+                    spinWheelButton.disabled = true;
+                }
+            }
+            refresh();
+            wheelCooldownTimer = setInterval(refresh, 1000);
+        }
+
+        drawWheel();
+        updateWheelCooldown();
 
         function openStoreMenu(defaultTab = 'cofres') {
             if (!storePanel) return;
