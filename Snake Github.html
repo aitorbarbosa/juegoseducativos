@@ -14520,7 +14520,8 @@ async function startGame(isRestart = false) {
                 if (p.img && p.img.complete) {
                     wheelCtx.drawImage(p.img, -20, -40, 40, 40);
                     if (p.type === 'life' || p.type === 'coins' || p.type === 'gems') {
-                        wheelCtx.fillStyle = '#fff';
+                        const textColor = segmentColors[i % 2] === '#FFD700' ? '#8C64AF' : '#fff';
+                        wheelCtx.fillStyle = textColor;
                         wheelCtx.font = '12px sans-serif';
                         wheelCtx.textAlign = 'center';
                         wheelCtx.textBaseline = 'top';
@@ -14535,12 +14536,12 @@ async function startGame(isRestart = false) {
             // outer beveled border
             wheelCtx.beginPath();
             wheelCtx.arc(150, 150, 150, 0, 2 * Math.PI);
-            wheelCtx.lineWidth = 10;
+            wheelCtx.lineWidth = 5;
             wheelCtx.strokeStyle = '#4c1a70';
             wheelCtx.stroke();
             wheelCtx.beginPath();
-            wheelCtx.arc(150, 150, 145, 0, 2 * Math.PI);
-            wheelCtx.lineWidth = 5;
+            wheelCtx.arc(150, 150, 147, 0, 2 * Math.PI);
+            wheelCtx.lineWidth = 2;
             wheelCtx.strokeStyle = 'rgba(255,255,255,0.6)';
             wheelCtx.stroke();
         }
