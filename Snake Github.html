@@ -14529,5 +14529,210 @@ async function startGame(isRestart = false) {
             }
         };
     </script>
+    <style>
+        #daily-roulette-container { max-width: 320px; margin: 20px auto; text-align: center; font-family: sans-serif; }
+        .daily-roulette.hidden { display: none; }
+        .wheel-wrapper { position: relative; width: 300px; height: 300px; margin: 0 auto; }
+        #roulette-wheel { width: 100%; height: 100%; transition: transform 4s cubic-bezier(0.33, 1, 0.68, 1); }
+        .pointer { position: absolute; top: -5px; left: 50%; transform: translateX(-50%); width: 0; height: 0; border-left: 15px solid transparent; border-right: 15px solid transparent; border-bottom: 30px solid red; }
+        .bottom-row { display: flex; justify-content: center; align-items: center; margin-top: 10px; }
+        .spin-button { background: red; color: #fff; padding: 10px 20px; border: none; cursor: pointer; }
+        .spin-button:disabled { opacity: 0.5; cursor: default; }
+        .result-display { min-width: 150px; min-height: 40px; margin-left: 10px; display: flex; align-items: center; justify-content: center; border: 1px solid #ccc; }
+        .action-button { margin-top: 10px; padding: 8px 20px; }
+        .blocked #roulette-wheel { filter: grayscale(1); opacity: 0.4; }
+    </style>
+    <div id="daily-roulette-container" class="daily-roulette hidden">
+        <div id="roulette-wheel-wrapper" class="wheel-wrapper">
+            <canvas id="roulette-wheel" width="300" height="300"></canvas>
+            <div class="pointer"></div>
+        </div>
+        <div id="chest-contents" class="hidden"></div>
+        <div class="bottom-row">
+            <button id="spin-button" class="spin-button">Lanzar</button>
+            <div id="result-display" class="result-display"></div>
+        </div>
+        <button id="reward-action-button" class="action-button hidden"></button>
+    </div>
+    <script>
+    (function(){
+        const rouletteContainer = document.getElementById('daily-roulette-container');
+        if(!rouletteContainer) return;
+        const wheelCanvas = document.getElementById('roulette-wheel');
+        const wheelWrapper = document.getElementById('roulette-wheel-wrapper');
+        const ctx = wheelCanvas.getContext('2d');
+        const spinBtn = document.getElementById('spin-button');
+        const resultDisplay = document.getElementById('result-display');
+        const actionButton = document.getElementById('reward-action-button');
+        const chestContents = document.getElementById('chest-contents');
+        const prizes = [
+            {label:'Tirar de nuevo', prob:0.10, type:'reroll', icon:'🔄'},
+            {label:'Vida', prob:0.25, type:'life', min:1, max:5, icon:'❤️'},
+            {label:'Monedas', prob:0.20, type:'coins-small', min:10, max:100, icon:'🪙'},
+            {label:'Monedas', prob:0.10, type:'coins-large', min:100, max:1000, icon:'🪙'},
+            {label:'Gemas', prob:0.10, type:'gems-small', min:1, max:5, icon:'💎'},
+            {label:'Gemas', prob:0.05, type:'gems-large', min:5, max:10, icon:'💎'},
+            {label:'Cofre común', prob:0.10, type:'chest-common', icon:'📦'},
+            {label:'Cofre raro', prob:0.06, type:'chest-rare', icon:'📦'},
+            {label:'Cofre épico', prob:0.03, type:'chest-epic', icon:'📦'},
+            {label:'Cofre legendario', prob:0.01, type:'chest-legendary', icon:'📦'}
+        ];
+        const colors = ['#f44336','#e91e63','#9c27b0','#673ab7','#3f51b5','#2196f3','#009688','#4caf50','#ffeb3b','#ff9800'];
+        const COOLDOWN_MS = 4 * 60 * 60 * 1000;
+        let currentRotation = 0;
+        let cooldownInterval;
+
+        function drawWheel(){
+            const radius = wheelCanvas.width / 2;
+            prizes.forEach((p,i)=>{
+                const start = i * 2 * Math.PI / prizes.length;
+                const end = (i+1) * 2 * Math.PI / prizes.length;
+                ctx.beginPath();
+                ctx.moveTo(radius,radius);
+                ctx.fillStyle = colors[i % colors.length];
+                ctx.arc(radius,radius,radius,start,end);
+                ctx.fill();
+                ctx.save();
+                ctx.translate(radius,radius);
+                ctx.rotate(start + (end-start)/2);
+                ctx.fillStyle = '#fff';
+                ctx.textAlign = 'right';
+                ctx.font = '14px sans-serif';
+                ctx.fillText(p.label, radius - 10, 5);
+                ctx.restore();
+            });
+        }
+
+        function getRandomPrize(){
+            const rnd = Math.random();
+            let acc = 0;
+            for (const p of prizes){
+                acc += p.prob;
+                if (rnd < acc) return p;
+            }
+            return prizes[prizes.length-1];
+        }
+
+        function formatTime(ms){
+            const totalSec = Math.floor(ms/1000);
+            const h = String(Math.floor(totalSec/3600)).padStart(2,'0');
+            const m = String(Math.floor((totalSec%3600)/60)).padStart(2,'0');
+            const s = String(totalSec%60).padStart(2,'0');
+            return `${h}:${m}:${s}`;
+        }
+
+        function updateCooldown(){
+            clearInterval(cooldownInterval);
+            const stored = parseInt(localStorage.getItem('rouletteCooldown') || '0',10);
+            const now = Date.now();
+            if (stored > now){
+                const remaining = stored - now;
+                spinBtn.disabled = true;
+                wheelWrapper.classList.add('blocked');
+                resultDisplay.textContent = formatTime(remaining);
+                cooldownInterval = setInterval(()=>{
+                    const now2 = Date.now();
+                    if (stored > now2){
+                        resultDisplay.textContent = formatTime(stored - now2);
+                    } else {
+                        clearInterval(cooldownInterval);
+                        resultDisplay.textContent = '';
+                        spinBtn.disabled = false;
+                        wheelWrapper.classList.remove('blocked');
+                    }
+                },1000);
+            } else {
+                resultDisplay.textContent = '';
+                spinBtn.disabled = false;
+                wheelWrapper.classList.remove('blocked');
+            }
+        }
+
+        function startCooldown(){
+            const target = Date.now() + COOLDOWN_MS;
+            localStorage.setItem('rouletteCooldown', target.toString());
+            updateCooldown();
+        }
+
+        function handlePrize(prize){
+            if (prize.type === 'reroll'){
+                resultDisplay.innerHTML = `${prize.icon} ${prize.label}`;
+                spinBtn.disabled = false;
+                return;
+            }
+            let amount = '';
+            if (prize.min){
+                amount = Math.floor(Math.random() * (prize.max - prize.min + 1)) + prize.min;
+            }
+            resultDisplay.innerHTML = `${prize.icon} ${prize.label}${amount ? ': '+amount : ''}`;
+            if (prize.type.startsWith('chest')){
+                actionButton.textContent = 'Abrir';
+                actionButton.classList.remove('hidden');
+                actionButton.onclick = ()=>openChest(prize);
+            } else {
+                actionButton.textContent = 'Recoger';
+                actionButton.classList.remove('hidden');
+                actionButton.onclick = collectReward;
+            }
+        }
+
+        function openChest(prize){
+            wheelWrapper.classList.add('hidden');
+            const contents = generateChestContents(prize.type);
+            chestContents.textContent = contents;
+            chestContents.classList.remove('hidden');
+            actionButton.textContent = 'Recoger';
+            actionButton.onclick = collectReward;
+        }
+
+        function generateChestContents(type){
+            let coins = 0, gems = 0;
+            switch(type){
+                case 'chest-common': coins = rand(20,50); gems = rand(0,1); break;
+                case 'chest-rare': coins = rand(50,100); gems = rand(1,3); break;
+                case 'chest-epic': coins = rand(100,200); gems = rand(3,5); break;
+                case 'chest-legendary': coins = rand(200,500); gems = rand(5,10); break;
+            }
+            return `Contenido: 🪙 ${coins}  💎 ${gems}`;
+        }
+
+        function rand(min,max){
+            return Math.floor(Math.random()*(max-min+1))+min;
+        }
+
+        function collectReward(){
+            actionButton.classList.add('hidden');
+            chestContents.classList.add('hidden');
+            wheelWrapper.classList.remove('hidden');
+            startCooldown();
+        }
+
+        function spinWheel(){
+            if (spinBtn.disabled) return;
+            spinBtn.disabled = true;
+            resultDisplay.textContent = '';
+            actionButton.classList.add('hidden');
+            chestContents.classList.add('hidden');
+            wheelWrapper.classList.remove('hidden');
+            const prize = getRandomPrize();
+            const index = prizes.indexOf(prize);
+            const segmentAngle = 360 / prizes.length;
+            const stopAngle = 360 - index * segmentAngle - segmentAngle/2;
+            const rotateBy = 360*5 + stopAngle;
+            currentRotation += rotateBy;
+            wheelCanvas.style.transform = `rotate(${currentRotation}deg)`;
+            const onEnd = ()=>{
+                wheelCanvas.removeEventListener('transitionend', onEnd);
+                handlePrize(prize);
+            };
+            wheelCanvas.addEventListener('transitionend', onEnd);
+        }
+
+        spinBtn.addEventListener('click', spinWheel);
+        drawWheel();
+        updateCooldown();
+        window.showDailyRoulette = ()=>rouletteContainer.classList.remove('hidden');
+    })();
+    </script>
 </body>
 </html>
