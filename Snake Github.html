@@ -1622,10 +1622,10 @@
             display: block;
         }
 
-        .settings-panel-hidden, .info-panel-hidden, .specific-info-panel-hidden, .free-settings-panel-hidden, .reset-panel-hidden, .config-menu-panel-hidden, .generic-menu-panel-hidden, .store-panel-hidden, .profile-panel-hidden, .achievements-panel-hidden, .daily-panel-hidden, .purchase-confirmation-panel-hidden, .chest-info-panel-hidden, .delete-confirmation-panel-hidden, .out-of-lives-panel-hidden, .select-confirmation-panel-hidden {
+        .settings-panel-hidden, .info-panel-hidden, .specific-info-panel-hidden, .free-settings-panel-hidden, .reset-panel-hidden, .config-menu-panel-hidden, .generic-menu-panel-hidden, .store-panel-hidden, .profile-panel-hidden, .achievements-panel-hidden, .daily-panel-hidden, .wheel-panel-hidden, .purchase-confirmation-panel-hidden, .chest-info-panel-hidden, .delete-confirmation-panel-hidden, .out-of-lives-panel-hidden, .select-confirmation-panel-hidden {
             display: none !important;
         }
-        #settings-panel, #info-panel, #specific-info-panel, #free-settings-panel, #reset-confirmation-panel, #config-menu-panel, #generic-menu-panel, #store-panel, #profile-panel, #achievements-panel, #daily-panel, #purchase-confirmation-panel, #chest-info-panel, #delete-confirmation-panel, #out-of-lives-panel, #select-confirmation-panel {
+        #settings-panel, #info-panel, #specific-info-panel, #free-settings-panel, #reset-confirmation-panel, #config-menu-panel, #generic-menu-panel, #store-panel, #profile-panel, #achievements-panel, #daily-panel, #wheel-panel, #purchase-confirmation-panel, #chest-info-panel, #delete-confirmation-panel, #out-of-lives-panel, #select-confirmation-panel {
             position: fixed;
             left: 0;
             transform: scale(0);
@@ -1959,6 +1959,7 @@
         #reset-confirmation-panel .panel-content::-webkit-scrollbar,
         #store-panel .panel-content::-webkit-scrollbar,
         #daily-panel .panel-content::-webkit-scrollbar,
+        #wheel-panel .panel-content::-webkit-scrollbar,
         #achievements-panel .panel-content::-webkit-scrollbar,
         #profile-panel .panel-content::-webkit-scrollbar {
             width: 8px;
@@ -1972,6 +1973,7 @@
         #reset-confirmation-panel .panel-content::-webkit-scrollbar-track,
         #store-panel .panel-content::-webkit-scrollbar-track,
         #daily-panel .panel-content::-webkit-scrollbar-track,
+        #wheel-panel .panel-content::-webkit-scrollbar-track,
         #achievements-panel .panel-content::-webkit-scrollbar-track,
         #profile-panel .panel-content::-webkit-scrollbar-track {
             background: #2d1d3a;
@@ -1986,6 +1988,7 @@
         #reset-confirmation-panel .panel-content::-webkit-scrollbar-thumb,
         #store-panel .panel-content::-webkit-scrollbar-thumb,
         #daily-panel .panel-content::-webkit-scrollbar-thumb,
+        #wheel-panel .panel-content::-webkit-scrollbar-thumb,
         #achievements-panel .panel-content::-webkit-scrollbar-thumb,
         #profile-panel .panel-content::-webkit-scrollbar-thumb {
             background: #442F58;
@@ -2009,30 +2012,50 @@
         #store-panel .panel-content::-webkit-scrollbar-thumb:active,
         #daily-panel .panel-content::-webkit-scrollbar-thumb:hover,
         #daily-panel .panel-content::-webkit-scrollbar-thumb:active,
+        #wheel-panel .panel-content::-webkit-scrollbar-thumb:hover,
+        #wheel-panel .panel-content::-webkit-scrollbar-thumb:active,
         #achievements-panel .panel-content::-webkit-scrollbar-thumb:hover,
         #achievements-panel .panel-content::-webkit-scrollbar-thumb:active,
         #profile-panel .panel-content::-webkit-scrollbar-thumb:hover,
         #profile-panel .panel-content::-webkit-scrollbar-thumb:active {
             background: #8f66af;
         }
-        /* Daily roulette styles */
-        #daily-roulette-section {
+        /* Prize roulette styles */
+        #prize-roulette-section {
             margin-top: 20px;
             display: flex;
             flex-direction: column;
             align-items: center;
         }
-        #daily-roulette-wheel {
+        #prize-roulette-wheel-container {
+            position: relative;
+            width: 200px;
+            height: 200px;
+        }
+        #prize-roulette-wheel {
             width: 200px;
             height: 200px;
             transition: transform 4s cubic-bezier(0.33, 1, 0.68, 1);
+            background: none;
+            border: none;
         }
-        #daily-roulette-bottom {
+        #prize-roulette-pointer {
+            position: absolute;
+            top: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            border-left: 10px solid transparent;
+            border-right: 10px solid transparent;
+            border-bottom: 20px solid #c00;
+        }
+        #prize-roulette-bottom {
             display: flex;
             align-items: center;
             margin-top: 10px;
         }
-        #daily-roulette-spin {
+        #prize-roulette-spin {
             background-color: #c00;
             color: #fff;
             border: none;
@@ -2040,26 +2063,26 @@
             border-radius: 5px;
             cursor: pointer;
         }
-        #daily-roulette-spin:disabled {
+        #prize-roulette-spin:disabled {
             opacity: 0.5;
             cursor: not-allowed;
         }
-        #daily-roulette-result {
+        #prize-roulette-result {
             display: flex;
             align-items: center;
             margin-left: 15px;
             min-height: 40px;
         }
-        #daily-roulette-result img {
+        #prize-roulette-result img {
             width: 40px;
             height: 40px;
             margin-right: 10px;
         }
-        #daily-roulette-open,
-        #daily-roulette-collect {
+        #prize-roulette-open,
+        #prize-roulette-collect {
             margin-top: 10px;
         }
-        #daily-roulette-cooldown {
+        #prize-roulette-cooldown {
             margin-top: 10px;
             font-size: 0.9em;
         }
@@ -4031,16 +4054,28 @@
                 </div>
                 <div class="panel-content">
                     <div id="daily-rewards-container" class="grid grid-cols-3 gap-4 w-full"></div>
-                    <div id="daily-roulette-section">
-                        <h3>Ruleta diaria</h3>
-                        <canvas id="daily-roulette-wheel" width="200" height="200"></canvas>
-                        <div id="daily-roulette-bottom">
-                            <button id="daily-roulette-spin">GIRAR</button>
-                            <div id="daily-roulette-result"></div>
+                </div>
+            </div>
+            <div id="wheel-panel" class="wheel-panel-hidden">
+                <div class="settings-header">
+                    <h2>RULETA DE PREMIOS</h2>
+                    <button id="close-wheel-panel" class="close-button" aria-label="Cerrar">
+                        <img src="https://i.imgur.com/w5E6xdU.png" alt="Cerrar">
+                    </button>
+                </div>
+                <div class="panel-content">
+                    <div id="prize-roulette-section">
+                        <div id="prize-roulette-wheel-container">
+                            <canvas id="prize-roulette-wheel" width="200" height="200"></canvas>
+                            <div id="prize-roulette-pointer"></div>
                         </div>
-                        <button id="daily-roulette-open" class="hidden">Abrir</button>
-                        <button id="daily-roulette-collect" class="hidden">Recoger</button>
-                        <div id="daily-roulette-cooldown" class="hidden"></div>
+                        <div id="prize-roulette-bottom">
+                            <button id="prize-roulette-spin">GIRAR</button>
+                            <div id="prize-roulette-result"></div>
+                        </div>
+                        <button id="prize-roulette-open" class="hidden">Abrir</button>
+                        <button id="prize-roulette-collect" class="hidden">Recoger</button>
+                        <div id="prize-roulette-cooldown" class="hidden"></div>
                     </div>
                 </div>
             </div>
@@ -4357,12 +4392,14 @@
         const dailyPanel = document.getElementById("daily-panel");
         const closeDailyPanelButton = document.getElementById("close-daily-panel");
         const dailyRewardsContainer = document.getElementById("daily-rewards-container");
-        const dailyRouletteWheel = document.getElementById("daily-roulette-wheel");
-        const dailyRouletteSpin = document.getElementById("daily-roulette-spin");
-        const dailyRouletteResult = document.getElementById("daily-roulette-result");
-        const dailyRouletteOpen = document.getElementById("daily-roulette-open");
-        const dailyRouletteCollect = document.getElementById("daily-roulette-collect");
-        const dailyRouletteCooldownEl = document.getElementById("daily-roulette-cooldown");
+        const wheelPanel = document.getElementById("wheel-panel");
+        const closeWheelPanelButton = document.getElementById("close-wheel-panel");
+        const prizeRouletteWheel = document.getElementById("prize-roulette-wheel");
+        const prizeRouletteSpin = document.getElementById("prize-roulette-spin");
+        const prizeRouletteResult = document.getElementById("prize-roulette-result");
+        const prizeRouletteOpen = document.getElementById("prize-roulette-open");
+        const prizeRouletteCollect = document.getElementById("prize-roulette-collect");
+        const prizeRouletteCooldownEl = document.getElementById("prize-roulette-cooldown");
         const storeItemsContainer = document.getElementById("store-items-container");
         const storeTabButtons = document.querySelectorAll('#store-tabs .store-tab');
         const closeStorePanelButton = document.getElementById("close-store-panel");
@@ -5862,7 +5899,7 @@ function setupSlider(slider, display) {
         let profileTab = 'general';
         let dailyRewardState = { day: 1, lastClaimDate: null };
 
-        const DAILY_ROULETTE_PRIZES = [
+        const PRIZE_ROULETTE_PRIZES = [
             { type: 'reroll', name: 'Tirar de nuevo', prob: 0.1, color: '#bbbbbb' },
             { type: 'life', name: 'Vida', prob: 0.25, min: 1, max: 5, img: AD_ITEMS.adLife.img, color: '#ff4d4d' },
             { type: 'coins', name: 'Monedas', prob: 0.2, min: 10, max: 100, img: COIN_PACKS.coin500.img, color: '#ffd700' },
@@ -5875,7 +5912,7 @@ function setupSlider(slider, display) {
             { type: 'chest', name: 'Cofre legendario', prob: 0.01, chest: 'legendary', img: CHESTS.legendary.img, color: '#ffa500' }
         ];
         const ROULETTE_COOLDOWN = 4 * 60 * 60 * 1000;
-        let rouletteCooldownUntil = parseInt(localStorage.getItem('dailyRouletteCooldown') || '0', 10);
+        let rouletteCooldownUntil = parseInt(localStorage.getItem('prizeRouletteCooldown') || '0', 10);
         let currentRoulettePrize = null;
         function getRarityClass(type, key) {
             if (type === 'skin') {
@@ -7627,12 +7664,13 @@ function setupSlider(slider, display) {
         if (storeMenuButton) storeMenuButton.addEventListener('click', () => openStoreMenu());
         if (achievementsMenuButton) achievementsMenuButton.addEventListener('click', openAchievementsMenu);
         if (dailyMenuButton) dailyMenuButton.addEventListener('click', openDailyMenu);
-        if (wheelMenuButton) wheelMenuButton.addEventListener('click', () => { openGenericMenuPanel('Ruleta de premios'); });
-        if (dailyRouletteSpin) dailyRouletteSpin.addEventListener('click', spinDailyRoulette);
-        if (dailyRouletteOpen) dailyRouletteOpen.addEventListener('click', openRouletteChest);
-        if (dailyRouletteCollect) dailyRouletteCollect.addEventListener('click', collectRouletteReward);
+        if (wheelMenuButton) wheelMenuButton.addEventListener('click', openWheelMenu);
+        if (prizeRouletteSpin) prizeRouletteSpin.addEventListener('click', spinPrizeRoulette);
+        if (prizeRouletteOpen) prizeRouletteOpen.addEventListener('click', openRouletteChest);
+        if (prizeRouletteCollect) prizeRouletteCollect.addEventListener('click', collectRouletteReward);
         setInterval(updateRouletteCooldown, 1000);
         if (closeAchievementsPanelButton) closeAchievementsPanelButton.addEventListener('click', closeAchievementsMenu);
+        if (closeWheelPanelButton) closeWheelPanelButton.addEventListener('click', closeWheelMenu);
         if (applyFreeSettingsBottomButton) applyFreeSettingsBottomButton.addEventListener('click', applyFreeSettings);
         if (freeDifficultySelector) freeDifficultySelector.addEventListener('change', () => {
             freeDifficulty = freeDifficultySelector.value;
@@ -7713,6 +7751,20 @@ function setupSlider(slider, display) {
 
         function closeDailyMenu() {
             togglePanel(dailyPanel, dailyPanel.querySelector('.panel-content'), false);
+            setTimeout(updateMainButtonStates, 0);
+        }
+
+        function openWheelMenu() {
+            const isConfigMenuVisible = !configMenuPanel.classList.contains('config-menu-panel-hidden') && configMenuPanel.classList.contains('panel-visible');
+            wheelPanel.classList.remove('centered-panel');
+            togglePanel(wheelPanel, wheelPanel.querySelector('.panel-content'), true);
+            if (isConfigMenuVisible) {
+                matchPanelSizeWithElement(configMenuPanel, wheelPanel);
+            }
+        }
+
+        function closeWheelMenu() {
+            togglePanel(wheelPanel, wheelPanel.querySelector('.panel-content'), false);
             setTimeout(updateMainButtonStates, 0);
         }
 
@@ -8294,15 +8346,15 @@ function setupSlider(slider, display) {
         items.forEach(el => purchaseItemPreview.appendChild(el));
         }
 
-        // --- Daily Roulette Logic ---
+        // --- Prize Roulette Logic ---
         function drawRouletteWheel() {
-            if (!dailyRouletteWheel) return;
-            const ctx = dailyRouletteWheel.getContext('2d');
-            const size = dailyRouletteWheel.width;
+            if (!prizeRouletteWheel) return;
+            const ctx = prizeRouletteWheel.getContext('2d');
+            const size = prizeRouletteWheel.width;
             const center = size / 2;
-            const slice = (2 * Math.PI) / DAILY_ROULETTE_PRIZES.length;
+            const slice = (2 * Math.PI) / PRIZE_ROULETTE_PRIZES.length;
             ctx.clearRect(0, 0, size, size);
-            DAILY_ROULETTE_PRIZES.forEach((p, i) => {
+            PRIZE_ROULETTE_PRIZES.forEach((p, i) => {
                 ctx.beginPath();
                 ctx.moveTo(center, center);
                 ctx.fillStyle = p.color;
@@ -8322,25 +8374,25 @@ function setupSlider(slider, display) {
         function getRandomRoulettePrize() {
             const roll = Math.random();
             let acc = 0;
-            for (let i = 0; i < DAILY_ROULETTE_PRIZES.length; i++) {
-                acc += DAILY_ROULETTE_PRIZES[i].prob;
-                if (roll < acc) return { ...DAILY_ROULETTE_PRIZES[i], index: i };
+            for (let i = 0; i < PRIZE_ROULETTE_PRIZES.length; i++) {
+                acc += PRIZE_ROULETTE_PRIZES[i].prob;
+                if (roll < acc) return { ...PRIZE_ROULETTE_PRIZES[i], index: i };
             }
-            return { ...DAILY_ROULETTE_PRIZES[0], index: 0 };
+            return { ...PRIZE_ROULETTE_PRIZES[0], index: 0 };
         }
 
         let wheelRotation = 0;
-        function spinDailyRoulette() {
+        function spinPrizeRoulette() {
             if (Date.now() < rouletteCooldownUntil) return;
-            dailyRouletteSpin.disabled = true;
-            dailyRouletteResult.innerHTML = '';
-            dailyRouletteOpen.classList.add('hidden');
-            dailyRouletteCollect.classList.add('hidden');
+            prizeRouletteSpin.disabled = true;
+            prizeRouletteResult.innerHTML = '';
+            prizeRouletteOpen.classList.add('hidden');
+            prizeRouletteCollect.classList.add('hidden');
             currentRoulettePrize = getRandomRoulettePrize();
-            const segmentAngle = 360 / DAILY_ROULETTE_PRIZES.length;
+            const segmentAngle = 360 / PRIZE_ROULETTE_PRIZES.length;
             const targetAngle = 360 - currentRoulettePrize.index * segmentAngle - segmentAngle / 2;
             wheelRotation += 360 * 5 + targetAngle - (wheelRotation % 360);
-            dailyRouletteWheel.style.transform = `rotate(${wheelRotation}deg)`;
+            prizeRouletteWheel.style.transform = `rotate(${wheelRotation}deg)`;
             setTimeout(() => {
                 showRoulettePrize();
             }, 4000);
@@ -8352,14 +8404,14 @@ function setupSlider(slider, display) {
             if (prize.type === 'reroll') {
                 const span = document.createElement('span');
                 span.textContent = '¡Tira de nuevo!';
-                dailyRouletteResult.appendChild(span);
-                dailyRouletteSpin.disabled = false;
+                prizeRouletteResult.appendChild(span);
+                prizeRouletteSpin.disabled = false;
                 currentRoulettePrize = null;
                 return;
             }
             const img = document.createElement('img');
             img.src = prize.img || '';
-            dailyRouletteResult.appendChild(img);
+            prizeRouletteResult.appendChild(img);
             const span = document.createElement('span');
             if (prize.type === 'life') {
                 prize.amount = randInt(prize.min, prize.max);
@@ -8372,11 +8424,11 @@ function setupSlider(slider, display) {
                 span.textContent = `+${prize.amount} Gemas`;
             } else if (prize.type === 'chest') {
                 span.textContent = prize.name;
-                dailyRouletteOpen.classList.remove('hidden');
+                prizeRouletteOpen.classList.remove('hidden');
             }
-            dailyRouletteResult.appendChild(span);
+            prizeRouletteResult.appendChild(span);
             if (prize.type !== 'chest') {
-                dailyRouletteCollect.classList.remove('hidden');
+                prizeRouletteCollect.classList.remove('hidden');
             }
         }
 
@@ -8392,7 +8444,7 @@ function setupSlider(slider, display) {
             if (!currentRoulettePrize || currentRoulettePrize.type !== 'chest') return;
             const rewards = generateChestRewards(currentRoulettePrize.chest);
             currentRoulettePrize.rewards = rewards;
-            dailyRouletteResult.innerHTML = '';
+            prizeRouletteResult.innerHTML = '';
             const items = [];
             const coinDiv = document.createElement('div');
             coinDiv.style.display = 'flex';
@@ -8440,9 +8492,9 @@ function setupSlider(slider, display) {
                 itemDiv.appendChild(itemSpan);
                 items.push(itemDiv);
             }
-            items.forEach(el => dailyRouletteResult.appendChild(el));
-            dailyRouletteOpen.classList.add('hidden');
-            dailyRouletteCollect.classList.remove('hidden');
+            items.forEach(el => prizeRouletteResult.appendChild(el));
+            prizeRouletteOpen.classList.add('hidden');
+            prizeRouletteCollect.classList.remove('hidden');
         }
 
         function collectRouletteReward() {
@@ -8491,31 +8543,31 @@ function setupSlider(slider, display) {
             startRouletteCooldown();
             updateCoinDisplay();
             updateGemDisplay();
-            dailyRouletteResult.innerHTML = '';
-            dailyRouletteCollect.classList.add('hidden');
+            prizeRouletteResult.innerHTML = '';
+            prizeRouletteCollect.classList.add('hidden');
         }
 
         function startRouletteCooldown() {
             rouletteCooldownUntil = Date.now() + ROULETTE_COOLDOWN;
-            localStorage.setItem('dailyRouletteCooldown', rouletteCooldownUntil.toString());
+            localStorage.setItem('prizeRouletteCooldown', rouletteCooldownUntil.toString());
             updateRouletteCooldown();
         }
 
         function updateRouletteCooldown() {
             const now = Date.now();
             if (now >= rouletteCooldownUntil) {
-                dailyRouletteCooldownEl.classList.add('hidden');
-                dailyRouletteWheel.classList.remove('roulette-locked');
-                dailyRouletteSpin.disabled = false;
+                prizeRouletteCooldownEl.classList.add('hidden');
+                prizeRouletteWheel.classList.remove('roulette-locked');
+                prizeRouletteSpin.disabled = false;
             } else {
                 const remaining = rouletteCooldownUntil - now;
                 const hrs = Math.floor(remaining / 3600000);
                 const mins = Math.floor((remaining % 3600000) / 60000);
                 const secs = Math.floor((remaining % 60000) / 1000);
-                dailyRouletteCooldownEl.textContent = `Disponible en ${hrs}h ${mins}m ${secs}s`;
-                dailyRouletteCooldownEl.classList.remove('hidden');
-                dailyRouletteSpin.disabled = true;
-                dailyRouletteWheel.classList.add('roulette-locked');
+                prizeRouletteCooldownEl.textContent = `Disponible en ${hrs}h ${mins}m ${secs}s`;
+                prizeRouletteCooldownEl.classList.remove('hidden');
+                prizeRouletteSpin.disabled = true;
+                prizeRouletteWheel.classList.add('roulette-locked');
             }
         }
 
