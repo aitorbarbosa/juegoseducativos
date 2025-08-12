@@ -14459,7 +14459,7 @@ async function startGame(isRestart = false) {
             { label: 'Tirar de nuevo', prob: 0.1, type: 'reroll', image: 'https://i.imgur.com/i4m4tSV.png' },
             { label: 'Vida', prob: 0.25, type: 'life', min: 1, max: 5, image: 'https://i.imgur.com/WrI2XXx.png' },
             { label: 'Monedas (10-100)', prob: 0.2, type: 'coins', min: 10, max: 100, image: 'https://i.imgur.com/lnc1Mwu.png' },
-            { label: 'Monedas (100-1000)', prob: 0.1, type: 'coins', min: 100, max: 1000, image: 'https://i.imgur.com/lnc1Mwu.png' },
+            { label: 'Monedas (100-1k)', prob: 0.1, type: 'coins', min: 100, max: 1000, image: 'https://i.imgur.com/lnc1Mwu.png' },
             { label: 'Gemas (1-5)', prob: 0.1, type: 'gems', min: 1, max: 5, image: 'https://i.imgur.com/gPGsaCO.png' },
             { label: 'Gemas (5-10)', prob: 0.05, type: 'gems', min: 5, max: 10, image: 'https://i.imgur.com/gPGsaCO.png' },
             { label: 'Cofre común', prob: 0.1, type: 'chest', chestType: 'common', image: 'https://i.imgur.com/j8UD4hK.png' },
@@ -14497,7 +14497,7 @@ async function startGame(isRestart = false) {
                 wheelCtx.fill();
 
                 const mid = start + angle / 2;
-                const r = 120;
+                const r = 100;
                 const x = 150 + r * Math.cos(mid);
                 const y = 150 + r * Math.sin(mid);
 
@@ -14505,13 +14505,14 @@ async function startGame(isRestart = false) {
                 wheelCtx.translate(x, y);
                 wheelCtx.rotate(mid + Math.PI / 2);
                 if (p.img && p.img.complete) {
-                    wheelCtx.drawImage(p.img, -15, -30, 30, 30);
+                    wheelCtx.drawImage(p.img, -20, -40, 40, 40);
                     if (p.type === 'life' || p.type === 'coins' || p.type === 'gems') {
                         wheelCtx.fillStyle = '#fff';
                         wheelCtx.font = '12px sans-serif';
-                        wheelCtx.textAlign = 'center';
-                        wheelCtx.textBaseline = 'top';
-                        wheelCtx.fillText(`${p.min}-${p.max}`, 0, 2);
+                        wheelCtx.textAlign = 'right';
+                        wheelCtx.textBaseline = 'middle';
+                        const rangeText = `${p.min}-${p.max >= 1000 ? '1k' : p.max}`;
+                        wheelCtx.fillText(rangeText, -25, -20);
                     }
                 }
                 wheelCtx.restore();
