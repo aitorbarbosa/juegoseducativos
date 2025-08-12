@@ -3422,12 +3422,16 @@
         #wheel-overlay {
             position: absolute;
             inset: 0;
+            width: 100%;
+            height: 100%;
             display: flex;
             align-items: center;
             justify-content: center;
             background-color: rgba(0, 0, 0, 0.5);
             color: white;
             font-size: 1.2rem;
+            border-radius: 50%;
+            pointer-events: none;
         }
 
     </style>
@@ -14622,7 +14626,10 @@ async function startGame(isRestart = false) {
             if (now >= end) {
                 if (prizeDisplay) prizeDisplay.textContent = '';
                 if (spinButton) spinButton.disabled = false;
-                if (wheelOverlay) wheelOverlay.classList.add('hidden');
+                if (wheelOverlay) {
+                    wheelOverlay.classList.add('hidden');
+                    wheelOverlay.textContent = 'BLOQUEADO';
+                }
                 return;
             }
             if (spinButton) spinButton.disabled = true;
@@ -14631,7 +14638,8 @@ async function startGame(isRestart = false) {
             const h = String(Math.floor(diff / 3600000)).padStart(2, '0');
             const m = String(Math.floor((diff % 3600000) / 60000)).padStart(2, '0');
             const s = String(Math.floor((diff % 60000) / 1000)).padStart(2, '0');
-            if (prizeDisplay) prizeDisplay.textContent = `Disponible en ${h}:${m}:${s}`;
+            if (prizeDisplay) prizeDisplay.textContent = '';
+            if (wheelOverlay) wheelOverlay.textContent = `Disponible en ${h}:${m}:${s}`;
             setTimeout(updateCooldownDisplay, 1000);
         }
 
@@ -14648,7 +14656,10 @@ async function startGame(isRestart = false) {
                     prizeDisplay.textContent = '';
                     prizeDisplay.classList.remove('hidden');
                 }
-                if (wheelOverlay) wheelOverlay.classList.add('hidden');
+                if (wheelOverlay) {
+                    wheelOverlay.classList.add('hidden');
+                    wheelOverlay.textContent = 'BLOQUEADO';
+                }
                 if (spinButton) spinButton.disabled = false;
                 if (wheelCanvas) {
                     wheelCanvas.style.transition = 'none';
