@@ -14509,10 +14509,10 @@ async function startGame(isRestart = false) {
                     if (p.type === 'life' || p.type === 'coins' || p.type === 'gems') {
                         wheelCtx.fillStyle = '#fff';
                         wheelCtx.font = '12px sans-serif';
-                        wheelCtx.textAlign = 'right';
-                        wheelCtx.textBaseline = 'middle';
+                        wheelCtx.textAlign = 'center';
+                        wheelCtx.textBaseline = 'top';
                         const rangeText = `${p.min}-${p.max >= 1000 ? '1k' : p.max}`;
-                        wheelCtx.fillText(rangeText, -25, -20);
+                        wheelCtx.fillText(rangeText, 0, 5);
                     }
                 }
                 wheelCtx.restore();
