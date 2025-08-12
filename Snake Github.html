@@ -3866,11 +3866,11 @@
                                 <div id="wheel-pointer"></div>
                                 <div id="wheel-overlay" class="hidden">BLOQUEADO</div>
                             </div>
-                            <div id="prize-display" class="flex flex-col items-center gap-2 min-w-[120px] min-h-[60px] justify-center text-center"></div>
                             <div id="chest-content" class="hidden flex flex-col items-center"></div>
                         </div>
-                        <div class="flex items-center justify-center">
+                        <div class="flex items-center justify-center gap-4">
                             <button id="spin-button" class="bg-red-600 text-white px-4 py-2 rounded">Girar</button>
+                            <div id="prize-display" class="flex items-center gap-2 min-w-[120px] min-h-[60px] justify-center text-center"></div>
                         </div>
                         <button id="action-button" class="bg-blue-600 text-white px-4 py-2 rounded hidden"></button>
                     </div>
@@ -14491,8 +14491,9 @@ async function startGame(isRestart = false) {
                     if (p.type === 'life' || p.type === 'coins' || p.type === 'gems') {
                         wheelCtx.fillStyle = '#fff';
                         wheelCtx.font = '12px sans-serif';
-                        wheelCtx.textAlign = 'center';
-                        wheelCtx.fillText(`${p.min}-${p.max}`, 125, 25);
+                        wheelCtx.textAlign = 'right';
+                        wheelCtx.textBaseline = 'middle';
+                        wheelCtx.fillText(`${p.min}-${p.max}`, 105, 0);
                     }
                 }
                 wheelCtx.restore();
