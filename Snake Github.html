@@ -3390,6 +3390,90 @@
             }
         }
 
+        /* Daily Roulette Styles */
+        #daily-roulette-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+        #daily-roulette-overlay.locked {
+            pointer-events: none;
+            opacity: 0.6;
+        }
+        #daily-roulette-wheel {
+            width: 250px;
+            height: 250px;
+            border-radius: 50%;
+            border: 8px solid #fff;
+            margin-bottom: 20px;
+            background: conic-gradient(
+                #ff5050 0deg 36deg,
+                #50ff50 36deg 72deg,
+                #5050ff 72deg 108deg,
+                #ffff50 108deg 144deg,
+                #ff50ff 144deg 180deg,
+                #50ffff 180deg 216deg,
+                #ffa500 216deg 252deg,
+                #a050ff 252deg 288deg,
+                #00a0ff 288deg 324deg,
+                #ff0050 324deg 360deg
+            );
+            transition: transform 4s cubic-bezier(0.33, 1, 0.68, 1);
+        }
+        #chest-content {
+            margin-bottom: 20px;
+        }
+        #daily-roulette-controls {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+            justify-content: center;
+        }
+        #spin-roulette-btn {
+            background: red;
+            color: #fff;
+            border: none;
+            padding: 0.5rem 1rem;
+            font-family: inherit;
+            cursor: pointer;
+        }
+        #spin-roulette-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        #roulette-result {
+            min-width: 200px;
+            min-height: 64px;
+            border: 2px solid #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 0.5rem;
+            text-align: center;
+        }
+        #open-chest-btn,
+        #collect-btn {
+            margin-top: 1rem;
+            background: #ffd700;
+            border: none;
+            padding: 0.5rem 1rem;
+            font-family: inherit;
+            cursor: pointer;
+        }
+        #open-chest-btn.hidden,
+        #collect-btn.hidden {
+            display: none;
+        }
+
     </style>
 </head>
 <body>
@@ -4091,6 +4175,18 @@
             </div>
         </div>
 
+        </div>
+
+        <!-- Daily Roulette Overlay -->
+        <div id="daily-roulette-overlay">
+            <div id="daily-roulette-wheel"></div>
+            <div id="chest-content" class="hidden"></div>
+            <div id="daily-roulette-controls">
+                <button id="spin-roulette-btn">Girar</button>
+                <div id="roulette-result"></div>
+            </div>
+            <button id="open-chest-btn" class="hidden">Abrir</button>
+            <button id="collect-btn" class="hidden">Recoger</button>
         </div>
 
     <script>
@@ -14528,6 +14624,150 @@ async function startGame(isRestart = false) {
                 initializeGameLogic();
             }
         };
+    </script>
+    <script>
+    (function(){
+      const overlay = document.getElementById('daily-roulette-overlay');
+      if(!overlay) return;
+      const wheel = document.getElementById('daily-roulette-wheel');
+      const chestContent = document.getElementById('chest-content');
+      const spinBtn = document.getElementById('spin-roulette-btn');
+      const resultDiv = document.getElementById('roulette-result');
+      const openChestBtn = document.getElementById('open-chest-btn');
+      const collectBtn = document.getElementById('collect-btn');
+      const COOLDOWN_MS = 4 * 60 * 60 * 1000;
+      const prizes = [
+        {name:'Tirar de nuevo', prob:0.1, icon:'https://i.imgur.com/HqNpn3w.png', type:'reroll'},
+        {name:'Vida', prob:0.25, icon:'https://i.imgur.com/WrI2XXx.png', type:'life', range:[1,5]},
+        {name:'Monedas', prob:0.2, icon:'https://i.imgur.com/lnc1Mwu.png', type:'coins', range:[10,100]},
+        {name:'Monedas', prob:0.1, icon:'https://i.imgur.com/lnc1Mwu.png', type:'coins', range:[100,1000]},
+        {name:'Gemas', prob:0.1, icon:'https://i.imgur.com/gPGsaCO.png', type:'gems', range:[1,5]},
+        {name:'Gemas', prob:0.05, icon:'https://i.imgur.com/gPGsaCO.png', type:'gems', range:[5,10]},
+        {name:'Cofre común', prob:0.1, icon:'https://i.imgur.com/j8UD4hK.png', type:'chest', chest:'common'},
+        {name:'Cofre raro', prob:0.06, icon:'https://i.imgur.com/1BBQ2DK.png', type:'chest', chest:'rare'},
+        {name:'Cofre épico', prob:0.03, icon:'https://i.imgur.com/6U6QE3X.png', type:'chest', chest:'epic'},
+        {name:'Cofre legendario', prob:0.01, icon:'https://i.imgur.com/4kOPIdx.png', type:'chest', chest:'legendary'}
+      ];
+
+      function randInt(min,max){ return Math.floor(Math.random()*(max-min+1))+min; }
+
+      function rollPrize(){
+        const r = Math.random();
+        let acc = 0;
+        for(const p of prizes){
+          acc += p.prob;
+          if(r <= acc) return p;
+        }
+        return prizes[prizes.length-1];
+      }
+
+      function spin(){
+        spinBtn.disabled = true;
+        chestContent.classList.add('hidden');
+        wheel.classList.remove('hidden');
+        const prize = rollPrize();
+        const seg = 360/prizes.length;
+        const idx = prizes.indexOf(prize);
+        const offset = Math.random()*seg;
+        const rotation = 360*5 + (360 - (idx*seg + offset));
+        wheel.style.transform = `rotate(${rotation}deg)`;
+        setTimeout(()=>showPrize(prize),4000);
+      }
+
+      function showPrize(prize){
+        resultDiv.innerHTML = '';
+        const img = document.createElement('img');
+        img.src = prize.icon;
+        img.alt = prize.name;
+        img.style.width = '48px';
+        const span = document.createElement('span');
+        let amountText = '';
+        if(prize.range){
+          const amt = randInt(prize.range[0], prize.range[1]);
+          amountText = ` ${amt}`;
+        }
+        span.textContent = prize.name + amountText;
+        resultDiv.appendChild(img);
+        resultDiv.appendChild(span);
+        if(prize.type === 'chest'){
+          openChestBtn.classList.remove('hidden');
+          openChestBtn.onclick = () => openChest(prize.chest);
+        } else if(prize.type === 'reroll'){
+          spinBtn.disabled = false;
+        } else {
+          collectBtn.classList.remove('hidden');
+        }
+      }
+
+      function openChest(rarity){
+        openChestBtn.classList.add('hidden');
+        wheel.classList.add('hidden');
+        chestContent.classList.remove('hidden');
+        chestContent.innerHTML = '';
+        const rewards = [
+          {text:`${randInt(10,100)} Monedas`, icon:'https://i.imgur.com/lnc1Mwu.png'},
+          {text:`${randInt(1,5)} Gemas`, icon:'https://i.imgur.com/gPGsaCO.png'}
+        ];
+        rewards.forEach(r=>{
+          const line = document.createElement('div');
+          line.style.display = 'flex';
+          line.style.alignItems = 'center';
+          line.style.gap = '0.5rem';
+          const img = document.createElement('img');
+          img.src = r.icon;
+          img.style.width = '32px';
+          const sp = document.createElement('span');
+          sp.textContent = r.text;
+          line.appendChild(img);
+          line.appendChild(sp);
+          chestContent.appendChild(line);
+        });
+        collectBtn.classList.remove('hidden');
+      }
+
+      function collectReward(){
+        collectBtn.classList.add('hidden');
+        chestContent.classList.add('hidden');
+        resultDiv.textContent = '';
+        wheel.classList.remove('hidden');
+        startCooldown();
+      }
+
+      function startCooldown(){
+        const end = Date.now() + COOLDOWN_MS;
+        localStorage.setItem('rouletteCooldownEnd', end);
+        updateCooldown();
+      }
+
+      function updateCooldown(){
+        const end = parseInt(localStorage.getItem('rouletteCooldownEnd'),10);
+        if(isNaN(end)){
+          spinBtn.disabled = false;
+          return;
+        }
+        const remaining = end - Date.now();
+        if(remaining <= 0){
+          spinBtn.disabled = false;
+          resultDiv.textContent = '';
+          localStorage.removeItem('rouletteCooldownEnd');
+          return;
+        }
+        spinBtn.disabled = true;
+        const hrs = Math.floor(remaining/3600000);
+        const mins = Math.floor((remaining%3600000)/60000);
+        const secs = Math.floor((remaining%60000)/1000);
+        resultDiv.textContent = `Disponible en ${hrs}h ${mins}m ${secs}s`;
+        requestAnimationFrame(updateCooldown);
+      }
+
+      spinBtn.addEventListener('click', spin);
+      collectBtn.addEventListener('click', collectReward);
+
+      window.openDailyRoulette = function(){
+        overlay.style.display = 'flex';
+        updateCooldown();
+      };
+    })();
     </script>
 </body>
 </html>
