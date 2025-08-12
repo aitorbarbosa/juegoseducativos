@@ -3393,20 +3393,21 @@
         #wheel-area {
             background: none;
             border: none;
+            gap: 1rem;
         }
         #wheel-wrapper {
             position: relative;
         }
         #wheel-pointer {
             position: absolute;
-            top: -10px;
-            left: 50%;
-            transform: translateX(-50%);
+            top: 50%;
+            right: -30px;
+            transform: translateY(-50%);
             width: 0;
             height: 0;
-            border-left: 15px solid transparent;
-            border-right: 15px solid transparent;
-            border-bottom: 30px solid red;
+            border-top: 15px solid transparent;
+            border-bottom: 15px solid transparent;
+            border-right: 30px solid red;
             z-index: 10;
         }
         #wheel-canvas {
@@ -3859,17 +3860,17 @@
                 </div>
                 <div class="panel-content">
                     <div id="wheel-container" class="flex flex-col items-center gap-4">
-                        <div id="wheel-area" class="flex items-center justify-center">
+                        <div id="wheel-area" class="flex items-center justify-center gap-4">
                             <div id="wheel-wrapper">
                                 <canvas id="wheel-canvas" width="300" height="300"></canvas>
                                 <div id="wheel-pointer"></div>
                                 <div id="wheel-overlay" class="hidden">BLOQUEADO</div>
                             </div>
+                            <div id="prize-display" class="flex flex-col items-center gap-2 min-w-[120px] min-h-[60px] justify-center text-center"></div>
                             <div id="chest-content" class="hidden flex flex-col items-center"></div>
                         </div>
-                        <div class="flex items-center gap-4">
+                        <div class="flex items-center justify-center">
                             <button id="spin-button" class="bg-red-600 text-white px-4 py-2 rounded">Girar</button>
-                            <div id="prize-display" class="flex items-center gap-2 min-w-[160px] min-h-[48px] justify-center text-center"></div>
                         </div>
                         <button id="action-button" class="bg-blue-600 text-white px-4 py-2 rounded hidden"></button>
                     </div>
@@ -14455,6 +14456,12 @@ async function startGame(isRestart = false) {
             { label: 'Cofre legendario', prob: 0.01, type: 'chest', chestType: 'legendary', image: 'https://i.imgur.com/4kOPIdx.png' }
         ];
 
+        wheelPrizes.forEach(p => {
+            const img = new Image();
+            img.src = p.image;
+            p.img = img;
+        });
+
         const wheelAngles = [];
         (function computeAngles() {
             const angle = (2 * Math.PI) / wheelPrizes.length;
@@ -14479,10 +14486,15 @@ async function startGame(isRestart = false) {
                 wheelCtx.save();
                 wheelCtx.translate(150, 150);
                 wheelCtx.rotate(start + angle / 2);
-                wheelCtx.textAlign = 'right';
-                wheelCtx.fillStyle = '#fff';
-                wheelCtx.font = '12px sans-serif';
-                wheelCtx.fillText(p.label, 140, 5);
+                if (p.img && p.img.complete) {
+                    wheelCtx.drawImage(p.img, 110, -15, 30, 30);
+                    if (p.type === 'life' || p.type === 'coins' || p.type === 'gems') {
+                        wheelCtx.fillStyle = '#fff';
+                        wheelCtx.font = '12px sans-serif';
+                        wheelCtx.textAlign = 'center';
+                        wheelCtx.fillText(`${p.min}-${p.max}`, 125, 25);
+                    }
+                }
                 wheelCtx.restore();
                 start += angle;
             });
@@ -14509,7 +14521,7 @@ async function startGame(isRestart = false) {
             const seg = wheelAngles.find(a => a.prize === prize);
             const center = (seg.start + seg.end) / 2;
             const extra = 2 * Math.PI * 5;
-            const finalAngle = extra + (Math.PI * 1.5 - center);
+            const finalAngle = extra - center;
             if (wheelCanvas) {
                 wheelCanvas.style.transition = 'transform 4s cubic-bezier(0.33,1,0.68,1)';
                 wheelCanvas.style.transform = `rotate(${finalAngle}rad)`;
@@ -14555,6 +14567,7 @@ async function startGame(isRestart = false) {
             chestContent.textContent = `Has recibido ${rewards[type] || ''}.`;
             chestContent.classList.remove('hidden');
             wheelWrapper.classList.add('hidden');
+            if (prizeDisplay) prizeDisplay.classList.add('hidden');
             if (actionButton) {
                 actionButton.textContent = 'Recoger';
                 actionButton.onclick = collectPrize;
@@ -14563,7 +14576,10 @@ async function startGame(isRestart = false) {
 
         function collectPrize() {
             if (actionButton) actionButton.classList.add('hidden');
-            if (prizeDisplay) prizeDisplay.innerHTML = '';
+            if (prizeDisplay) {
+                prizeDisplay.innerHTML = '';
+                prizeDisplay.classList.remove('hidden');
+            }
             if (chestContent) chestContent.classList.add('hidden');
             if (wheelWrapper) wheelWrapper.classList.remove('hidden');
             if (wheelCanvas) {
@@ -14613,7 +14629,10 @@ async function startGame(isRestart = false) {
             if (Date.now() < end) {
                 updateCooldownDisplay();
             } else {
-                if (prizeDisplay) prizeDisplay.textContent = '';
+                if (prizeDisplay) {
+                    prizeDisplay.textContent = '';
+                    prizeDisplay.classList.remove('hidden');
+                }
                 if (wheelOverlay) wheelOverlay.classList.add('hidden');
                 if (spinButton) spinButton.disabled = false;
                 if (wheelCanvas) {
