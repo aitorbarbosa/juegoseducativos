@@ -7658,7 +7658,15 @@ function setupSlider(slider, display) {
         }
 
         function openGenericMenuPanel(title) {
-            if (genericMenuTitle) genericMenuTitle.textContent = (title || '').toUpperCase();
+            if (genericMenuTitle) {
+                if (title === 'Ruleta de premios') {
+                    genericMenuTitle.classList.add('hidden');
+                    genericMenuTitle.textContent = '';
+                } else {
+                    genericMenuTitle.classList.remove('hidden');
+                    genericMenuTitle.textContent = (title || '').toUpperCase();
+                }
+            }
             const isConfigMenuVisible = !configMenuPanel.classList.contains('config-menu-panel-hidden') && configMenuPanel.classList.contains('panel-visible');
             genericMenuPanel.classList.remove('centered-panel');
             togglePanel(genericMenuPanel, genericMenuPanel.querySelector('.panel-content'), true);
@@ -14532,12 +14540,12 @@ async function startGame(isRestart = false) {
 
         function showPrize(prize) {
             if (!prizeDisplay) return;
-            let text = prize.label;
             if (prize.type === 'life' || prize.type === 'coins' || prize.type === 'gems') {
                 const amount = Math.floor(Math.random() * (prize.max - prize.min + 1)) + prize.min;
-                text = `${prize.type === 'life' ? 'Vida' : prize.type === 'coins' ? 'Monedas' : 'Gemas'} x${amount}`;
+                prizeDisplay.innerHTML = `<span>${amount}</span><img src="${prize.image}" alt="premio" class="w-8 h-8">`;
+            } else {
+                prizeDisplay.innerHTML = `<img src="${prize.image}" alt="premio" class="w-8 h-8"><span>${prize.label}</span>`;
             }
-            prizeDisplay.innerHTML = `<img src="${prize.image}" alt="premio" class="w-8 h-8"><span>${text}</span>`;
             if (prize.type === 'reroll') {
                 if (spinButton) spinButton.disabled = false;
                 return;
