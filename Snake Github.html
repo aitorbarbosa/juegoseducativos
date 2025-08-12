@@ -3390,6 +3390,10 @@
             }
         }
 
+        #wheel-area {
+            background: none;
+            border: none;
+        }
         #wheel-wrapper {
             position: relative;
         }
@@ -3407,6 +3411,8 @@
         }
         #wheel-canvas {
             transition: transform 4s cubic-bezier(0.33, 1, 0.68, 1);
+            background: none;
+            border: none;
         }
         #spin-button:disabled {
             opacity: 0.5;
@@ -14451,9 +14457,9 @@ async function startGame(isRestart = false) {
 
         const wheelAngles = [];
         (function computeAngles() {
+            const angle = (2 * Math.PI) / wheelPrizes.length;
             let start = 0;
             wheelPrizes.forEach(p => {
-                const angle = p.prob * 2 * Math.PI;
                 wheelAngles.push({ start, end: start + angle, prize: p });
                 start += angle;
             });
@@ -14461,9 +14467,9 @@ async function startGame(isRestart = false) {
 
         function drawWheel() {
             if (!wheelCtx) return;
+            const angle = (2 * Math.PI) / wheelPrizes.length;
             let start = 0;
             wheelPrizes.forEach((p, i) => {
-                const angle = p.prob * 2 * Math.PI;
                 wheelCtx.beginPath();
                 wheelCtx.moveTo(150, 150);
                 wheelCtx.arc(150, 150, 150, start, start + angle);
