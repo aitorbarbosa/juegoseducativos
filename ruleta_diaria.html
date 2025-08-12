@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Ruleta diaria</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+      background: #f0f0f0;
+    }
+    #wheel-container {
+      position: relative;
+      width: 300px;
+      height: 300px;
+    }
+    #wheel {
+      width: 100%;
+      height: 100%;
+      transition: transform 4s cubic-bezier(0.33, 1, 0.68, 1);
+    }
+    #wheel.blocked {
+      opacity: 0.4;
+      filter: grayscale(80%);
+    }
+    #spin-row {
+      display: flex;
+      align-items: center;
+      margin-top: 20px;
+      gap: 20px;
+    }
+    #spin-button {
+      padding: 10px 20px;
+      background: red;
+      color: white;
+      border: none;
+      cursor: pointer;
+      border-radius: 5px;
+      font-size: 16px;
+    }
+    #spin-button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+    #prize-display {
+      min-width: 200px;
+      min-height: 80px;
+      padding: 10px;
+      background: white;
+      border-radius: 5px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      text-align: center;
+    }
+    #open-button, #collect-button {
+      margin-top: 10px;
+      padding: 8px 16px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    #open-button { background: #3498db; color: white; }
+    #collect-button { background: #2ecc71; color: white; }
+  </style>
+</head>
+<body>
+  <div id="wheel-container">
+    <canvas id="wheel" width="300" height="300"></canvas>
+  </div>
+  <div id="spin-row">
+    <button id="spin-button">Lanzar</button>
+    <div id="prize-display"></div>
+  </div>
+  <script>
+    const prizes = [
+      { label: "Tirar de nuevo", prob: 0.1, type: "retry", icon: "\uD83D\uDD04" },
+      { label: "Vida (1-5)", prob: 0.25, type: "life", min: 1, max: 5, icon: "\u2764\uFE0F" },
+      { label: "Monedas (10-100)", prob: 0.2, type: "coins-small", min: 10, max: 100, icon: "\uD83E\uDE99" },
+      { label: "Monedas (100-1000)", prob: 0.1, type: "coins-big", min: 100, max: 1000, icon: "\uD83D\uDCB0" },
+      { label: "Gemas (1-5)", prob: 0.1, type: "gems-small", min: 1, max: 5, icon: "\uD83D\uDC8E" },
+      { label: "Gemas (5-10)", prob: 0.05, type: "gems-big", min: 5, max: 10, icon: "\uD83D\uDC8E" },
+      { label: "Cofre común", prob: 0.1, type: "chest-common", icon: "\uD83D\uDCE6" },
+      { label: "Cofre raro", prob: 0.06, type: "chest-rare", icon: "\uD83C\uDFF0" },
+      { label: "Cofre épico", prob: 0.03, type: "chest-epic", icon: "\uD83C\uDFC6" },
+      { label: "Cofre legendario", prob: 0.01, type: "chest-legendary", icon: "\uD83C\uDFC5" }
+    ];
+
+    const wheel = document.getElementById('wheel');
+    const ctx = wheel.getContext('2d');
+    const spinButton = document.getElementById('spin-button');
+    const prizeDisplay = document.getElementById('prize-display');
+
+    const cooldownHours = 4;
+    const cooldownKey = 'rouletteCooldown';
+
+    function drawWheel() {
+      const sliceAngle = (2 * Math.PI) / prizes.length;
+      prizes.forEach((prize, i) => {
+        const angle = i * sliceAngle;
+        ctx.beginPath();
+        ctx.moveTo(150, 150);
+        ctx.arc(150, 150, 150, angle, angle + sliceAngle);
+        ctx.closePath();
+        ctx.fillStyle = i % 2 === 0 ? '#f9c74f' : '#f9844a';
+        ctx.fill();
+        ctx.save();
+        ctx.translate(150, 150);
+        ctx.rotate(angle + sliceAngle / 2);
+        ctx.textAlign = 'right';
+        ctx.fillStyle = '#000';
+        ctx.font = '14px sans-serif';
+        ctx.fillText(prize.label, 140, 5);
+        ctx.restore();
+      });
+    }
+
+    function choosePrize() {
+      const r = Math.random();
+      let acc = 0;
+      for (const prize of prizes) {
+        acc += prize.prob;
+        if (r < acc) return prize;
+      }
+      return prizes[prizes.length - 1];
+    }
+
+    function randomInRange(min, max) {
+      return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+
+    function formatCountdown(ms) {
+      const totalSeconds = Math.max(0, Math.floor(ms / 1000));
+      const hours = String(Math.floor(totalSeconds / 3600)).padStart(2, '0');
+      const minutes = String(Math.floor((totalSeconds % 3600) / 60)).padStart(2, '0');
+      const seconds = String(totalSeconds % 60).padStart(2, '0');
+      return `${hours}:${minutes}:${seconds}`;
+    }
+
+    function startCooldown() {
+      const end = Date.now() + cooldownHours * 60 * 60 * 1000;
+      localStorage.setItem(cooldownKey, end);
+      updateCooldown();
+    }
+
+    function updateCooldown() {
+      const end = parseInt(localStorage.getItem(cooldownKey), 10);
+      if (!end) return;
+      const now = Date.now();
+      const remaining = end - now;
+      if (remaining <= 0) {
+        localStorage.removeItem(cooldownKey);
+        prizeDisplay.textContent = '';
+        wheel.classList.remove('blocked');
+        spinButton.disabled = false;
+        return;
+      }
+      prizeDisplay.textContent = `Cooldown: ${formatCountdown(remaining)}`;
+      wheel.classList.add('blocked');
+      spinButton.disabled = true;
+      setTimeout(updateCooldown, 1000);
+    }
+
+    function showPrize(prize) {
+      prizeDisplay.innerHTML = `<div>${prize.icon} ${prize.label}</div>`;
+      if (prize.type.startsWith('chest')) {
+        const btn = document.createElement('button');
+        btn.id = 'open-button';
+        btn.textContent = 'Abrir';
+        prizeDisplay.appendChild(btn);
+        btn.addEventListener('click', () => openChest(prize));
+      }
+    }
+
+    function openChest(prize) {
+      const rewards = generateChestRewards(prize.type);
+      prizeDisplay.innerHTML = rewards.map(r => `<div>${r}</div>`).join('');
+      const btn = document.createElement('button');
+      btn.id = 'collect-button';
+      btn.textContent = 'Recoger';
+      prizeDisplay.appendChild(btn);
+      btn.addEventListener('click', () => {
+        btn.remove();
+        startCooldown();
+        drawWheel();
+      });
+    }
+
+    function generateChestRewards(type) {
+      const rewards = [];
+      const coinAmount = randomInRange(50, 200);
+      rewards.push(`\uD83E\uDE99 x${coinAmount}`);
+      const gemAmount = randomInRange(1, 5);
+      rewards.push(`\uD83D\uDC8E x${gemAmount}`);
+      return rewards;
+    }
+
+    function spin() {
+      const prize = choosePrize();
+      const slice = prizes.indexOf(prize);
+      const sliceAngle = 360 / prizes.length;
+      const randomSpin = 360 * 5 + slice * sliceAngle + sliceAngle / 2;
+      wheel.style.transform = `rotate(${randomSpin}deg)`;
+      setTimeout(() => {
+        showPrize(prize);
+        if (prize.type !== 'retry' && !prize.type.startsWith('chest')) {
+          const btn = document.createElement('button');
+          btn.id = 'collect-button';
+          btn.textContent = 'Recoger';
+          prizeDisplay.appendChild(btn);
+          btn.addEventListener('click', () => {
+            btn.remove();
+            startCooldown();
+          });
+        }
+      }, 4100);
+    }
+
+    spinButton.addEventListener('click', () => {
+      spin();
+    });
+
+    drawWheel();
+    updateCooldown();
+  </script>
+</body>
+</html>
