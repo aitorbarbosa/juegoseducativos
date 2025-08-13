@@ -3419,9 +3419,11 @@
             border-radius: 50%;
         }
         #spin-button {
-            position: relative;
-            width: 120px;
-            height: 120px;
+            position: absolute;
+            bottom: -50px;
+            left: -50px;
+            width: 90px;
+            height: 90px;
             border: none;
             padding: 0;
             background: none;
@@ -3900,15 +3902,15 @@
                             <div id="wheel-wrapper">
                                 <canvas id="wheel-canvas" width="300" height="300"></canvas>
                                 <div id="wheel-pointer"></div>
+                                <button id="spin-button" aria-label="Girar">
+                                    <img src="https://i.imgur.com/9lVaEyu.png" alt="" onerror="this.src='https://placehold.co/90x90/000000/FFFFFF?text=Aro'; console.error('Error loading spin-button ring');" />
+                                    <img src="https://i.imgur.com/kVwIN0b.png" alt="" class="button-face" onerror="this.src='https://placehold.co/72x72/000000/FFFFFF?text=Boton'; console.error('Error loading spin-button face');" />
+                                </button>
                                 <div id="wheel-overlay" class="hidden">BLOQUEADO</div>
                             </div>
                             <div id="chest-content" class="hidden flex flex-col items-center"></div>
                         </div>
                         <div class="flex items-center justify-center gap-4">
-                            <button id="spin-button" aria-label="Girar">
-                                <img src="https://i.imgur.com/9lVaEyu.png" alt="" onerror="this.src='https://placehold.co/120x120/000000/FFFFFF?text=Aro'; console.error('Error loading spin-button ring');" />
-                                <img src="https://i.imgur.com/kVwIN0b.png" alt="" class="button-face" onerror="this.src='https://placehold.co/96x96/000000/FFFFFF?text=Boton'; console.error('Error loading spin-button face');" />
-                            </button>
                             <div id="prize-display" class="flex items-center gap-2 min-w-[120px] min-h-[60px] justify-center text-center"></div>
                         </div>
                         <button id="action-button" class="bg-blue-600 text-white px-4 py-2 rounded hidden"></button>
