@@ -3924,7 +3924,7 @@
                             </div>
                             <div id="chest-content" class="hidden flex flex-col items-center"></div>
                         </div>
-                        <button id="action-button" class="bg-blue-600 text-white px-4 py-2 rounded hidden"></button>
+                        <button id="action-button" class="menu-option-button hidden"></button>
                     </div>
                 </div>
             </div>
@@ -14161,6 +14161,7 @@ async function startGame(isRestart = false) {
         addIconPressEvents(chestInfoButton, chestInfoButton);
         addIconPressEvents(chestInfoCloseButton, chestInfoCloseButton);
         addIconPressEvents(collectPurchaseRewardButton, collectPurchaseRewardButton);
+        addIconPressEvents(actionButton, actionButton);
         addIconPressEvents(confirmDeleteYesButton, confirmDeleteYesButton);
         addIconPressEvents(confirmDeleteNoButton, confirmDeleteNoButton);
         addIconPressEvents(confirmSelectYesButton, confirmSelectYesButton);
@@ -14645,13 +14646,13 @@ async function startGame(isRestart = false) {
             }
             if (prize.type === 'chest') {
                 if (actionButton) {
-                    actionButton.textContent = 'Abrir';
+                    actionButton.textContent = 'ABRIR';
                     actionButton.classList.remove('hidden');
                     actionButton.onclick = () => openChest(prize.chestType);
                 }
             } else {
                 if (actionButton) {
-                    actionButton.textContent = 'Recoger';
+                    actionButton.textContent = 'RECOGER';
                     actionButton.classList.remove('hidden');
                     actionButton.onclick = collectPrize;
                 }
@@ -14672,7 +14673,7 @@ async function startGame(isRestart = false) {
             if (prizeDisplay) prizeDisplay.classList.add('hidden');
             if (spinResultOverlay) spinResultOverlay.classList.add('hidden');
             if (actionButton) {
-                actionButton.textContent = 'Recoger';
+                actionButton.textContent = 'RECOGER';
                 actionButton.onclick = collectPrize;
             }
         }
@@ -14771,9 +14772,9 @@ async function startGame(isRestart = false) {
         if (spinButton) {
             spinButton.addEventListener('click', spinWheel);
             spinButton.addEventListener('mousedown', () => spinButton.classList.add('spin-button-pressed'));
-            spinButton.addEventListener('mouseleave', () => spinButton.classList.remove('spin-button-pressed'));
+            spinButton.addEventListener('mouseleave', () => spinButton.disabled || spinButton.classList.remove('spin-button-pressed'));
             spinButton.addEventListener('touchstart', () => spinButton.classList.add('spin-button-pressed'));
-            spinButton.addEventListener('touchcancel', () => spinButton.classList.remove('spin-button-pressed'));
+            spinButton.addEventListener('touchcancel', () => spinButton.disabled || spinButton.classList.remove('spin-button-pressed'));
         }
 
         window.onload = () => {
