@@ -3420,38 +3420,61 @@
         }
         #spin-button {
             position: absolute;
-            bottom: -50px;
-            left: -50px;
+            top: 50%;
+            left: 50%;
             width: 90px;
             height: 90px;
             border: none;
             padding: 0;
             background: none;
             cursor: pointer;
+            transform: translate(-50%, -50%);
+            transition: transform 0.05s ease-out, filter 0.05s ease-out;
+            z-index: 5;
         }
         #spin-button img {
-            position: absolute;
-            top: 0;
-            left: 0;
             width: 100%;
             height: 100%;
             pointer-events: none;
         }
-        #spin-button .button-face {
-            width: 80%;
-            height: 80%;
-            top: 10%;
-            left: 10%;
-            z-index: 1;
-            transition: transform 0.1s;
-            transform-origin: center;
-        }
-        #spin-button:active .button-face {
-            transform: scale(0.95);
+        #spin-button.spin-button-pressed {
+            transform: translate(-50%, -50%) scale(0.9);
+            filter: brightness(0.7);
         }
         #spin-button:disabled {
-            opacity: 0.5;
             cursor: not-allowed;
+        }
+        #spin-result-overlay {
+            position: absolute;
+            top: calc(50% - 30px);
+            left: 50%;
+            width: 158px;
+            height: 158px;
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+            z-index: 10;
+        }
+        #prize-display {
+            position: absolute;
+            top: calc(50% - 30px);
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 15;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        #action-button {
+            position: absolute;
+            top: calc(50% + 55px);
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60%;
+            max-width: 200px;
+            height: 50px;
+            font-size: 0.8em;
+            z-index: 12;
         }
         #wheel-overlay {
             position: absolute;
@@ -3461,11 +3484,12 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            background-color: rgba(142, 68, 173, 0.5);
+            background-color: rgba(0, 0, 0, 0.75);
             color: white;
             font-size: 1.2rem;
             border-radius: 50%;
             pointer-events: none;
+            z-index: 8;
         }
 
     </style>
@@ -3903,17 +3927,15 @@
                                 <canvas id="wheel-canvas" width="300" height="300"></canvas>
                                 <div id="wheel-pointer"></div>
                                 <button id="spin-button" aria-label="Girar">
-                                    <img src="https://i.imgur.com/9lVaEyu.png" alt="" onerror="this.src='https://placehold.co/90x90/000000/FFFFFF?text=Aro'; console.error('Error loading spin-button ring');" />
-                                    <img src="https://i.imgur.com/kVwIN0b.png" alt="" class="button-face" onerror="this.src='https://placehold.co/72x72/000000/FFFFFF?text=Boton'; console.error('Error loading spin-button face');" />
+                                    <img src="https://i.imgur.com/Iv0kEE6.png" alt="Girar" onerror="this.src='https://placehold.co/90x90/000000/FFFFFF?text=Boton'; console.error('Error loading spin-button');" />
                                 </button>
+                                <img id="spin-result-overlay" src="https://i.imgur.com/XRBRbPo.png" alt="Resultado" class="hidden" onerror="this.src='https://placehold.co/158x158/000000/FFFFFF?text=Overlay'; console.error('Error loading spin-result-overlay');" />
+                                <div id="prize-display" class="hidden flex items-center gap-2 justify-center text-center"></div>
+                                <button id="action-button" class="menu-option-button hidden"></button>
                                 <div id="wheel-overlay" class="hidden">BLOQUEADO</div>
                             </div>
                             <div id="chest-content" class="hidden flex flex-col items-center"></div>
                         </div>
-                        <div class="flex items-center justify-center gap-4">
-                            <div id="prize-display" class="flex items-center gap-2 min-w-[120px] min-h-[60px] justify-center text-center"></div>
-                        </div>
-                        <button id="action-button" class="bg-blue-600 text-white px-4 py-2 rounded hidden"></button>
                     </div>
                 </div>
             </div>
@@ -4394,6 +4416,7 @@
         const prizeDisplay = document.getElementById("prize-display");
         const actionButton = document.getElementById("action-button");
         const wheelOverlay = document.getElementById("wheel-overlay");
+        const spinResultOverlay = document.getElementById("spin-result-overlay");
         const wheelWrapper = document.getElementById("wheel-wrapper");
         const chestContent = document.getElementById("chest-content");
         const storeItemsContainer = document.getElementById("store-items-container");
@@ -14149,6 +14172,7 @@ async function startGame(isRestart = false) {
         addIconPressEvents(chestInfoButton, chestInfoButton);
         addIconPressEvents(chestInfoCloseButton, chestInfoCloseButton);
         addIconPressEvents(collectPurchaseRewardButton, collectPurchaseRewardButton);
+        addIconPressEvents(actionButton, actionButton);
         addIconPressEvents(confirmDeleteYesButton, confirmDeleteYesButton);
         addIconPressEvents(confirmDeleteNoButton, confirmDeleteNoButton);
         addIconPressEvents(confirmSelectYesButton, confirmSelectYesButton);
@@ -14596,6 +14620,15 @@ async function startGame(isRestart = false) {
             const cooldown = getWheelCooldown();
             if (Date.now() < cooldown) return;
             wheelSpinning = true;
+            if (spinResultOverlay) spinResultOverlay.classList.add('hidden');
+            if (prizeDisplay) {
+                prizeDisplay.innerHTML = '';
+                prizeDisplay.classList.add('hidden');
+            }
+            if (wheelOverlay) {
+                wheelOverlay.classList.add('hidden');
+                wheelOverlay.textContent = 'BLOQUEADO';
+            }
             if (spinButton) spinButton.disabled = true;
             const prize = selectPrize();
             const seg = wheelAngles.find(a => a.prize === prize);
@@ -14611,25 +14644,36 @@ async function startGame(isRestart = false) {
 
         function showPrize(prize) {
             if (!prizeDisplay) return;
+            if (wheelOverlay) {
+                wheelOverlay.classList.remove('hidden');
+                wheelOverlay.textContent = '';
+            }
+            if (spinResultOverlay) spinResultOverlay.classList.remove('hidden');
             if (prize.type === 'life' || prize.type === 'coins' || prize.type === 'gems') {
                 const amount = Math.floor(Math.random() * (prize.max - prize.min + 1)) + prize.min;
                 prizeDisplay.innerHTML = `<span>${amount}</span><img src="${prize.image}" alt="premio" class="w-8 h-8">`;
+            } else if (prize.type === 'chest') {
+                prizeDisplay.innerHTML = `<img src="${prize.image}" alt="premio" class="w-8 h-8">`;
             } else {
                 prizeDisplay.innerHTML = `<img src="${prize.image}" alt="premio" class="w-8 h-8"><span>${prize.label}</span>`;
             }
+            prizeDisplay.classList.remove('hidden');
             if (prize.type === 'reroll') {
-                if (spinButton) spinButton.disabled = false;
+                if (spinButton) {
+                    spinButton.disabled = false;
+                    spinButton.classList.remove('spin-button-pressed');
+                }
                 return;
             }
             if (prize.type === 'chest') {
                 if (actionButton) {
-                    actionButton.textContent = 'Abrir';
+                    actionButton.textContent = 'ABRIR';
                     actionButton.classList.remove('hidden');
                     actionButton.onclick = () => openChest(prize.chestType);
                 }
             } else {
                 if (actionButton) {
-                    actionButton.textContent = 'Recoger';
+                    actionButton.textContent = 'RECOGER';
                     actionButton.classList.remove('hidden');
                     actionButton.onclick = collectPrize;
                 }
@@ -14648,8 +14692,9 @@ async function startGame(isRestart = false) {
             chestContent.classList.remove('hidden');
             wheelWrapper.classList.add('hidden');
             if (prizeDisplay) prizeDisplay.classList.add('hidden');
+            if (spinResultOverlay) spinResultOverlay.classList.add('hidden');
             if (actionButton) {
-                actionButton.textContent = 'Recoger';
+                actionButton.textContent = 'RECOGER';
                 actionButton.onclick = collectPrize;
             }
         }
@@ -14658,8 +14703,9 @@ async function startGame(isRestart = false) {
             if (actionButton) actionButton.classList.add('hidden');
             if (prizeDisplay) {
                 prizeDisplay.innerHTML = '';
-                prizeDisplay.classList.remove('hidden');
+                prizeDisplay.classList.add('hidden');
             }
+            if (spinResultOverlay) spinResultOverlay.classList.add('hidden');
             if (chestContent) chestContent.classList.add('hidden');
             if (wheelWrapper) wheelWrapper.classList.remove('hidden');
             if (wheelCanvas) {
@@ -14685,8 +14731,15 @@ async function startGame(isRestart = false) {
             const end = getWheelCooldown();
             const now = Date.now();
             if (now >= end) {
-                if (prizeDisplay) prizeDisplay.textContent = '';
-                if (spinButton) spinButton.disabled = false;
+                if (prizeDisplay) {
+                    prizeDisplay.innerHTML = '';
+                    prizeDisplay.classList.add('hidden');
+                }
+                if (spinResultOverlay) spinResultOverlay.classList.add('hidden');
+                if (spinButton) {
+                    spinButton.disabled = false;
+                    spinButton.classList.remove('spin-button-pressed');
+                }
                 if (wheelOverlay) {
                     wheelOverlay.classList.add('hidden');
                     wheelOverlay.textContent = 'BLOQUEADO';
@@ -14699,7 +14752,11 @@ async function startGame(isRestart = false) {
             const h = String(Math.floor(diff / 3600000)).padStart(2, '0');
             const m = String(Math.floor((diff % 3600000) / 60000)).padStart(2, '0');
             const s = String(Math.floor((diff % 60000) / 1000)).padStart(2, '0');
-            if (prizeDisplay) prizeDisplay.textContent = '';
+            if (prizeDisplay) {
+                prizeDisplay.innerHTML = '';
+                prizeDisplay.classList.add('hidden');
+            }
+            if (spinResultOverlay) spinResultOverlay.classList.add('hidden');
             if (wheelOverlay) wheelOverlay.textContent = `Disponible en ${h}:${m}:${s}`;
             setTimeout(updateCooldownDisplay, 1000);
         }
@@ -14708,20 +14765,24 @@ async function startGame(isRestart = false) {
             if (chestContent) chestContent.classList.add('hidden');
             if (wheelWrapper) wheelWrapper.classList.remove('hidden');
             if (actionButton) actionButton.classList.add('hidden');
+            if (prizeDisplay) {
+                prizeDisplay.innerHTML = '';
+                prizeDisplay.classList.add('hidden');
+            }
+            if (spinResultOverlay) spinResultOverlay.classList.add('hidden');
             drawWheel();
             const end = getWheelCooldown();
             if (Date.now() < end) {
                 updateCooldownDisplay();
             } else {
-                if (prizeDisplay) {
-                    prizeDisplay.textContent = '';
-                    prizeDisplay.classList.remove('hidden');
-                }
                 if (wheelOverlay) {
                     wheelOverlay.classList.add('hidden');
                     wheelOverlay.textContent = 'BLOQUEADO';
                 }
-                if (spinButton) spinButton.disabled = false;
+                if (spinButton) {
+                    spinButton.disabled = false;
+                    spinButton.classList.remove('spin-button-pressed');
+                }
                 if (wheelCanvas) {
                     wheelCanvas.style.transition = 'none';
                     wheelCanvas.style.transform = 'rotate(0deg)';
@@ -14729,7 +14790,13 @@ async function startGame(isRestart = false) {
             }
         }
 
-        if (spinButton) spinButton.addEventListener('click', spinWheel);
+        if (spinButton) {
+            spinButton.addEventListener('click', spinWheel);
+            spinButton.addEventListener('mousedown', () => spinButton.classList.add('spin-button-pressed'));
+            spinButton.addEventListener('mouseleave', () => spinButton.disabled || spinButton.classList.remove('spin-button-pressed'));
+            spinButton.addEventListener('touchstart', () => spinButton.classList.add('spin-button-pressed'));
+            spinButton.addEventListener('touchcancel', () => spinButton.disabled || spinButton.classList.remove('spin-button-pressed'));
+        }
 
         window.onload = () => {
             loadSkinImages();
