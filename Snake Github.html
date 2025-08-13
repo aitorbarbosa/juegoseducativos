@@ -3442,15 +3442,14 @@
             filter: brightness(0.7);
         }
         #spin-button:disabled {
-            opacity: 0.5;
             cursor: not-allowed;
         }
         #spin-result-overlay {
             position: absolute;
             top: 50%;
             left: 50%;
-            width: 135px;
-            height: 135px;
+            width: 158px;
+            height: 158px;
             transform: translate(-50%, -50%);
             pointer-events: none;
             z-index: 10;
@@ -3919,7 +3918,7 @@
                                 <button id="spin-button" aria-label="Girar">
                                     <img src="https://i.imgur.com/Iv0kEE6.png" alt="Girar" onerror="this.src='https://placehold.co/90x90/000000/FFFFFF?text=Boton'; console.error('Error loading spin-button');" />
                                 </button>
-                                <img id="spin-result-overlay" src="https://i.imgur.com/MGECRJe.png" alt="Resultado" class="hidden" onerror="this.src='https://placehold.co/135x135/000000/FFFFFF?text=Overlay'; console.error('Error loading spin-result-overlay');" />
+                                <img id="spin-result-overlay" src="https://i.imgur.com/XRBRbPo.png" alt="Resultado" class="hidden" onerror="this.src='https://placehold.co/158x158/000000/FFFFFF?text=Overlay'; console.error('Error loading spin-result-overlay');" />
                                 <div id="prize-display" class="hidden flex items-center gap-2 justify-center text-center"></div>
                                 <div id="wheel-overlay" class="hidden">BLOQUEADO</div>
                             </div>
@@ -14638,7 +14637,10 @@ async function startGame(isRestart = false) {
             }
             prizeDisplay.classList.remove('hidden');
             if (prize.type === 'reroll') {
-                if (spinButton) spinButton.disabled = false;
+                if (spinButton) {
+                    spinButton.disabled = false;
+                    spinButton.classList.remove('spin-button-pressed');
+                }
                 return;
             }
             if (prize.type === 'chest') {
@@ -14712,7 +14714,10 @@ async function startGame(isRestart = false) {
                     prizeDisplay.classList.add('hidden');
                 }
                 if (spinResultOverlay) spinResultOverlay.classList.add('hidden');
-                if (spinButton) spinButton.disabled = false;
+                if (spinButton) {
+                    spinButton.disabled = false;
+                    spinButton.classList.remove('spin-button-pressed');
+                }
                 if (wheelOverlay) {
                     wheelOverlay.classList.add('hidden');
                     wheelOverlay.textContent = 'BLOQUEADO';
@@ -14752,7 +14757,10 @@ async function startGame(isRestart = false) {
                     wheelOverlay.classList.add('hidden');
                     wheelOverlay.textContent = 'BLOQUEADO';
                 }
-                if (spinButton) spinButton.disabled = false;
+                if (spinButton) {
+                    spinButton.disabled = false;
+                    spinButton.classList.remove('spin-button-pressed');
+                }
                 if (wheelCanvas) {
                     wheelCanvas.style.transition = 'none';
                     wheelCanvas.style.transform = 'rotate(0deg)';
@@ -14763,10 +14771,8 @@ async function startGame(isRestart = false) {
         if (spinButton) {
             spinButton.addEventListener('click', spinWheel);
             spinButton.addEventListener('mousedown', () => spinButton.classList.add('spin-button-pressed'));
-            spinButton.addEventListener('mouseup', () => spinButton.classList.remove('spin-button-pressed'));
             spinButton.addEventListener('mouseleave', () => spinButton.classList.remove('spin-button-pressed'));
             spinButton.addEventListener('touchstart', () => spinButton.classList.add('spin-button-pressed'));
-            spinButton.addEventListener('touchend', () => spinButton.classList.remove('spin-button-pressed'));
             spinButton.addEventListener('touchcancel', () => spinButton.classList.remove('spin-button-pressed'));
         }
 
