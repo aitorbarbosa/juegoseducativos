@@ -3399,6 +3399,7 @@
             position: relative;
             border-radius: 50%;
             box-shadow: none;
+            transform-origin: center;
         }
         #wheel-pointer {
             position: absolute;
@@ -3490,6 +3491,12 @@
             border-radius: 50%;
             pointer-events: none;
             z-index: 8;
+        }
+
+        #generic-menu-panel.wheel-active .panel-content {
+            overflow: hidden;
+            justify-content: center;
+            align-items: center;
         }
 
     </style>
@@ -4512,6 +4519,16 @@
         const freeObstacleCount = document.getElementById("free-obstacle-count");
         const freeObstacleCountValue = document.getElementById("free-obstacle-count-value");
         const freeObstacleGroup = freeObstacleCount ? freeObstacleCount.closest('.control-group') : null;
+
+        function resizeWheel() {
+            if (!wheelWrapper || !genericMenuPanel.classList.contains('wheel-active')) return;
+            const base = 300;
+            const available = Math.min(window.innerWidth, window.innerHeight) * 0.8;
+            const scale = available / base;
+            wheelWrapper.style.transform = `scale(${scale})`;
+        }
+
+        window.addEventListener('resize', resizeWheel);
 
 function setupSlider(slider, display) {
     if (slider && display) {
@@ -7732,7 +7749,13 @@ function setupSlider(slider, display) {
                 }
             }
             const isConfigMenuVisible = !configMenuPanel.classList.contains('config-menu-panel-hidden') && configMenuPanel.classList.contains('panel-visible');
-            genericMenuPanel.classList.remove('centered-panel');
+            if (title === 'Ruleta de premios') {
+                genericMenuPanel.classList.add('centered-panel', 'wheel-active');
+                resizeWheel();
+            } else {
+                genericMenuPanel.classList.remove('centered-panel', 'wheel-active');
+                if (wheelWrapper) wheelWrapper.style.transform = '';
+            }
             togglePanel(genericMenuPanel, genericMenuPanel.querySelector('.panel-content'), true);
             if (title === 'Ruleta de premios') checkWheelCooldown();
             if (isConfigMenuVisible) {
@@ -7741,6 +7764,8 @@ function setupSlider(slider, display) {
         }
 
        function closeGenericMenuPanel() {
+           genericMenuPanel.classList.remove('centered-panel', 'wheel-active');
+           if (wheelWrapper) wheelWrapper.style.transform = '';
            togglePanel(genericMenuPanel, genericMenuPanel.querySelector('.panel-content'), false);
            setTimeout(updateMainButtonStates, 0);
        }
