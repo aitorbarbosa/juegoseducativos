@@ -3921,7 +3921,7 @@
                     </button>
                 </div>
                 <div class="panel-content">
-                    <div id="wheel-container" class="flex flex-col items-center gap-4">
+                    <div id="wheel-container" class="flex flex-col items-center justify-center gap-4 flex-1">
                         <div id="wheel-area" class="flex items-center justify-center gap-4">
                             <div id="wheel-wrapper">
                                 <canvas id="wheel-canvas" width="300" height="300"></canvas>
@@ -4419,6 +4419,21 @@
         const spinResultOverlay = document.getElementById("spin-result-overlay");
         const wheelWrapper = document.getElementById("wheel-wrapper");
         const chestContent = document.getElementById("chest-content");
+        let wheelSize = 300;
+        const isDesktop = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+        if (wheelCanvas) {
+            wheelSize = isDesktop ? 400 : 300;
+            wheelCanvas.width = wheelCanvas.height = wheelSize;
+            wheelCanvas.style.width = wheelCanvas.style.height = `${wheelSize}px`;
+        }
+        if (spinButton) {
+            const btnSize = wheelSize * 0.3;
+            spinButton.style.width = spinButton.style.height = `${btnSize}px`;
+        }
+        if (spinResultOverlay) {
+            const overlaySize = wheelSize * (158 / 300);
+            spinResultOverlay.style.width = spinResultOverlay.style.height = `${overlaySize}px`;
+        }
         const storeItemsContainer = document.getElementById("store-items-container");
         const storeTabButtons = document.querySelectorAll('#store-tabs .store-tab');
         const closeStorePanelButton = document.getElementById("close-store-panel");
@@ -14546,20 +14561,22 @@ async function startGame(isRestart = false) {
         })();
 
         function drawWheel() {
-            if (!wheelCtx) return;
-            wheelCtx.clearRect(0, 0, 300, 300);
+            if (!wheelCtx || !wheelCanvas) return;
+            const size = wheelCanvas.width;
+            const center = size / 2;
+            const radius = center;
+            wheelCtx.clearRect(0, 0, size, size);
             const angle = (2 * Math.PI) / wheelPrizes.length;
-            const segmentColors = ['#8C64AF', '#C1A4D4']; // alternating segment colors
+            const segmentColors = ['#8C64AF', '#C1A4D4'];
             let start = 0;
             wheelPrizes.forEach((p, i) => {
                 wheelCtx.beginPath();
-                wheelCtx.moveTo(150, 150);
-                wheelCtx.arc(150, 150, 150, start, start + angle);
+                wheelCtx.moveTo(center, center);
+                wheelCtx.arc(center, center, radius, start, start + angle);
                 wheelCtx.closePath();
                 wheelCtx.fillStyle = segmentColors[i % 2];
                 wheelCtx.fill();
 
-                // thin beveled separator between segments
                 wheelCtx.lineWidth = 3;
                 wheelCtx.strokeStyle = '#4c1a70';
                 wheelCtx.stroke();
@@ -14568,37 +14585,37 @@ async function startGame(isRestart = false) {
                 wheelCtx.stroke();
 
                 const mid = start + angle / 2;
-                const r = 100;
-                const x = 150 + r * Math.cos(mid);
-                const y = 150 + r * Math.sin(mid);
+                const r = radius * (2 / 3);
+                const x = center + r * Math.cos(mid);
+                const y = center + r * Math.sin(mid);
 
                 wheelCtx.save();
                 wheelCtx.translate(x, y);
                 wheelCtx.rotate(mid + Math.PI / 2);
                 if (p.img && p.img.complete) {
-                    wheelCtx.drawImage(p.img, -20, -40, 40, 40);
+                    const imgSize = size * (40 / 300);
+                    wheelCtx.drawImage(p.img, -imgSize / 2, -imgSize, imgSize, imgSize);
                     if (p.type === 'life' || p.type === 'coins' || p.type === 'gems') {
                         const textColor = segmentColors[i % 2] === '#FFD700' ? '#8C64AF' : '#fff';
                         wheelCtx.fillStyle = textColor;
-                        wheelCtx.font = '12px sans-serif';
+                        wheelCtx.font = `${size * (12 / 300)}px sans-serif`;
                         wheelCtx.textAlign = 'center';
                         wheelCtx.textBaseline = 'top';
                         const rangeText = `${p.min}-${p.max >= 1000 ? '1k' : p.max}`;
-                        wheelCtx.fillText(rangeText, 0, 5);
+                        wheelCtx.fillText(rangeText, 0, size * (5 / 300));
                     }
                 }
                 wheelCtx.restore();
                 start += angle;
             });
 
-            // outer beveled border
             wheelCtx.beginPath();
-            wheelCtx.arc(150, 150, 150, 0, 2 * Math.PI);
+            wheelCtx.arc(center, center, radius, 0, 2 * Math.PI);
             wheelCtx.lineWidth = 5;
             wheelCtx.strokeStyle = '#4c1a70';
             wheelCtx.stroke();
             wheelCtx.beginPath();
-            wheelCtx.arc(150, 150, 147, 0, 2 * Math.PI);
+            wheelCtx.arc(center, center, radius - 3, 0, 2 * Math.PI);
             wheelCtx.lineWidth = 2;
             wheelCtx.strokeStyle = 'rgba(255,255,255,0.6)';
             wheelCtx.stroke();
