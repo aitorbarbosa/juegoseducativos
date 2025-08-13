@@ -3465,6 +3465,15 @@
             align-items: center;
             gap: 0.5rem;
         }
+        #action-button {
+            position: absolute;
+            top: calc(50% + 85px);
+            left: 50%;
+            transform: translateX(-50%);
+            width: 85%;
+            max-width: 260px;
+            z-index: 12;
+        }
         #wheel-overlay {
             position: absolute;
             inset: 0;
@@ -3920,11 +3929,11 @@
                                 </button>
                                 <img id="spin-result-overlay" src="https://i.imgur.com/XRBRbPo.png" alt="Resultado" class="hidden" onerror="this.src='https://placehold.co/158x158/000000/FFFFFF?text=Overlay'; console.error('Error loading spin-result-overlay');" />
                                 <div id="prize-display" class="hidden flex items-center gap-2 justify-center text-center"></div>
+                                <button id="action-button" class="menu-option-button hidden"></button>
                                 <div id="wheel-overlay" class="hidden">BLOQUEADO</div>
                             </div>
                             <div id="chest-content" class="hidden flex flex-col items-center"></div>
                         </div>
-                        <button id="action-button" class="menu-option-button hidden"></button>
                     </div>
                 </div>
             </div>
