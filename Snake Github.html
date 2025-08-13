@@ -3394,6 +3394,11 @@
             background: none;
             border: none;
             gap: 1rem;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
         #wheel-wrapper {
             position: relative;
@@ -3403,16 +3408,14 @@
         #wheel-pointer {
             position: absolute;
             top: 50%;
-            right: -15px;
             transform: translateY(-50%);
             width: 0;
             height: 0;
-            border-top: 15px solid transparent;
-            border-bottom: 15px solid transparent;
-            border-right: 30px solid #8e44ad;
             z-index: 10;
         }
         #wheel-canvas {
+            width: 100%;
+            height: 100%;
             transition: transform 4s cubic-bezier(0.33, 1, 0.68, 1);
             background: none;
             border: none;
@@ -3422,8 +3425,8 @@
             position: absolute;
             top: 50%;
             left: 50%;
-            width: 90px;
-            height: 90px;
+            width: 30%;
+            height: 30%;
             border: none;
             padding: 0;
             background: none;
@@ -3446,17 +3449,17 @@
         }
         #spin-result-overlay {
             position: absolute;
-            top: calc(50% - 30px);
+            top: 50%;
             left: 50%;
-            width: 158px;
-            height: 158px;
+            width: 52%;
+            height: 52%;
             transform: translate(-50%, -50%);
             pointer-events: none;
             z-index: 10;
         }
         #prize-display {
             position: absolute;
-            top: calc(50% - 30px);
+            top: 45%;
             left: 50%;
             transform: translate(-50%, -50%);
             z-index: 15;
@@ -3467,12 +3470,12 @@
         }
         #action-button {
             position: absolute;
-            top: calc(50% + 55px);
+            top: 66%;
             left: 50%;
             transform: translateX(-50%);
             width: 60%;
-            max-width: 200px;
-            height: 50px;
+            max-width: none;
+            height: 17%;
             font-size: 0.8em;
             z-index: 12;
         }
@@ -3490,6 +3493,41 @@
             border-radius: 50%;
             pointer-events: none;
             z-index: 8;
+        }
+
+        #generic-menu-panel {
+            width: 100vw;
+            height: 100vh;
+            max-width: none;
+            max-height: none;
+            top: 0;
+            left: 0;
+            padding: 0;
+            border-radius: 0;
+        }
+        #generic-menu-panel .settings-header {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            right: 10px;
+            margin-bottom: 0;
+            justify-content: flex-end;
+            z-index: 20;
+        }
+        #generic-menu-panel .panel-content {
+            flex: 1 1 auto;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0;
+        }
+        #wheel-container {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
     </style>
@@ -4417,8 +4455,33 @@
         const actionButton = document.getElementById("action-button");
         const wheelOverlay = document.getElementById("wheel-overlay");
         const spinResultOverlay = document.getElementById("spin-result-overlay");
+        const wheelPointer = document.getElementById("wheel-pointer");
         const wheelWrapper = document.getElementById("wheel-wrapper");
         const chestContent = document.getElementById("chest-content");
+        let wheelSize = 300;
+
+        function resizeWheel() {
+            if (!wheelWrapper || !wheelCanvas) return;
+            const size = Math.min(window.innerWidth, window.innerHeight) * 0.9;
+            wheelSize = size;
+            wheelWrapper.style.width = size + 'px';
+            wheelWrapper.style.height = size + 'px';
+            wheelCanvas.width = size;
+            wheelCanvas.height = size;
+            if (wheelPointer) {
+                const pointerOffset = size * 0.05;
+                const pointerWidth = size * 0.1;
+                wheelPointer.style.right = `-${pointerOffset}px`;
+                wheelPointer.style.borderTopWidth = pointerOffset + 'px';
+                wheelPointer.style.borderBottomWidth = pointerOffset + 'px';
+                wheelPointer.style.borderRightWidth = pointerWidth + 'px';
+            }
+            drawWheel();
+        }
+
+        window.addEventListener('resize', resizeWheel);
+        resizeWheel();
+
         const storeItemsContainer = document.getElementById("store-items-container");
         const storeTabButtons = document.querySelectorAll('#store-tabs .store-tab');
         const closeStorePanelButton = document.getElementById("close-store-panel");
@@ -14547,44 +14610,48 @@ async function startGame(isRestart = false) {
 
         function drawWheel() {
             if (!wheelCtx) return;
-            wheelCtx.clearRect(0, 0, 300, 300);
+            const center = wheelSize / 2;
+            const scale = wheelSize / 300;
+            wheelCtx.clearRect(0, 0, wheelSize, wheelSize);
             const angle = (2 * Math.PI) / wheelPrizes.length;
             const segmentColors = ['#8C64AF', '#C1A4D4']; // alternating segment colors
             let start = 0;
             wheelPrizes.forEach((p, i) => {
                 wheelCtx.beginPath();
-                wheelCtx.moveTo(150, 150);
-                wheelCtx.arc(150, 150, 150, start, start + angle);
+                wheelCtx.moveTo(center, center);
+                wheelCtx.arc(center, center, center, start, start + angle);
                 wheelCtx.closePath();
                 wheelCtx.fillStyle = segmentColors[i % 2];
                 wheelCtx.fill();
 
                 // thin beveled separator between segments
-                wheelCtx.lineWidth = 3;
+                wheelCtx.lineWidth = 3 * scale;
                 wheelCtx.strokeStyle = '#4c1a70';
                 wheelCtx.stroke();
-                wheelCtx.lineWidth = 1;
+                wheelCtx.lineWidth = 1 * scale;
                 wheelCtx.strokeStyle = 'rgba(255,255,255,0.6)';
                 wheelCtx.stroke();
 
                 const mid = start + angle / 2;
-                const r = 100;
-                const x = 150 + r * Math.cos(mid);
-                const y = 150 + r * Math.sin(mid);
+                const r = wheelSize * (100 / 300);
+                const x = center + r * Math.cos(mid);
+                const y = center + r * Math.sin(mid);
 
                 wheelCtx.save();
                 wheelCtx.translate(x, y);
                 wheelCtx.rotate(mid + Math.PI / 2);
                 if (p.img && p.img.complete) {
-                    wheelCtx.drawImage(p.img, -20, -40, 40, 40);
+                    const imgW = wheelSize * (40 / 300);
+                    const imgH = wheelSize * (40 / 300);
+                    wheelCtx.drawImage(p.img, -imgW / 2, -imgH, imgW, imgH);
                     if (p.type === 'life' || p.type === 'coins' || p.type === 'gems') {
                         const textColor = segmentColors[i % 2] === '#FFD700' ? '#8C64AF' : '#fff';
                         wheelCtx.fillStyle = textColor;
-                        wheelCtx.font = '12px sans-serif';
+                        wheelCtx.font = `${12 * scale}px sans-serif`;
                         wheelCtx.textAlign = 'center';
                         wheelCtx.textBaseline = 'top';
                         const rangeText = `${p.min}-${p.max >= 1000 ? '1k' : p.max}`;
-                        wheelCtx.fillText(rangeText, 0, 5);
+                        wheelCtx.fillText(rangeText, 0, 5 * scale);
                     }
                 }
                 wheelCtx.restore();
@@ -14593,13 +14660,13 @@ async function startGame(isRestart = false) {
 
             // outer beveled border
             wheelCtx.beginPath();
-            wheelCtx.arc(150, 150, 150, 0, 2 * Math.PI);
-            wheelCtx.lineWidth = 5;
+            wheelCtx.arc(center, center, center, 0, 2 * Math.PI);
+            wheelCtx.lineWidth = 5 * scale;
             wheelCtx.strokeStyle = '#4c1a70';
             wheelCtx.stroke();
             wheelCtx.beginPath();
-            wheelCtx.arc(150, 150, 147, 0, 2 * Math.PI);
-            wheelCtx.lineWidth = 2;
+            wheelCtx.arc(center, center, center - 3 * scale, 0, 2 * Math.PI);
+            wheelCtx.lineWidth = 2 * scale;
             wheelCtx.strokeStyle = 'rgba(255,255,255,0.6)';
             wheelCtx.stroke();
         }
@@ -14770,7 +14837,7 @@ async function startGame(isRestart = false) {
                 prizeDisplay.classList.add('hidden');
             }
             if (spinResultOverlay) spinResultOverlay.classList.add('hidden');
-            drawWheel();
+            resizeWheel();
             const end = getWheelCooldown();
             if (Date.now() < end) {
                 updateCooldownDisplay();
