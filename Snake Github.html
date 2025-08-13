@@ -3473,7 +3473,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            background-color: rgba(142, 68, 173, 0.5);
+            background-color: rgba(0, 0, 0, 0.75);
             color: white;
             font-size: 1.2rem;
             border-radius: 50%;
@@ -14614,6 +14614,10 @@ async function startGame(isRestart = false) {
                 prizeDisplay.innerHTML = '';
                 prizeDisplay.classList.add('hidden');
             }
+            if (wheelOverlay) {
+                wheelOverlay.classList.add('hidden');
+                wheelOverlay.textContent = 'BLOQUEADO';
+            }
             if (spinButton) spinButton.disabled = true;
             const prize = selectPrize();
             const seg = wheelAngles.find(a => a.prize === prize);
@@ -14629,10 +14633,16 @@ async function startGame(isRestart = false) {
 
         function showPrize(prize) {
             if (!prizeDisplay) return;
+            if (wheelOverlay) {
+                wheelOverlay.classList.remove('hidden');
+                wheelOverlay.textContent = '';
+            }
             if (spinResultOverlay) spinResultOverlay.classList.remove('hidden');
             if (prize.type === 'life' || prize.type === 'coins' || prize.type === 'gems') {
                 const amount = Math.floor(Math.random() * (prize.max - prize.min + 1)) + prize.min;
                 prizeDisplay.innerHTML = `<span>${amount}</span><img src="${prize.image}" alt="premio" class="w-8 h-8">`;
+            } else if (prize.type === 'chest') {
+                prizeDisplay.innerHTML = `<img src="${prize.image}" alt="premio" class="w-8 h-8">`;
             } else {
                 prizeDisplay.innerHTML = `<img src="${prize.image}" alt="premio" class="w-8 h-8"><span>${prize.label}</span>`;
             }
