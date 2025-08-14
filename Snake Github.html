@@ -3390,6 +3390,19 @@
             }
         }
 
+        #generic-menu-panel .panel-content {
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+        #wheel-container {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin-top: -5px;
+        }
         #wheel-area {
             background: none;
             border: none;
@@ -3413,6 +3426,7 @@
             z-index: 10;
         }
         #wheel-canvas {
+            display: block;
             transition: transform 4s cubic-bezier(0.33, 1, 0.68, 1);
             background: none;
             border: none;
