@@ -3396,7 +3396,10 @@
             overflow: hidden;
         }
         #wheel-container {
-            width: 100%;
+            width: 95%;
+            height: 95%;
+            max-width: 95%;
+            max-height: 95%;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -3404,11 +3407,15 @@
             margin-top: -5px;
         }
         #wheel-area {
+            width: 100%;
+            height: 100%;
             background: none;
             border: none;
             gap: 1rem;
         }
         #wheel-wrapper {
+            width: 100%;
+            aspect-ratio: 1 / 1;
             position: relative;
             border-radius: 50%;
             box-shadow: none;
@@ -3426,6 +3433,8 @@
             z-index: 10;
         }
         #wheel-canvas {
+            width: 100%;
+            height: 100%;
             display: block;
             transition: transform 4s cubic-bezier(0.33, 1, 0.68, 1);
             background: none;
