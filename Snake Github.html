@@ -14807,7 +14807,7 @@ async function startGame(isRestart = false) {
                 wheelCtx.stroke();
 
                 const mid = start + angle / 2;
-                const r = 100;
+                const r = 80;
                 const x = 150 + r * Math.cos(mid);
                 const y = 150 + r * Math.sin(mid);
 
@@ -14815,7 +14815,7 @@ async function startGame(isRestart = false) {
                 wheelCtx.translate(x, y);
                 wheelCtx.rotate(mid + Math.PI / 2);
                 if (p.img && p.img.complete) {
-                    wheelCtx.drawImage(p.img, -20, -40, 40, 40);
+                    wheelCtx.drawImage(p.img, -25, -50, 50, 50);
                 }
                 wheelCtx.restore();
                 start += angle;
@@ -14880,7 +14880,7 @@ async function startGame(isRestart = false) {
                 wheelOverlay.textContent = '';
             }
             if (spinResultOverlay) spinResultOverlay.classList.remove('hidden');
-            prizeDisplay.innerHTML = `<img src="${prize.image}" alt="${prize.label}" class="w-16 h-16"><span>${prize.label}</span>`;
+            prizeDisplay.innerHTML = `<img src="${prize.image}" alt="${prize.label}" class="w-24 h-24"><span class="text-xs">${prize.label}</span>`;
             prizeDisplay.classList.remove('hidden');
             lastWheelPrize = prize;
             if (actionButton) {
