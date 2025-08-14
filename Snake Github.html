@@ -3006,6 +3006,16 @@
           height: 70%;
           top: 45%;
         }
+        .store-item-img.booster-img {
+          width: 70%;
+          height: 70%;
+          top: 45%;
+        }
+        .booster-preview-img {
+          width: 80px;
+          height: 80px;
+          object-fit: contain;
+        }
         .achievement-item {
           display: flex;
           flex-direction: column;
@@ -3160,6 +3170,20 @@
           text-shadow: 1px 1px 2px black;
           font-family: 'Press Start 2P', sans-serif;
           z-index: 3;
+          pointer-events: none;
+        }
+
+        .store-item-overlay {
+          position: absolute;
+          inset: 0;
+          background: rgba(0, 0, 0, 0.6);
+          color: #ffffff;
+          font-size: 0.6rem;
+          font-family: 'Press Start 2P', sans-serif;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          z-index: 4;
           pointer-events: none;
         }
 
@@ -3986,6 +4010,9 @@
             <button data-tab="escenarios" id="profile-tab-escenarios" class="store-tab menu-option-button">
                 <img src="https://i.imgur.com/DPBCWp1.png" alt="Escenarios">
             </button>
+            <button data-tab="boosters" id="profile-tab-boosters" class="store-tab menu-option-button">
+                <img src="https://i.imgur.com/XsL7DwS.png" alt="Boosters">
+            </button>
         </div>
 
         <div id="profile-general-content">
@@ -4075,6 +4102,10 @@
             <div id="profile-scene-locked" class="grid grid-cols-3 gap-4 w-full"></div>
         </div>
 
+        <div id="profile-booster-content" class="hidden">
+            <div id="profile-booster-items" class="grid grid-cols-3 gap-4 w-full"></div>
+        </div>
+
     </div>
 </div>
 </div>
@@ -4095,6 +4126,9 @@
                         </button>
                         <button data-tab="divisas" id="store-tab-divisas" class="store-tab menu-option-button">
                             <img src="https://i.imgur.com/NdBJqwT.png" alt="Divisas">
+                        </button>
+                        <button data-tab="boosters" id="store-tab-boosters" class="store-tab menu-option-button">
+                            <img src="https://i.imgur.com/XsL7DwS.png" alt="Boosters">
                         </button>
                         <button data-tab="comida" id="store-tab-comida" class="store-tab menu-option-button">
                             <img src="https://i.imgur.com/fOSSwUX.png" alt="Comida">
@@ -4138,6 +4172,7 @@
                     </button>
                 </div>
                 <div class="panel-content">
+                    <p id="purchase-description-text" class="mb-2"></p>
                     <div id="purchase-item-preview" class="store-item locked rarity-default"></div>
                     <p id="purchase-confirmation-text">¿Comprar por <strong>0</strong> monedas?</p>
                     <div class="reset-buttons">
@@ -4447,6 +4482,7 @@
         const closeStorePanelButton = document.getElementById("close-store-panel");
         const purchaseConfirmationPanel = document.getElementById("purchase-confirmation-panel");
         const purchaseItemPreview = document.getElementById("purchase-item-preview");
+        const purchaseDescriptionText = document.getElementById("purchase-description-text");
         const purchaseConfirmationText = document.getElementById("purchase-confirmation-text");
         const confirmPurchaseYesButton = document.getElementById("confirmPurchaseYes");
         const confirmPurchaseNoButton = document.getElementById("confirmPurchaseNo");
@@ -4480,6 +4516,8 @@
         const profileSkinLocked = document.getElementById('profile-skin-locked');
         const profileSceneUnlocked = document.getElementById('profile-scene-unlocked');
         const profileSceneLocked = document.getElementById('profile-scene-locked');
+        const profileBoosterContent = document.getElementById('profile-booster-content');
+        const profileBoosterItems = document.getElementById('profile-booster-items');
         const selectConfirmationPanel = document.getElementById('select-confirmation-panel');
         const selectConfirmationText = document.getElementById('select-confirmation-text');
         const confirmSelectYesButton = document.getElementById('confirmSelectYes');
@@ -5614,7 +5652,8 @@ function setupSlider(slider, display) {
                 worldCurrentLevels: Array(TOTAL_WORLDS).fill(1),
                 currentMazeLevel: 1,
                 mazeLevelStars: Array(MAZE_LEVEL_COUNT).fill(0),
-                freeModeSettings: { ...FREE_MODE_DEFAULTS }
+                freeModeSettings: { ...FREE_MODE_DEFAULTS },
+                activeBoosters: createEmptyActiveBoosters()
             };
         }
 
@@ -5648,6 +5687,8 @@ function setupSlider(slider, display) {
                     profile.freeModeSettings = { ...FREE_MODE_DEFAULTS };
                 }
                 if (!profile.scene) profile.scene = 'classic';
+                if (!profile.activeBoosters) profile.activeBoosters = createEmptyActiveBoosters();
+                else profile.activeBoosters = { ...createEmptyActiveBoosters(), ...profile.activeBoosters };
             });
         }
 
@@ -5692,6 +5733,8 @@ function setupSlider(slider, display) {
             freeModeSettings = profile.freeModeSettings ? { ...FREE_MODE_DEFAULTS, ...profile.freeModeSettings } : { ...FREE_MODE_DEFAULTS };
             populateFreeSettingsInputs();
             updateFreeSettingsLockState();
+            activeBoosters = profile.activeBoosters ? { ...createEmptyActiveBoosters(), ...profile.activeBoosters } : createEmptyActiveBoosters();
+            populateProfileBoosterTab();
 
             // Update display variables when applying profile so UI reflects new player state
             displayWorld = currentWorld;
@@ -5913,6 +5956,37 @@ function setupSlider(slider, display) {
             coinChest: { img: AD_ITEMS.adChest.img, cost: 250, label: 'un cofre de vidas' },
             coinInfinite: { img: AD_ITEMS.adInfinite.img, cost: 500, label: 'vidas infinitas durante 1 hora' }
         };
+        const BOOSTER_PRICE = 5;
+        const BOOSTERS = {
+            extraTime: { name: 'Tiempo Extra', description: 'Aumenta el tiempo del nivel en 10 segundos', img: 'https://i.imgur.com/qFWNLA4.png' },
+            reducedPoints: { name: 'Puntos Reducidos', description: 'Reduce en 50 la cantidad de puntos objetivo del nivel', img: 'https://i.imgur.com/Zd64AyR.png' },
+            miniSnake: { name: 'Mini Serpiente', description: 'Reduce la longitud de la serpiente en 5 unidades (Longitud mínima 3)', img: 'https://i.imgur.com/zzfXHNW.png' },
+            slow: { name: 'Ralentizador', description: 'Reduce la velocidad significativamente', img: 'https://i.imgur.com/Cli6jZ6.png' },
+            durableFood: { name: 'Comida Duradera', description: 'Reduce 1 segundo el tiempo de desaparición de los comestibles', img: 'https://i.imgur.com/SYPXZAh.png' },
+            goldenFever: { name: 'Fiebre Dorada', description: 'Aumenta x2 la probabilidad de manzanas doradas', img: 'https://i.imgur.com/V2QP7Jc.png' },
+            startStreak: { name: 'Racha inicial', description: 'Comienza la partida con la Racha Máxima', img: 'https://i.imgur.com/g5Mn1KI.png' },
+            fewerTraps: { name: 'Menos Trampas', description: 'Reduce en 1 segundo el rango de aparición de la Comida Falsa', img: 'https://i.imgur.com/hXDSRh0.png' },
+            fewerObstacles: { name: 'Menos Obstáculos', description: 'Reduce el número de Obstáculos en una partida', img: 'https://i.imgur.com/IjP8yE5.png' },
+            fewerMirrors: { name: 'Menos Espejos', description: 'Reduce en 1 segundo el rango de aparición de la Comida Espejo', img: 'https://i.imgur.com/IH9iNVQ.png' }
+        };
+        const BOOSTER_KEYS = Object.keys(BOOSTERS);
+        function createEmptyActiveBoosters() {
+            const obj = {};
+            BOOSTER_KEYS.forEach(k => obj[k] = false);
+            return obj;
+        }
+        let boosterInventory = {};
+        let activeBoosters = createEmptyActiveBoosters();
+        function loadBoosterInventory() {
+            try {
+                boosterInventory = JSON.parse(localStorage.getItem('snakeGameBoosters') || '{}');
+            } catch (e) { boosterInventory = {}; }
+            BOOSTER_KEYS.forEach(k => { if (typeof boosterInventory[k] !== 'number') boosterInventory[k] = 0; });
+        }
+        function saveBoosterInventory() {
+            localStorage.setItem('snakeGameBoosters', JSON.stringify(boosterInventory));
+        }
+        loadBoosterInventory();
         const CHEST_DISPLAY_NAMES = {
             common: 'Cofre Común',
             rare: 'Cofre Raro',
@@ -7971,7 +8045,8 @@ function setupSlider(slider, display) {
             const backgrounds = {
                 cofres: "url('https://i.imgur.com/ovDIW0W.png')",
                 vidas: "url('https://i.imgur.com/fxOqXOM.png')",
-                divisas: "url('https://i.imgur.com/kOHjgb7.png')"
+                divisas: "url('https://i.imgur.com/kOHjgb7.png')",
+                boosters: "url('https://i.imgur.com/fxOqXOM.png')"
             };
             const bg = backgrounds[storeTab] || '';
             if (storeTab === 'cofres') {
@@ -8138,6 +8213,36 @@ function setupSlider(slider, display) {
                         status.textContent = pack.price;
                         item.addEventListener('click', () => openPurchaseConfirm('gemPack', key));
                     }
+                    addIconPressEvents(item, item);
+                    item.appendChild(status);
+                    storeItemsContainer.appendChild(item);
+                });
+            } else if (storeTab === 'boosters') {
+                BOOSTER_KEYS.forEach(key => {
+                    const booster = BOOSTERS[key];
+                    const item = document.createElement('div');
+                    item.className = 'store-item rarity-default';
+                    if (bg) {
+                        item.style.backgroundImage = bg;
+                        item.style.backgroundSize = '80% 80%';
+                        item.style.backgroundPosition = 'center';
+                        item.style.backgroundRepeat = 'no-repeat';
+                    }
+                    const imgEl = document.createElement('img');
+                    imgEl.className = 'store-item-img booster-img';
+                    imgEl.src = booster.img;
+                    item.appendChild(imgEl);
+                    const status = document.createElement('div');
+                    status.className = 'store-item-status';
+                    const span = document.createElement('span');
+                    span.textContent = BOOSTER_PRICE.toString();
+                    status.appendChild(span);
+                    const gemImg = document.createElement('img');
+                    gemImg.src = 'https://i.imgur.com/gPGsaCO.png';
+                    gemImg.alt = 'Gema';
+                    gemImg.className = 'gem-cost-icon';
+                    status.appendChild(gemImg);
+                    item.addEventListener('click', () => openPurchaseConfirm('booster', key));
                     addIconPressEvents(item, item);
                     item.appendChild(status);
                     storeItemsContainer.appendChild(item);
@@ -8391,71 +8496,82 @@ function openPurchaseConfirm(type, key) {
         if (type === 'chest') purchaseConfirmationPanel.classList.add('chest-purchase');
         else purchaseConfirmationPanel.classList.remove('chest-purchase');
     }
-              if (purchaseItemPreview) {
-                  purchaseItemPreview.innerHTML = '';
-                  purchaseItemPreview.style.backgroundImage = '';
-                  purchaseItemPreview.style.backgroundSize = '';
-                  purchaseItemPreview.style.backgroundPosition = '';
-                  purchaseItemPreview.style.backgroundRepeat = '';
-                  if (type === 'chest') {
-                    purchaseItemPreview.className = '';
-                    const img = document.createElement('img');
-                    img.className = 'chest-preview-img';
-                    img.src = CHESTS[key]?.img || '';
-                    purchaseItemPreview.appendChild(img);
-                } else {
-                    const rarityClass = getRarityClass(type, key);
-                    purchaseItemPreview.className = 'store-item' + (type === 'scene'
-                        ? ` scene-item highlight-bg ${rarityClass}`
-                        : (type === 'food'
-                            ? ` food-item highlight-bg ${rarityClass}`
-                            : (type === 'skin'
-                                ? ` skin-item highlight-bg ${rarityClass}`
-                                : ((type === 'coinPack' || type === 'gemPack')
-                                    ? ` currency-item ${rarityClass}`
-                                    : ` ${rarityClass}`))));
-                      const img = document.createElement('img');
-                      img.className = 'store-item-img';
-                      if (type === 'food') {
-                          img.src = FOODS[key]?.asset?.src || '';
-                      } else if (type === 'skin') {
-                          img.src = SKINS[key]?.snakeHeadAsset?.upDown?.src || '';
-                      } else if (type === 'scene') {
-                          img.classList.add('scene-img-full');
-                          img.src = SCENES[key]?.icon || '';
-                      } else if (type === 'coinPack') {
-                          img.classList.add('currency-img');
-                          img.src = COIN_PACKS[key]?.img || '';
-                      } else if (type === 'gemPack') {
-                          img.classList.add('currency-img');
-                          img.src = GEM_PACKS[key]?.img || '';
-                      } else if (type === 'adLife' || type === 'adChest' || type === 'adInfinite') {
-                          img.classList.add('lives-img');
-                          img.src = AD_ITEMS[type]?.img || '';
-                      } else if (type === 'coinLife' || type === 'coinChest' || type === 'coinInfinite') {
-                          img.classList.add('lives-img');
-                          img.src = COIN_LIFE_ITEMS[type]?.img || '';
-                      }
-                      purchaseItemPreview.appendChild(img);
-                      const bgMap = {
-                          coinPack: "url('https://i.imgur.com/kOHjgb7.png')",
-                          gemPack: "url('https://i.imgur.com/kOHjgb7.png')",
-                          adLife: "url('https://i.imgur.com/fxOqXOM.png')",
-                          adChest: "url('https://i.imgur.com/fxOqXOM.png')",
-                          adInfinite: "url('https://i.imgur.com/fxOqXOM.png')",
-                          coinLife: "url('https://i.imgur.com/fxOqXOM.png')",
-                          coinChest: "url('https://i.imgur.com/fxOqXOM.png')",
-                          coinInfinite: "url('https://i.imgur.com/fxOqXOM.png')"
-                      };
-                      const bg = bgMap[type];
-                      if (bg) {
-                          purchaseItemPreview.style.backgroundImage = bg;
-                          purchaseItemPreview.style.backgroundSize = '80% 80%';
-                          purchaseItemPreview.style.backgroundPosition = 'center';
-                          purchaseItemPreview.style.backgroundRepeat = 'no-repeat';
-                      }
+    if (purchaseItemPreview) {
+        purchaseItemPreview.innerHTML = '';
+        purchaseItemPreview.style.backgroundImage = '';
+        purchaseItemPreview.style.backgroundSize = '';
+        purchaseItemPreview.style.backgroundPosition = '';
+        purchaseItemPreview.style.backgroundRepeat = '';
+        purchaseItemPreview.style.display = '';
+        if (purchaseDescriptionText) purchaseDescriptionText.textContent = '';
+        if (type === 'chest') {
+            purchaseItemPreview.className = '';
+            const img = document.createElement('img');
+            img.className = 'chest-preview-img';
+            img.src = CHESTS[key]?.img || '';
+            purchaseItemPreview.appendChild(img);
+        } else if (type === 'booster') {
+            purchaseItemPreview.className = '';
+            purchaseItemPreview.style.display = 'flex';
+            purchaseItemPreview.style.alignItems = 'center';
+            purchaseItemPreview.style.justifyContent = 'center';
+            const img = document.createElement('img');
+            img.className = 'booster-preview-img';
+            img.src = BOOSTERS[key]?.img || '';
+            purchaseItemPreview.appendChild(img);
+        } else {
+            const rarityClass = getRarityClass(type, key);
+            purchaseItemPreview.className = 'store-item' + (type === 'scene'
+                ? ` scene-item highlight-bg ${rarityClass}`
+                : (type === 'food'
+                    ? ` food-item highlight-bg ${rarityClass}`
+                    : (type === 'skin'
+                        ? ` skin-item highlight-bg ${rarityClass}`
+                        : ((type === 'coinPack' || type === 'gemPack')
+                            ? ` currency-item ${rarityClass}`
+                            : ` ${rarityClass}`))));
+            const img = document.createElement('img');
+            img.className = 'store-item-img';
+            if (type === 'food') {
+                img.src = FOODS[key]?.asset?.src || '';
+            } else if (type === 'skin') {
+                img.src = SKINS[key]?.snakeHeadAsset?.upDown?.src || '';
+            } else if (type === 'scene') {
+                img.classList.add('scene-img-full');
+                img.src = SCENES[key]?.icon || '';
+            } else if (type === 'coinPack') {
+                img.classList.add('currency-img');
+                img.src = COIN_PACKS[key]?.img || '';
+            } else if (type === 'gemPack') {
+                img.classList.add('currency-img');
+                img.src = GEM_PACKS[key]?.img || '';
+            } else if (type === 'adLife' || type === 'adChest' || type === 'adInfinite') {
+                img.classList.add('lives-img');
+                img.src = AD_ITEMS[type]?.img || '';
+            } else if (type === 'coinLife' || type === 'coinChest' || type === 'coinInfinite') {
+                img.classList.add('lives-img');
+                img.src = COIN_LIFE_ITEMS[type]?.img || '';
+            }
+            purchaseItemPreview.appendChild(img);
+            const bgMap = {
+                coinPack: "url('https://i.imgur.com/kOHjgb7.png')",
+                gemPack: "url('https://i.imgur.com/kOHjgb7.png')",
+                adLife: "url('https://i.imgur.com/fxOqXOM.png')",
+                adChest: "url('https://i.imgur.com/fxOqXOM.png')",
+                adInfinite: "url('https://i.imgur.com/fxOqXOM.png')",
+                coinLife: "url('https://i.imgur.com/fxOqXOM.png')",
+                coinChest: "url('https://i.imgur.com/fxOqXOM.png')",
+                coinInfinite: "url('https://i.imgur.com/fxOqXOM.png')"
+            };
+            const bg = bgMap[type];
+            if (bg) {
+                purchaseItemPreview.style.backgroundImage = bg;
+                purchaseItemPreview.style.backgroundSize = '80% 80%';
+                purchaseItemPreview.style.backgroundPosition = 'center';
+                purchaseItemPreview.style.backgroundRepeat = 'no-repeat';
             }
         }
+    }
             let price = 0;
             let name = '';
             let statusNeeded = false;
@@ -8486,6 +8602,15 @@ function openPurchaseConfirm(type, key) {
                 iconAlt = 'Gema';
                 iconClass = 'gem-cost-icon';
                 if (purchaseConfirmationText) purchaseConfirmationText.innerHTML = `¿Comprar ${name}?`;
+            } else if (type === 'booster') {
+                price = BOOSTER_PRICE;
+                name = BOOSTERS[key].name;
+                statusNeeded = true;
+                iconSrc = 'https://i.imgur.com/gPGsaCO.png';
+                iconAlt = 'Gema';
+                iconClass = 'gem-cost-icon';
+                if (purchaseDescriptionText) purchaseDescriptionText.textContent = BOOSTERS[key].description;
+                if (purchaseConfirmationText) purchaseConfirmationText.innerHTML = `¿Quieres comprar el Booster de ${name}?`;
             } else if (type === 'chest') {
                 price = CHESTS[key].cost;
                 name = CHEST_DISPLAY_NAMES[key];
@@ -8631,6 +8756,16 @@ function openPurchaseConfirm(type, key) {
                     unlockedScenes[purchaseInfo.key] = true;
                     saveUnlockedScenes();
                     updateSceneSelectorAvailability();
+                    success = true;
+                } else {
+                    failureMessage = 'Gemas insuficientes';
+                }
+            } else if (purchaseInfo.type === 'booster') {
+                price = BOOSTER_PRICE;
+                if (totalGems >= price) {
+                    totalGems -= price;
+                    boosterInventory[purchaseInfo.key] = (boosterInventory[purchaseInfo.key] || 0) + 1;
+                    saveBoosterInventory();
                     success = true;
                 } else {
                     failureMessage = 'Gemas insuficientes';
@@ -8850,6 +8985,7 @@ function openPurchaseConfirm(type, key) {
                     updateCoinDisplay();
                     updateGemDisplay();
                     populateStoreItems();
+                    populateProfileBoosterTab();
                     closePurchaseConfirm();
                 }
             } else {
@@ -8897,7 +9033,11 @@ function openPurchaseConfirm(type, key) {
         function closePurchaseConfirm() {
             togglePanel(purchaseConfirmationPanel, purchaseConfirmationPanel.querySelector('.panel-content'), false);
             if (chestInfoPanel) togglePanel(chestInfoPanel, chestInfoPanel.querySelector('.panel-content'), false);
-            if (purchaseItemPreview) purchaseItemPreview.innerHTML = '';
+            if (purchaseItemPreview) {
+                purchaseItemPreview.innerHTML = '';
+                purchaseItemPreview.removeAttribute('style');
+            }
+            if (purchaseDescriptionText) purchaseDescriptionText.textContent = '';
             if (modalOverlay) modalOverlay.classList.add('hidden');
             purchaseInfo = null;
             pendingChestRewards = null;
@@ -9053,6 +9193,7 @@ function openPurchaseConfirm(type, key) {
             if (profileFoodContent) profileFoodContent.classList.add('hidden');
             if (profileSkinContent) profileSkinContent.classList.add('hidden');
             if (profileSceneContent) profileSceneContent.classList.add('hidden');
+            if (profileBoosterContent) profileBoosterContent.classList.add('hidden');
             if (tab === 'comida') {
                 if (profileFoodContent) profileFoodContent.classList.remove('hidden');
                 populateProfileFoodTab();
@@ -9062,6 +9203,9 @@ function openPurchaseConfirm(type, key) {
             } else if (tab === 'escenarios') {
                 if (profileSceneContent) profileSceneContent.classList.remove('hidden');
                 populateProfileSceneTab();
+            } else if (tab === 'boosters') {
+                if (profileBoosterContent) profileBoosterContent.classList.remove('hidden');
+                populateProfileBoosterTab();
             } else {
                 if (profileGeneralContent) profileGeneralContent.classList.remove('hidden');
                 updateProfileSelectedItems();
@@ -9517,6 +9661,9 @@ function openPurchaseConfirm(type, key) {
             } else {
                 baseLifespan = freeModeSettings.initialLifespan;
             }
+            if (activeBoosters.durableFood && (gameMode === 'levels' || gameMode === 'maze')) {
+                baseLifespan += 1000;
+            }
             return applyStreakReduction(baseLifespan, MIN_FOOD_LIFESPAN);
         }
 
@@ -9545,6 +9692,9 @@ function openPurchaseConfirm(type, key) {
             if (gameMode === 'levels') {
                 const levelCfg = LEVEL_SETTINGS[currentWorld - 1][currentLevelInWorld - 1];
                 if (levelCfg.goldenFoodChance !== undefined) goldenChance = levelCfg.goldenFoodChance;
+            }
+            if (activeBoosters.goldenFever && (gameMode === 'levels' || gameMode === 'maze')) {
+                goldenChance = Math.min(1, goldenChance * 2);
             }
             const isGolden = ((gameMode === 'levels' && goldenChance > 0) || (gameMode === 'classification' && classificationRank >= 1) || gameMode === 'freeMode') && Math.random() < goldenChance;
             let lifespan = calculateNextFoodLifespan();
@@ -9806,6 +9956,9 @@ function openPurchaseConfirm(type, key) {
                 range = cfg.falseFoodSpawnRange;
             } else {
                 return;
+            }
+            if (activeBoosters.fewerTraps && (gameMode === 'levels' || gameMode === 'maze')) {
+                range = [range[0] + 1000, range[1] + 1000];
             }
             const delay = Math.random() * (range[1] - range[0]) + range[0];
             falseFoodSpawnTimeoutId = setTimeout(() => {
@@ -10119,6 +10272,9 @@ function openPurchaseConfirm(type, key) {
                 range = cfg.mirrorSpawnRange;
             } else {
                 return;
+            }
+            if (activeBoosters.fewerMirrors && (gameMode === 'levels' || gameMode === 'maze')) {
+                range = [range[0] + 1000, range[1] + 1000];
             }
             const delay = Math.random() * (range[1] - range[0]) + range[0];
             mirrorSpawnTimeoutId = setTimeout(() => {
@@ -10643,9 +10799,12 @@ function openPurchaseConfirm(type, key) {
             }
             currentReaction = null;
             reactionEndTime = 0;
+            BOOSTER_KEYS.forEach(k => activeBoosters[k] = false);
+            saveGameSettings();
+            populateProfileBoosterTab();
 
             let levelEffectivelyWon = false;
-            isNewHighScore = false; 
+            isNewHighScore = false;
 
             if (gameMode === 'freeMode') {
                 if (gameOverByInactivity) {
@@ -13053,6 +13212,9 @@ async function startGame(isRestart = false) {
             } else { // freeMode
                 displayTargetScore = 0; // No target score in free mode
             }
+            if (activeBoosters.reducedPoints && (gameMode === 'levels' || gameMode === 'maze')) {
+                displayTargetScore = Math.max(0, displayTargetScore - 50);
+            }
 
             updateTargetScoreDisplay(); // Update UI with the target of the level to be played
             if (progressPanelLeftValue && gameMode === 'levels') { // Update progress panel UI
@@ -13126,6 +13288,12 @@ async function startGame(isRestart = false) {
                 initialSnakeLength = cfg.initialLength;
                 MIRROR_EFFECT_DURATION = cfg.mirrorEffectDuration || DEFAULT_MIRROR_EFFECT_DURATION;
             }
+            if (activeBoosters.miniSnake) {
+                initialSnakeLength = Math.max(3, initialSnakeLength - 5);
+            }
+            if (activeBoosters.slow) {
+                snakeSpeed = Math.floor(snakeSpeed * 1.5);
+            }
 
             applySkin(getSelectedSkin());
             
@@ -13159,13 +13327,18 @@ async function startGame(isRestart = false) {
             score = 0;
             streakMultiplier = 1;
             streakCount = 0;
+            if (activeBoosters.startStreak) {
+                streakMultiplier = MAX_STREAK;
+                startStreakAnimation(streakMultiplier);
+            }
             gameOver = false;
             updateScoreDisplay();
-            direction = "right"; 
+            direction = "right";
             nextDirection = "right"; // Asegurar que nextDirection también se reinicia
-            
+
             if (gameMode === 'levels' || gameMode === 'maze') {
                 gameTimeRemaining = LEVEL_TIME_LIMIT;
+                if (activeBoosters.extraTime) gameTimeRemaining += 10000;
                 // Target score already updated via displayTargetScore
                 updateTimeLengthDisplay();
                 clearInterval(gameTimerIntervalId);
@@ -13207,7 +13380,9 @@ async function startGame(isRestart = false) {
                     stopWorld4FalseFoodMechanics();
                 }
                 if (cfg.obstacleCount && cfg.obstacleCount > 0) {
-                    startWorld6Obstacles(cfg.obstacleCount);
+                    let count = cfg.obstacleCount;
+                    if (activeBoosters.fewerObstacles) count = Math.max(0, Math.floor(count / 2));
+                    startWorld6Obstacles(count);
                 } else {
                     stopWorld6Obstacles();
                 }
@@ -13233,7 +13408,8 @@ async function startGame(isRestart = false) {
                 if (rank >= 2) startWorld6LightningMechanics();
                 if (rank >= 3) {
                     startWorld4FalseFoodMechanics();
-                    const count = cfg.obstacleCount;
+                    let count = cfg.obstacleCount;
+                    if (activeBoosters.fewerObstacles) count = Math.max(0, Math.floor(count / 2));
                     if (rank >= 4) {
                         startWorld8Obstacles(count);
                     } else {
@@ -14123,15 +14299,54 @@ async function startGame(isRestart = false) {
             });
         }
 
+        function populateProfileBoosterTab() {
+            if (!profileBoosterItems) return;
+            profileBoosterItems.innerHTML = '';
+            BOOSTER_KEYS.forEach(key => {
+                const booster = BOOSTERS[key];
+                const item = document.createElement('div');
+                item.className = 'store-item highlight-bg rarity-default';
+                const img = document.createElement('img');
+                img.className = 'store-item-img booster-img';
+                img.src = booster.img;
+                item.appendChild(img);
+                const status = document.createElement('div');
+                status.className = 'store-item-status';
+                status.textContent = boosterInventory[key] || 0;
+                item.appendChild(status);
+                if (activeBoosters[key]) {
+                    const overlay = document.createElement('div');
+                    overlay.className = 'store-item-overlay';
+                    overlay.textContent = 'ACTIVADO';
+                    item.appendChild(overlay);
+                } else if ((boosterInventory[key] || 0) > 0) {
+                    item.classList.add('profile-clickable');
+                    item.addEventListener('click', () => openSelectConfirm('booster', key, 'use'));
+                    addIconPressEvents(item, item);
+                } else {
+                    item.classList.add('locked');
+                    item.addEventListener('click', () => openSelectConfirm('booster', key, 'store'));
+                    addIconPressEvents(item, item);
+                }
+                profileBoosterItems.appendChild(item);
+            });
+        }
+
         let selectInfo = null;
         function openSelectConfirm(type, key, action) {
             selectInfo = { type, key, action };
             if (selectConfirmationText) {
-                let name;
-                if (type === 'food') name = FOOD_DISPLAY_NAMES[key];
-                else if (type === 'skin') name = SKIN_DISPLAY_NAMES[key];
-                else name = SCENE_DISPLAY_NAMES[key];
-                selectConfirmationText.textContent = action === 'select' ? `¿Usar ${name}?` : `¿Ver ${name} en la tienda?`;
+                if (type === 'booster') {
+                    const booster = BOOSTERS[key];
+                    const question = action === 'use' ? `¿Usar ${booster.name}?` : `¿Ver ${booster.name} en la tienda?`;
+                    selectConfirmationText.innerHTML = `${booster.description}<br>${question}`;
+                } else {
+                    let name;
+                    if (type === 'food') name = FOOD_DISPLAY_NAMES[key];
+                    else if (type === 'skin') name = SKIN_DISPLAY_NAMES[key];
+                    else name = SCENE_DISPLAY_NAMES[key];
+                    selectConfirmationText.textContent = action === 'select' ? `¿Usar ${name}?` : `¿Ver ${name} en la tienda?`;
+                }
             }
             selectConfirmationPanel.classList.add('centered-panel');
             togglePanel(selectConfirmationPanel, selectConfirmationPanel.querySelector('.panel-content'), true);
@@ -14141,33 +14356,41 @@ async function startGame(isRestart = false) {
         function confirmSelect() {
             if (!selectInfo) { closeSelectConfirm(); return; }
             if (selectInfo.action === 'select') {
-                if (selectInfo.type === 'food') {
-                    foodSelectors.forEach(sel => sel.value = selectInfo.key);
-                    applyFood(selectInfo.key);
-                } else if (selectInfo.type === 'skin') {
-                    skinSelectors.forEach(sel => sel.value = selectInfo.key);
-                    applySkin(selectInfo.key);
-                } else {
-                    sceneSelectors.forEach(sel => sel.value = selectInfo.key);
-                    applyScene(selectInfo.key);
-                }
-                saveGameSettings();
-                updateProfileSelectedItems();
-                switchProfileTab('general');
-            } else if (selectInfo.action === 'store') {
-                let targetTab = 'general';
-                if (selectInfo.type === 'food') targetTab = 'comida';
-                else if (selectInfo.type === 'skin') targetTab = 'disfraces';
-                else targetTab = 'escenarios';
-                closeSelectConfirm();
-                closeProfileMenu();
-                // wait for the profile panel closing animation to finish before
-                // showing the store, otherwise the store panel may not appear
-                setTimeout(() => openStoreMenuWithTab(targetTab), 310);
-                return;
+            if (selectInfo.type === 'food') {
+                foodSelectors.forEach(sel => sel.value = selectInfo.key);
+                applyFood(selectInfo.key);
+            } else if (selectInfo.type === 'skin') {
+                skinSelectors.forEach(sel => sel.value = selectInfo.key);
+                applySkin(selectInfo.key);
+            } else {
+                sceneSelectors.forEach(sel => sel.value = selectInfo.key);
+                applyScene(selectInfo.key);
             }
+            saveGameSettings();
+            updateProfileSelectedItems();
+            switchProfileTab('general');
+        } else if (selectInfo.action === 'use' && selectInfo.type === 'booster') {
+            const key = selectInfo.key;
+            if ((boosterInventory[key] || 0) > 0 && !activeBoosters[key]) {
+                boosterInventory[key]--;
+                activeBoosters[key] = true;
+                saveBoosterInventory();
+                saveGameSettings();
+                populateProfileBoosterTab();
+            }
+        } else if (selectInfo.action === 'store') {
+            let targetTab = 'general';
+            if (selectInfo.type === 'food') targetTab = 'comida';
+            else if (selectInfo.type === 'skin') targetTab = 'disfraces';
+            else if (selectInfo.type === 'scene') targetTab = 'escenarios';
+            else targetTab = 'boosters';
             closeSelectConfirm();
+            closeProfileMenu();
+            setTimeout(() => openStoreMenuWithTab(targetTab), 310);
+            return;
         }
+        closeSelectConfirm();
+    }
 
         function closeSelectConfirm() {
             togglePanel(selectConfirmationPanel, selectConfirmationPanel.querySelector('.panel-content'), false);
@@ -14372,6 +14595,7 @@ async function startGame(isRestart = false) {
             profile.currentMazeLevel = currentMazeLevel;
             profile.mazeLevelStars = mazeLevelStars;
             profile.freeModeSettings = freeModeSettings;
+            profile.activeBoosters = activeBoosters;
             playerProfiles[currentPlayerName] = profile;
             savePlayerProfiles();
             localStorage.setItem('snakeGameCoins', totalCoins.toString());
@@ -14379,6 +14603,7 @@ async function startGame(isRestart = false) {
             saveUnlockedSkins();
             saveUnlockedFoods();
             saveUnlockedScenes();
+            saveBoosterInventory();
             localStorage.setItem('snakePlayerNames', JSON.stringify(Object.keys(playerProfiles)));
             localStorage.setItem('snakeGamePlayerName', currentPlayerName);
             console.log("Configuraciones guardadas en localStorage.");
