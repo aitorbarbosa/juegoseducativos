@@ -4001,6 +4001,9 @@
     <div class="panel-content">
         <div id="profile-tabs" class="flex gap-2 mb-2">
             <button data-tab="general" id="profile-tab-general" class="store-tab menu-option-button active">PERFIL</button>
+            <button data-tab="boosters" id="profile-tab-boosters" class="store-tab menu-option-button">
+                <img src="https://i.imgur.com/XsL7DwS.png" alt="Boosters">
+            </button>
             <button data-tab="comida" id="profile-tab-comida" class="store-tab menu-option-button">
                 <img src="https://i.imgur.com/fOSSwUX.png" alt="Comida">
             </button>
@@ -4009,9 +4012,6 @@
             </button>
             <button data-tab="escenarios" id="profile-tab-escenarios" class="store-tab menu-option-button">
                 <img src="https://i.imgur.com/DPBCWp1.png" alt="Escenarios">
-            </button>
-            <button data-tab="boosters" id="profile-tab-boosters" class="store-tab menu-option-button">
-                <img src="https://i.imgur.com/XsL7DwS.png" alt="Boosters">
             </button>
         </div>
 
@@ -4081,6 +4081,10 @@
         </div>
         </div> <!-- end general content -->
 
+        <div id="profile-booster-content" class="hidden">
+            <div id="profile-booster-items" class="grid grid-cols-3 gap-4 w-full"></div>
+        </div>
+
         <div id="profile-food-content" class="hidden">
             <h4>COLECCION</h4>
             <div id="profile-food-unlocked" class="grid grid-cols-3 gap-4 w-full mb-2"></div>
@@ -4100,10 +4104,6 @@
             <div id="profile-scene-unlocked" class="grid grid-cols-3 gap-4 w-full mb-2"></div>
             <h4>SIN DESBLOQUEAR</h4>
             <div id="profile-scene-locked" class="grid grid-cols-3 gap-4 w-full"></div>
-        </div>
-
-        <div id="profile-booster-content" class="hidden">
-            <div id="profile-booster-items" class="grid grid-cols-3 gap-4 w-full"></div>
         </div>
 
     </div>
@@ -8605,12 +8605,9 @@ function openPurchaseConfirm(type, key) {
             } else if (type === 'booster') {
                 price = BOOSTER_PRICE;
                 name = BOOSTERS[key].name;
-                statusNeeded = true;
-                iconSrc = 'https://i.imgur.com/gPGsaCO.png';
-                iconAlt = 'Gema';
-                iconClass = 'gem-cost-icon';
+                statusNeeded = false;
                 if (purchaseDescriptionText) purchaseDescriptionText.textContent = BOOSTERS[key].description;
-                if (purchaseConfirmationText) purchaseConfirmationText.innerHTML = `¿Quieres comprar el Booster de ${name}?`;
+                if (purchaseConfirmationText) purchaseConfirmationText.innerHTML = `¿Quieres comprar el Booster de ${name} por <strong>${price}</strong> gemas?`;
             } else if (type === 'chest') {
                 price = CHESTS[key].cost;
                 name = CHEST_DISPLAY_NAMES[key];
