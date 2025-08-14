@@ -3509,6 +3509,7 @@
             z-index: 15;
             text-align: center;
             display: flex;
+            flex-direction: column;
             align-items: center;
             gap: 0.5rem;
         }
@@ -3977,11 +3978,10 @@
                                     <img src="https://i.imgur.com/Iv0kEE6.png" alt="Girar" onerror="this.src='https://placehold.co/90x90/000000/FFFFFF?text=Boton'; console.error('Error loading spin-button');" />
                                 </button>
                                 <img id="spin-result-overlay" src="https://i.imgur.com/XRBRbPo.png" alt="Resultado" class="hidden" onerror="this.src='https://placehold.co/158x158/000000/FFFFFF?text=Overlay'; console.error('Error loading spin-result-overlay');" />
-                                <div id="prize-display" class="hidden flex items-center gap-2 justify-center text-center"></div>
+                                <div id="prize-display" class="hidden flex flex-col items-center gap-2 justify-center text-center"></div>
                                 <button id="action-button" class="menu-option-button hidden"></button>
                                 <div id="wheel-overlay" class="hidden">BLOQUEADO</div>
                             </div>
-                            <div id="chest-content" class="hidden flex flex-col items-center"></div>
                         </div>
                     </div>
                 </div>
@@ -4476,7 +4476,6 @@
         const wheelOverlay = document.getElementById("wheel-overlay");
         const spinResultOverlay = document.getElementById("spin-result-overlay");
         const wheelWrapper = document.getElementById("wheel-wrapper");
-        const chestContent = document.getElementById("chest-content");
         const storeItemsContainer = document.getElementById("store-items-container");
         const storeTabButtons = document.querySelectorAll('#store-tabs .store-tab');
         const closeStorePanelButton = document.getElementById("close-store-panel");
@@ -14761,18 +14760,13 @@ async function startGame(isRestart = false) {
         }
 
         // --- Daily Wheel Logic ---
-        const wheelPrizes = [
-            { label: 'Tirar de nuevo', prob: 0.1, type: 'reroll', image: 'https://i.imgur.com/i4m4tSV.png' },
-            { label: 'Vida', prob: 0.25, type: 'life', min: 1, max: 5, image: 'https://i.imgur.com/WrI2XXx.png' },
-            { label: 'Monedas (10-100)', prob: 0.2, type: 'coins', min: 10, max: 100, image: 'https://i.imgur.com/lnc1Mwu.png' },
-            { label: 'Monedas (100-1k)', prob: 0.1, type: 'coins', min: 100, max: 1000, image: 'https://i.imgur.com/lnc1Mwu.png' },
-            { label: 'Gemas (1-5)', prob: 0.1, type: 'gems', min: 1, max: 5, image: 'https://i.imgur.com/gPGsaCO.png' },
-            { label: 'Gemas (5-10)', prob: 0.05, type: 'gems', min: 5, max: 10, image: 'https://i.imgur.com/gPGsaCO.png' },
-            { label: 'Cofre común', prob: 0.1, type: 'chest', chestType: 'common', image: 'https://i.imgur.com/j8UD4hK.png' },
-            { label: 'Cofre raro', prob: 0.06, type: 'chest', chestType: 'rare', image: 'https://i.imgur.com/1BBQ2DK.png' },
-            { label: 'Cofre épico', prob: 0.03, type: 'chest', chestType: 'epic', image: 'https://i.imgur.com/6U6QE3X.png' },
-            { label: 'Cofre legendario', prob: 0.01, type: 'chest', chestType: 'legendary', image: 'https://i.imgur.com/4kOPIdx.png' }
-        ];
+        const wheelPrizes = BOOSTER_KEYS.map(key => ({
+            label: BOOSTERS[key].name,
+            prob: 1 / BOOSTER_KEYS.length,
+            type: 'booster',
+            key,
+            image: BOOSTERS[key].img
+        }));
 
         wheelPrizes.forEach(p => {
             const img = new Image();
@@ -14822,15 +14816,6 @@ async function startGame(isRestart = false) {
                 wheelCtx.rotate(mid + Math.PI / 2);
                 if (p.img && p.img.complete) {
                     wheelCtx.drawImage(p.img, -20, -40, 40, 40);
-                    if (p.type === 'life' || p.type === 'coins' || p.type === 'gems') {
-                        const textColor = segmentColors[i % 2] === '#FFD700' ? '#8C64AF' : '#fff';
-                        wheelCtx.fillStyle = textColor;
-                        wheelCtx.font = '12px sans-serif';
-                        wheelCtx.textAlign = 'center';
-                        wheelCtx.textBaseline = 'top';
-                        const rangeText = `${p.min}-${p.max >= 1000 ? '1k' : p.max}`;
-                        wheelCtx.fillText(rangeText, 0, 5);
-                    }
                 }
                 wheelCtx.restore();
                 start += angle;
@@ -14860,6 +14845,7 @@ async function startGame(isRestart = false) {
         }
 
         let wheelSpinning = false;
+        let lastWheelPrize = null;
         function spinWheel() {
             if (wheelSpinning) return;
             const cooldown = getWheelCooldown();
@@ -14894,69 +14880,35 @@ async function startGame(isRestart = false) {
                 wheelOverlay.textContent = '';
             }
             if (spinResultOverlay) spinResultOverlay.classList.remove('hidden');
-            if (prize.type === 'life' || prize.type === 'coins' || prize.type === 'gems') {
-                const amount = Math.floor(Math.random() * (prize.max - prize.min + 1)) + prize.min;
-                prizeDisplay.innerHTML = `<span>${amount}</span><img src="${prize.image}" alt="premio" class="w-8 h-8">`;
-            } else if (prize.type === 'chest') {
-                prizeDisplay.innerHTML = `<img src="${prize.image}" alt="premio" class="w-8 h-8">`;
-            } else {
-                prizeDisplay.innerHTML = `<img src="${prize.image}" alt="premio" class="w-8 h-8"><span>${prize.label}</span>`;
-            }
+            prizeDisplay.innerHTML = `<img src="${prize.image}" alt="${prize.label}" class="w-16 h-16"><span>${prize.label}</span>`;
             prizeDisplay.classList.remove('hidden');
-            if (prize.type === 'reroll') {
-                if (spinButton) {
-                    spinButton.disabled = false;
-                    spinButton.classList.remove('spin-button-pressed');
-                }
-                return;
-            }
-            if (prize.type === 'chest') {
-                if (actionButton) {
-                    actionButton.textContent = 'ABRIR';
-                    actionButton.classList.remove('hidden');
-                    actionButton.onclick = () => openChest(prize.chestType);
-                }
-            } else {
-                if (actionButton) {
-                    actionButton.textContent = 'RECOGER';
-                    actionButton.classList.remove('hidden');
-                    actionButton.onclick = collectPrize;
-                }
-            }
-        }
-
-        function openChest(type) {
-            if (!chestContent || !wheelWrapper) return;
-            const rewards = {
-                common: '50 monedas',
-                rare: '100 monedas y 1 gema',
-                epic: '200 monedas y 3 gemas',
-                legendary: '500 monedas y 5 gemas'
-            };
-            chestContent.textContent = `Has recibido ${rewards[type] || ''}.`;
-            chestContent.classList.remove('hidden');
-            wheelWrapper.classList.add('hidden');
-            if (prizeDisplay) prizeDisplay.classList.add('hidden');
-            if (spinResultOverlay) spinResultOverlay.classList.add('hidden');
+            lastWheelPrize = prize;
             if (actionButton) {
                 actionButton.textContent = 'RECOGER';
+                actionButton.classList.remove('hidden');
                 actionButton.onclick = collectPrize;
             }
         }
 
         function collectPrize() {
+            if (lastWheelPrize && lastWheelPrize.type === 'booster') {
+                const key = lastWheelPrize.key;
+                boosterInventory[key] = (boosterInventory[key] || 0) + 1;
+                saveBoosterInventory();
+                populateProfileBoosterTab();
+            }
             if (actionButton) actionButton.classList.add('hidden');
             if (prizeDisplay) {
                 prizeDisplay.innerHTML = '';
                 prizeDisplay.classList.add('hidden');
             }
             if (spinResultOverlay) spinResultOverlay.classList.add('hidden');
-            if (chestContent) chestContent.classList.add('hidden');
             if (wheelWrapper) wheelWrapper.classList.remove('hidden');
             if (wheelCanvas) {
                 wheelCanvas.style.transition = 'none';
                 wheelCanvas.style.transform = 'rotate(0deg)';
             }
+            lastWheelPrize = null;
             startWheelCooldown();
         }
 
@@ -15007,7 +14959,6 @@ async function startGame(isRestart = false) {
         }
 
         function checkWheelCooldown() {
-            if (chestContent) chestContent.classList.add('hidden');
             if (wheelWrapper) wheelWrapper.classList.remove('hidden');
             if (actionButton) actionButton.classList.add('hidden');
             if (prizeDisplay) {
