@@ -3449,6 +3449,7 @@
             top: 50%;
             right: -15px;
             transform: translateY(-50%);
+            transform-origin: left center;
             width: 0;
             height: 0;
             border-top: 15px solid transparent;
@@ -3460,10 +3461,19 @@
             width: 100%;
             height: 100%;
             display: block;
-            transition: transform 4s cubic-bezier(0.33, 1, 0.68, 1);
+            transition: none;
             background: none;
             border: none;
             border-radius: 50%;
+        }
+        @keyframes pointer-bounce {
+            0% { transform: translateY(-50%) rotate(0deg); }
+            30% { transform: translateY(-50%) rotate(-20deg); }
+            60% { transform: translateY(-50%) rotate(10deg); }
+            100% { transform: translateY(-50%) rotate(0deg); }
+        }
+        #wheel-pointer.bounce {
+            animation: pointer-bounce 0.2s ease-out;
         }
         #spin-button {
             position: absolute;
@@ -4476,6 +4486,7 @@
         const wheelOverlay = document.getElementById("wheel-overlay");
         const spinResultOverlay = document.getElementById("spin-result-overlay");
         const wheelWrapper = document.getElementById("wheel-wrapper");
+        const wheelPointer = document.getElementById("wheel-pointer");
         const storeItemsContainer = document.getElementById("store-items-container");
         const storeTabButtons = document.querySelectorAll('#store-tabs .store-tab');
         const closeStorePanelButton = document.getElementById("close-store-panel");
@@ -5936,7 +5947,7 @@ function setupSlider(slider, display) {
         const HEART_PRICE = 100;
         const GEM_PRICE = 1000;
         const COIN_PACKS = {
-            coin500: { img: 'https://i.imgur.com/ZTKoB8D.png', costGems: 1, amount: 500, name: 'Monedas' },
+            coin500: { img: 'https://i.imgur.com/liQ5lv7.png', costGems: 1, amount: 500, name: 'Monedas' },
             coin4000: { img: 'https://i.imgur.com/88VtxnD.png', costGems: 5, amount: 4000, name: 'Bolsa de Monedas' },
             coin10000: { img: 'https://i.imgur.com/Yl4BBfA.png', costGems: 10, amount: 10000, name: 'Cofre de Monedas' }
         };
@@ -14801,6 +14812,8 @@ async function startGame(isRestart = false) {
             wheelCtx.clearRect(0, 0, size, size);
             const angle = (2 * Math.PI) / wheelPrizes.length;
             const segmentColors = ['#8C64AF', '#C1A4D4']; // alternating segment colors
+            const borderWidth = size * (15 / 300);
+            const borderRadius = radius - borderWidth / 2;
             let start = 0;
             wheelPrizes.forEach((p, i) => {
                 wheelCtx.beginPath();
@@ -14836,15 +14849,27 @@ async function startGame(isRestart = false) {
 
             // outer beveled border
             wheelCtx.beginPath();
-            wheelCtx.arc(radius, radius, radius, 0, 2 * Math.PI);
-            wheelCtx.lineWidth = size * (5 / 300);
+            wheelCtx.arc(radius, radius, borderRadius, 0, 2 * Math.PI);
+            wheelCtx.lineWidth = borderWidth;
             wheelCtx.strokeStyle = '#4c1a70';
             wheelCtx.stroke();
             wheelCtx.beginPath();
-            wheelCtx.arc(radius, radius, radius - size * (3 / 300), 0, 2 * Math.PI);
-            wheelCtx.lineWidth = size * (2 / 300);
+            wheelCtx.arc(radius, radius, borderRadius - size * (0.01 / 300), 0, 2 * Math.PI);
+            wheelCtx.lineWidth = size * (1.5 / 300);
             wheelCtx.strokeStyle = 'rgba(255,255,255,0.6)';
             wheelCtx.stroke();
+
+            // border circles at segment divisions
+            const circleRadius = borderWidth * 0.35;
+            for (let i = 0; i < wheelPrizes.length; i++) {
+                const a = i * angle;
+                const x = radius + borderRadius * Math.cos(a);
+                const y = radius + borderRadius * Math.sin(a);
+                wheelCtx.beginPath();
+                wheelCtx.arc(x, y, circleRadius, 0, 2 * Math.PI);
+                wheelCtx.fillStyle = '#C1A4D4';
+                wheelCtx.fill();
+            }
         }
 
         function selectPrize() {
@@ -14859,6 +14884,12 @@ async function startGame(isRestart = false) {
 
         let wheelSpinning = false;
         let lastWheelPrize = null;
+        function triggerPointerBounce() {
+            if (!wheelPointer) return;
+            wheelPointer.classList.remove('bounce');
+            void wheelPointer.offsetWidth;
+            wheelPointer.classList.add('bounce');
+        }
         function spinWheel() {
             if (wheelSpinning) return;
             const cooldown = getWheelCooldown();
@@ -14879,11 +14910,30 @@ async function startGame(isRestart = false) {
             const center = (seg.start + seg.end) / 2;
             const extra = 2 * Math.PI * 5;
             const finalAngle = extra - center;
-            if (wheelCanvas) {
-                wheelCanvas.style.transition = 'transform 4s cubic-bezier(0.33,1,0.68,1)';
-                wheelCanvas.style.transform = `rotate(${finalAngle}rad)`;
+            const duration = 4000;
+            const tickAngle = (2 * Math.PI) / wheelPrizes.length;
+            let lastTick = 0;
+            let startTime = null;
+            function animate(time) {
+                if (!startTime) startTime = time;
+                const elapsed = time - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+                const eased = 1 - Math.pow(1 - progress, 3);
+                const angle = finalAngle * eased;
+                if (wheelCanvas) wheelCanvas.style.transform = `rotate(${angle}rad)`;
+                const tick = Math.floor(angle / tickAngle);
+                if (tick > lastTick) {
+                    triggerPointerBounce();
+                    lastTick = tick;
+                }
+                if (progress < 1) {
+                    requestAnimationFrame(animate);
+                } else {
+                    wheelSpinning = false;
+                    showPrize(prize);
+                }
             }
-            setTimeout(() => { wheelSpinning = false; showPrize(prize); }, 4000);
+            requestAnimationFrame(animate);
         }
 
         function showPrize(prize) {
