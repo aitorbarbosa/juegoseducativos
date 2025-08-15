@@ -14873,7 +14873,7 @@ async function startGame(isRestart = false) {
             wheelCtx.stroke();
 
             // border circles at segment divisions
-            const circleRadius = borderWidth * 0.35;
+            const circleRadius = borderWidth * 0.25;
             for (let i = 0; i < wheelPrizes.length; i++) {
                 const a = i * angle;
                 const x = radius + borderRadius * Math.cos(a);
