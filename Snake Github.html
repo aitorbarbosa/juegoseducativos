@@ -3447,14 +3447,14 @@
         #wheel-pointer {
             position: absolute;
             top: 50%;
-            right: -15px;
+            right: -25px;
             transform: translateY(-50%);
-            transform-origin: left center;
-            width: 0;
-            height: 0;
-            border-top: 15px solid transparent;
-            border-bottom: 15px solid transparent;
-            border-right: 30px solid #8e44ad;
+            transform-origin: right center;
+            width: 50px;
+            height: 40px;
+            background: linear-gradient(135deg, #9b59b6, #8e44ad);
+            clip-path: polygon(100% 0, 100% 100%, 30% 100%, 0 50%, 30% 0);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
             z-index: 10;
         }
         #wheel-canvas {
