@@ -6052,7 +6052,7 @@ function setupSlider(slider, display) {
         const BOOSTER_PRICE = 5;
         const BOOSTERS = {
             extraTime: { name: 'Tiempo Extra', description: 'Aumenta el tiempo del nivel en 10 segundos', img: 'https://i.imgur.com/qFWNLA4.png' },
-            reducedPoints: { name: 'Puntos Reducidos', description: 'Reduce en 50 la cantidad de puntos objetivo del nivel', img: 'https://i.imgur.com/Zd64AyR.png' },
+            reducedPoints: { name: 'Puntos Reducidos', description: 'Reduce 50 la cantidad de puntos objetivo del nivel', img: 'https://i.imgur.com/Zd64AyR.png' },
             miniSnake: { name: 'Mini Serpiente', description: 'Reduce la longitud de la serpiente en 5 unidades (Longitud mínima 3)', img: 'https://i.imgur.com/zzfXHNW.png' },
             slow: { name: 'Ralentizador', description: 'Reduce la velocidad significativamente', img: 'https://i.imgur.com/Cli6jZ6.png' },
             durableFood: { name: 'Comida Duradera', description: 'Reduce 1 segundo el tiempo de desaparición de los comestibles', img: 'https://i.imgur.com/SYPXZAh.png' },
@@ -8700,7 +8700,7 @@ function openPurchaseConfirm(type, key) {
                 name = BOOSTERS[key].name;
                 statusNeeded = false;
                 if (purchaseDescriptionText) purchaseDescriptionText.textContent = BOOSTERS[key].description;
-                if (purchaseConfirmationText) purchaseConfirmationText.innerHTML = `¿Quieres comprar el Booster de ${name} por <strong>${price}</strong> gemas?`;
+                if (purchaseConfirmationText) purchaseConfirmationText.innerHTML = `¿Quieres comprar ${name} por <strong>${price}</strong> gemas?`;
             } else if (type === 'chest') {
                 price = CHESTS[key].cost;
                 name = CHEST_DISPLAY_NAMES[key];
