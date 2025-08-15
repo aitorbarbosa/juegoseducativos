@@ -1575,7 +1575,8 @@
             font-family: 'Press Start 2P', sans-serif;
             display: flex;
             align-items: center;
-            justify-content: center;
+            justify-content: flex-start;
+            text-align: left;
             box-sizing: border-box;
             cursor: pointer;
             transition: background-color 0.3s ease, transform 0.05s ease-out, filter 0.05s ease-out;
@@ -1616,21 +1617,36 @@
         .menu-option-button.icon-button-pressed { filter: brightness(0.5); }
         .menu-option-button.with-icon {
             overflow: visible;
-            padding-left: 110px;
+            padding-left: calc(90px + 1rem);
         }
         .menu-option-button {
-            left: 40px;
-            width: calc(100% - 40px);
+            left: 15px;
+            width: calc(100% - 15px);
         }
         .menu-option-button.with-icon .menu-button-icon {
             position: absolute;
-            left: -40px;
+            left: -15px;
             top: 50%;
             width: 80px;
             height: 80px;
             transform: translateY(-50%);
             z-index: 1;
             pointer-events: none;
+        }
+
+        @media screen and (max-width: 600px) {
+            .menu-option-button {
+                left: 15px;
+                width: calc(100% - 15px);
+            }
+            .menu-option-button.with-icon {
+                padding-left: calc(60px + 1rem);
+            }
+            .menu-option-button.with-icon .menu-button-icon {
+                left: -15px;
+                width: 55px;
+                height: 55px;
+            }
         }
         .config-svg,
         .info-svg {
@@ -4029,12 +4045,12 @@
                         LOGROS
                     </button>
                     <button class="menu-option-button with-icon" id="daily-menu-button">
-                        <img src="https://i.imgur.com/Dbe7XRx.png" alt="Premios diarios" class="menu-button-icon">
-                        PREMIOS DIARIOS
+                        <img src="https://i.imgur.com/Dbe7XRx.png" alt="Regalos" class="menu-button-icon">
+                        REGALOS
                     </button>
                     <button class="menu-option-button with-icon" id="wheel-menu-button">
-                        <img src="https://i.imgur.com/6V33A20.png" alt="Ruleta de premios" class="menu-button-icon">
-                        RULETA DE PREMIOS
+                        <img src="https://i.imgur.com/6V33A20.png" alt="Ruleta" class="menu-button-icon">
+                        RULETA
                     </button>
                 </div>
             </div>
@@ -4222,7 +4238,7 @@
                 </div>
             <div id="daily-panel" class="daily-panel-hidden">
                 <div class="settings-header">
-                    <h2>PREMIOS DIARIOS</h2>
+                    <h2>REGALOS</h2>
                     <button id="close-daily-panel" class="close-button" aria-label="Cerrar">
                         <img src="https://i.imgur.com/w5E6xdU.png" alt="Cerrar">
                     </button>
@@ -7841,7 +7857,7 @@ function setupSlider(slider, display) {
         if (storeMenuButton) storeMenuButton.addEventListener('click', () => openStoreMenu());
         if (achievementsMenuButton) achievementsMenuButton.addEventListener('click', openAchievementsMenu);
         if (dailyMenuButton) dailyMenuButton.addEventListener('click', openDailyMenu);
-        if (wheelMenuButton) wheelMenuButton.addEventListener('click', () => { openGenericMenuPanel('Ruleta de premios'); });
+        if (wheelMenuButton) wheelMenuButton.addEventListener('click', () => { openGenericMenuPanel('RULETA'); });
         if (closeAchievementsPanelButton) closeAchievementsPanelButton.addEventListener('click', closeAchievementsMenu);
         if (applyFreeSettingsBottomButton) applyFreeSettingsBottomButton.addEventListener('click', applyFreeSettings);
         if (freeDifficultySelector) freeDifficultySelector.addEventListener('change', () => {
@@ -7897,7 +7913,7 @@ function setupSlider(slider, display) {
 
         function openGenericMenuPanel(title) {
             if (genericMenuTitle) {
-                if (title === 'Ruleta de premios') {
+                if (title === 'RULETA') {
                     genericMenuTitle.classList.add('hidden');
                     genericMenuTitle.textContent = '';
                 } else {
@@ -7908,7 +7924,7 @@ function setupSlider(slider, display) {
             const isConfigMenuVisible = !configMenuPanel.classList.contains('config-menu-panel-hidden') && configMenuPanel.classList.contains('panel-visible');
             genericMenuPanel.classList.remove('centered-panel');
             togglePanel(genericMenuPanel, genericMenuPanel.querySelector('.panel-content'), true);
-            if (title === 'Ruleta de premios') checkWheelCooldown();
+            if (title === 'RULETA') checkWheelCooldown();
             if (isConfigMenuVisible) {
                 matchPanelSizeWithElement(configMenuPanel, genericMenuPanel);
             }
@@ -8058,7 +8074,7 @@ function setupSlider(slider, display) {
                     }
                 }
             }
-            if (purchaseConfirmationText) purchaseConfirmationText.textContent = '¿Quieres ver un anuncio para conseguir el premio diario?';
+            if (purchaseConfirmationText) purchaseConfirmationText.textContent = '¿Quieres ver un anuncio para conseguir el regalo diario?';
             purchaseConfirmationPanel.classList.remove('centered-panel');
             togglePanel(purchaseConfirmationPanel, purchaseConfirmationPanel.querySelector('.panel-content'), true);
             matchPanelSizeWithElement(dailyPanel, purchaseConfirmationPanel);
