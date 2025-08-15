@@ -1616,9 +1616,11 @@
         .menu-option-button.icon-button-pressed { filter: brightness(0.5); }
         .menu-option-button.with-icon {
             overflow: visible;
-            margin-left: -15px;
-            width: calc(100% + 15px);
-            padding-left: 90px;
+            padding-left: 110px;
+        }
+        .menu-option-button.with-icon::after {
+            left: 40px;
+            width: calc(100% - 40px);
         }
         .menu-option-button.with-icon .menu-button-icon {
             position: absolute;
