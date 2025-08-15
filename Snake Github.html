@@ -3448,13 +3448,23 @@
             position: absolute;
             top: 50%;
             right: -15px;
-            transform: translateY(-50%);
+            transform: translateY(-50%) rotate(0deg);
+            transform-origin: left center;
             width: 0;
             height: 0;
             border-top: 15px solid transparent;
             border-bottom: 15px solid transparent;
             border-right: 30px solid #8e44ad;
             z-index: 10;
+        }
+        @keyframes pointer-bounce {
+            0%   { transform: translateY(-50%) rotate(0deg); }
+            30%  { transform: translateY(-60%) rotate(-25deg); }
+            60%  { transform: translateY(-50%) rotate(0deg); }
+            100% { transform: translateY(-50%) rotate(0deg); }
+        }
+        #wheel-pointer.bouncing {
+            animation: pointer-bounce 0.2s ease-out;
         }
         #wheel-canvas {
             width: 100%;
@@ -4476,6 +4486,7 @@
         const wheelOverlay = document.getElementById("wheel-overlay");
         const spinResultOverlay = document.getElementById("spin-result-overlay");
         const wheelWrapper = document.getElementById("wheel-wrapper");
+        const wheelPointer = document.getElementById("wheel-pointer");
         const storeItemsContainer = document.getElementById("store-items-container");
         const storeTabButtons = document.querySelectorAll('#store-tabs .store-tab');
         const closeStorePanelButton = document.getElementById("close-store-panel");
@@ -14797,15 +14808,17 @@ async function startGame(isRestart = false) {
             if (!wheelCtx || !wheelCanvas) return;
             const dpr = window.devicePixelRatio || 1;
             const size = wheelCanvas.width / dpr;
-            const radius = size / 2;
+            const borderWidth = size * (10 / 300);
+            const radius = (size / 2) - borderWidth; // inner radius for segments
+            const center = size / 2;
             wheelCtx.clearRect(0, 0, size, size);
             const angle = (2 * Math.PI) / wheelPrizes.length;
             const segmentColors = ['#8C64AF', '#C1A4D4']; // alternating segment colors
             let start = 0;
             wheelPrizes.forEach((p, i) => {
                 wheelCtx.beginPath();
-                wheelCtx.moveTo(radius, radius);
-                wheelCtx.arc(radius, radius, radius, start, start + angle);
+                wheelCtx.moveTo(center, center);
+                wheelCtx.arc(center, center, radius, start, start + angle);
                 wheelCtx.closePath();
                 wheelCtx.fillStyle = segmentColors[i % 2];
                 wheelCtx.fill();
@@ -14820,8 +14833,8 @@ async function startGame(isRestart = false) {
 
                 const mid = start + angle / 2;
                 const r = radius * (80 / 150);
-                const x = radius + r * Math.cos(mid);
-                const y = radius + r * Math.sin(mid);
+                const x = center + r * Math.cos(mid);
+                const y = center + r * Math.sin(mid);
 
                 wheelCtx.save();
                 wheelCtx.translate(x, y);
@@ -14835,16 +14848,29 @@ async function startGame(isRestart = false) {
             });
 
             // outer beveled border
+            const outerRadius = radius + borderWidth / 2;
             wheelCtx.beginPath();
-            wheelCtx.arc(radius, radius, radius, 0, 2 * Math.PI);
-            wheelCtx.lineWidth = size * (5 / 300);
+            wheelCtx.arc(center, center, outerRadius, 0, 2 * Math.PI);
+            wheelCtx.lineWidth = borderWidth;
             wheelCtx.strokeStyle = '#4c1a70';
             wheelCtx.stroke();
             wheelCtx.beginPath();
-            wheelCtx.arc(radius, radius, radius - size * (3 / 300), 0, 2 * Math.PI);
+            wheelCtx.arc(center, center, outerRadius - borderWidth, 0, 2 * Math.PI);
             wheelCtx.lineWidth = size * (2 / 300);
             wheelCtx.strokeStyle = 'rgba(255,255,255,0.6)';
             wheelCtx.stroke();
+
+            // decorative circles on border
+            const circleRadius = borderWidth * 0.4;
+            for (let i = 0; i < wheelPrizes.length; i++) {
+                const ang = i * angle;
+                const x = center + outerRadius * Math.cos(ang);
+                const y = center + outerRadius * Math.sin(ang);
+                wheelCtx.beginPath();
+                wheelCtx.arc(x, y, circleRadius, 0, 2 * Math.PI);
+                wheelCtx.fillStyle = '#C1A4D4';
+                wheelCtx.fill();
+            }
         }
 
         function selectPrize() {
@@ -14855,6 +14881,23 @@ async function startGame(isRestart = false) {
                 if (r <= acc) return p;
             }
             return wheelPrizes[wheelPrizes.length - 1];
+        }
+
+        function easeOutCubic(t) {
+            return 1 - Math.pow(1 - t, 3);
+        }
+
+        function schedulePointerBounce(finalAngle) {
+            if (!wheelPointer) return;
+            const anglePerSeg = (2 * Math.PI) / wheelPrizes.length;
+            const passes = Math.floor(finalAngle / anglePerSeg);
+            for (let i = 1; i <= passes; i++) {
+                const time = 4000 * easeOutCubic(i / passes);
+                setTimeout(() => {
+                    wheelPointer.classList.add('bouncing');
+                    setTimeout(() => wheelPointer.classList.remove('bouncing'), 150);
+                }, time);
+            }
         }
 
         let wheelSpinning = false;
@@ -14883,6 +14926,7 @@ async function startGame(isRestart = false) {
                 wheelCanvas.style.transition = 'transform 4s cubic-bezier(0.33,1,0.68,1)';
                 wheelCanvas.style.transform = `rotate(${finalAngle}rad)`;
             }
+            schedulePointerBounce(finalAngle);
             setTimeout(() => { wheelSpinning = false; showPrize(prize); }, 4000);
         }
 
