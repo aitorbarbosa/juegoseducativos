@@ -14467,6 +14467,22 @@ async function startGame(isRestart = false) {
                     if (type === 'food') name = FOOD_DISPLAY_NAMES[key];
                     else if (type === 'skin') name = SKIN_DISPLAY_NAMES[key];
                     else name = SCENE_DISPLAY_NAMES[key];
+                    if (selectItemPreview) {
+                        const rarityClass = getRarityClass(type, key);
+                        let itemClass = `store-item highlight-bg ${rarityClass}`;
+                        if (type === 'scene') itemClass += ' scene-item';
+                        else if (type === 'skin') itemClass += ' skin-item';
+                        else itemClass += ' food-item';
+                        itemClass += action === 'select' ? ' purchased' : ' locked';
+                        selectItemPreview.className = itemClass;
+                        const img = document.createElement('img');
+                        img.className = 'store-item-img' + (type === 'scene' ? ' scene-img-full' : '');
+                        if (type === 'food') img.src = FOODS[key]?.asset?.src || '';
+                        else if (type === 'skin') img.src = SKINS[key]?.snakeHeadAsset?.upDown?.src || '';
+                        else img.src = SCENES[key]?.icon || '';
+                        selectItemPreview.appendChild(img);
+                        selectItemPreview.classList.remove('hidden');
+                    }
                     selectConfirmationText.textContent = action === 'select' ? `¿Usar ${name}?` : `¿Ver ${name} en la tienda?`;
                 }
             }
