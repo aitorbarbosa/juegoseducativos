@@ -3572,7 +3572,7 @@
             justify-content: center;
             background-color: rgba(0, 0, 0, 0.75);
             color: white;
-            font-size: 1rem;
+            font-size: 1.5rem;
             border-radius: 50%;
             pointer-events: none;
             z-index: 8;
@@ -14996,7 +14996,6 @@ async function startGame(isRestart = false) {
                 prizeDisplay.classList.add('hidden');
             }
             if (spinResultOverlay) spinResultOverlay.classList.add('hidden');
-            if (wheelPointer) wheelPointer.classList.remove('dark');
             if (wheelWrapper) wheelWrapper.classList.remove('hidden');
             if (wheelCanvas) {
                 wheelCanvas.style.transition = 'none';
@@ -15035,6 +15034,7 @@ async function startGame(isRestart = false) {
                     wheelOverlay.classList.add('hidden');
                     wheelOverlay.textContent = 'BLOQUEADO';
                 }
+                if (wheelPointer) wheelPointer.classList.remove('dark');
                 return;
             }
             if (spinButton) spinButton.disabled = true;
@@ -15070,6 +15070,7 @@ async function startGame(isRestart = false) {
                     wheelOverlay.classList.add('hidden');
                     wheelOverlay.textContent = 'BLOQUEADO';
                 }
+                if (wheelPointer) wheelPointer.classList.remove('dark');
                 if (spinButton) {
                     spinButton.disabled = false;
                     spinButton.classList.remove('spin-button-pressed');
