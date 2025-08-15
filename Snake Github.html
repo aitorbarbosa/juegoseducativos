@@ -3449,7 +3449,7 @@
             top: 50%;
             right: -15px;
             transform: translateY(-50%);
-            transform-origin: left center;
+            transform-origin: right center;
             width: 30px;
             height: 22px;
             background: #912917;
@@ -3469,6 +3469,18 @@
             clip-path: polygon(0% 50%, 40% 0%, 100% 0%, 100% 100%, 40% 100%);
             transform: translateY(-50%);
             border-radius: 3px;
+        }
+        @media screen and (max-width: 600px) {
+            #wheel-pointer {
+                width: 20px;
+                height: 15px;
+                right: -5px;
+            }
+            #wheel-pointer::before {
+                width: 16px;
+                height: 11px;
+                left: 3px;
+            }
         }
         #wheel-canvas {
             width: 100%;
