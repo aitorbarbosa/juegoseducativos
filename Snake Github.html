@@ -3482,6 +3482,9 @@
                 left: 3px;
             }
         }
+        #wheel-pointer.dark {
+            filter: brightness(0.5);
+        }
         #wheel-canvas {
             width: 100%;
             height: 100%;
@@ -14929,6 +14932,7 @@ async function startGame(isRestart = false) {
                 wheelOverlay.classList.add('hidden');
                 wheelOverlay.textContent = 'BLOQUEADO';
             }
+            if (wheelPointer) wheelPointer.classList.remove('dark');
             if (spinButton) spinButton.disabled = true;
             const prize = selectPrize();
             const seg = wheelAngles.find(a => a.prize === prize);
@@ -14967,6 +14971,7 @@ async function startGame(isRestart = false) {
                 wheelOverlay.classList.remove('hidden');
                 wheelOverlay.textContent = '';
             }
+            if (wheelPointer) wheelPointer.classList.add('dark');
             if (spinResultOverlay) spinResultOverlay.classList.remove('hidden');
             prizeDisplay.innerHTML = `<img src="${prize.image}" alt="${prize.label}" class="w-24 h-24"><span class="text-xs">${prize.label}</span>`;
             prizeDisplay.classList.remove('hidden');
@@ -14991,6 +14996,7 @@ async function startGame(isRestart = false) {
                 prizeDisplay.classList.add('hidden');
             }
             if (spinResultOverlay) spinResultOverlay.classList.add('hidden');
+            if (wheelPointer) wheelPointer.classList.remove('dark');
             if (wheelWrapper) wheelWrapper.classList.remove('hidden');
             if (wheelCanvas) {
                 wheelCanvas.style.transition = 'none';
