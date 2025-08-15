@@ -1614,6 +1614,20 @@
         .menu-option-button:hover { filter: brightness(0.95); }
         .menu-option-button:disabled { filter: brightness(0.6); cursor: not-allowed; }
         .menu-option-button.icon-button-pressed { filter: brightness(0.5); }
+        .menu-option-button.with-icon {
+            overflow: visible;
+            padding-left: 60px;
+            clip-path: inset(0 0 0 40px);
+        }
+        .menu-option-button.with-icon .menu-option-icon {
+            position: absolute;
+            left: -40px;
+            top: 50%;
+            width: 80px;
+            height: 80px;
+            transform: translateY(-50%);
+            pointer-events: none;
+        }
         .config-svg,
         .info-svg {
             height: 100%;
@@ -3992,11 +4006,26 @@
                     </button>
                 </div>
                 <div class="panel-content">
-                    <button class="menu-option-button" id="profile-menu-button">PERFIL</button>
-                    <button class="menu-option-button" id="store-menu-button">TIENDA</button>
-                    <button class="menu-option-button" id="achievements-menu-button">LOGROS</button>
-                    <button class="menu-option-button" id="daily-menu-button">PREMIOS DIARIOS</button>
-                    <button class="menu-option-button" id="wheel-menu-button">RULETA DE PREMIOS</button>
+                    <button class="menu-option-button with-icon" id="profile-menu-button">
+                        <img class="menu-option-icon" src="https://i.imgur.com/gxm0Ks4.png" alt="Perfil">
+                        PERFIL
+                    </button>
+                    <button class="menu-option-button with-icon" id="store-menu-button">
+                        <img class="menu-option-icon" src="https://i.imgur.com/9HHOgFe.png" alt="Tienda">
+                        TIENDA
+                    </button>
+                    <button class="menu-option-button with-icon" id="achievements-menu-button">
+                        <img class="menu-option-icon" src="https://i.imgur.com/Pq7mnkw.png" alt="Logros">
+                        LOGROS
+                    </button>
+                    <button class="menu-option-button with-icon" id="daily-menu-button">
+                        <img class="menu-option-icon" src="https://i.imgur.com/Dbe7XRx.png" alt="Premios diarios">
+                        PREMIOS DIARIOS
+                    </button>
+                    <button class="menu-option-button with-icon" id="wheel-menu-button">
+                        <img class="menu-option-icon" src="https://i.imgur.com/6V33A20.png" alt="Ruleta de premios">
+                        RULETA DE PREMIOS
+                    </button>
                 </div>
             </div>
             <div id="generic-menu-panel" class="generic-menu-panel-hidden">
@@ -14472,8 +14501,13 @@ async function startGame(isRestart = false) {
         addIconPressEvents(closeAchievementsPanelButton, closeAchievementsPanelButton);
         addIconPressEvents(closeOutOfLivesPanelButton, closeOutOfLivesPanelButton);
         addIconPressEvents(getLivesStoreButton, getLivesStoreButton);
+        addIconPressEvents(profileMenuButton, profileMenuButton);
+        addIconPressEvents(storeMenuButton, storeMenuButton);
+        addIconPressEvents(achievementsMenuButton, achievementsMenuButton);
+        addIconPressEvents(dailyMenuButton, dailyMenuButton);
+        addIconPressEvents(wheelMenuButton, wheelMenuButton);
 
-        // Original click listeners for D-Pad 
+        // Original click listeners for D-Pad
         upButton.addEventListener("click", () => changeDirection("up"));
         downButton.addEventListener("click", () => changeDirection("down"));
         leftButton.addEventListener("click", () => changeDirection("left"));
