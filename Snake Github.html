@@ -6017,24 +6017,24 @@ function setupSlider(slider, display) {
             if (type === 'skin') {
                 if (key === 'snake') return 'rarity-default';
                 const price = SKIN_PRICES[key] || 0;
-                if (price >= 100) return 'rarity-legendary';
-                if (price >= 50) return 'rarity-epic';
-                if (price >= 30) return 'rarity-rare';
-                if (price >= 10) return 'rarity-common';
+                if (price >= 200) return 'rarity-legendary';
+                if (price >= 100) return 'rarity-epic';
+                if (price >= 60) return 'rarity-rare';
+                if (price >= 20) return 'rarity-common';
             } else if (type === 'scene') {
                 if (key === 'classic') return 'rarity-default';
                 const price = SCENE_PRICES[key] || 0;
-                if (price >= 50) return 'rarity-legendary';
-                if (price >= 30) return 'rarity-epic';
-                if (price >= 10) return 'rarity-rare';
-                if (price >= 5) return 'rarity-common';
+                if (price >= 100) return 'rarity-legendary';
+                if (price >= 60) return 'rarity-epic';
+                if (price >= 20) return 'rarity-rare';
+                if (price >= 10) return 'rarity-common';
             } else if (type === 'food') {
                 if (key === 'apple') return 'rarity-default';
                 const price = FOODS[key]?.price || 0;
-                if (price >= 50) return 'rarity-legendary';
-                if (price >= 30) return 'rarity-epic';
-                if (price >= 10) return 'rarity-rare';
-                if (price >= 5) return 'rarity-common';
+                if (price >= 100) return 'rarity-legendary';
+                if (price >= 60) return 'rarity-epic';
+                if (price >= 20) return 'rarity-rare';
+                if (price >= 10) return 'rarity-common';
             }
             return 'rarity-default';
         }
@@ -8343,26 +8343,26 @@ function setupSlider(slider, display) {
             if (type === 'food') {
                 keys = FOOD_ORDER.filter(k => {
                     const p = FOODS[k].price;
-                    if (rarity === 'common') return p >= 5 && p < 10;
-                    if (rarity === 'rare') return p >= 10 && p < 30;
-                    if (rarity === 'epic') return p >= 30 && p < 50;
-                    return p >= 50;
+                    if (rarity === 'common') return p >= 10 && p < 20;
+                    if (rarity === 'rare') return p >= 20 && p < 60;
+                    if (rarity === 'epic') return p >= 60 && p < 100;
+                    return p >= 100;
                 }).filter(k => k !== 'apple');
             } else if (type === 'scene') {
                 keys = SCENE_ORDER.filter(k => {
                     const p = SCENE_PRICES[k];
-                    if (rarity === 'common') return p >= 5 && p < 10;
-                    if (rarity === 'rare') return p >= 10 && p < 30;
-                    if (rarity === 'epic') return p >= 30 && p < 50;
-                    return p >= 50;
+                    if (rarity === 'common') return p >= 10 && p < 20;
+                    if (rarity === 'rare') return p >= 20 && p < 60;
+                    if (rarity === 'epic') return p >= 60 && p < 100;
+                    return p >= 100;
                 }).filter(k => k !== 'classic');
             } else if (type === 'skin') {
                 keys = SKIN_ORDER.filter(k => {
                     const p = SKIN_PRICES[k];
-                    if (rarity === 'common') return p >= 10 && p < 30;
-                    if (rarity === 'rare') return p >= 30 && p < 50;
-                    if (rarity === 'epic') return p >= 50 && p < 100;
-                    return p >= 100;
+                    if (rarity === 'common') return p >= 20 && p < 60;
+                    if (rarity === 'rare') return p >= 60 && p < 100;
+                    if (rarity === 'epic') return p >= 100 && p < 200;
+                    return p >= 200;
                 }).filter(k => k !== 'snake');
             }
             return keys;
