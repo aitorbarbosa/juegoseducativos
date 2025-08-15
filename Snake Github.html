@@ -1616,12 +1616,19 @@
         .menu-option-button.icon-button-pressed { filter: brightness(0.5); }
         .menu-option-button.with-icon {
             overflow: visible;
-            padding-left: 60px;
-            clip-path: inset(0 0 0 40px);
+            padding-left: 100px;
+        }
+        .menu-option-button.with-icon::before {
+            left: 38px;
+            width: calc(100% - 36px);
+        }
+        .menu-option-button.with-icon::after {
+            left: 40px;
+            width: calc(100% - 40px);
         }
         .menu-option-button.with-icon .menu-option-icon {
             position: absolute;
-            left: -40px;
+            left: 0;
             top: 50%;
             width: 80px;
             height: 80px;
