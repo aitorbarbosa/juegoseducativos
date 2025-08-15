@@ -4912,26 +4912,26 @@ function setupSlider(slider, display) {
             snake: "Snake",
             Snake: "Snake",
             rubiSnake: "RubiSnake",
-            aitorSnake: "AitorSnake",
             noemiSnake: "NoemiSnake",
             maraSnake: "MaraSnake",
             almuSnake: "AlmuSnake",
+            aitorSnake: "AitorSnake",
             mimiSnake: "MimiSnake",
             blackCat: "Gato Negro",
             orangeCat: "Gato Naranja"
         };
 
-        const SKIN_ORDER = ['snake','rubiSnake','aitorSnake','noemiSnake','maraSnake','almuSnake','mimiSnake','blackCat','orangeCat'];
+        const SKIN_ORDER = ['snake','rubiSnake','noemiSnake','maraSnake','almuSnake','aitorSnake','mimiSnake','blackCat','orangeCat'];
         const SKIN_PRICES = {
-            snake: 5,
-            rubiSnake: 10,
-            aitorSnake: 10,
-            noemiSnake: 10,
-            maraSnake: 10,
-            almuSnake: 10,
-            mimiSnake: 10,
-            blackCat: 10,
-            orangeCat: 10
+            snake: 10,
+            rubiSnake: 30,
+            noemiSnake: 30,
+            maraSnake: 30,
+            almuSnake: 30,
+            aitorSnake: 60,
+            mimiSnake: 100,
+            blackCat: 150,
+            orangeCat: 150
         };
 
         const SCENE_DISPLAY_NAMES = {
@@ -4980,26 +4980,26 @@ function setupSlider(slider, display) {
             caminoPiedra: 10,
             caminoPiedraMusgo: 10,
             caminoHierbaPiedra: 10,
-            cebra: 10,
-            halloween: 10,
-            hielo: 10,
-            ladrillo: 10,
-            madera: 10,
-            baldosaBlanca: 10,
-            baldosaBeige: 10,
-            rocas: 10,
-            tejado: 10,
-            tierra: 10,
-            tribal: 10,
-            desierto: 10,
-            playa: 10,
-            espacio: 10,
-            carretera: 10,
-            estrellaNeon: 10,
-            serpientesNeon: 10,
-            formasNeon: 10,
-            cuadradosNeon: 10,
-            xNeon: 10
+            cebra: 30,
+            halloween: 30,
+            hielo: 30,
+            ladrillo: 30,
+            madera: 30,
+            baldosaBlanca: 30,
+            baldosaBeige: 30,
+            rocas: 30,
+            tejado: 30,
+            tierra: 30,
+            tribal: 30,
+            desierto: 30,
+            playa: 30,
+            espacio: 30,
+            carretera: 30,
+            estrellaNeon: 60,
+            serpientesNeon: 60,
+            formasNeon: 60,
+            cuadradosNeon: 60,
+            xNeon: 60
         };
 
         const SCENES = {
@@ -5814,59 +5814,59 @@ function setupSlider(slider, display) {
 
         // --- Configuración de Comestibles ---
         const FOODS = {
-            apple: { asset: classicFoodImg, url: 'https://i.imgur.com/fOSSwUX.png', scale: 1.25, price: 5 },
-            cereza: { asset: new Image(), url: 'https://i.imgur.com/s3WYriu.png', scale: 1.25, price: 5 },
-            pera: { asset: new Image(), url: 'https://i.imgur.com/QwJzp1k.png', scale: 1.25, price: 5 },
-            platano: { asset: new Image(), url: 'https://i.imgur.com/tYSI90u.png', scale: 1.25, price: 5 },
-            pina: { asset: new Image(), url: 'https://i.imgur.com/udkmLUq.png', scale: 1.25, price: 5 },
-            naranja: { asset: new Image(), url: 'https://i.imgur.com/W1WDTpC.png', scale: 1.25, price: 5 },
-            kiwi: { asset: new Image(), url: 'https://i.imgur.com/ZixdENw.png', scale: 1.25, price: 5 },
-            aguacate: { asset: new Image(), url: 'https://i.imgur.com/yEHqcAz.png', scale: 1.25, price: 5 },
-            fresa: { asset: new Image(), url: 'https://i.imgur.com/I9jGTrT.png', scale: 1.25, price: 5 },
-            sandia: { asset: new Image(), url: 'https://i.imgur.com/gYOUtji.png', scale: 1.25, price: 5 },
-            cafe: { asset: new Image(), url: 'https://i.imgur.com/2iuZzZQ.png', scale: 1.25, price: 5 },
-            batidoFresa: { asset: new Image(), url: 'https://i.imgur.com/AJf2LOK.png', scale: 1.25, price: 5 },
-            soda: { asset: new Image(), url: 'https://i.imgur.com/PoEzKvA.png', scale: 1.25, price: 5 },
-            zumoNaranja: { asset: new Image(), url: 'https://i.imgur.com/D1ZryCw.png', scale: 1.25, price: 5 },
-            batidoChocolate: { asset: new Image(), url: 'https://i.imgur.com/uyBQXKX.png', scale: 1.25, price: 5 },
-            chocolateCaliente: { asset: new Image(), url: 'https://i.imgur.com/QwHWdN9.png', scale: 1.25, price: 5 },
-            cerveza: { asset: new Image(), url: 'https://i.imgur.com/LKcF2tT.png', scale: 1.25, price: 5 },
-            vinoBlanco: { asset: new Image(), url: 'https://i.imgur.com/1S0Qvnn.png', scale: 1.25, price: 5 },
-            vinoTinto: { asset: new Image(), url: 'https://i.imgur.com/FfXlbU8.png', scale: 1.25, price: 5 },
-            kebap: { asset: new Image(), url: 'https://i.imgur.com/NpgCRUg.png', scale: 1.25, price: 5 },
-            burrito: { asset: new Image(), url: 'https://i.imgur.com/dSa3rSL.png', scale: 1.25, price: 5 },
-            patatas: { asset: new Image(), url: 'https://i.imgur.com/SCzeVKi.png', scale: 1.25, price: 5 },
-            polloFrito: { asset: new Image(), url: 'https://i.imgur.com/0kfGi0C.png', scale: 1.25, price: 5 },
-            salchicha: { asset: new Image(), url: 'https://i.imgur.com/wHPKEW4.png', scale: 1.25, price: 5 },
-            huevoFrito: { asset: new Image(), url: 'https://i.imgur.com/UBMaN50.png', scale: 1.25, price: 5 },
-            croqueta: { asset: new Image(), url: 'https://i.imgur.com/4psebHZ.png', scale: 1.25, price: 5 },
-            hamburguesa: { asset: new Image(), url: 'https://i.imgur.com/oQVdXFq.png', scale: 1.25, price: 5 },
-            pizza: { asset: new Image(), url: 'https://i.imgur.com/D7HV0O4.png', scale: 1.25, price: 5 },
-            hotDog: { asset: new Image(), url: 'https://i.imgur.com/v8Tng9s.png', scale: 1.25, price: 5 },
-            lasana: { asset: new Image(), url: 'https://i.imgur.com/uO5z1tZ.png', scale: 1.25, price: 5 },
-            sushi: { asset: new Image(), url: 'https://i.imgur.com/uccnlBy.png', scale: 1.25, price: 5 },
-            caramelo: { asset: new Image(), url: 'https://i.imgur.com/wg4aGv9.png', scale: 1.25, price: 10 },
-            ensaimada: { asset: new Image(), url: 'https://i.imgur.com/6CxTo6I.png', scale: 1.25, price: 10 },
-            muffin: { asset: new Image(), url: 'https://i.imgur.com/1qw2SLR.png', scale: 1.25, price: 10 },
-            croissant: { asset: new Image(), url: 'https://i.imgur.com/rTctItm.png', scale: 1.25, price: 10 },
-            macarrons: { asset: new Image(), url: 'https://i.imgur.com/eYb36j8.png', scale: 1.25, price: 10 },
-            heladoFresa: { asset: new Image(), url: 'https://i.imgur.com/DOYtVFR.png', scale: 1.25, price: 10 },
-            tartaFresa: { asset: new Image(), url: 'https://i.imgur.com/v95HG3r.png', scale: 1.25, price: 10 },
-            palomitas: { asset: new Image(), url: 'https://i.imgur.com/qiCsIkb.png', scale: 1.25, price: 30 },
-            algodonAzucar: { asset: new Image(), url: 'https://i.imgur.com/GSov6QD.png', scale: 1.25, price: 30 },
-            tortitas: { asset: new Image(), url: 'https://i.imgur.com/PGlpQBY.png', scale: 1.25, price: 30 },
-            helado: { asset: new Image(), url: 'https://i.imgur.com/f7VMyLh.png', scale: 1.25, price: 30 },
-            tartaFantasia: { asset: new Image(), url: 'https://i.imgur.com/a7uFEuY.png', scale: 1.25, price: 30 },
-            gofre: { asset: new Image(), url: 'https://i.imgur.com/PD05I19.png', scale: 1.25, price: 30 },
-            donutsGlaseado: { asset: new Image(), url: 'https://i.imgur.com/ZiGKtUq.png', scale: 1.25, price: 50 },
-            huevoYoshi: { asset: new Image(), url: 'https://i.imgur.com/Kx68UN2.png', scale: 1.25, price: 50 },
-            espadaLaser: { asset: new Image(), url: 'https://i.imgur.com/3XIKlOA.png', scale: 1.25, price: 50 },
-            cuernoUnicornio: { asset: new Image(), url: 'https://i.imgur.com/BFgtJCk.png', scale: 1.25, price: 50 },
-            cartuchoRetro: { asset: new Image(), url: 'https://i.imgur.com/mSlH5Go.png', scale: 1.25, price: 50 },
-            setaMario: { asset: new Image(), url: 'https://i.imgur.com/a41hS2U.png', scale: 1.25, price: 50 },
-            guanteInfinito: { asset: new Image(), url: 'https://i.imgur.com/RD42tWb.png', scale: 1.25, price: 50 },
-            gorroMagico: { asset: new Image(), url: 'https://i.imgur.com/1Y2w8KB.png', scale: 1.25, price: 50 },
-            bolaDragon: { asset: new Image(), url: 'https://i.imgur.com/MjDXSXh.png', scale: 1.25, price: 50 }
+            apple: { asset: classicFoodImg, url: 'https://i.imgur.com/fOSSwUX.png', scale: 1.25, price: 10 },
+            cereza: { asset: new Image(), url: 'https://i.imgur.com/s3WYriu.png', scale: 1.25, price: 10 },
+            pera: { asset: new Image(), url: 'https://i.imgur.com/QwJzp1k.png', scale: 1.25, price: 10 },
+            platano: { asset: new Image(), url: 'https://i.imgur.com/tYSI90u.png', scale: 1.25, price: 10 },
+            pina: { asset: new Image(), url: 'https://i.imgur.com/udkmLUq.png', scale: 1.25, price: 10 },
+            naranja: { asset: new Image(), url: 'https://i.imgur.com/W1WDTpC.png', scale: 1.25, price: 10 },
+            kiwi: { asset: new Image(), url: 'https://i.imgur.com/ZixdENw.png', scale: 1.25, price: 10 },
+            aguacate: { asset: new Image(), url: 'https://i.imgur.com/yEHqcAz.png', scale: 1.25, price: 10 },
+            fresa: { asset: new Image(), url: 'https://i.imgur.com/I9jGTrT.png', scale: 1.25, price: 10 },
+            sandia: { asset: new Image(), url: 'https://i.imgur.com/gYOUtji.png', scale: 1.25, price: 10 },
+            cafe: { asset: new Image(), url: 'https://i.imgur.com/2iuZzZQ.png', scale: 1.25, price: 30 },
+            batidoFresa: { asset: new Image(), url: 'https://i.imgur.com/AJf2LOK.png', scale: 1.25, price: 30 },
+            soda: { asset: new Image(), url: 'https://i.imgur.com/PoEzKvA.png', scale: 1.25, price: 30 },
+            zumoNaranja: { asset: new Image(), url: 'https://i.imgur.com/D1ZryCw.png', scale: 1.25, price: 30 },
+            batidoChocolate: { asset: new Image(), url: 'https://i.imgur.com/uyBQXKX.png', scale: 1.25, price: 30 },
+            chocolateCaliente: { asset: new Image(), url: 'https://i.imgur.com/QwHWdN9.png', scale: 1.25, price: 30 },
+            cerveza: { asset: new Image(), url: 'https://i.imgur.com/LKcF2tT.png', scale: 1.25, price: 30 },
+            vinoBlanco: { asset: new Image(), url: 'https://i.imgur.com/1S0Qvnn.png', scale: 1.25, price: 30 },
+            vinoTinto: { asset: new Image(), url: 'https://i.imgur.com/FfXlbU8.png', scale: 1.25, price: 30 },
+            kebap: { asset: new Image(), url: 'https://i.imgur.com/NpgCRUg.png', scale: 1.25, price: 60 },
+            burrito: { asset: new Image(), url: 'https://i.imgur.com/dSa3rSL.png', scale: 1.25, price: 60 },
+            patatas: { asset: new Image(), url: 'https://i.imgur.com/SCzeVKi.png', scale: 1.25, price: 60 },
+            polloFrito: { asset: new Image(), url: 'https://i.imgur.com/0kfGi0C.png', scale: 1.25, price: 60 },
+            salchicha: { asset: new Image(), url: 'https://i.imgur.com/wHPKEW4.png', scale: 1.25, price: 60 },
+            huevoFrito: { asset: new Image(), url: 'https://i.imgur.com/UBMaN50.png', scale: 1.25, price: 60 },
+            croqueta: { asset: new Image(), url: 'https://i.imgur.com/4psebHZ.png', scale: 1.25, price: 60 },
+            hamburguesa: { asset: new Image(), url: 'https://i.imgur.com/oQVdXFq.png', scale: 1.25, price: 60 },
+            pizza: { asset: new Image(), url: 'https://i.imgur.com/D7HV0O4.png', scale: 1.25, price: 60 },
+            hotDog: { asset: new Image(), url: 'https://i.imgur.com/v8Tng9s.png', scale: 1.25, price: 60 },
+            lasana: { asset: new Image(), url: 'https://i.imgur.com/uO5z1tZ.png', scale: 1.25, price: 60 },
+            sushi: { asset: new Image(), url: 'https://i.imgur.com/uccnlBy.png', scale: 1.25, price: 60 },
+            caramelo: { asset: new Image(), url: 'https://i.imgur.com/wg4aGv9.png', scale: 1.25, price: 60 },
+            ensaimada: { asset: new Image(), url: 'https://i.imgur.com/6CxTo6I.png', scale: 1.25, price: 60 },
+            muffin: { asset: new Image(), url: 'https://i.imgur.com/1qw2SLR.png', scale: 1.25, price: 60 },
+            croissant: { asset: new Image(), url: 'https://i.imgur.com/rTctItm.png', scale: 1.25, price: 60 },
+            macarrons: { asset: new Image(), url: 'https://i.imgur.com/eYb36j8.png', scale: 1.25, price: 60 },
+            heladoFresa: { asset: new Image(), url: 'https://i.imgur.com/DOYtVFR.png', scale: 1.25, price: 60 },
+            tartaFresa: { asset: new Image(), url: 'https://i.imgur.com/v95HG3r.png', scale: 1.25, price: 60 },
+            palomitas: { asset: new Image(), url: 'https://i.imgur.com/qiCsIkb.png', scale: 1.25, price: 60 },
+            algodonAzucar: { asset: new Image(), url: 'https://i.imgur.com/GSov6QD.png', scale: 1.25, price: 60 },
+            tortitas: { asset: new Image(), url: 'https://i.imgur.com/PGlpQBY.png', scale: 1.25, price: 60 },
+            helado: { asset: new Image(), url: 'https://i.imgur.com/f7VMyLh.png', scale: 1.25, price: 60 },
+            tartaFantasia: { asset: new Image(), url: 'https://i.imgur.com/a7uFEuY.png', scale: 1.25, price: 60 },
+            gofre: { asset: new Image(), url: 'https://i.imgur.com/PD05I19.png', scale: 1.25, price: 60 },
+            donutsGlaseado: { asset: new Image(), url: 'https://i.imgur.com/ZiGKtUq.png', scale: 1.25, price: 100 },
+            huevoYoshi: { asset: new Image(), url: 'https://i.imgur.com/Kx68UN2.png', scale: 1.25, price: 100 },
+            espadaLaser: { asset: new Image(), url: 'https://i.imgur.com/3XIKlOA.png', scale: 1.25, price: 100 },
+            cuernoUnicornio: { asset: new Image(), url: 'https://i.imgur.com/BFgtJCk.png', scale: 1.25, price: 100 },
+            cartuchoRetro: { asset: new Image(), url: 'https://i.imgur.com/mSlH5Go.png', scale: 1.25, price: 100 },
+            setaMario: { asset: new Image(), url: 'https://i.imgur.com/a41hS2U.png', scale: 1.25, price: 100 },
+            guanteInfinito: { asset: new Image(), url: 'https://i.imgur.com/RD42tWb.png', scale: 1.25, price: 100 },
+            gorroMagico: { asset: new Image(), url: 'https://i.imgur.com/1Y2w8KB.png', scale: 1.25, price: 100 },
+            bolaDragon: { asset: new Image(), url: 'https://i.imgur.com/MjDXSXh.png', scale: 1.25, price: 100 }
         };
         const FOOD_ORDER = ['apple','cereza','pera','platano','pina','naranja','kiwi','aguacate','fresa','sandia','cafe','batidoFresa','soda','zumoNaranja','batidoChocolate','chocolateCaliente','cerveza','vinoBlanco','vinoTinto','kebap','burrito','patatas','polloFrito','salchicha','huevoFrito','croqueta','hamburguesa','pizza','hotDog','lasana','sushi','caramelo','ensaimada','muffin','croissant','macarrons','heladoFresa','tartaFresa','palomitas','algodonAzucar','tortitas','helado','tartaFantasia','gofre','donutsGlaseado','huevoYoshi','espadaLaser','cuernoUnicornio','cartuchoRetro','setaMario','guanteInfinito','gorroMagico','bolaDragon'];
         const FOOD_DISPLAY_NAMES = {
@@ -6017,24 +6017,24 @@ function setupSlider(slider, display) {
             if (type === 'skin') {
                 if (key === 'snake') return 'rarity-default';
                 const price = SKIN_PRICES[key] || 0;
-                if (price >= 100) return 'rarity-legendary';
-                if (price >= 50) return 'rarity-epic';
-                if (price >= 30) return 'rarity-rare';
-                if (price >= 10) return 'rarity-common';
+                if (price >= 150) return 'rarity-legendary';
+                if (price >= 100) return 'rarity-epic';
+                if (price >= 60) return 'rarity-rare';
+                if (price >= 30) return 'rarity-common';
             } else if (type === 'scene') {
                 if (key === 'classic') return 'rarity-default';
                 const price = SCENE_PRICES[key] || 0;
-                if (price >= 50) return 'rarity-legendary';
-                if (price >= 30) return 'rarity-epic';
-                if (price >= 10) return 'rarity-rare';
-                if (price >= 5) return 'rarity-common';
+                if (price >= 100) return 'rarity-legendary';
+                if (price >= 60) return 'rarity-epic';
+                if (price >= 30) return 'rarity-rare';
+                if (price >= 10) return 'rarity-common';
             } else if (type === 'food') {
                 if (key === 'apple') return 'rarity-default';
                 const price = FOODS[key]?.price || 0;
-                if (price >= 50) return 'rarity-legendary';
-                if (price >= 30) return 'rarity-epic';
-                if (price >= 10) return 'rarity-rare';
-                if (price >= 5) return 'rarity-common';
+                if (price >= 100) return 'rarity-legendary';
+                if (price >= 60) return 'rarity-epic';
+                if (price >= 30) return 'rarity-rare';
+                if (price >= 10) return 'rarity-common';
             }
             return 'rarity-default';
         }
@@ -8343,26 +8343,26 @@ function setupSlider(slider, display) {
             if (type === 'food') {
                 keys = FOOD_ORDER.filter(k => {
                     const p = FOODS[k].price;
-                    if (rarity === 'common') return p >= 5 && p < 10;
-                    if (rarity === 'rare') return p >= 10 && p < 30;
-                    if (rarity === 'epic') return p >= 30 && p < 50;
-                    return p >= 50;
+                    if (rarity === 'common') return p >= 10 && p < 30;
+                    if (rarity === 'rare') return p >= 30 && p < 60;
+                    if (rarity === 'epic') return p >= 60 && p < 100;
+                    return p >= 100;
                 }).filter(k => k !== 'apple');
             } else if (type === 'scene') {
                 keys = SCENE_ORDER.filter(k => {
                     const p = SCENE_PRICES[k];
-                    if (rarity === 'common') return p >= 5 && p < 10;
-                    if (rarity === 'rare') return p >= 10 && p < 30;
-                    if (rarity === 'epic') return p >= 30 && p < 50;
-                    return p >= 50;
+                    if (rarity === 'common') return p >= 10 && p < 30;
+                    if (rarity === 'rare') return p >= 30 && p < 60;
+                    if (rarity === 'epic') return p >= 60 && p < 100;
+                    return p >= 100;
                 }).filter(k => k !== 'classic');
             } else if (type === 'skin') {
                 keys = SKIN_ORDER.filter(k => {
                     const p = SKIN_PRICES[k];
-                    if (rarity === 'common') return p >= 10 && p < 30;
-                    if (rarity === 'rare') return p >= 30 && p < 50;
-                    if (rarity === 'epic') return p >= 50 && p < 100;
-                    return p >= 100;
+                    if (rarity === 'common') return p >= 30 && p < 60;
+                    if (rarity === 'rare') return p >= 60 && p < 100;
+                    if (rarity === 'epic') return p >= 100 && p < 150;
+                    return p >= 150;
                 }).filter(k => k !== 'snake');
             }
             return keys;
