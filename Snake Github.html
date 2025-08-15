@@ -2447,6 +2447,11 @@
         #chest-info-panel { z-index: 2103; }
         #delete-confirmation-panel { z-index: 2103; }
         #select-confirmation-panel { z-index: 2103; }
+        #purchase-confirmation-panel,
+        #select-confirmation-panel {
+            max-height: 90vh;
+            box-sizing: border-box;
+        }
         #out-of-lives-panel {
             z-index: 2103;
             max-height: 90vh;
@@ -3257,6 +3262,13 @@
         #purchase-item-preview.store-item .store-item-status {
           font-size: 0.6rem;
         }
+        #select-item-preview.store-item {
+          width: 140px;
+          height: 140px;
+        }
+        #select-item-preview.store-item .store-item-status {
+          font-size: 0.6rem;
+        }
 
         @media screen and (min-width: 800px) {
           #purchase-item-preview.store-item {
@@ -3264,6 +3276,13 @@
             height: 200px;
           }
           #purchase-item-preview.store-item .store-item-status {
+            font-size: 0.9rem;
+          }
+          #select-item-preview.store-item {
+            width: 200px;
+            height: 200px;
+          }
+          #select-item-preview.store-item .store-item-status {
             font-size: 0.9rem;
           }
         }
