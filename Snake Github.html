@@ -1575,7 +1575,8 @@
             font-family: 'Press Start 2P', sans-serif;
             display: flex;
             align-items: center;
-            justify-content: center;
+            justify-content: flex-start;
+            text-align: left;
             box-sizing: border-box;
             cursor: pointer;
             transition: background-color 0.3s ease, transform 0.05s ease-out, filter 0.05s ease-out;
@@ -1616,7 +1617,7 @@
         .menu-option-button.icon-button-pressed { filter: brightness(0.5); }
         .menu-option-button.with-icon {
             overflow: visible;
-            padding-left: 110px;
+            padding-left: calc(80px + 1rem);
         }
         .menu-option-button {
             left: 40px;
@@ -1631,6 +1632,21 @@
             transform: translateY(-50%);
             z-index: 1;
             pointer-events: none;
+        }
+
+        @media screen and (max-width: 600px) {
+            .menu-option-button {
+                left: 30px;
+                width: calc(100% - 30px);
+            }
+            .menu-option-button.with-icon {
+                padding-left: calc(60px + 1rem);
+            }
+            .menu-option-button.with-icon .menu-button-icon {
+                left: -30px;
+                width: 60px;
+                height: 60px;
+            }
         }
         .config-svg,
         .info-svg {
