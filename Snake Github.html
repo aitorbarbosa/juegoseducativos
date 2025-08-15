@@ -3447,15 +3447,28 @@
         #wheel-pointer {
             position: absolute;
             top: 50%;
-            right: -15px;
+            right: -25px;
             transform: translateY(-50%);
             transform-origin: left center;
-            width: 0;
-            height: 0;
-            border-top: 15px solid transparent;
-            border-bottom: 15px solid transparent;
-            border-right: 30px solid #8e44ad;
+            width: 40px;
+            height: 30px;
+            background: #8e44ad;
+            clip-path: polygon(0% 50%, 40% 0%, 100% 0%, 100% 100%, 40% 100%);
+            border-radius: 4px;
+            box-shadow: 0 0 6px rgba(0,0,0,0.5);
             z-index: 10;
+        }
+        #wheel-pointer::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 4px;
+            width: 32px;
+            height: 22px;
+            background: #c1a4d4;
+            clip-path: polygon(0% 50%, 40% 0%, 100% 0%, 100% 100%, 40% 100%);
+            transform: translateY(-50%);
+            border-radius: 3px;
         }
         #wheel-canvas {
             width: 100%;
