@@ -2494,6 +2494,7 @@
 
         #reset-confirmation-panel p { text-align: center; margin: 0 0 10px 0; }
         #purchase-confirmation-panel p { text-align: center; margin: 0 0 2px 0; font-size: 0.8em; }
+        #select-confirmation-panel p { text-align: center; margin: 0 0 2px 0; font-size: 0.8em; }
         #purchase-confirmation-panel.chest-purchase .reset-header { margin-bottom: -10px; }
         #chest-info-panel p { text-align: left; margin: 8px 0 10px 10px; font-size: 0.8em; }
         #chest-info-panel .reset-header { margin-bottom: 0; }
@@ -4298,6 +4299,8 @@
 
             <div id="select-confirmation-panel" class="select-confirmation-panel-hidden">
                 <div class="panel-content">
+                    <p id="select-description-text" class="mb-2 hidden"></p>
+                    <div id="select-item-preview" class="store-item locked rarity-default hidden"></div>
                     <p id="select-confirmation-text"></p>
                     <div class="reset-buttons">
                         <button id="confirmSelectYes">SI</button>
@@ -4612,6 +4615,8 @@
         const profileBoosterContent = document.getElementById('profile-booster-content');
         const profileBoosterItems = document.getElementById('profile-booster-items');
         const selectConfirmationPanel = document.getElementById('select-confirmation-panel');
+        const selectDescriptionText = document.getElementById('select-description-text');
+        const selectItemPreview = document.getElementById('select-item-preview');
         const selectConfirmationText = document.getElementById('select-confirmation-text');
         const confirmSelectYesButton = document.getElementById('confirmSelectYes');
         const confirmSelectNoButton = document.getElementById('confirmSelectNo');
@@ -14425,11 +14430,34 @@ async function startGame(isRestart = false) {
         let selectInfo = null;
         function openSelectConfirm(type, key, action) {
             selectInfo = { type, key, action };
+            if (selectDescriptionText) selectDescriptionText.classList.add('hidden');
+            if (selectItemPreview) {
+                selectItemPreview.innerHTML = '';
+                selectItemPreview.className = 'store-item locked rarity-default hidden';
+                selectItemPreview.style.display = '';
+                selectItemPreview.style.alignItems = '';
+                selectItemPreview.style.justifyContent = '';
+            }
             if (selectConfirmationText) {
                 if (type === 'booster') {
                     const booster = BOOSTERS[key];
                     const question = action === 'use' ? `¿Usar ${booster.name}?` : `¿Ver ${booster.name} en la tienda?`;
-                    selectConfirmationText.innerHTML = `${booster.description}<br>${question}`;
+                    if (selectDescriptionText) {
+                        selectDescriptionText.textContent = booster.description;
+                        selectDescriptionText.classList.remove('hidden');
+                    }
+                    if (selectItemPreview) {
+                        selectItemPreview.className = '';
+                        selectItemPreview.style.display = 'flex';
+                        selectItemPreview.style.alignItems = 'center';
+                        selectItemPreview.style.justifyContent = 'center';
+                        const img = document.createElement('img');
+                        img.className = 'booster-preview-img';
+                        img.src = booster.img;
+                        selectItemPreview.appendChild(img);
+                        selectItemPreview.classList.remove('hidden');
+                    }
+                    selectConfirmationText.textContent = question;
                 } else {
                     let name;
                     if (type === 'food') name = FOOD_DISPLAY_NAMES[key];
