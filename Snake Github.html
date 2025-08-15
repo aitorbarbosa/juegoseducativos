@@ -3450,12 +3450,25 @@
             right: -15px;
             transform: translateY(-50%);
             transform-origin: left center;
-            width: 0;
-            height: 0;
-            border-top: 15px solid transparent;
-            border-bottom: 15px solid transparent;
-            border-right: 30px solid #8e44ad;
+            width: 30px;
+            height: 22px;
+            background: #912917;
+            clip-path: polygon(0% 50%, 40% 0%, 100% 0%, 100% 100%, 40% 100%);
+            border-radius: 4px;
+            box-shadow: 0 0 6px rgba(0,0,0,0.5);
             z-index: 10;
+        }
+        #wheel-pointer::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 4px;
+            width: 24px;
+            height: 16px;
+            background: #F99C3E;
+            clip-path: polygon(0% 50%, 40% 0%, 100% 0%, 100% 100%, 40% 100%);
+            transform: translateY(-50%);
+            border-radius: 3px;
         }
         #wheel-canvas {
             width: 100%;
@@ -5947,9 +5960,9 @@ function setupSlider(slider, display) {
         const HEART_PRICE = 100;
         const GEM_PRICE = 1000;
         const COIN_PACKS = {
-            coin500: { img: 'https://i.imgur.com/liQ5lv7.png', costGems: 1, amount: 500, name: 'Monedas' },
-            coin4000: { img: 'https://i.imgur.com/88VtxnD.png', costGems: 5, amount: 4000, name: 'Bolsa de Monedas' },
-            coin10000: { img: 'https://i.imgur.com/Yl4BBfA.png', costGems: 10, amount: 10000, name: 'Cofre de Monedas' }
+            coin500: { img: 'https://i.imgur.com/uwm2bYn.png', costGems: 1, amount: 500, name: 'Monedas' },
+            coin4000: { img: 'https://i.imgur.com/QErBjUy.png', costGems: 5, amount: 4000, name: 'Bolsa de Monedas' },
+            coin10000: { img: 'https://i.imgur.com/XtjiPWs.png', costGems: 10, amount: 10000, name: 'Cofre de Monedas' }
         };
         const GEM_PACKS = {
             gem10: { img: 'https://i.imgur.com/sE2ciiz.png', price: '0.99€', amount: 10, name: 'Gemas' },
