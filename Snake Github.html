@@ -1822,8 +1822,7 @@
         #profile-panel.centered-panel,
         #achievements-panel.centered-panel,
         #delete-confirmation-panel.centered-panel,
-        #out-of-lives-panel.centered-panel,
-        #select-confirmation-panel.centered-panel {
+        #out-of-lives-panel.centered-panel {
             transform: translate(-50%, -50%) scale(0);
         }
         #settings-panel.centered-panel.panel-visible,
@@ -1838,8 +1837,7 @@
         #achievements-panel.centered-panel.panel-visible,
         #daily-panel.centered-panel.panel-visible,
         #delete-confirmation-panel.centered-panel.panel-visible,
-        #out-of-lives-panel.centered-panel.panel-visible,
-        #select-confirmation-panel.centered-panel.panel-visible {
+        #out-of-lives-panel.centered-panel.panel-visible {
             transform: translate(-50%, -50%) scale(1);
         }
         #settings-panel.panel-visible,
@@ -2449,6 +2447,11 @@
         #chest-info-panel { z-index: 2103; }
         #delete-confirmation-panel { z-index: 2103; }
         #select-confirmation-panel { z-index: 2103; }
+        #purchase-confirmation-panel,
+        #select-confirmation-panel {
+            max-height: 90vh;
+            box-sizing: border-box;
+        }
         #out-of-lives-panel {
             z-index: 2103;
             max-height: 90vh;
@@ -2494,6 +2497,7 @@
 
         #reset-confirmation-panel p { text-align: center; margin: 0 0 10px 0; }
         #purchase-confirmation-panel p { text-align: center; margin: 0 0 2px 0; font-size: 0.8em; }
+        #select-confirmation-panel p { text-align: center; margin: 0 0 2px 0; font-size: 0.8em; }
         #purchase-confirmation-panel.chest-purchase .reset-header { margin-bottom: -10px; }
         #chest-info-panel p { text-align: left; margin: 8px 0 10px 10px; font-size: 0.8em; }
         #chest-info-panel .reset-header { margin-bottom: 0; }
@@ -3258,6 +3262,13 @@
         #purchase-item-preview.store-item .store-item-status {
           font-size: 0.6rem;
         }
+        #select-item-preview.store-item {
+          width: 140px;
+          height: 140px;
+        }
+        #select-item-preview.store-item .store-item-status {
+          font-size: 0.6rem;
+        }
 
         @media screen and (min-width: 800px) {
           #purchase-item-preview.store-item {
@@ -3265,6 +3276,13 @@
             height: 200px;
           }
           #purchase-item-preview.store-item .store-item-status {
+            font-size: 0.9rem;
+          }
+          #select-item-preview.store-item {
+            width: 200px;
+            height: 200px;
+          }
+          #select-item-preview.store-item .store-item-status {
             font-size: 0.9rem;
           }
         }
@@ -3290,6 +3308,12 @@
         }
         #purchase-confirmation-panel.chest-purchase .panel-content {
           justify-content: flex-start;
+        }
+
+        #select-confirmation-panel .panel-content {
+          justify-content: center;
+          align-items: center;
+          position: relative;
         }
 
         .chest-grid-item {
@@ -4298,6 +4322,8 @@
 
             <div id="select-confirmation-panel" class="select-confirmation-panel-hidden">
                 <div class="panel-content">
+                    <p id="select-description-text" class="mb-2 hidden"></p>
+                    <div id="select-item-preview" class="store-item locked rarity-default hidden"></div>
                     <p id="select-confirmation-text"></p>
                     <div class="reset-buttons">
                         <button id="confirmSelectYes">SI</button>
@@ -4612,6 +4638,8 @@
         const profileBoosterContent = document.getElementById('profile-booster-content');
         const profileBoosterItems = document.getElementById('profile-booster-items');
         const selectConfirmationPanel = document.getElementById('select-confirmation-panel');
+        const selectDescriptionText = document.getElementById('select-description-text');
+        const selectItemPreview = document.getElementById('select-item-preview');
         const selectConfirmationText = document.getElementById('select-confirmation-text');
         const confirmSelectYesButton = document.getElementById('confirmSelectYes');
         const confirmSelectNoButton = document.getElementById('confirmSelectNo');
@@ -14425,21 +14453,72 @@ async function startGame(isRestart = false) {
         let selectInfo = null;
         function openSelectConfirm(type, key, action) {
             selectInfo = { type, key, action };
+            if (selectDescriptionText) selectDescriptionText.classList.add('hidden');
+            if (selectItemPreview) {
+                selectItemPreview.innerHTML = '';
+                selectItemPreview.className = 'store-item locked rarity-default hidden';
+                selectItemPreview.style.display = '';
+                selectItemPreview.style.alignItems = '';
+                selectItemPreview.style.justifyContent = '';
+            }
             if (selectConfirmationText) {
                 if (type === 'booster') {
                     const booster = BOOSTERS[key];
                     const question = action === 'use' ? `¿Usar ${booster.name}?` : `¿Ver ${booster.name} en la tienda?`;
-                    selectConfirmationText.innerHTML = `${booster.description}<br>${question}`;
+                    if (selectDescriptionText) {
+                        selectDescriptionText.textContent = booster.description;
+                        selectDescriptionText.classList.remove('hidden');
+                    }
+                    if (selectItemPreview) {
+                        selectItemPreview.className = '';
+                        selectItemPreview.style.display = 'flex';
+                        selectItemPreview.style.alignItems = 'center';
+                        selectItemPreview.style.justifyContent = 'center';
+                        const img = document.createElement('img');
+                        img.className = 'booster-preview-img';
+                        img.src = booster.img;
+                        selectItemPreview.appendChild(img);
+                        selectItemPreview.classList.remove('hidden');
+                    }
+                    selectConfirmationText.textContent = question;
                 } else {
                     let name;
                     if (type === 'food') name = FOOD_DISPLAY_NAMES[key];
                     else if (type === 'skin') name = SKIN_DISPLAY_NAMES[key];
                     else name = SCENE_DISPLAY_NAMES[key];
+                    if (selectItemPreview) {
+                        const rarityClass = getRarityClass(type, key);
+                        let itemClass = `store-item highlight-bg ${rarityClass}`;
+                        if (type === 'scene') itemClass += ' scene-item';
+                        else if (type === 'skin') itemClass += ' skin-item';
+                        else itemClass += ' food-item';
+                        itemClass += action === 'select' ? ' purchased' : ' locked';
+                        selectItemPreview.className = itemClass;
+                        const img = document.createElement('img');
+                        img.className = 'store-item-img' + (type === 'scene' ? ' scene-img-full' : '');
+                        if (type === 'food') img.src = FOODS[key]?.asset?.src || '';
+                        else if (type === 'skin') img.src = SKINS[key]?.snakeHeadAsset?.upDown?.src || '';
+                        else img.src = SCENES[key]?.icon || '';
+                        selectItemPreview.appendChild(img);
+                        selectItemPreview.classList.remove('hidden');
+                    }
                     selectConfirmationText.textContent = action === 'select' ? `¿Usar ${name}?` : `¿Ver ${name} en la tienda?`;
                 }
             }
-            selectConfirmationPanel.classList.add('centered-panel');
+            selectConfirmationPanel.classList.remove('centered-panel');
             togglePanel(selectConfirmationPanel, selectConfirmationPanel.querySelector('.panel-content'), true);
+            const sourcePanel =
+                (storePanel && !storePanel.classList.contains('store-panel-hidden') && storePanel.classList.contains('panel-visible')) ? storePanel :
+                (profilePanel && !profilePanel.classList.contains('profile-panel-hidden') && profilePanel.classList.contains('panel-visible')) ? profilePanel :
+                (achievementsPanel && !achievementsPanel.classList.contains('achievements-panel-hidden') && achievementsPanel.classList.contains('panel-visible')) ? achievementsPanel :
+                (genericMenuPanel && !genericMenuPanel.classList.contains('generic-menu-panel-hidden') && genericMenuPanel.classList.contains('panel-visible')) ? genericMenuPanel :
+                (configMenuPanel && !configMenuPanel.classList.contains('config-menu-panel-hidden') && configMenuPanel.classList.contains('panel-visible')) ? configMenuPanel :
+                null;
+            if (sourcePanel) {
+                matchPanelSizeWithElement(sourcePanel, selectConfirmationPanel);
+            } else {
+                positionPanel(selectConfirmationPanel);
+            }
             if (modalOverlay) modalOverlay.classList.remove('hidden');
         }
 
