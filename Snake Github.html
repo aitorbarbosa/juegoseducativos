@@ -1822,8 +1822,7 @@
         #profile-panel.centered-panel,
         #achievements-panel.centered-panel,
         #delete-confirmation-panel.centered-panel,
-        #out-of-lives-panel.centered-panel,
-        #select-confirmation-panel.centered-panel {
+        #out-of-lives-panel.centered-panel {
             transform: translate(-50%, -50%) scale(0);
         }
         #settings-panel.centered-panel.panel-visible,
@@ -1838,8 +1837,7 @@
         #achievements-panel.centered-panel.panel-visible,
         #daily-panel.centered-panel.panel-visible,
         #delete-confirmation-panel.centered-panel.panel-visible,
-        #out-of-lives-panel.centered-panel.panel-visible,
-        #select-confirmation-panel.centered-panel.panel-visible {
+        #out-of-lives-panel.centered-panel.panel-visible {
             transform: translate(-50%, -50%) scale(1);
         }
         #settings-panel.panel-visible,
@@ -3291,6 +3289,12 @@
         }
         #purchase-confirmation-panel.chest-purchase .panel-content {
           justify-content: flex-start;
+        }
+
+        #select-confirmation-panel .panel-content {
+          justify-content: center;
+          align-items: center;
+          position: relative;
         }
 
         .chest-grid-item {
@@ -14466,8 +14470,20 @@ async function startGame(isRestart = false) {
                     selectConfirmationText.textContent = action === 'select' ? `¿Usar ${name}?` : `¿Ver ${name} en la tienda?`;
                 }
             }
-            selectConfirmationPanel.classList.add('centered-panel');
+            selectConfirmationPanel.classList.remove('centered-panel');
             togglePanel(selectConfirmationPanel, selectConfirmationPanel.querySelector('.panel-content'), true);
+            const sourcePanel =
+                (storePanel && !storePanel.classList.contains('store-panel-hidden') && storePanel.classList.contains('panel-visible')) ? storePanel :
+                (profilePanel && !profilePanel.classList.contains('profile-panel-hidden') && profilePanel.classList.contains('panel-visible')) ? profilePanel :
+                (achievementsPanel && !achievementsPanel.classList.contains('achievements-panel-hidden') && achievementsPanel.classList.contains('panel-visible')) ? achievementsPanel :
+                (genericMenuPanel && !genericMenuPanel.classList.contains('generic-menu-panel-hidden') && genericMenuPanel.classList.contains('panel-visible')) ? genericMenuPanel :
+                (configMenuPanel && !configMenuPanel.classList.contains('config-menu-panel-hidden') && configMenuPanel.classList.contains('panel-visible')) ? configMenuPanel :
+                null;
+            if (sourcePanel) {
+                matchPanelSizeWithElement(sourcePanel, selectConfirmationPanel);
+            } else {
+                positionPanel(selectConfirmationPanel);
+            }
             if (modalOverlay) modalOverlay.classList.remove('hidden');
         }
 
