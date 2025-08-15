@@ -3448,13 +3448,23 @@
             position: absolute;
             top: 50%;
             right: -15px;
-            transform: translateY(-50%);
+            transform: translateY(-50%) rotate(0deg);
+            transform-origin: left center;
             width: 0;
             height: 0;
             border-top: 15px solid transparent;
             border-bottom: 15px solid transparent;
             border-right: 30px solid #8e44ad;
             z-index: 10;
+        }
+        @keyframes wheel-pointer-bounce {
+            0% { transform: translateY(-50%) rotate(0deg); }
+            30% { transform: translateY(-50%) rotate(-25deg); }
+            60% { transform: translateY(-50%) rotate(0deg); }
+            100% { transform: translateY(-50%) rotate(0deg); }
+        }
+        #wheel-pointer.pointer-bounce {
+            animation: wheel-pointer-bounce 0.2s ease-out;
         }
         #wheel-canvas {
             width: 100%;
@@ -4476,6 +4486,7 @@
         const wheelOverlay = document.getElementById("wheel-overlay");
         const spinResultOverlay = document.getElementById("spin-result-overlay");
         const wheelWrapper = document.getElementById("wheel-wrapper");
+        const wheelPointer = document.getElementById("wheel-pointer");
         const storeItemsContainer = document.getElementById("store-items-container");
         const storeTabButtons = document.querySelectorAll('#store-tabs .store-tab');
         const closeStorePanelButton = document.getElementById("close-store-panel");
@@ -14834,17 +14845,37 @@ async function startGame(isRestart = false) {
                 start += angle;
             });
 
-            // outer beveled border
+            // outer beveled border and divider circles
+            const outerBorderWidth = size * (10 / 300);
+            const outerRadius = radius - outerBorderWidth / 2;
             wheelCtx.beginPath();
-            wheelCtx.arc(radius, radius, radius, 0, 2 * Math.PI);
-            wheelCtx.lineWidth = size * (5 / 300);
+            wheelCtx.arc(radius, radius, outerRadius, 0, 2 * Math.PI);
+            wheelCtx.lineWidth = outerBorderWidth;
             wheelCtx.strokeStyle = '#4c1a70';
             wheelCtx.stroke();
+            const innerBorderWidth = size * (4 / 300);
             wheelCtx.beginPath();
-            wheelCtx.arc(radius, radius, radius - size * (3 / 300), 0, 2 * Math.PI);
-            wheelCtx.lineWidth = size * (2 / 300);
+            wheelCtx.arc(radius, radius, radius - outerBorderWidth + innerBorderWidth / 2, 0, 2 * Math.PI);
+            wheelCtx.lineWidth = innerBorderWidth;
             wheelCtx.strokeStyle = 'rgba(255,255,255,0.6)';
             wheelCtx.stroke();
+            const circleRadius = outerBorderWidth * 0.4;
+            for (let i = 0; i < wheelPrizes.length; i++) {
+                const a = i * angle;
+                const cx = radius + outerRadius * Math.cos(a);
+                const cy = radius + outerRadius * Math.sin(a);
+                wheelCtx.beginPath();
+                wheelCtx.arc(cx, cy, circleRadius, 0, 2 * Math.PI);
+                wheelCtx.fillStyle = '#C1A4D4';
+                wheelCtx.fill();
+            }
+        }
+
+        function triggerPointerBounce() {
+            if (!wheelPointer) return;
+            wheelPointer.classList.remove('pointer-bounce');
+            void wheelPointer.offsetWidth;
+            wheelPointer.classList.add('pointer-bounce');
         }
 
         function selectPrize() {
@@ -14880,10 +14911,34 @@ async function startGame(isRestart = false) {
             const extra = 2 * Math.PI * 5;
             const finalAngle = extra - center;
             if (wheelCanvas) {
-                wheelCanvas.style.transition = 'transform 4s cubic-bezier(0.33,1,0.68,1)';
-                wheelCanvas.style.transform = `rotate(${finalAngle}rad)`;
+                wheelCanvas.style.transition = 'none';
             }
-            setTimeout(() => { wheelSpinning = false; showPrize(prize); }, 4000);
+            const duration = 4000;
+            const sliceAngle = (2 * Math.PI) / wheelPrizes.length;
+            let startTime = null;
+            let prevAngle = 0;
+            function animate(timestamp) {
+                if (!startTime) startTime = timestamp;
+                const elapsed = timestamp - startTime;
+                const t = Math.min(elapsed / duration, 1);
+                const eased = 1 - Math.pow(1 - t, 3);
+                const angle = finalAngle * eased;
+                if (wheelCanvas) {
+                    wheelCanvas.style.transform = `rotate(${angle}rad)`;
+                }
+                const boundaryIndex = Math.floor(angle / sliceAngle);
+                if (boundaryIndex > Math.floor(prevAngle / sliceAngle)) {
+                    triggerPointerBounce();
+                }
+                prevAngle = angle;
+                if (t < 1) {
+                    requestAnimationFrame(animate);
+                } else {
+                    wheelSpinning = false;
+                    showPrize(prize);
+                }
+            }
+            requestAnimationFrame(animate);
         }
 
         function showPrize(prize) {
