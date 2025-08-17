@@ -3231,14 +3231,24 @@
           pointer-events: none;
         }
 
+        #store-tabs, #profile-tabs {
+          width: 100%;
+          display: flex;
+          flex-wrap: nowrap;
+        }
+
         .store-tab {
           font-family: 'Press Start 2P', sans-serif;
           font-size: 0.7rem;
           padding: 2px 4px;
+          /* Allow tabs to grow/shrink while keeping square shape */
+          flex: 1 1 60px;
           width: auto;
           height: auto;
-          min-width: 60px;
-          min-height: 60px;
+          min-width: 0;
+          min-height: 0;
+          max-width: 80px;
+          aspect-ratio: 1 / 1;
         }
 
         .store-tab.active {
@@ -3248,20 +3258,24 @@
 
         .store-tab img {
           height: auto;
-          width: auto;
+          width: 100%;
+          max-width: 100%;
           padding: 6px 6px;
+          box-sizing: border-box;
           pointer-events: none;
         }
 
         #profile-tabs .store-tab {
-          font-size: 0.8rem;
-          padding: 4px 6px;
-          min-width: 60px;
-          min-height: 60px;
+          /* Match store tab styling and allow responsive sizing */
+          font-size: 0.7rem;
+          padding: 2px 4px;
+          justify-content: center;
         }
 
         #profile-tabs .store-tab img {
-          height: 36px;
+          height: auto;
+          width: 100%;
+          max-width: 100%;
         }
 
         #purchase-item-preview {
