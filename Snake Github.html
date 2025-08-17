@@ -3231,14 +3231,24 @@
           pointer-events: none;
         }
 
+        #store-tabs, #profile-tabs {
+          width: 100%;
+          display: flex;
+          flex-wrap: nowrap;
+        }
+
         .store-tab {
           font-family: 'Press Start 2P', sans-serif;
           font-size: 0.7rem;
           padding: 2px 4px;
+          /* Allow tabs to grow/shrink while keeping square shape */
+          flex: 1 1 60px;
           width: auto;
           height: auto;
-          min-width: 60px;
-          min-height: 60px;
+          min-width: 0;
+          min-height: 0;
+          max-width: 80px;
+          aspect-ratio: 1 / 1;
         }
 
         .store-tab.active {
@@ -3248,20 +3258,24 @@
 
         .store-tab img {
           height: auto;
-          width: auto;
+          width: 100%;
+          max-width: 100%;
           padding: 6px 6px;
+          box-sizing: border-box;
           pointer-events: none;
         }
 
         #profile-tabs .store-tab {
-          font-size: 0.8rem;
-          padding: 4px 6px;
-          min-width: 60px;
-          min-height: 60px;
+          /* Match store tab styling and allow responsive sizing */
+          font-size: 0.7rem;
+          padding: 2px 4px;
+          justify-content: center;
         }
 
         #profile-tabs .store-tab img {
-          height: 36px;
+          height: auto;
+          width: 100%;
+          max-width: 100%;
         }
 
         #purchase-item-preview {
@@ -5502,7 +5516,7 @@ function setupSlider(slider, display) {
             // Mundo 8 - Jardín de los Peligros
             { speed: 170, initialLength: 9, lightningLifespan: 4750, redLightningChance: 0.25, lightningSpawnRange: [5000, 8000], initialLifespan: 5350, goldenFoodChance: 0.17, goldenFoodLifespan: 4300, streakReduction: 250, falseFoodSpawnRange: [5000, 8000] },
             // Mundo 9 - Lago del Reflejo
-            { speed: 170, initialLength: 10, lightningLifespan: 4500, redLightningChance: 0.25, lightningSpawnRange: [5000, 8000], initialLifespan: 5300, goldenFoodChance: 0.16, goldenFoodLifespan: 4300, streakReduction: 250, falseFoodSpawnRange: [4500, 7500], obstacleCount: 5, mirrorEffectDuration: 3000 },
+            { speed: 170, initialLength: 10, lightningLifespan: 4500, redLightningChance: 0.25, lightningSpawnRange: [5000, 8000], initialLifespan: 5300, goldenFoodChance: 0.16, goldenFoodLifespan: 4300, streakReduction: 250, falseFoodSpawnRange: [4500, 7500], obstacleCount: 4, mirrorEffectDuration: 3000 },
             // Mundo 10 - Final Inesperado
             { lightningSpawnRange: [5000, 8000], redLightningChance: 0.25, streakReduction: 250, mirrorEffectDuration: 2250, goldenFoodChance: 0.15 }
         ];
@@ -5566,11 +5580,11 @@ function setupSlider(slider, display) {
             ],
             // Mundo 8 - Jardín de los Peligros
             [
-                { obstacleCount: 2, targetScore: 550 },
-                { obstacleCount: 4, targetScore: 600 },
+                { obstacleCount: 4, targetScore: 550 },
+                { obstacleCount: 5, targetScore: 600 },
                 { obstacleCount: 6, targetScore: 650 },
-                { obstacleCount: 8, targetScore: 700 },
-                { obstacleCount: 10, targetScore: 750 }
+                { obstacleCount: 7, targetScore: 700 },
+                { obstacleCount: 8, targetScore: 750 }
             ],
             // Mundo 9 - Lago del Reflejo
             [
@@ -5582,10 +5596,10 @@ function setupSlider(slider, display) {
             ],
             // Mundo 10 - Final Inesperado
             [
-                { speed: 169, initialLength: 11, initialLifespan: 5290, lightningLifespan: 4400, goldenFoodLifespan: 4290, falseFoodSpawnRange: [4250, 7250], obstacleCount: 6, mirrorSpawnRange: [5000, 8000], targetScore: 800 },
-                { speed: 168, initialLength: 12, initialLifespan: 5280, lightningLifespan: 4300, goldenFoodLifespan: 4280, falseFoodSpawnRange: [4000, 7000], obstacleCount: 7, mirrorSpawnRange: [4750, 7750], targetScore: 850 },
-                { speed: 167, initialLength: 13, initialLifespan: 5270, lightningLifespan: 4200, goldenFoodLifespan: 4270, falseFoodSpawnRange: [3750, 6750], obstacleCount: 8, mirrorSpawnRange: [4500, 7500], targetScore: 900 },
-                { speed: 166, initialLength: 14, initialLifespan: 5260, lightningLifespan: 4100, goldenFoodLifespan: 4260, falseFoodSpawnRange: [3500, 6500], obstacleCount: 9, mirrorSpawnRange: [4250, 7250], targetScore: 950 },
+                { speed: 169, initialLength: 11, initialLifespan: 5290, lightningLifespan: 4400, goldenFoodLifespan: 4290, falseFoodSpawnRange: [4250, 7250], obstacleCount: 5, mirrorSpawnRange: [5000, 8000], targetScore: 800 },
+                { speed: 168, initialLength: 12, initialLifespan: 5280, lightningLifespan: 4300, goldenFoodLifespan: 4280, falseFoodSpawnRange: [4000, 7000], obstacleCount: 6, mirrorSpawnRange: [4750, 7750], targetScore: 850 },
+                { speed: 167, initialLength: 13, initialLifespan: 5270, lightningLifespan: 4200, goldenFoodLifespan: 4270, falseFoodSpawnRange: [3750, 6750], obstacleCount: 7, mirrorSpawnRange: [4500, 7500], targetScore: 900 },
+                { speed: 166, initialLength: 14, initialLifespan: 5260, lightningLifespan: 4100, goldenFoodLifespan: 4260, falseFoodSpawnRange: [3500, 6500], obstacleCount: 8, mirrorSpawnRange: [4250, 7250], targetScore: 950 },
                 { speed: 165, initialLength: 15, initialLifespan: 5250, lightningLifespan: 4000, goldenFoodLifespan: 4250, falseFoodSpawnRange: [3000, 6000], obstacleCount: 10, mirrorSpawnRange: [4000, 7000], targetScore: 1000 }
             ]
         ];
